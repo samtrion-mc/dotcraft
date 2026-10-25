@@ -15,7 +15,7 @@ All mods share one version, derived from git tags by git-semver.
 
 ```
 ./gradlew build                 # build and check everything
-./gradlew :dev:runClient        # all mods together (-Pdev.mods=resources,energy to limit)
+./gradlew :dev:runClient        # all mods + JEI/Jade/REI (-Pdev.mods=dotcraft_resources,dotcraft_energy to limit, -Pdev.noCompat to drop JEI/Jade/REI)
 ./gradlew :mods:energy:runClient  # a single mod (run/energy/)
 ./gradlew newMod --id=magic --name="Magic" --depends=resources [--no-compat]
 ./gradlew installGitHooks       # enable the commit-msg hook (also runs on IDE sync)
