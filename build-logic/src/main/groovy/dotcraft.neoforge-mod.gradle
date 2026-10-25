@@ -1,0 +1,50 @@
+plugins {
+    id 'dotcraft.neoforge-base'
+    id 'maven-publish'
+}
+
+def modId = project.property('mod_id')
+
+group = project.property('mod_group_id')
+
+base {
+    archivesName = "dotcraft-${project.name}"
+}
+
+neoForge {
+    mods {
+        "${modId}" {
+            sourceSet sourceSets.main
+        }
+    }
+}
+
+def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
+    def replaceProperties = [
+            minecraft_version      : project.property('minecraft_version'),
+            minecraft_version_range: project.property('minecraft_version_range'),
+            neo_version            : project.property('neo_version'),
+            mod_id                 : modId,
+            mod_name               : project.property('mod_name'),
+            mod_description        : project.property('mod_description'),
+            mod_license            : project.property('mod_license'),
+            mod_version            : project.version.toString(),
+    ]
+    inputs.properties replaceProperties
+    expand replaceProperties
+    from 'src/main/templates'
+    into layout.buildDirectory.dir('generated/sources/modMetadata')
+}
+sourceSets.main.resources.srcDir generateModMetadata
+neoForge.ideSyncTask generateModMetadata
+
+publishing {
+    publications {
+        register('mavenJava', MavenPublication) {
+            artifactId = "dotcraft-${project.name}"
+            from components.java
+        }
+    }
+    repositories {
+    }
+}
