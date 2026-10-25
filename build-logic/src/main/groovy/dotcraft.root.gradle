@@ -1,1 +1,135 @@
-// root-project tasks are added in a later step
+import org.gradle.api.DefaultTask
+import org.gradle.api.GradleException
+import org.gradle.api.provider.ListProperty
+import org.gradle.api.provider.Property
+import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.tasks.Input
+import org.gradle.api.tasks.Internal
+import org.gradle.api.tasks.TaskAction
+import org.gradle.api.tasks.options.Option
+
+abstract class NewModTask extends DefaultTask {
+    @Input @Option(option = 'id', description = 'Mod directory/id, e.g. magic or my-mod')
+    abstract Property<String> getModId()
+
+    @Input @Option(option = 'name', description = 'Display name, e.g. "Magic"')
+    abstract Property<String> getModName()
+
+    @Input @Option(option = 'depends', description = 'Comma separated sibling mods, e.g. resources,energy')
+    abstract Property<String> getDepends()
+
+    @Input @Option(option = 'no-compat', description = 'Skip the JEI/Jade/REI compat skeleton')
+    abstract Property<Boolean> getNoCompat()
+
+    @Internal
+    abstract DirectoryProperty getRootDir()
+
+    NewModTask() {
+        depends.convention('')
+        noCompat.convention(false)
+    }
+
+    @TaskAction
+    void run() {
+        def id = modId.get()
+        if (!(id ==~ /[a-z][a-z0-9]*(-[a-z0-9]+)*/)) throw new GradleException("--id must be lowercase letters, digits and dashes: '$id'")
+        def root = rootDir.get().asFile
+        def dir = new File(root, "mods/$id")
+        if (dir.exists()) throw new GradleException("$dir already exists")
+        def deps = depends.get().split(',').collect { it.trim() }.findAll { it }
+        deps.each { if (!new File(root, "mods/$it/build.gradle").exists()) throw new GradleException("unknown dependency mod '$it'") }
+        def compat = !noCompat.get()
+
+        def pkg = "net.samtrion.dotcraft.${id.replace('-', '')}"
+        def cls = id.split('-').collect { it.capitalize() }.join('') + 'Mod'
+        def fullId = "dotcraft_${id.replace('-', '_')}"
+        def pkgDir = new File(dir, "src/main/java/${pkg.replace('.', '/')}")
+
+        def write = { File f, String text -> f.parentFile.mkdirs(); f.text = text.stripIndent().stripLeading() }
+
+        // build.gradle
+        def gradleDeps = deps.collect { "    implementation project(':mods:$it')" }
+        if (compat) gradleDeps += ['', '    compileOnly libs.jei.api', '    compileOnly libs.jade', '    compileOnly libs.rei.api',
+                                   '    localRuntime libs.jei', '    localRuntime libs.jade', '    localRuntime libs.rei']
+        write(new File(dir, 'build.gradle'), "plugins {\n    id 'dotcraft.neoforge-mod'\n}\n" +
+                (gradleDeps ? "\ndependencies {\n${gradleDeps.join('\n')}\n}\n" : ''))
+
+        write(new File(dir, 'gradle.properties'),
+                "mod_id=$fullId\nmod_name=${modName.get()}\nmod_description=${modName.get()} for the .Craft mods.\n")
+
+        // mod class
+        def imports = ['net.neoforged.bus.api.IEventBus', 'net.neoforged.fml.ModContainer', 'net.neoforged.fml.ModList',
+                       'net.neoforged.fml.common.Mod', 'com.mojang.logging.LogUtils', 'org.slf4j.Logger']
+        if (compat) imports += ["${pkg}.compat.jade.JadeCompat", "${pkg}.compat.jei.JeiCompat", "${pkg}.compat.rei.ReiCompat"]
+        def compatCalls = compat ? '''
+                    if (ModList.get().isLoaded("jei")) JeiCompat.init();
+                    if (ModList.get().isLoaded("jade")) JadeCompat.init();
+                    if (ModList.get().isLoaded("roughlyenoughitems")) ReiCompat.init();''' : ''
+        write(new File(pkgDir, "${cls}.java"), """\
+            package $pkg;
+
+            ${imports.sort().collect { "import $it;" }.join('\n            ')}
+
+            @Mod(${cls}.MODID)
+            public class $cls {
+                public static final String MODID = "$fullId";
+                public static final Logger LOGGER = LogUtils.getLogger();
+
+                public $cls(IEventBus modEventBus, ModContainer modContainer) {
+                    LOGGER.info("{} loaded", MODID);$compatCalls
+                }
+            }
+            """)
+
+        if (compat) {
+            [jei: 'JEI', jade: 'Jade', rei: 'REI'].each { sub, label ->
+                def c = "${sub.capitalize()}Compat"
+                write(new File(pkgDir, "compat/$sub/${c}.java"), """\
+                    package ${pkg}.compat.$sub;
+
+                    import ${pkg}.$cls;
+
+                    public final class $c {
+                        private $c() {}
+
+                        public static void init() {
+                            ${cls}.LOGGER.info("$label integration enabled");
+                        }
+                    }
+                    """)
+            }
+        }
+
+        // toml
+        def dep = { String mid, String type, String range, String order, String side, String reason = null ->
+            "\n[[dependencies.\${mod_id}]]\n    modId=\"$mid\"\n    type=\"$type\"\n    versionRange=\"$range\"\n    ordering=\"$order\"\n    side=\"$side\"\n" +
+                    (reason ? "    reason=\"$reason\"\n" : '')
+        }
+        def toml = '''\
+            license="${mod_license}"
+
+            [[mods]]
+            modId="${mod_id}"
+            version="${mod_version}"
+            displayName="${mod_name}"
+            authors="samtrion"
+            description=\'\'\'${mod_description}\'\'\'
+            '''.stripIndent() +
+                dep('neoforge', 'required', '[${neo_version},)', 'NONE', 'BOTH') +
+                dep('minecraft', 'required', '${minecraft_version_range}', 'NONE', 'BOTH') +
+                deps.collect { dep("dotcraft_${it.replace('-', '_')}", 'required', '[${mod_version},)', 'AFTER', 'BOTH') }.join('') +
+                (compat ? dep('jei', 'optional', '${jei_version_range}', 'AFTER', 'CLIENT', 'JEI integration') +
+                        dep('jade', 'optional', '${jade_version_range}', 'AFTER', 'BOTH', 'Jade integration') +
+                        dep('roughlyenoughitems', 'optional', '${rei_version_range}', 'AFTER', 'CLIENT', 'REI integration') : '')
+        def tomlFile = new File(dir, 'src/main/templates/META-INF/neoforge.mods.toml')
+        tomlFile.parentFile.mkdirs()
+        tomlFile.text = toml
+        logger.lifecycle("Created mods/$id (mod id $fullId). Re-sync Gradle to pick it up.")
+    }
+}
+
+tasks.register('newMod', NewModTask) {
+    group = 'dotcraft'
+    description = 'Scaffolds mods/<id>: --id=magic --name="Magic" [--depends=resources,energy] [--no-compat]'
+    rootDir = rootProject.layout.projectDirectory
+}

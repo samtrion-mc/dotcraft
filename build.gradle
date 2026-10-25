@@ -1,4 +1,5 @@
 plugins {
+    id 'dotcraft.root'
     alias(libs.plugins.semver)
 }
 
