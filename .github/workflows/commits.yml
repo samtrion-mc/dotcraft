@@ -1,0 +1,27 @@
+name: Commits
+
+on: pull_request
+
+jobs:
+  conventional:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check PR title
+        env:
+          TITLE: ${{ github.event.pull_request.title }}
+        run: sh .githooks/check-message.sh "$TITLE"
+
+      - name: Check commit messages
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+        run: |
+          status=0
+          for sha in $(git rev-list "$BASE..$HEAD"); do
+            sh .githooks/check-message.sh "$(git log -1 --format=%s "$sha")" || status=1
+          done
+          exit $status

@@ -1,3 +1,5 @@
+import javax.inject.Inject
+import org.gradle.process.ExecOperations
 import org.gradle.api.DefaultTask
 import org.gradle.api.GradleException
 import org.gradle.api.provider.ListProperty
@@ -132,4 +134,19 @@ tasks.register('newMod', NewModTask) {
     group = 'dotcraft'
     description = 'Scaffolds mods/<id>: --id=magic --name="Magic" [--depends=resources,energy] [--no-compat]'
     rootDir = rootProject.layout.projectDirectory
+}
+
+abstract class InstallGitHooksTask extends DefaultTask {
+    @Inject abstract ExecOperations getExec()
+
+    @TaskAction
+    void run() {
+        exec.exec { commandLine 'git', 'config', 'core.hooksPath', '.githooks' }
+    }
+}
+
+tasks.register('installGitHooks', InstallGitHooksTask) {
+    group = 'dotcraft'
+    description = 'Points git at .githooks (conventional commit check)'
+    outputs.upToDateWhen { false }
 }
