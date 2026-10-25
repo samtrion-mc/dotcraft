@@ -7,6 +7,9 @@ modProjects.each { evaluationDependsOn(it.path) }
 
 dependencies {
     modProjects.each { implementation it }
+    localRuntime libs.jei
+    localRuntime libs.jade
+    localRuntime libs.rei
 }
 
 neoForge {

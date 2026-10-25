@@ -28,6 +28,9 @@ def generateModMetadata = tasks.register('generateModMetadata', ProcessResources
             mod_name               : project.property('mod_name'),
             mod_description        : project.property('mod_description'),
             mod_license            : project.property('mod_license'),
+            jei_version_range      : project.property('jei_version_range'),
+            jade_version_range     : project.property('jade_version_range'),
+            rei_version_range      : project.property('rei_version_range'),
             mod_version            : project.version.toString(),
     ]
     inputs.properties replaceProperties
