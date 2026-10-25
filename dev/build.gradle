@@ -2,14 +2,19 @@ plugins {
     id 'dotcraft.neoforge-base'
 }
 
-def modProjects = rootProject.subprojects.findAll { it.path.startsWith(':mods:') }
-modProjects.each { evaluationDependsOn(it.path) }
+// -Pdev.mods=dotcraft_resources,dotcraft_energy limits the dev runs to those mods; -Pdev.noCompat drops JEI/Jade/REI
+def only = findProperty('dev.mods')?.toString()?.split(',') as List
+def allMods = rootProject.subprojects.findAll { it.path.startsWith(':mods:') }
+allMods.each { evaluationDependsOn(it.path) }
+def modProjects = allMods.findAll { only == null || it.property('mod_id') in only }
 
 dependencies {
     modProjects.each { implementation it }
-    localRuntime libs.jei
-    localRuntime libs.jade
-    localRuntime libs.rei
+    if (!project.hasProperty('dev.noCompat')) {
+        localRuntime libs.jei
+        localRuntime libs.jade
+        localRuntime libs.rei
+    }
 }
 
 neoForge {
@@ -23,8 +28,6 @@ neoForge {
     runs {
         configureEach {
             gameDirectory = rootProject.file('run')
-            def only = providers.gradleProperty('dev.mods').map { it.split(',') as List }.orNull
-            loadedMods = mods.matching { only == null || it.name in only }
         }
     }
 }
