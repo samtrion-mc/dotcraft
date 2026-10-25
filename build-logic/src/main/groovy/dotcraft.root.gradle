@@ -120,6 +120,90 @@ abstract class NewModTask extends DefaultTask {
             }
         }
 
+        // tests
+        def testDir = new File(dir, "src/test/java/${pkg.replace('.', '/')}")
+        write(new File(testDir, "${cls}Test.java"), """\
+            package $pkg;
+
+            import static org.junit.jupiter.api.Assertions.assertTrue;
+
+            import org.junit.jupiter.api.Test;
+
+            /** Unit tests for {@link $cls}. */
+            class ${cls}Test {
+                /** The mod id must follow the {@code dotcraft_<name>} convention used by the scaffold. */
+                @Test
+                void modIdFollowsConvention() {
+                    assertTrue(${cls}.MODID.matches("dotcraft_[a-z0-9_]+"), ${cls}.MODID);
+                }
+            }
+            """)
+
+        def gameTestDir = new File(dir, "src/gametest/java/${pkg.replace('.', '/')}")
+        write(new File(gameTestDir, "${cls}GameTests.java"), """\
+            package $pkg;
+
+            import java.util.function.Consumer;
+
+            import net.minecraft.core.registries.Registries;
+            import net.minecraft.gametest.framework.FunctionGameTestInstance;
+            import net.minecraft.gametest.framework.GameTestHelper;
+            import net.minecraft.gametest.framework.TestData;
+            import net.minecraft.gametest.framework.TestEnvironmentDefinition;
+            import net.minecraft.resources.Identifier;
+            import net.minecraft.resources.ResourceKey;
+            import net.neoforged.bus.api.SubscribeEvent;
+            import net.neoforged.fml.ModList;
+            import net.neoforged.fml.common.EventBusSubscriber;
+            import net.neoforged.neoforge.event.RegisterGameTestsEvent;
+            import net.neoforged.neoforge.registries.RegisterEvent;
+
+            /**
+             * GameTests of the {@code .Craft: ${modName.get()}} mod, run with {@code ./gradlew :mods:$id:runGameTestServer}.
+             */
+            @EventBusSubscriber(modid = ${cls}.MODID)
+            public final class ${cls}GameTests {
+                private static final Identifier MOD_LOADED = Identifier.fromNamespaceAndPath(${cls}.MODID, "mod_loaded");
+                private static final ResourceKey<Consumer<GameTestHelper>> MOD_LOADED_FUNCTION =
+                        ResourceKey.create(Registries.TEST_FUNCTION, MOD_LOADED);
+
+                private ${cls}GameTests() {}
+
+                /**
+                 * Registers the test functions.
+                 *
+                 * @param event the registry event
+                 */
+                @SubscribeEvent
+                static void registerFunctions(RegisterEvent event) {
+                    event.register(Registries.TEST_FUNCTION, registry ->
+                            registry.register(MOD_LOADED, (Consumer<GameTestHelper>) ${cls}GameTests::modLoaded));
+                }
+
+                /**
+                 * Registers the test instances.
+                 *
+                 * @param event the game test registration event
+                 */
+                @SubscribeEvent
+                static void registerTests(RegisterGameTestsEvent event) {
+                    var environment = event.registerEnvironment(MOD_LOADED, new TestEnvironmentDefinition.AllOf());
+                    event.registerTest(MOD_LOADED, new FunctionGameTestInstance(MOD_LOADED_FUNCTION,
+                            new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                }
+
+                /**
+                 * The mod must be loaded in the test server.
+                 *
+                 * @param helper the game test helper
+                 */
+                private static void modLoaded(GameTestHelper helper) {
+                    helper.assertTrue(ModList.get().isLoaded(${cls}.MODID), ${cls}.MODID + " is not loaded");
+                    helper.succeed();
+                }
+            }
+            """)
+
         // toml
         def dep = { String mid, String type, String range, String order, String side, String reason = null ->
             "\n[[dependencies.\${mod_id}]]\n    modId=\"$mid\"\n    type=\"$type\"\n    versionRange=\"$range\"\n    ordering=\"$order\"\n    side=\"$side\"\n" +

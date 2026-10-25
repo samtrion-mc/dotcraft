@@ -11,10 +11,42 @@ base {
     archivesName = "dotcraft-${project.name}"
 }
 
+// GameTests live in their own source set so they never ship in the mod jar
+sourceSets {
+    gametest
+}
+
+configurations {
+    gametestImplementation.extendsFrom implementation
+}
+
+dependencies {
+    gametestImplementation sourceSets.main.output
+    testImplementation platform(libs.junit.bom)
+    testImplementation libs.junit.jupiter
+    testRuntimeOnly libs.junit.launcher
+}
+
+tasks.named('test', Test) {
+    useJUnitPlatform()
+}
+
 neoForge {
+    addModdingDependenciesTo sourceSets.gametest
+    addModdingDependenciesTo sourceSets.test
+
     mods {
         "${modId}" {
             sourceSet sourceSets.main
+            sourceSet sourceSets.gametest
+        }
+    }
+
+    runs {
+        // ./gradlew runGameTestServer runs the GameTests of this mod headless; fails the build if a required test fails
+        gameTestServer {
+            type = 'gameTestServer'
+            systemProperty 'neoforge.enabledGameTestNamespaces', modId
         }
     }
 }
