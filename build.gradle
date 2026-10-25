@@ -1,3 +1,17 @@
+plugins {
+    alias(libs.plugins.semver)
+}
+
+semver {
+    releaseTagNameFormat = 'v%s'
+}
+
+def ver = semver.version
+allprojects {
+    version = ver
+    group = mod_group_id
+}
+
 tasks.named('wrapper', Wrapper) {
     distributionType = Wrapper.DistributionType.BIN
 }
