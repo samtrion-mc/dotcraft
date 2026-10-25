@@ -11,6 +11,8 @@ plugins {
 
 rootProject.name = 'dotcraft'
 
+include 'dev'
+
 file('mods').with { dir ->
     if (dir.isDirectory()) {
         dir.eachDir { if (new File(it, 'build.gradle').exists()) include ":mods:${it.name}" }

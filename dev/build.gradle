@@ -1,0 +1,27 @@
+plugins {
+    id 'dotcraft.neoforge-base'
+}
+
+def modProjects = rootProject.subprojects.findAll { it.path.startsWith(':mods:') }
+modProjects.each { evaluationDependsOn(it.path) }
+
+dependencies {
+    modProjects.each { implementation it }
+}
+
+neoForge {
+    mods {
+        modProjects.each { p ->
+            "${p.property('mod_id')}" {
+                sourceSet p.sourceSets.main
+            }
+        }
+    }
+    runs {
+        configureEach {
+            gameDirectory = rootProject.file('run')
+            def only = providers.gradleProperty('dev.mods').map { it.split(',') as List }.orNull
+            loadedMods = mods.matching { only == null || it.name in only }
+        }
+    }
+}
