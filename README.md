@@ -11,6 +11,28 @@ Monorepo of NeoForge mods for Minecraft 26.1.2 (NeoForge 26.1.2.124, Java 25).
 
 All mods share one version, derived from git tags by git-semver.
 
+## Mods
+
+### .Craft: Resources (`dotcraft_resources`)
+
+The shared material base of the .Craft mods. Other mods build on it instead of each defining their own raw materials.
+
+- **Ores and raw materials:** new ores with world generation, plus the raw items, ingots and dusts they yield.
+- **Materials and alloys:** processed materials and alloys that serve as crafting ingredients for machines and equipment in the other mods, including intermediate forms such as plates, gears and rods.
+- **Compressed blocks:** compressed variants of blocks in multiple compression tiers, so large amounts of a material can be stored compactly.
+
+### .Craft: Energy (`dotcraft_energy`)
+
+Adds an energy system to the game: power is produced, stored and consumed. Depends on Resources for its materials.
+
+- **Generators:** blocks that produce energy.
+- **Storage:** blocks that buffer energy, so production and consumption do not have to run at the same time.
+- **Machines:** energy-consuming machines that process materials from Resources.
+
+### Status
+
+All features are planned; both mods are currently scaffolds without content. Every mod ships JEI, Jade and REI compat (see below).
+
 ## Commands
 
 ```
