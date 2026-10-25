@@ -57,7 +57,7 @@ abstract class NewModTask extends DefaultTask {
                 (gradleDeps ? "\ndependencies {\n${gradleDeps.join('\n')}\n}\n" : ''))
 
         write(new File(dir, 'gradle.properties'),
-                "mod_id=$fullId\nmod_name=${modName.get()}\nmod_description=${modName.get()} for the .Craft mods.\n")
+                "mod_id=$fullId\nmod_name=.Craft: ${modName.get()}\nmod_description=${modName.get()} for the .Craft mods.\n")
 
         // mod class
         def imports = ['net.neoforged.bus.api.IEventBus', 'net.neoforged.fml.ModContainer', 'net.neoforged.fml.ModList',
