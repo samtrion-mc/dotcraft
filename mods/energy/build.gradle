@@ -1,0 +1,7 @@
+plugins {
+    id 'dotcraft.neoforge-mod'
+}
+
+dependencies {
+    implementation project(':mods:resources')
+}
