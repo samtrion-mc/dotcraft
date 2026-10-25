@@ -72,11 +72,23 @@ abstract class NewModTask extends DefaultTask {
 
             ${imports.sort().collect { "import $it;" }.join('\n            ')}
 
+            /**
+             * Entry point of the {@code .Craft: ${modName.get()}} mod.
+             */
             @Mod(${cls}.MODID)
             public class $cls {
+                /** Mod id of this mod. */
                 public static final String MODID = "$fullId";
+
+                /** Logger of this mod. */
                 public static final Logger LOGGER = LogUtils.getLogger();
 
+                /**
+                 * Constructs the mod; invoked by NeoForge on load.
+                 *
+                 * @param modEventBus  the mod-specific event bus
+                 * @param modContainer the container of this mod
+                 */
                 public $cls(IEventBus modEventBus, ModContainer modContainer) {
                     LOGGER.info("{} loaded", MODID);$compatCalls
                 }
@@ -91,9 +103,15 @@ abstract class NewModTask extends DefaultTask {
 
                     import ${pkg}.$cls;
 
+                    /**
+                     * Bootstrap for the optional $label integration.
+                     * <p>
+                     * Only call {@link #init()} when $label is loaded.
+                     */
                     public final class $c {
                         private $c() {}
 
+                        /** Initializes the $label integration. */
                         public static void init() {
                             ${cls}.LOGGER.info("$label integration enabled");
                         }
