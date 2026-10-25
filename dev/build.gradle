@@ -28,3 +28,5 @@ neoForge {
         }
     }
 }
+
+neoForge.ideSyncTask rootProject.tasks.named('installGitHooks')
