@@ -1,0 +1,9 @@
+[versions]
+moddev = "2.0.148"
+semver = "0.19.5"
+
+[libraries]
+moddev-plugin = { module = "net.neoforged.moddev:net.neoforged.moddev.gradle.plugin", version.ref = "moddev" }
+
+[plugins]
+semver = { id = "com.github.jmongard.git-semver-plugin", version.ref = "semver" }
