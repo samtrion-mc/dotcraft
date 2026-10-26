@@ -96,7 +96,36 @@ tasks.register('generateData') {
 }
 tasks.named('runGameTestServer') { mustRunAfter syncGenerated }
 tasks.named('compileTestJava') { mustRunAfter syncGenerated } // the tests read the synced resources
-tasks.named('jar') { mustRunAfter syncGenerated } // other mods run with this jar and need the synced data
+// Strips whitespace outside of strings; unlike a parse/serialize round trip it keeps every character (e.g. umlauts) as is
+class MinifyJsonReader extends FilterReader {
+    MinifyJsonReader(Reader source) {
+        super(new StringReader(minify(source.text)))
+    }
+
+    static String minify(String json) {
+        def out = new StringBuilder(json.length())
+        boolean inString = false, escaped = false
+        for (char c : json.toCharArray()) {
+            if (inString) {
+                out.append(c)
+                if (escaped) escaped = false
+                else if (c == (char) '\\') escaped = true
+                else if (c == (char) '"') inString = false
+            } else if (!Character.isWhitespace(c)) {
+                out.append(c)
+                inString = c == (char) '"'
+            }
+        }
+        return out.toString()
+    }
+}
+
+tasks.named('jar', Jar) {
+    mustRunAfter syncGenerated // other mods run with this jar and need the synced data
+    // only the shipped jar is minified; the unpacked resources stay readable for runs and game tests
+    filteringCharset = 'UTF-8'
+    filesMatching(['**/*.json', '**/*.mcmeta']) { filter(MinifyJsonReader) }
+}
 tasks.named('runClientData') { mustRunAfter cleanGenerated }
 tasks.named('runServerData') { mustRunAfter 'runClientData' }
 tasks.named('processResources') { mustRunAfter cleanGenerated }
