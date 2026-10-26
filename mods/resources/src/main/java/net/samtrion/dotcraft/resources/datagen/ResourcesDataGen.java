@@ -17,6 +17,7 @@ import net.samtrion.dotcraft.resources.datagen.language.EnglishUSLanguageProvide
 import net.samtrion.dotcraft.resources.datagen.language.GermanLanguageProvider;
 import net.samtrion.dotcraft.resources.datagen.mod.ModBlockLootPlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModBlockTagsPlugin;
+import net.samtrion.dotcraft.resources.datagen.mod.ModFuelPlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModModelPlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModRecipePlugin;
 
@@ -57,6 +58,6 @@ public final class ResourcesDataGen {
                         LootContextParamSets.BLOCK)), l));
         event.createProvider((o, l) -> new ResourceBlockTagsProvider(o, l, new ModBlockTagsPlugin(), new CompressedBlockTagsPlugin()));
         event.createProvider(ResourceItemTagsProvider::new);
-        event.createProvider(ResourceFuelProvider::new);
+        event.createProvider((o, l) -> new ResourceFuelProvider(o, l, new ModFuelPlugin()));
     }
 }
