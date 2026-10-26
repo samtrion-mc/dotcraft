@@ -10,16 +10,21 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.IceBlock;
 import net.minecraft.world.level.block.entity.FuelValues;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.level.material.MapColor;
 import org.jspecify.annotations.Nullable;
 
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -31,14 +36,22 @@ import net.samtrion.dotcraft.resources.common.CompressedTier;
 import net.samtrion.dotcraft.resources.tool.ToolTier;
 
 /**
- * Registers {@link CompressedTier#MAX} compressed blocks, their items and a creative tab for every
- * {@link CompressedBase}.
+ * Registers the resource blocks of the mod, like {@link #CHARCOAL_BLOCK}, and {@link CompressedTier#MAX}
+ * compressed blocks, their items and a creative tab for every {@link CompressedBase}.
  */
 public final class ResourceBlocks {
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(CraftResources.MODID);
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(CraftResources.MODID);
     private static final DeferredRegister<CreativeModeTab> TABS =
             DeferredRegister.create(Registries.CREATIVE_MODE_TAB, CraftResources.MODID);
+
+    /** Block of charcoal, like the coal block; a fuel and, as every block, the base of a compressed block. */
+    public static final DeferredBlock<Block> CHARCOAL_BLOCK = BLOCKS.registerSimpleBlock("charcoal_block",
+            () -> BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).instrument(NoteBlockInstrument.BASEDRUM)
+                    .requiresCorrectToolForDrops().strength(5.0F, 6.0F));
+
+    /** Item of {@link #CHARCOAL_BLOCK}. */
+    public static final DeferredItem<BlockItem> CHARCOAL_BLOCK_ITEM = ITEMS.registerSimpleBlockItem(CHARCOAL_BLOCK);
 
     private static final Map<CompressedBase, List<DeferredBlock<Block>>> BLOCKS_BY_BASE = new LinkedHashMap<>();
     private static final Map<CompressedBase, List<DeferredItem<BlockItem>>> ITEMS_BY_BASE = new LinkedHashMap<>();
@@ -104,6 +117,14 @@ public final class ResourceBlocks {
         BLOCKS.register(bus);
         ITEMS.register(bus);
         TABS.register(bus);
+        bus.addListener(ResourceBlocks::addToVanillaTabs);
+    }
+
+    private static void addToVanillaTabs(BuildCreativeModeTabContentsEvent event) {
+        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) {
+            event.insertAfter(new ItemStack(Items.COAL_BLOCK), new ItemStack(CHARCOAL_BLOCK_ITEM.get()),
+                    CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+        }
     }
 
     /**

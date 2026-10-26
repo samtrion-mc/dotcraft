@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "dotcraftresources:block/charcoal_block",
+    "overlay": "dotcraftresources:block/compressed_overlay_8",
+    "side": "dotcraftresources:block/charcoal_block",
+    "top": "dotcraftresources:block/charcoal_block"
+  }
+}

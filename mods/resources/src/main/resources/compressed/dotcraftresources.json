@@ -1,0 +1,6 @@
+{
+  "mod": "dotcraftresources",
+  "bases": [
+    { "id": "charcoal_block", "tool": "pickaxe", "tier": "wood" }
+  ]
+}

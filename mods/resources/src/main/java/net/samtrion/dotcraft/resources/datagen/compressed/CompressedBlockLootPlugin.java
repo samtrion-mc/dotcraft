@@ -1,42 +1,37 @@
 package net.samtrion.dotcraft.resources.datagen.compressed;
 
 import java.util.List;
-import java.util.Set;
+import java.util.stream.Stream;
 
-import net.minecraft.core.HolderLookup;
-import net.minecraft.data.loot.BlockLootSubProvider;
-import net.minecraft.world.flag.FeatureFlags;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.neoforged.neoforge.registries.DeferredBlock;
+import net.samtrion.dotcraft.resources.api.BlockLoot;
+import net.samtrion.dotcraft.resources.api.LootPlugin;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
-import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 
 /** Every compressed block drops itself. */
-public final class CompressedBlockLootSubProvider extends BlockLootSubProvider {
-    public CompressedBlockLootSubProvider(HolderLookup.Provider registries) {
-        super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
-    }
-
+public final class CompressedBlockLootPlugin implements LootPlugin {
     @Override
-    protected void generate() {
+    public void generate(BlockLoot loot) {
         for (CompressedBase base : CompressedBases.enabled().toList()) {
             for (int tier = 1; tier <= CompressedTier.MAX; tier++) {
                 Block block = ResourceBlocks.block(base, tier).get();
                 if (base.modId().equals("minecraft")) {
-                    dropSelf(block);
+                    loot.dropSelf(block);
                 } else {
                     // without the mod the table would reference an item that does not exist
-                    add(block, createSingleItemTable(block).withConditions(List.of(new ModLoadedCondition(base.modId()))));
+                    loot.add(block, loot.createSingleItemTable(block).withConditions(List.of(new ModLoadedCondition(base.modId()))));
                 }
             }
         }
     }
 
     @Override
-    protected Iterable<Block> getKnownBlocks() {
-        return ResourceBlocks.blocks().<Block>map(DeferredBlock::get).toList();
+    public Stream<Block> knownBlocks() {
+        return ResourceBlocks.blocks().map(DeferredBlock::get);
     }
 }
