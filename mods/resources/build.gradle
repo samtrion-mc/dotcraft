@@ -2,6 +2,10 @@ plugins {
     id 'dotcraft.neoforge-mod'
 }
 
+dependencies {
+    compileOnly libs.jei.api
+}
+
 // Datagen output is committed; CI re-runs it and fails on any difference
 def generated = file('src/generated/resources')
 sourceSets.main.resources.srcDir generated
