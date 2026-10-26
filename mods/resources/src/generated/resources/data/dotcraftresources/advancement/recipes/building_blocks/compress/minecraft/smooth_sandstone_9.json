@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 9
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/minecraft/smooth_sandstone_8": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraftresources:compressed/minecraft/smooth_sandstone_8"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:compress/minecraft/smooth_sandstone_9"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/minecraft/smooth_sandstone_8"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:compress/minecraft/smooth_sandstone_9"
+    ]
+  }
+}

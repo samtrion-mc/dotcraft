@@ -93,6 +93,14 @@
     { "id": "quartz_pillar", "tool": "pickaxe", "tier": "wood", "look": "log" },
     { "id": "resin_bricks", "tool": "pickaxe", "tier": "wood" },
     { "id": "smooth_quartz", "tool": "pickaxe", "tier": "wood", "side": "block/quartz_block_bottom", "end": "block/quartz_block_bottom" },
+    { "id": "sandstone", "tool": "pickaxe", "tier": "wood", "look": "sided", "side": "block/sandstone", "end": "block/sandstone_top", "bottom": "block/sandstone_bottom" },
+    { "id": "chiseled_sandstone", "tool": "pickaxe", "tier": "wood", "look": "sided", "side": "block/chiseled_sandstone", "end": "block/sandstone_top", "bottom": "block/sandstone_top" },
+    { "id": "cut_sandstone", "tool": "pickaxe", "tier": "wood", "look": "sided", "side": "block/cut_sandstone", "end": "block/sandstone_top", "bottom": "block/sandstone_top" },
+    { "id": "smooth_sandstone", "tool": "pickaxe", "tier": "wood", "side": "block/sandstone_top", "end": "block/sandstone_top" },
+    { "id": "red_sandstone", "tool": "pickaxe", "tier": "wood", "look": "sided", "side": "block/red_sandstone", "end": "block/red_sandstone_top", "bottom": "block/red_sandstone_bottom" },
+    { "id": "chiseled_red_sandstone", "tool": "pickaxe", "tier": "wood", "look": "sided", "side": "block/chiseled_red_sandstone", "end": "block/red_sandstone_top", "bottom": "block/red_sandstone_top" },
+    { "id": "cut_red_sandstone", "tool": "pickaxe", "tier": "wood", "look": "sided", "side": "block/cut_red_sandstone", "end": "block/red_sandstone_top", "bottom": "block/red_sandstone_top" },
+    { "id": "smooth_red_sandstone", "tool": "pickaxe", "tier": "wood", "side": "block/red_sandstone_top", "end": "block/red_sandstone_top" },
     { "id": "resin_block", "tool": "pickaxe" },
     { "id": "warped_wart_block", "tool": "hoe" }
   ]
