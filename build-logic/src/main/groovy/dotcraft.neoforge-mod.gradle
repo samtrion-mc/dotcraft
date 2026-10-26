@@ -51,6 +51,55 @@ neoForge {
     }
 }
 
+// Datagen output is committed; CI re-runs it and fails on any difference
+def generated = file('src/generated/resources')
+sourceSets.main.resources.srcDir generated
+
+def datagenArgs = [
+        '--mod', modId,
+        '--all',
+        '--uncached', // the cache of one run would delete the other run's output as stale
+        '--output', generated.absolutePath,
+        '--existing', file('src/main/resources').absolutePath,
+]
+
+neoForge {
+    runs {
+        // ./gradlew runClientData / runServerData
+        clientData {
+            clientData()
+            programArguments.addAll(datagenArgs)
+        }
+        serverData {
+            serverData()
+            programArguments.addAll(datagenArgs)
+        }
+    }
+}
+
+// ./gradlew generateData - clean regeneration of everything (drops files of removed blocks)
+def cleanGenerated = tasks.register('cleanGenerated', Delete) {
+    delete fileTree(generated) // contents only; deleting the directory itself fails on Windows when a shell sits in it
+}
+// processResources runs before the datagen (the runs need it) and so copies the emptied generated folder; this puts
+// the fresh output into the resources the game tests run with, in the same Gradle invocation
+def syncGenerated = tasks.register('syncGenerated', Copy) {
+    from generated
+    into tasks.named('processResources', ProcessResources).map { it.destinationDir }
+    mustRunAfter 'runClientData', 'runServerData'
+    outputs.upToDateWhen { false } // processResources shares the folder and drops what it does not know
+}
+tasks.register('generateData') {
+    group = 'dotcraft'
+    description = 'Regenerates src/generated/resources from scratch'
+    dependsOn cleanGenerated, 'runClientData', 'runServerData', syncGenerated
+}
+tasks.named('runGameTestServer') { mustRunAfter syncGenerated }
+tasks.named('jar') { mustRunAfter syncGenerated } // other mods run with this jar and need the synced data
+tasks.named('runClientData') { mustRunAfter cleanGenerated }
+tasks.named('runServerData') { mustRunAfter 'runClientData' }
+tasks.named('processResources') { mustRunAfter cleanGenerated }
+
 def generateModMetadata = tasks.register('generateModMetadata', ProcessResources) {
     def replaceProperties = [
             minecraft_version      : project.property('minecraft_version'),
