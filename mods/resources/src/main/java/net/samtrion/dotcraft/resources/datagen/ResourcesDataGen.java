@@ -9,6 +9,11 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.samtrion.dotcraft.resources.CraftResources;
+import net.samtrion.dotcraft.resources.datagen.compressed.CompressedBlockLootSubProvider;
+import net.samtrion.dotcraft.resources.datagen.compressed.CompressedBlockTagsProvider;
+import net.samtrion.dotcraft.resources.datagen.compressed.CompressedLanguageProvider;
+import net.samtrion.dotcraft.resources.datagen.compressed.CompressedModelProvider;
+import net.samtrion.dotcraft.resources.datagen.compressed.CompressedRecipeProvider;
 
 /**
  * Wires the data providers of the resources mod. Run {@code ./gradlew :mods:resources:generateData}; the output
@@ -42,7 +47,7 @@ public final class ResourcesDataGen {
     static void server(GatherDataEvent.Server event) {
         event.createProvider(CompressedRecipeProvider::new);
         event.createProvider((o, l) -> new LootTableProvider(o, Set.of(),
-                List.of(new LootTableProvider.SubProviderEntry(CompressedLootProvider::new, LootContextParamSets.BLOCK)), l));
-        event.createProvider(CompressedTagsProvider::new);
+                List.of(new LootTableProvider.SubProviderEntry(CompressedBlockLootSubProvider::new, LootContextParamSets.BLOCK)), l));
+        event.createProvider(CompressedBlockTagsProvider::new);
     }
 }

@@ -10,7 +10,7 @@ import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
-import net.samtrion.dotcraft.resources.common.MaxTierCondition;
+import net.samtrion.dotcraft.resources.common.conditions.MaxTierCondition;
 import net.samtrion.dotcraft.resources.common.CompressedBlocks;
 
 /**

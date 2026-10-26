@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.datagen;
+package net.samtrion.dotcraft.resources.datagen.compressed;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -17,8 +17,8 @@ import net.samtrion.dotcraft.resources.tool.ToolTier;
  * The tool and tool tier tags of the compressed blocks, and the links between the tiers. The required tool tier
  * rises with the compression tier, see {@link CompressedBase#required(int)}.
  */
-final class CompressedTagsProvider extends BlockTagsProvider {
-    CompressedTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
+public final class CompressedBlockTagsProvider extends BlockTagsProvider {
+    public CompressedBlockTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
         super(output, lookup, CraftResources.MODID);
     }
 

@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.common;
+package net.samtrion.dotcraft.resources.common.conditions;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;

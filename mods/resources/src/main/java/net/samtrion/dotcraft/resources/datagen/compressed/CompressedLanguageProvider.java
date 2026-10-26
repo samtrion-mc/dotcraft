@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.datagen;
+package net.samtrion.dotcraft.resources.datagen.compressed;
 
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
@@ -6,7 +6,7 @@ import net.samtrion.dotcraft.resources.CraftResources;
 import net.samtrion.dotcraft.resources.common.CompressedBlock;
 
 /** One translation for the name pattern instead of one per block, plus the creative tab title. */
-final class CompressedLanguageProvider extends LanguageProvider {
+public final class CompressedLanguageProvider extends LanguageProvider {
     private final String name;
     private final String tab;
 
@@ -18,7 +18,7 @@ final class CompressedLanguageProvider extends LanguageProvider {
      * @param name   the name pattern, arguments: base name, tier
      * @param tab    the creative tab title
      */
-    CompressedLanguageProvider(PackOutput output, String locale, String name, String tab) {
+    public CompressedLanguageProvider(PackOutput output, String locale, String name, String tab) {
         super(output, CraftResources.MODID, locale);
         this.name = name;
         this.tab = tab;

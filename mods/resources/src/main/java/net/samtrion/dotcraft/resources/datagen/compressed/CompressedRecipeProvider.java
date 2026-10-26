@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.datagen;
+package net.samtrion.dotcraft.resources.datagen.compressed;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -12,14 +12,15 @@ import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
 import net.samtrion.dotcraft.resources.common.CompressedBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
-import net.samtrion.dotcraft.resources.common.MaxTierCondition;
+import net.samtrion.dotcraft.resources.common.conditions.MaxTierCondition;
+import net.samtrion.dotcraft.resources.datagen.DataGenIds;
 
 /**
  * Compress (9 of a tier into one of the next) and decompress (one back into 9) for every tier. Every recipe is
  * disabled by {@link MaxTierCondition} when its output level exceeds the configured maximum.
  */
-final class CompressedRecipeProvider extends RecipeProvider.Runner {
-    CompressedRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
+public final class CompressedRecipeProvider extends RecipeProvider.Runner {
+    public CompressedRecipeProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> registries) {
         super(output, registries);
     }
 

@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.datagen;
+package net.samtrion.dotcraft.resources.datagen.compressed;
 
 import java.util.List;
 import java.util.Set;
@@ -15,8 +15,8 @@ import net.samtrion.dotcraft.resources.common.CompressedBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 
 /** Every compressed block drops itself. */
-final class CompressedLootProvider extends BlockLootSubProvider {
-    CompressedLootProvider(HolderLookup.Provider registries) {
+public final class CompressedBlockLootSubProvider extends BlockLootSubProvider {
+    public CompressedBlockLootSubProvider(HolderLookup.Provider registries) {
         super(Set.of(), FeatureFlags.REGISTRY.allFlags(), registries);
     }
 
