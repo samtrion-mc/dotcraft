@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 5
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/minecraft/brown_terracotta_4": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraftresources:compressed/minecraft/brown_terracotta_4"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:compress/minecraft/brown_terracotta_5"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/minecraft/brown_terracotta_4"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:compress/minecraft/brown_terracotta_5"
+    ]
+  }
+}

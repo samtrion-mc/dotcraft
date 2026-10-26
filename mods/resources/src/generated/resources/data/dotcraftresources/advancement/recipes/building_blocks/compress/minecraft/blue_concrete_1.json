@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 1
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_blue_concrete": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:blue_concrete"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:compress/minecraft/blue_concrete_1"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_blue_concrete"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:compress/minecraft/blue_concrete_1"
+    ]
+  }
+}

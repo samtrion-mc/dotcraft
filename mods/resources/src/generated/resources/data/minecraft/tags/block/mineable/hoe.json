@@ -1,219 +1,219 @@
 {
   "values": [
     {
-      "id": "dotcraft_resources:compressed/minecraft/dried_kelp_block_1",
+      "id": "dotcraftresources:compressed/minecraft/dried_kelp_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dried_kelp_block_2",
+      "id": "dotcraftresources:compressed/minecraft/dried_kelp_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dried_kelp_block_3",
+      "id": "dotcraftresources:compressed/minecraft/dried_kelp_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dried_kelp_block_4",
+      "id": "dotcraftresources:compressed/minecraft/dried_kelp_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dried_kelp_block_5",
+      "id": "dotcraftresources:compressed/minecraft/dried_kelp_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dried_kelp_block_6",
+      "id": "dotcraftresources:compressed/minecraft/dried_kelp_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dried_kelp_block_7",
+      "id": "dotcraftresources:compressed/minecraft/dried_kelp_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dried_kelp_block_8",
+      "id": "dotcraftresources:compressed/minecraft/dried_kelp_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dried_kelp_block_9",
+      "id": "dotcraftresources:compressed/minecraft/dried_kelp_block_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/hay_block_1",
+      "id": "dotcraftresources:compressed/minecraft/hay_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/hay_block_2",
+      "id": "dotcraftresources:compressed/minecraft/hay_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/hay_block_3",
+      "id": "dotcraftresources:compressed/minecraft/hay_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/hay_block_4",
+      "id": "dotcraftresources:compressed/minecraft/hay_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/hay_block_5",
+      "id": "dotcraftresources:compressed/minecraft/hay_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/hay_block_6",
+      "id": "dotcraftresources:compressed/minecraft/hay_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/hay_block_7",
+      "id": "dotcraftresources:compressed/minecraft/hay_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/hay_block_8",
+      "id": "dotcraftresources:compressed/minecraft/hay_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/hay_block_9",
+      "id": "dotcraftresources:compressed/minecraft/hay_block_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/moss_block_1",
+      "id": "dotcraftresources:compressed/minecraft/moss_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/moss_block_2",
+      "id": "dotcraftresources:compressed/minecraft/moss_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/moss_block_3",
+      "id": "dotcraftresources:compressed/minecraft/moss_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/moss_block_4",
+      "id": "dotcraftresources:compressed/minecraft/moss_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/moss_block_5",
+      "id": "dotcraftresources:compressed/minecraft/moss_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/moss_block_6",
+      "id": "dotcraftresources:compressed/minecraft/moss_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/moss_block_7",
+      "id": "dotcraftresources:compressed/minecraft/moss_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/moss_block_8",
+      "id": "dotcraftresources:compressed/minecraft/moss_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/moss_block_9",
+      "id": "dotcraftresources:compressed/minecraft/moss_block_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_wart_block_1",
+      "id": "dotcraftresources:compressed/minecraft/nether_wart_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_wart_block_2",
+      "id": "dotcraftresources:compressed/minecraft/nether_wart_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_wart_block_3",
+      "id": "dotcraftresources:compressed/minecraft/nether_wart_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_wart_block_4",
+      "id": "dotcraftresources:compressed/minecraft/nether_wart_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_wart_block_5",
+      "id": "dotcraftresources:compressed/minecraft/nether_wart_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_wart_block_6",
+      "id": "dotcraftresources:compressed/minecraft/nether_wart_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_wart_block_7",
+      "id": "dotcraftresources:compressed/minecraft/nether_wart_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_wart_block_8",
+      "id": "dotcraftresources:compressed/minecraft/nether_wart_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_wart_block_9",
+      "id": "dotcraftresources:compressed/minecraft/nether_wart_block_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/sponge_1",
+      "id": "dotcraftresources:compressed/minecraft/sponge_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/sponge_2",
+      "id": "dotcraftresources:compressed/minecraft/sponge_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/sponge_3",
+      "id": "dotcraftresources:compressed/minecraft/sponge_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/sponge_4",
+      "id": "dotcraftresources:compressed/minecraft/sponge_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/sponge_5",
+      "id": "dotcraftresources:compressed/minecraft/sponge_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/sponge_6",
+      "id": "dotcraftresources:compressed/minecraft/sponge_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/sponge_7",
+      "id": "dotcraftresources:compressed/minecraft/sponge_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/sponge_8",
+      "id": "dotcraftresources:compressed/minecraft/sponge_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/sponge_9",
+      "id": "dotcraftresources:compressed/minecraft/sponge_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/warped_wart_block_1",
+      "id": "dotcraftresources:compressed/minecraft/warped_wart_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/warped_wart_block_2",
+      "id": "dotcraftresources:compressed/minecraft/warped_wart_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/warped_wart_block_3",
+      "id": "dotcraftresources:compressed/minecraft/warped_wart_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/warped_wart_block_4",
+      "id": "dotcraftresources:compressed/minecraft/warped_wart_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/warped_wart_block_5",
+      "id": "dotcraftresources:compressed/minecraft/warped_wart_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/warped_wart_block_6",
+      "id": "dotcraftresources:compressed/minecraft/warped_wart_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/warped_wart_block_7",
+      "id": "dotcraftresources:compressed/minecraft/warped_wart_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/warped_wart_block_8",
+      "id": "dotcraftresources:compressed/minecraft/warped_wart_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/warped_wart_block_9",
+      "id": "dotcraftresources:compressed/minecraft/warped_wart_block_9",
       "required": false
     }
   ]

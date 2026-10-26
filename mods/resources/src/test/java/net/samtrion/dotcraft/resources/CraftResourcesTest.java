@@ -7,10 +7,10 @@ import org.junit.jupiter.api.Test;
 
 /** Unit tests for {@link CraftResources}. */
 class CraftResourcesTest {
-    /** The mod id must follow the {@code dotcraft_<name>} convention used by the scaffold. */
+    /** The mod id must follow the {@code dotcraft<name>} convention used by the scaffold. */
     @Test
     void modIdFollowsConvention() {
-        assertTrue(CraftResources.MODID.matches("dotcraft_[a-z0-9_]+"), CraftResources.MODID);
+        assertTrue(CraftResources.MODID.matches("dotcraft[a-z]+"), CraftResources.MODID);
     }
 
     /** The shared logger is available to the other mods. */

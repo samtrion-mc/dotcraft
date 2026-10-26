@@ -1,7 +1,7 @@
 {
   "values": [
     {
-      "id": "#dotcraft_resources:needs_copper_tool",
+      "id": "#dotcraftresources:needs_copper_tool",
       "required": false
     }
   ]

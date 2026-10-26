@@ -14,7 +14,7 @@ import net.samtrion.dotcraft.resources.CraftResourcesConfig;
  * @param level the level the recipe outputs
  */
 public record MaxTierCondition(int level) implements ICondition {
-    /** Serialized as {@code {"type": "dotcraft_resources:max_tier", "level": n}}. */
+    /** Serialized as {@code {"type": "dotcraftresources:max_tier", "level": n}}. */
     public static final MapCodec<MaxTierCondition> CODEC = RecordCodecBuilder.mapCodec(i -> i.group(
             Codec.INT.fieldOf("level").forGetter(MaxTierCondition::level)
     ).apply(i, MaxTierCondition::new));

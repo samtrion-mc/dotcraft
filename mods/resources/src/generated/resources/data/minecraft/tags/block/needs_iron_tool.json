@@ -1,111 +1,111 @@
 {
   "values": [
     {
-      "id": "dotcraft_resources:compressed/minecraft/copper_block_7",
+      "id": "dotcraftresources:compressed/minecraft/copper_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/copper_block_8",
+      "id": "dotcraftresources:compressed/minecraft/copper_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/copper_block_9",
+      "id": "dotcraftresources:compressed/minecraft/copper_block_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/diamond_block_1",
+      "id": "dotcraftresources:compressed/minecraft/diamond_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/diamond_block_2",
+      "id": "dotcraftresources:compressed/minecraft/diamond_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/diamond_block_3",
+      "id": "dotcraftresources:compressed/minecraft/diamond_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/emerald_block_1",
+      "id": "dotcraftresources:compressed/minecraft/emerald_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/emerald_block_2",
+      "id": "dotcraftresources:compressed/minecraft/emerald_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/emerald_block_3",
+      "id": "dotcraftresources:compressed/minecraft/emerald_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gold_block_1",
+      "id": "dotcraftresources:compressed/minecraft/gold_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gold_block_2",
+      "id": "dotcraftresources:compressed/minecraft/gold_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gold_block_3",
+      "id": "dotcraftresources:compressed/minecraft/gold_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/iron_block_7",
+      "id": "dotcraftresources:compressed/minecraft/iron_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/iron_block_8",
+      "id": "dotcraftresources:compressed/minecraft/iron_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/iron_block_9",
+      "id": "dotcraftresources:compressed/minecraft/iron_block_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lapis_block_7",
+      "id": "dotcraftresources:compressed/minecraft/lapis_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lapis_block_8",
+      "id": "dotcraftresources:compressed/minecraft/lapis_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lapis_block_9",
+      "id": "dotcraftresources:compressed/minecraft/lapis_block_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_copper_block_7",
+      "id": "dotcraftresources:compressed/minecraft/raw_copper_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_copper_block_8",
+      "id": "dotcraftresources:compressed/minecraft/raw_copper_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_copper_block_9",
+      "id": "dotcraftresources:compressed/minecraft/raw_copper_block_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_gold_block_1",
+      "id": "dotcraftresources:compressed/minecraft/raw_gold_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_gold_block_2",
+      "id": "dotcraftresources:compressed/minecraft/raw_gold_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_gold_block_3",
+      "id": "dotcraftresources:compressed/minecraft/raw_gold_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_iron_block_7",
+      "id": "dotcraftresources:compressed/minecraft/raw_iron_block_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_iron_block_8",
+      "id": "dotcraftresources:compressed/minecraft/raw_iron_block_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_iron_block_9",
+      "id": "dotcraftresources:compressed/minecraft/raw_iron_block_9",
       "required": false
     }
   ]

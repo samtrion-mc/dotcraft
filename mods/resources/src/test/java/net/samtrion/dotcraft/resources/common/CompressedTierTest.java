@@ -38,7 +38,7 @@ class CompressedTierTest {
     @Test
     void overlayTexturesExist() {
         for (int tier = 1; tier <= CompressedTier.MAX; tier++) {
-            String path = "/assets/dotcraft_resources/textures/block/compressed_overlay_" + tier + ".png";
+            String path = "/assets/dotcraftresources/textures/block/compressed_overlay_" + tier + ".png";
             assertNotNull(getClass().getResource(path), path);
         }
     }

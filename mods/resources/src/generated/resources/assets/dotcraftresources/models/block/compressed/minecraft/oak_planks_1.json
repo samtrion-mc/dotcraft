@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/oak_planks",
+    "overlay": "dotcraftresources:block/compressed_overlay_1",
+    "side": "minecraft:block/oak_planks",
+    "top": "minecraft:block/oak_planks"
+  }
+}

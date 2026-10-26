@@ -2,7 +2,7 @@ plugins {
     id 'dotcraft.neoforge-base'
 }
 
-// -Pdev.mods=dotcraft_resources,dotcraft_energy limits the dev runs to those mods; -Pdev.noCompat drops JEI/Jade/REI
+// -Pdev.mods=dotcraftresources,dotcraftenergy limits the dev runs to those mods; -Pdev.noCompat drops JEI/Jade/REI
 def only = findProperty('dev.mods')?.toString()?.split(',') as List
 def allMods = rootProject.subprojects.findAll { it.path.startsWith(':mods:') }
 allMods.each { evaluationDependsOn(it.path) }

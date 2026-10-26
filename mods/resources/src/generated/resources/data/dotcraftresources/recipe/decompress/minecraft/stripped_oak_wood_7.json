@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 6
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraftresources:compressed/minecraft/stripped_oak_wood_7"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraftresources:compressed/minecraft/stripped_oak_wood_6"
+  }
+}

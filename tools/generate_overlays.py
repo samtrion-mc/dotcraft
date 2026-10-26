@@ -13,7 +13,7 @@ from pathlib import Path
 
 W = 16
 MAX_TIER = 9
-OUT = Path(__file__).resolve().parent.parent / 'mods/resources/src/main/resources/assets/dotcraft_resources/textures/block'
+OUT = Path(__file__).resolve().parent.parent / 'mods/resources/src/main/resources/assets/dotcraftresources/textures/block'
 
 def dark(tier):
     return (0, 0, 0, 40 + 10 * tier)

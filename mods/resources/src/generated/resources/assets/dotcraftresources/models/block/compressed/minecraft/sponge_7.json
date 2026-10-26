@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/sponge",
+    "overlay": "dotcraftresources:block/compressed_overlay_7",
+    "side": "minecraft:block/sponge",
+    "top": "minecraft:block/sponge"
+  }
+}
