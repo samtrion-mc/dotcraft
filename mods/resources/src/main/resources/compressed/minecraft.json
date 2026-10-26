@@ -14,6 +14,7 @@
     { "id": "cobbled_deepslate", "tool": "pickaxe", "tier": "wood" },
     { "id": "cobblestone", "tool": "pickaxe", "tier": "wood" },
     { "id": "copper_block", "tool": "pickaxe", "tier": "stone" },
+    { "id": "crying_obsidian", "tool": "pickaxe", "tier": "diamond" },
     { "id": "deepslate", "tool": "pickaxe", "tier": "wood", "look": "log" },
     { "id": "diamond_block", "tool": "pickaxe", "tier": "iron" },
     { "id": "diorite", "tool": "pickaxe", "tier": "wood" },

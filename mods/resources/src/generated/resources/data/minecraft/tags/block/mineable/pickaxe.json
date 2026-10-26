@@ -649,6 +649,42 @@
       "required": false
     },
     {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_9",
+      "required": false
+    },
+    {
       "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_1",
       "required": false
     },

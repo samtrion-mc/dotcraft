@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 4
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraft_resources:compressed/minecraft/crying_obsidian_5"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_4"
+  }
+}

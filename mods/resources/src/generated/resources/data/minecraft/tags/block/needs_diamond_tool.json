@@ -1,6 +1,18 @@
 {
   "values": [
     {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/crying_obsidian_3",
+      "required": false
+    },
+    {
       "id": "dotcraft_resources:compressed/minecraft/diamond_block_4",
       "required": false
     },
