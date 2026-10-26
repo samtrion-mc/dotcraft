@@ -40,7 +40,7 @@ Resources: compressed blocks are implemented, the rest is planned. Energy is a s
 ./gradlew :dev:runClient        # all mods + JEI/Jade (REI is disabled for now; -Pdev.mods=dotcraft_resources,dotcraft_energy to limit, -Pdev.noCompat to drop JEI/Jade/REI)
 ./gradlew :mods:energy:runClient  # a single mod (same run/)
 ./gradlew newMod --id=magic --name="Magic" --depends=resources [--no-compat]
-./gradlew :mods:resources:generateData  # regenerate src/generated/resources (models, lang, recipes, loot, tags); CI fails if it is stale
+./gradlew generateData  # regenerate src/generated/resources of every mod (or :mods:<mod>:generateData) (models, lang, recipes, loot, tags); CI fails if it is stale
 ./gradlew installGitHooks       # enable the commit-msg hook (also runs on IDE sync)
 ```
 
