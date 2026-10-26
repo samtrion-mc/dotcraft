@@ -12,7 +12,7 @@ import net.samtrion.dotcraft.resources.CraftResources;
 import net.samtrion.dotcraft.resources.CraftResourcesConfig;
 import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
-import net.samtrion.dotcraft.resources.common.CompressedBlocks;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 
 /**
@@ -50,6 +50,6 @@ public class ResourcesJeiPlugin implements IModPlugin {
 
     private static java.util.stream.Stream<ItemStack> hiddenStacks(CompressedBase base, int max) {
         return java.util.stream.IntStream.rangeClosed(max + 1, CompressedTier.MAX)
-                .mapToObj(tier -> new ItemStack(CompressedBlocks.item(base, tier).get()));
+                .mapToObj(tier -> new ItemStack(ResourceBlocks.item(base, tier).get()));
     }
 }

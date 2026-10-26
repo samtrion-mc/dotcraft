@@ -9,7 +9,7 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.samtrion.dotcraft.resources.CraftResources;
 import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
-import net.samtrion.dotcraft.resources.common.CompressedBlocks;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 import net.samtrion.dotcraft.resources.tool.ToolTier;
 
@@ -34,7 +34,7 @@ public final class CompressedBlockTagsProvider extends BlockTagsProvider {
         });
         for (CompressedBase base : CompressedBases.enabled().toList()) {
             for (int tier = 1; tier <= CompressedTier.MAX; tier++) {
-                Block block = CompressedBlocks.block(base, tier).get();
+                Block block = ResourceBlocks.block(base, tier).get();
                 if (base.tool.tag() != null) tag(base.tool.tag()).addOptional(block);
                 if (base.required(tier).needsTag() != null) tag(base.required(tier).needsTag()).addOptional(block);
             }

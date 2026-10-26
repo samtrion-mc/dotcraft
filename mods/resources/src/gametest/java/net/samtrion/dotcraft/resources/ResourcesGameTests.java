@@ -21,7 +21,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
 import net.samtrion.dotcraft.resources.common.CompressedLook;
-import net.samtrion.dotcraft.resources.common.CompressedBlocks;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 import net.samtrion.dotcraft.resources.tool.ToolTier;
 
@@ -98,7 +98,7 @@ public final class ResourcesGameTests {
                 new Case("white_wool", 1, 100 * 9),
                 new Case("stone", 1, 0),
                 new Case("crimson_planks", 3, 0)}) {
-            var stack = new net.minecraft.world.item.ItemStack(CompressedBlocks.item(base(c.base()), c.tier()).get());
+            var stack = new net.minecraft.world.item.ItemStack(ResourceBlocks.item(base(c.base()), c.tier()).get());
             int burn = stack.getBurnTime(null, fuels);
             helper.assertTrue(burn == c.expected(), c.base() + "_" + c.tier() + " burns " + burn + ", expected " + c.expected());
         }
@@ -124,7 +124,7 @@ public final class ResourcesGameTests {
                 new Case("obsidian", 3, net.minecraft.world.item.Items.DIAMOND_PICKAXE, true),
                 new Case("obsidian", 4, net.minecraft.world.item.Items.DIAMOND_PICKAXE, false),
                 new Case("obsidian", 4, net.minecraft.world.item.Items.NETHERITE_PICKAXE, true)}) {
-            Block block = CompressedBlocks.block(base(c.base()), c.tier()).get();
+            Block block = ResourceBlocks.block(base(c.base()), c.tier()).get();
             helper.setBlock(pos, block);
             var state = helper.getBlockState(pos);
             helper.assertTrue(state.is(block), c.base() + "_" + c.tier() + " was not placed");
@@ -150,20 +150,20 @@ public final class ResourcesGameTests {
         var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
         var hand = net.minecraft.world.item.ItemStack.EMPTY;
         helper.setBlock(pos.below(), net.minecraft.world.level.block.Blocks.STONE);
-        helper.setBlock(pos, CompressedBlocks.block(ice, 3).get());
+        helper.setBlock(pos, ResourceBlocks.block(ice, 3).get());
         helper.getBlockState(pos).randomTick(helper.getLevel(), helper.absolutePos(pos), helper.getLevel().getRandom());
-        helper.assertBlockPresent(CompressedBlocks.block(ice, 3).get(), pos);
+        helper.assertBlockPresent(ResourceBlocks.block(ice, 3).get(), pos);
         for (int tier = 3; tier >= 1; tier--) {
             var state = helper.getBlockState(pos);
             state.getBlock().playerDestroy(helper.getLevel(), player, helper.absolutePos(pos), state, null, hand);
-            helper.assertBlockPresent(tier == 1 ? ice.block() : CompressedBlocks.block(ice, tier - 1).get(), pos);
+            helper.assertBlockPresent(tier == 1 ? ice.block() : ResourceBlocks.block(ice, tier - 1).get(), pos);
         }
         // also without ground below
         helper.setBlock(pos.below(), net.minecraft.world.level.block.Blocks.AIR);
-        helper.setBlock(pos, CompressedBlocks.block(ice, 2).get());
+        helper.setBlock(pos, ResourceBlocks.block(ice, 2).get());
         var floating = helper.getBlockState(pos);
         floating.getBlock().playerDestroy(helper.getLevel(), player, helper.absolutePos(pos), floating, null, hand);
-        helper.assertBlockPresent(CompressedBlocks.block(ice, 1).get(), pos);
+        helper.assertBlockPresent(ResourceBlocks.block(ice, 1).get(), pos);
         helper.setBlock(pos.below(), net.minecraft.world.level.block.Blocks.STONE);
         helper.setBlock(pos, ice.block());
         var vanilla = helper.getBlockState(pos);
@@ -179,12 +179,12 @@ public final class ResourcesGameTests {
      * @param helper the game test helper
      */
     private static void compressedBlocks(GameTestHelper helper) {
-        helper.assertTrue(CompressedBlocks.blocks().count() == CompressedBases.enabled().count() * CompressedTier.MAX,
+        helper.assertTrue(ResourceBlocks.blocks().count() == CompressedBases.enabled().count() * CompressedTier.MAX,
                 "block count is not bases x tiers");
         var recipes = helper.getLevel().getServer().getRecipeManager();
         for (CompressedBase base : CompressedBases.enabled().toList()) {
             for (int tier = 1; tier <= CompressedTier.MAX; tier++) {
-                Block block = CompressedBlocks.block(base, tier).get();
+                Block block = ResourceBlocks.block(base, tier).get();
                 String name = base.path(tier);
                 helper.assertTrue(block.defaultBlockState().requiresCorrectToolForDrops() == (base.need != ToolTier.NONE),
                         name + ": the tool tier does not match whether the block needs a tool");
@@ -201,7 +201,7 @@ public final class ResourcesGameTests {
                 helper.assertTrue(block.getLootTable().isPresent()
                         && helper.getLevel().getServer().reloadableRegistries().getLootTable(block.getLootTable().get()) != LootTable.EMPTY,
                         name + " has no loot table");
-                helper.assertTrue(CompressedBlocks.item(base, tier).get().components().has(net.minecraft.core.component.DataComponents.ITEM_NAME),
+                helper.assertTrue(ResourceBlocks.item(base, tier).get().components().has(net.minecraft.core.component.DataComponents.ITEM_NAME),
                         name + " item has no name");
                 for (String kind : new String[] {"compress", "decompress"}) {
                     ResourceKey<Recipe<?>> key = ResourceKey.create(Registries.RECIPE,

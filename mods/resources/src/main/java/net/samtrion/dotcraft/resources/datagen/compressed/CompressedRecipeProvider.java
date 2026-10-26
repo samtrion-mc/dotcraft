@@ -10,7 +10,7 @@ import net.minecraft.data.recipes.RecipeProvider;
 import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
-import net.samtrion.dotcraft.resources.common.CompressedBlocks;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 import net.samtrion.dotcraft.resources.common.conditions.MaxTierCondition;
 import net.samtrion.dotcraft.resources.datagen.DataGenIds;
@@ -41,8 +41,8 @@ public final class CompressedRecipeProvider extends RecipeProvider.Runner {
             protected void buildRecipes() {
                 for (CompressedBase base : CompressedBases.enabled().toList()) {
                     for (int tier = 1; tier <= CompressedTier.MAX; tier++) {
-                        var lower = tier == 1 ? base.block() : CompressedBlocks.block(base, tier - 1).get();
-                        var upper = CompressedBlocks.block(base, tier).get();
+                        var lower = tier == 1 ? base.block() : ResourceBlocks.block(base, tier - 1).get();
+                        var upper = ResourceBlocks.block(base, tier).get();
                         shaped(RecipeCategory.BUILDING_BLOCKS, upper)
                                 .define('#', lower)
                                 .pattern("###").pattern("###").pattern("###")

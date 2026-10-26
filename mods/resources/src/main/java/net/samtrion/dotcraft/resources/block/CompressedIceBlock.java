@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.common;
+package net.samtrion.dotcraft.resources.block;
 
 import java.util.function.Supplier;
 
