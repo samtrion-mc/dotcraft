@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Stream;
 
-import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -42,8 +42,13 @@ public final class CompressedBlocks {
                 var block = BLOCKS.<Block>registerBlock(base.path(t), p -> base.look == CompressedLook.LOG
                         ? new CompressedPillarBlock(p, base.block(), t) : new CompressedBlock(p, base.block(), t), () -> properties(base, t));
                 blocks.add(block);
-                items.add(ITEMS.registerSimpleBlockItem(block,
-                        p -> p.component(DataComponents.ITEM_NAME, CompressedBlock.name(base.block(), t))));
+                // the item name must be overridden here, the default ITEM_NAME component is applied after the properties
+                items.add(ITEMS.registerItem(base.path(t), p -> new BlockItem(block.get(), p) {
+                    @Override
+                    public Component getName(ItemStack stack) {
+                        return CompressedBlock.name(base.block(), t);
+                    }
+                }, () -> new Item.Properties().useBlockDescriptionPrefix()));
             }
             BLOCKS_BY_BASE.put(base, blocks);
             ITEMS_BY_BASE.put(base, items);
