@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:block",
+  "pools": [
+    {
+      "bonus_rolls": 0.0,
+      "conditions": [
+        {
+          "condition": "minecraft:survives_explosion"
+        }
+      ],
+      "entries": [
+        {
+          "type": "minecraft:item",
+          "name": "dotcraft_resources:compressed/minecraft/pale_oak_planks_7"
+        }
+      ],
+      "rolls": 1.0
+    }
+  ],
+  "random_sequence": "dotcraft_resources:blocks/compressed/minecraft/pale_oak_planks_7"
+}

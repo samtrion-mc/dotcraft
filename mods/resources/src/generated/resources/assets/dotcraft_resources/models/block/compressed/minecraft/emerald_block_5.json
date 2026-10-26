@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/emerald_block",
+    "overlay": "dotcraft_resources:block/compressed_overlay_5",
+    "side": "minecraft:block/emerald_block",
+    "top": "minecraft:block/emerald_block"
+  }
+}

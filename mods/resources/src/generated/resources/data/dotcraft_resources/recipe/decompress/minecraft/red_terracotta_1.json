@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraft_resources:compressed/minecraft/red_terracotta_1"
+  ],
+  "result": {
+    "count": 9,
+    "id": "minecraft:red_terracotta"
+  }
+}

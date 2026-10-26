@@ -1,0 +1,6 @@
+{
+  "remove": [
+    "#minecraft:needs_stone_tool"
+  ],
+  "values": []
+}

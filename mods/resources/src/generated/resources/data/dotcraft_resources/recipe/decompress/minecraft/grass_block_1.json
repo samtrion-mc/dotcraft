@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraft_resources:compressed/minecraft/grass_block_1"
+  ],
+  "result": {
+    "count": 9,
+    "id": "minecraft:grass_block"
+  }
+}

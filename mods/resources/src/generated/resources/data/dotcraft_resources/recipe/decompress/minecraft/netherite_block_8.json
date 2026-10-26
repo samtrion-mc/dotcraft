@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraft_resources:compressed/minecraft/netherite_block_8"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraft_resources:compressed/minecraft/netherite_block_7"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/raw_gold_block",
+    "overlay": "dotcraft_resources:block/compressed_overlay_6",
+    "side": "minecraft:block/raw_gold_block",
+    "top": "minecraft:block/raw_gold_block"
+  }
+}

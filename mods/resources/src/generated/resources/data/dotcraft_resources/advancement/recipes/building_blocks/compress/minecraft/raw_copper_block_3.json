@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/minecraft/raw_copper_block_2": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraft_resources:compressed/minecraft/raw_copper_block_2"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraft_resources:compress/minecraft/raw_copper_block_3"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/minecraft/raw_copper_block_2"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraft_resources:compress/minecraft/raw_copper_block_3"
+    ]
+  }
+}

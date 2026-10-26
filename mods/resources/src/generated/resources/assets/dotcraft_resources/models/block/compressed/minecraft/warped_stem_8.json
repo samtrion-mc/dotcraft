@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/warped_stem_top",
+    "overlay": "dotcraft_resources:block/compressed_overlay_8",
+    "side": "minecraft:block/warped_stem",
+    "top": "minecraft:block/warped_stem_top"
+  }
+}

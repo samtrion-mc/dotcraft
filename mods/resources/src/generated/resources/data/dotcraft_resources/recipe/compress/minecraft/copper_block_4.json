@@ -1,0 +1,15 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": "dotcraft_resources:compressed/minecraft/copper_block_3"
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "id": "dotcraft_resources:compressed/minecraft/copper_block_4"
+  }
+}

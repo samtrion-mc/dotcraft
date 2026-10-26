@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/obsidian",
+    "overlay": "dotcraft_resources:block/compressed_overlay_2",
+    "side": "minecraft:block/obsidian",
+    "top": "minecraft:block/obsidian"
+  }
+}
