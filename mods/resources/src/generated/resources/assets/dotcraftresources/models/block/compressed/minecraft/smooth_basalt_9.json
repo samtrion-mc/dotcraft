@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/smooth_basalt",
+    "overlay": "dotcraftresources:block/compressed_overlay_9",
+    "side": "minecraft:block/smooth_basalt",
+    "top": "minecraft:block/smooth_basalt"
+  }
+}

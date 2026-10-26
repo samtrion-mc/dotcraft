@@ -253,6 +253,18 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/chiseled_red_sandstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/chiseled_red_sandstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/chiseled_red_sandstone_3",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/chiseled_resin_bricks_1",
       "required": false
     },
@@ -262,6 +274,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/chiseled_resin_bricks_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/chiseled_sandstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/chiseled_sandstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/chiseled_sandstone_3",
       "required": false
     },
     {
@@ -370,6 +394,30 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/cracked_stone_bricks_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/cut_red_sandstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/cut_red_sandstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/cut_red_sandstone_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/cut_sandstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/cut_sandstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/cut_sandstone_3",
       "required": false
     },
     {
@@ -877,6 +925,30 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/polished_basalt_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_basalt_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_basalt_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_blackstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_blackstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_blackstone_3",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/polished_blackstone_bricks_1",
       "required": false
     },
@@ -946,6 +1018,30 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/purple_terracotta_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_block_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_block_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_block_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_pillar_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_pillar_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_pillar_3",
       "required": false
     },
     {
@@ -1021,6 +1117,18 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/red_sandstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/red_sandstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/red_sandstone_3",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/red_terracotta_1",
       "required": false
     },
@@ -1057,6 +1165,30 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/sandstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/sandstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/sandstone_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_basalt_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_basalt_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_basalt_3",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/smooth_quartz_1",
       "required": false
     },
@@ -1066,6 +1198,30 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/smooth_quartz_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_red_sandstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_red_sandstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_red_sandstone_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_sandstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_sandstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_sandstone_3",
       "required": false
     },
     {
