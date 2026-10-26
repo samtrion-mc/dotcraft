@@ -33,3 +33,6 @@ run/
 repo/
 !**/src/**/repo/
 logs/
+
+# datagen cache (contains timestamps)
+**/src/generated/resources/.cache/
