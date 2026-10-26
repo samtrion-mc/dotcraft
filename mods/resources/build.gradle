@@ -1,3 +1,42 @@
 plugins {
     id 'dotcraft.neoforge-mod'
 }
+
+// Datagen output is committed; CI re-runs it and fails on any difference
+def generated = file('src/generated/resources')
+sourceSets.main.resources.srcDir generated
+
+def datagenArgs = [
+        '--mod', project.property('mod_id'),
+        '--all',
+        '--uncached', // the cache of one run would delete the other run's output as stale
+        '--output', generated.absolutePath,
+        '--existing', file('src/main/resources').absolutePath,
+]
+
+neoForge {
+    runs {
+        // ./gradlew :mods:resources:runClientData / runServerData
+        clientData {
+            clientData()
+            programArguments.addAll(datagenArgs)
+        }
+        serverData {
+            serverData()
+            programArguments.addAll(datagenArgs)
+        }
+    }
+}
+
+// ./gradlew :mods:resources:generateData - clean regeneration of everything (drops files of removed blocks)
+def cleanGenerated = tasks.register('cleanGenerated', Delete) {
+    delete fileTree(generated) // contents only; deleting the directory itself fails on Windows when a shell sits in it
+}
+tasks.register('generateData') {
+    group = 'dotcraft'
+    description = 'Regenerates src/generated/resources from scratch'
+    dependsOn cleanGenerated, 'runClientData', 'runServerData'
+}
+tasks.named('runClientData') { mustRunAfter cleanGenerated }
+tasks.named('runServerData') { mustRunAfter 'runClientData' }
+tasks.named('processResources') { mustRunAfter cleanGenerated }

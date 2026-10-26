@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/smooth_stone",
+    "overlay": "dotcraft_resources:block/compressed_overlay_2",
+    "side": "minecraft:block/smooth_stone",
+    "top": "minecraft:block/smooth_stone"
+  }
+}

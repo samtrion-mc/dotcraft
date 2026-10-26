@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/coal_block",
+    "overlay": "dotcraft_resources:block/compressed_overlay_4",
+    "side": "minecraft:block/coal_block",
+    "top": "minecraft:block/coal_block"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraft_resources:compressed/minecraft/lime_concrete_powder_6"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_5"
+  }
+}

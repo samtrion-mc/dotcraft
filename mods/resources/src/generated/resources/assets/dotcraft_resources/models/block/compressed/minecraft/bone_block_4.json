@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/bone_block_top",
+    "overlay": "dotcraft_resources:block/compressed_overlay_4",
+    "side": "minecraft:block/bone_block_side",
+    "top": "minecraft:block/bone_block_top"
+  }
+}

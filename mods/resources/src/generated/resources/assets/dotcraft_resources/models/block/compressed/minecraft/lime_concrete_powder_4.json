@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/lime_concrete_powder",
+    "overlay": "dotcraft_resources:block/compressed_overlay_4",
+    "side": "minecraft:block/lime_concrete_powder",
+    "top": "minecraft:block/lime_concrete_powder"
+  }
+}

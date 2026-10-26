@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/minecraft/terracotta_4": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraft_resources:compressed/minecraft/terracotta_4"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraft_resources:compress/minecraft/terracotta_5"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/minecraft/terracotta_4"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraft_resources:compress/minecraft/terracotta_5"
+    ]
+  }
+}

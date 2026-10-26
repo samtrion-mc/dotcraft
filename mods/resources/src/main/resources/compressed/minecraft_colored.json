@@ -1,0 +1,31 @@
+{
+  "mod": "minecraft",
+  "groups": [
+    {
+      "each": [
+        { "color": "black" },
+        { "color": "blue" },
+        { "color": "brown" },
+        { "color": "cyan" },
+        { "color": "gray" },
+        { "color": "green" },
+        { "color": "light_blue" },
+        { "color": "light_gray" },
+        { "color": "lime" },
+        { "color": "magenta" },
+        { "color": "orange" },
+        { "color": "pink" },
+        { "color": "purple" },
+        { "color": "red" },
+        { "color": "white" },
+        { "color": "yellow" }
+      ],
+      "bases": [
+        { "id": "${color}_concrete", "tool": "pickaxe", "tier": "wood" },
+        { "id": "${color}_concrete_powder", "tool": "shovel" },
+        { "id": "${color}_terracotta", "tool": "pickaxe", "tier": "wood" },
+        { "id": "${color}_wool", "tool": "shear" }
+      ]
+    }
+  ]
+}

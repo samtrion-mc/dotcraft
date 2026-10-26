@@ -31,3 +31,7 @@ jobs:
 
       - name: Run GameTests
         run: ./gradlew runGameTestServer
+      - name: Check generated data is up to date
+        run: |
+          ./gradlew :mods:resources:generateData
+          test -z "$(git status --porcelain -- mods/resources/src/generated)" || { git status --short mods/resources/src/generated; exit 1; }

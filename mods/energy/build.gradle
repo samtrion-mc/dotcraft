@@ -10,5 +10,5 @@ dependencies {
     compileOnly libs.rei.api
     localRuntime libs.jei
     localRuntime libs.jade
-    localRuntime libs.rei
+    // localRuntime libs.rei // REI disabled for now
 }

@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/spruce_planks",
+    "overlay": "dotcraft_resources:block/compressed_overlay_9",
+    "side": "minecraft:block/spruce_planks",
+    "top": "minecraft:block/spruce_planks"
+  }
+}

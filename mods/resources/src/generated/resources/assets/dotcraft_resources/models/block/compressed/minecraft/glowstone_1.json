@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/glowstone",
+    "overlay": "dotcraft_resources:block/compressed_overlay_1",
+    "side": "minecraft:block/glowstone",
+    "top": "minecraft:block/glowstone"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "dotcraft_resources:block/compressed/minecraft/mangrove_wood_7",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "dotcraft_resources:block/compressed/minecraft/mangrove_wood_7"
+    },
+    "axis=z": {
+      "model": "dotcraft_resources:block/compressed/minecraft/mangrove_wood_7",
+      "x": 90
+    }
+  }
+}

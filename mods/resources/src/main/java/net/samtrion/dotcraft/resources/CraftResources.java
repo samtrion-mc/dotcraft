@@ -7,6 +7,7 @@ import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.ModContainer;
+import net.samtrion.dotcraft.resources.common.CompressedBlocks;
 
 /**
  * Entry point of the {@code .Craft: Resources} mod.
@@ -28,5 +29,6 @@ public class CraftResources {
      * @param modContainer the container of this mod
      */
     public CraftResources(IEventBus modEventBus, ModContainer modContainer) {
+        CompressedBlocks.register(modEventBus);
     }
 }

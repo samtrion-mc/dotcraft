@@ -1,0 +1,1012 @@
+{
+  "values": [
+    {
+      "id": "dotcraft_resources:compressed/minecraft/black_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/black_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/black_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/black_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/black_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/black_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/black_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/black_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/black_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/clay_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/clay_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/clay_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/clay_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/clay_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/clay_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/clay_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/clay_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/clay_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/dirt_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/dirt_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/dirt_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/dirt_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/dirt_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/dirt_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/dirt_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/dirt_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/dirt_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/grass_block_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/grass_block_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/grass_block_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/grass_block_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/grass_block_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/grass_block_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/grass_block_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/grass_block_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/grass_block_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gravel_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gravel_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gravel_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gravel_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gravel_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gravel_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gravel_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gravel_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gravel_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/green_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/green_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/green_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/green_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/green_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/green_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/green_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/green_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/green_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mud_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mud_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mud_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mud_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mud_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mud_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mud_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mud_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mud_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mycelium_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mycelium_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mycelium_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mycelium_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mycelium_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mycelium_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mycelium_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mycelium_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/mycelium_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/podzol_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/podzol_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/podzol_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/podzol_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/podzol_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/podzol_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/podzol_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/podzol_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/podzol_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_sand_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_sand_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_sand_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_sand_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_sand_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_sand_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_sand_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_sand_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/red_sand_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/sand_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/sand_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/sand_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/sand_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/sand_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/sand_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/sand_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/sand_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/sand_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/snow_block_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/snow_block_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/snow_block_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/snow_block_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/snow_block_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/snow_block_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/snow_block_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/snow_block_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/snow_block_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_sand_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_sand_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_sand_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_sand_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_sand_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_sand_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_sand_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_sand_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_sand_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_soil_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_soil_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_soil_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_soil_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_soil_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_soil_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_soil_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_soil_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/soul_soil_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/white_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/white_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/white_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/white_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/white_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/white_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/white_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/white_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/white_concrete_powder_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_powder_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_powder_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_powder_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_powder_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_powder_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_powder_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_powder_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_powder_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_powder_9",
+      "required": false
+    }
+  ]
+}

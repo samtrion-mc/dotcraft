@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/black_concrete",
+    "overlay": "dotcraft_resources:block/compressed_overlay_3",
+    "side": "minecraft:block/black_concrete",
+    "top": "minecraft:block/black_concrete"
+  }
+}

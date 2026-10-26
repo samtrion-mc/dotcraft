@@ -13,7 +13,7 @@ dependencies {
     if (!project.hasProperty('dev.noCompat')) {
         localRuntime libs.jei
         localRuntime libs.jade
-        localRuntime libs.rei
+        // localRuntime libs.rei // REI disabled for now
     }
 }
 
@@ -23,11 +23,6 @@ neoForge {
             "${p.property('mod_id')}" {
                 sourceSet p.sourceSets.main
             }
-        }
-    }
-    runs {
-        configureEach {
-            gameDirectory = rootProject.file('run')
         }
     }
 }

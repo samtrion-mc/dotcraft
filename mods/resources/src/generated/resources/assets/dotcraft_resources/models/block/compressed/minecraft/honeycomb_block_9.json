@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/honeycomb_block",
+    "overlay": "dotcraft_resources:block/compressed_overlay_9",
+    "side": "minecraft:block/honeycomb_block",
+    "top": "minecraft:block/honeycomb_block"
+  }
+}
