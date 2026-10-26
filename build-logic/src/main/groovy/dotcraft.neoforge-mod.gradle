@@ -95,6 +95,7 @@ tasks.register('generateData') {
     dependsOn cleanGenerated, 'runClientData', 'runServerData', syncGenerated
 }
 tasks.named('runGameTestServer') { mustRunAfter syncGenerated }
+tasks.named('compileTestJava') { mustRunAfter syncGenerated } // the tests read the synced resources
 tasks.named('jar') { mustRunAfter syncGenerated } // other mods run with this jar and need the synced data
 tasks.named('runClientData') { mustRunAfter cleanGenerated }
 tasks.named('runServerData') { mustRunAfter 'runClientData' }
