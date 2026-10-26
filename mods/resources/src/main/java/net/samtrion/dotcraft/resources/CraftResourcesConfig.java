@@ -12,8 +12,13 @@ public final class CraftResourcesConfig {
 
     /** Highest compression tier that can be crafted; recipes that output a higher tier are disabled. */
     public static final ModConfigSpec.IntValue MAX_COMPRESS_LEVEL = BUILDER
+            .push("compressed")
             .comment("Highest compression level that can be crafted (1-" + CompressedTier.MAX + "). Recipes that output a higher level are disabled.")
             .defineInRange("maxCompressLevel", CompressedTier.MAX, 1, CompressedTier.MAX);
+
+    static {
+        BUILDER.pop();
+    }
 
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();

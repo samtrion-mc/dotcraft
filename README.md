@@ -48,7 +48,7 @@ Resources: compressed blocks are implemented, the rest is planned. Energy is a s
 
 `config/dotcraftresources-common.toml` (applies after a restart or `/reload`):
 
-- `maxCompressLevel` (1-9, default 9): highest craftable compression level. Recipes that output a higher level are disabled; the decompress recipe of the first disabled level stays so existing blocks are not stuck.
+- `[compressed]` `maxCompressLevel` (1-9, default 9): highest craftable compression level. Recipes that output a higher level are disabled; the decompress recipe of the first disabled level stays so existing blocks are not stuck.
 
 ## Compressed block sources
 
