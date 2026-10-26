@@ -20,9 +20,8 @@ public final class CompressedTier {
      */
     public static long count(int tier) {
         check(tier);
-        long n = 1;
-        for (int i = 0; i < tier; i++) n *= FACTOR;
-        return n;
+
+        return (long) Math.pow(FACTOR, tier);
     }
 
     /**
@@ -38,8 +37,8 @@ public final class CompressedTier {
     }
 
     /**
-     * Furnace burn time of a compressed block: the base burn time times {@link #count(int)}, capped at
-     * {@code Integer.MAX_VALUE - 1} ticks as the burn time of a fuel is an {@code int}.
+     * Furnace burn time of a compressed block: the base burn time times {@link #count(int)}, or {@code 0} (no
+     * fuel) if that does not fit into an {@code int}, as the burn time of a fuel is one.
      *
      * @param base the burn time of the base block in ticks, {@code 0} if it is no fuel
      * @param tier the tier, {@code 1..MAX}
@@ -47,7 +46,8 @@ public final class CompressedTier {
      */
     public static int burnTime(int base, int tier) {
         check(tier);
-        return (int) Math.min((long) base * count(tier), Integer.MAX_VALUE - 1L);
+        long burn = (long) base * count(tier);
+        return burn > Integer.MAX_VALUE ? 0 : (int) burn;
     }
 
     private static void check(int tier) {

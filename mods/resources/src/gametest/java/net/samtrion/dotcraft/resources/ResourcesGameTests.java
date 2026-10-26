@@ -76,7 +76,7 @@ public final class ResourcesGameTests {
     }
 
     /**
-     * Compressed blocks burn as long as their base times 9^tier, capped just below the int limit; blocks whose
+     * Compressed blocks burn as long as their base times 9^tier, and not at all once that exceeds an int; blocks whose
      * base is no fuel do not burn.
      *
      * @param helper the game test helper
@@ -86,7 +86,8 @@ public final class ResourcesGameTests {
         record Case(String base, int tier, int expected) {}
         for (Case c : new Case[] {
                 new Case("coal_block", 1, 16_000 * 9),
-                new Case("coal_block", 9, Integer.MAX_VALUE - 1),
+                new Case("coal_block", 5, 16_000 * 59_049),
+                new Case("coal_block", 6, 0),
                 new Case("oak_planks", 2, 300 * 81),
                 new Case("white_wool", 1, 100 * 9),
                 new Case("stone", 1, 0),
