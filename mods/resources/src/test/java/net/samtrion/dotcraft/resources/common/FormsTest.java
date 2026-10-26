@@ -45,9 +45,9 @@ class FormsTest {
     @Test
     void shippedSourcesAreValid() throws Exception {
         List<Form> forms = shipped();
-        assertEquals(List.of("raw", "raw_block", "ingot", "nugget", "grains", "block", "dust", "dust_block", "plate", "gear", "rod", "ore"),
+        assertEquals(List.of("raw", "raw_block", "ingot", "nugget", "grains", "block", "dust", "dust_block", "plate", "gear", "ore"),
                 forms.stream().map(Form::id).toList());
-        assertEquals(List.of("raw", "raw_blocks", "ingots", "nuggets", "grains", "blocks", "dusts", "dust_blocks", "plates", "gears", "rods", "ores"),
+        assertEquals(List.of("raw", "raw_blocks", "ingots", "nuggets", "grains", "blocks", "dusts", "dust_blocks", "plates", "gears", "ores"),
                 forms.stream().map(Form::configKey).toList());
         assertEquals(forms.size(), forms.stream().map(Form::configKey).distinct().count());
         for (Form f : forms) {
@@ -95,9 +95,9 @@ class FormsTest {
             String json = String.format(ITEM, "cog", 5, "").replace("\"cogs\"", "\"" + bad + "\"");
             assertThrows(IllegalArgumentException.class, () -> Forms.parseAll(Map.of("cog.json", json)), bad);
         }
-        String second = String.format(ITEM, "rod", 6, "").replace("\"rods\"", "\"cogs\"");
+        String second = String.format(ITEM, "bolt", 6, "").replace("\"bolts\"", "\"cogs\"");
         var duplicate = assertThrows(IllegalArgumentException.class, () -> Forms.parseAll(Map.of(
-                "cog.json", String.format(ITEM, "cog", 5, ""), "rod.json", second)));
+                "cog.json", String.format(ITEM, "cog", 5, ""), "bolt.json", second)));
         assertTrue(duplicate.getMessage().contains("duplicate configKey"), duplicate.getMessage());
     }
 

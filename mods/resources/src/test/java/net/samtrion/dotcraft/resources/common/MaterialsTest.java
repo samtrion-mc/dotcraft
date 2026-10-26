@@ -114,12 +114,12 @@ class MaterialsTest {
         }
     }
 
-    /** Stone and wood add only gear and rod to the vanilla materials. */
+    /** Stone and wood add only gear to the vanilla materials. */
     @Test
     void stoneAndWood() throws Exception {
         for (String id : List.of("stone", "wood")) {
             Material m = shipped().stream().filter(x -> x.id().equals(id)).findFirst().orElseThrow();
-            assertEquals(List.of(form("gear"), form("rod")), m.forms(), id);
+            assertEquals(List.of(form("gear")), m.forms(), id);
             assertTrue(m.isExternal(), id);
         }
     }
@@ -334,7 +334,7 @@ class MaterialsTest {
     @Test
     void external() {
         Material m = only(IRON);
-        assertEquals(List.of(form("dust"), form("plate"), form("gear"), form("rod")), m.forms());
+        assertEquals(List.of(form("dust"), form("plate"), form("gear")), m.forms());
         assertTrue(m.isExternal());
         var source = m.external().get(0);
         assertTrue(source.mod().isEmpty());

@@ -7,8 +7,7 @@
   },
   "tier": "stone",
   "forms": [
-    "gear",
-    "rod"
+    "gear"
   ],
   "external": [
     {}

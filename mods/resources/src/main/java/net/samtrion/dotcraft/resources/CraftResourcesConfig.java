@@ -36,7 +36,7 @@ import net.samtrion.dotcraft.resources.common.Materials;
  * alternative material.
  * The key of a form is its {@link Form#configKey()} ({@code raw}, {@code raw_blocks}, {@code ingots},
  * {@code nuggets}, {@code grains}, {@code blocks}, {@code dusts}, {@code dust_blocks}, {@code plates}, {@code gears},
- * {@code rods}, {@code ores}); only the forms a material has are listed. A disabled form drops every generated
+ * {@code ores}); only the forms a material has are listed. A disabled form drops every generated
  * recipe that makes or uses it, is hidden in the creative tab, JEI and REI, and (the ores) is not generated in
  * the world; the registered items and blocks, their loot tables and tags stay, so existing ones keep working.
  */

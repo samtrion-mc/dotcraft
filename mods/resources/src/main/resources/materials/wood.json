@@ -7,8 +7,7 @@
   },
   "tier": "wood",
   "forms": [
-    "gear",
-    "rod"
+    "gear"
   ],
   "external": [
     {}
