@@ -39,6 +39,6 @@ public class CraftResources {
         ResourceBlocks.register(modEventBus);
         CONDITIONS.register("max_tier", () -> MaxTierCondition.CODEC);
         CONDITIONS.register(modEventBus);
-        modContainer.registerConfig(ModConfig.Type.COMMON, CraftResourcesConfig.SPEC);
+        modContainer.registerConfig(ModConfig.Type.COMMON, CraftResourcesConfig.SPEC, "dotcraft/resources.toml");
     }
 }
