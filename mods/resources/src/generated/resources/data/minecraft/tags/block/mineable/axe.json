@@ -865,42 +865,6 @@
       "required": false
     },
     {
-      "id": "dotcraftresources:compressed/minecraft/melon_1",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/melon_2",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/melon_3",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/melon_4",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/melon_5",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/melon_6",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/melon_7",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/melon_8",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/melon_9",
-      "required": false
-    },
-    {
       "id": "dotcraftresources:compressed/minecraft/oak_log_1",
       "required": false
     },
@@ -1114,42 +1078,6 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/pale_oak_wood_9",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/pumpkin_1",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/pumpkin_2",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/pumpkin_3",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/pumpkin_4",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/pumpkin_5",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/pumpkin_6",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/pumpkin_7",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/pumpkin_8",
-      "required": false
-    },
-    {
-      "id": "dotcraftresources:compressed/minecraft/pumpkin_9",
       "required": false
     },
     {

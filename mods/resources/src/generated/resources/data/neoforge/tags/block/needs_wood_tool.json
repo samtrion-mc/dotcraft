@@ -925,6 +925,30 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/polished_basalt_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_basalt_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_basalt_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_blackstone_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_blackstone_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/polished_blackstone_3",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/polished_blackstone_bricks_1",
       "required": false
     },
@@ -994,6 +1018,30 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/purple_terracotta_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_block_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_block_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_block_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_pillar_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_pillar_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purpur_pillar_3",
       "required": false
     },
     {
@@ -1126,6 +1174,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/sandstone_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_basalt_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_basalt_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/smooth_basalt_3",
       "required": false
     },
     {

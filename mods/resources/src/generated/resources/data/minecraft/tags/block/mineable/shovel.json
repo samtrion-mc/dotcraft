@@ -145,6 +145,42 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/coarse_dirt_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/coarse_dirt_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/coarse_dirt_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/coarse_dirt_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/coarse_dirt_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/coarse_dirt_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/coarse_dirt_7",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/coarse_dirt_8",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/coarse_dirt_9",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/cyan_concrete_powder_1",
       "required": false
     },

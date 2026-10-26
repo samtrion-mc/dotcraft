@@ -25,6 +25,7 @@
         { "id": "${color}_concrete_powder", "tool": "shovel" },
         { "id": "${color}_terracotta", "tool": "pickaxe", "tier": "wood" },
         { "id": "${color}_glazed_terracotta", "tool": "pickaxe", "tier": "wood" },
+        { "id": "${color}_stained_glass", "look": "glass" },
         { "id": "${color}_wool", "tool": "shear" }
       ]
     }

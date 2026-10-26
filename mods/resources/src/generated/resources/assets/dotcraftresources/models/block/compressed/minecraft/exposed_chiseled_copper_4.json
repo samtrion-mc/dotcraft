@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/exposed_chiseled_copper",
+    "overlay": "dotcraftresources:block/compressed_overlay_4",
+    "side": "minecraft:block/exposed_chiseled_copper",
+    "top": "minecraft:block/exposed_chiseled_copper"
+  }
+}
