@@ -24,26 +24,25 @@ import net.samtrion.dotcraft.resources.CraftResources;
  * and netherite those of NeoForge ({@link Tags.Blocks}); NeoForge already adds the netherite tag to every
  * incorrect tag. Copper has no common tag and uses {@code dotcraft_resources:needs_copper_tool}.
  * <p>
- * Note that the order differs from vanilla, where gold tools mine like wooden ones: gold ranks between copper
- * and iron here, and the datagen removes the vanilla entries that contradict this.
+ * Gold ranks equal to wood as in vanilla, so no vanilla entry contradicts the order.
  */
 public enum ToolTier implements StringRepresentable {
     /** No tool needed, the block drops when mined by hand. */
     NONE(0, null, null),
     /** Wooden tools. */
     WOOD(1, BlockTags.INCORRECT_FOR_WOODEN_TOOL, Tags.Blocks.NEEDS_WOOD_TOOL),
+    /** Golden tools, as in vanilla they mine like wooden ones. */
+    GOLD(1, BlockTags.INCORRECT_FOR_GOLD_TOOL, Tags.Blocks.NEEDS_GOLD_TOOL),
     /** Stone tools. */
     STONE(2, BlockTags.INCORRECT_FOR_STONE_TOOL, BlockTags.NEEDS_STONE_TOOL),
     /** Copper tools. */
     COPPER(3, BlockTags.INCORRECT_FOR_COPPER_TOOL, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(CraftResources.MODID, "needs_copper_tool"))),
-    /** Golden tools. */
-    GOLD(4, BlockTags.INCORRECT_FOR_GOLD_TOOL, Tags.Blocks.NEEDS_GOLD_TOOL),
     /** Iron tools. */
-    IRON(5, BlockTags.INCORRECT_FOR_IRON_TOOL, BlockTags.NEEDS_IRON_TOOL),
+    IRON(4, BlockTags.INCORRECT_FOR_IRON_TOOL, BlockTags.NEEDS_IRON_TOOL),
     /** Diamond tools. */
-    DIAMOND(6, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, BlockTags.NEEDS_DIAMOND_TOOL),
+    DIAMOND(5, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, BlockTags.NEEDS_DIAMOND_TOOL),
     /** Netherite tools. */
-    NETHERITE(7, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, Tags.Blocks.NEEDS_NETHERITE_TOOL);
+    NETHERITE(6, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, Tags.Blocks.NEEDS_NETHERITE_TOOL);
 
     /** Codec that reads and writes the lower case name, e.g. in the compressed block sources. */
     public static final com.mojang.serialization.Codec<ToolTier> CODEC = StringRepresentable.fromEnum(ToolTier::values);
@@ -139,7 +138,7 @@ public enum ToolTier implements StringRepresentable {
         return Stream.of(values()).filter(t -> t.incorrectTag != null);
     }
 
-    /** Materials the requirement climbs through; gold is skipped as its tools are no real step up. */
+    /** Materials the requirement climbs through; gold is skipped as it equals wood. */
     private static final java.util.List<ToolTier> LADDER = java.util.List.of(WOOD, STONE, COPPER, IRON, DIAMOND, NETHERITE);
 
     /** Compression tiers per step of the requirement. */
