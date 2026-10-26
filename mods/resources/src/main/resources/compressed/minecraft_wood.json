@@ -1,0 +1,27 @@
+{
+  "mod": "minecraft",
+  "groups": [
+    {
+      "each": [
+        { "tree": "acacia", "log": "log", "wood": "wood" },
+        { "tree": "birch", "log": "log", "wood": "wood" },
+        { "tree": "cherry", "log": "log", "wood": "wood" },
+        { "tree": "crimson", "log": "stem", "wood": "hyphae" },
+        { "tree": "dark_oak", "log": "log", "wood": "wood" },
+        { "tree": "jungle", "log": "log", "wood": "wood" },
+        { "tree": "mangrove", "log": "log", "wood": "wood" },
+        { "tree": "oak", "log": "log", "wood": "wood" },
+        { "tree": "pale_oak", "log": "log", "wood": "wood" },
+        { "tree": "spruce", "log": "log", "wood": "wood" },
+        { "tree": "warped", "log": "stem", "wood": "hyphae" }
+      ],
+      "bases": [
+        { "id": "${tree}_${log}", "tool": "axe", "look": "log" },
+        { "id": "${tree}_${wood}", "tool": "axe", "look": "log", "side": "block/${tree}_${log}", "end": "block/${tree}_${log}" },
+        { "id": "${tree}_planks", "tool": "axe" },
+        { "id": "stripped_${tree}_${log}", "tool": "axe", "look": "log" },
+        { "id": "stripped_${tree}_${wood}", "tool": "axe", "look": "log", "side": "block/stripped_${tree}_${log}", "end": "block/stripped_${tree}_${log}" }
+      ]
+    }
+  ]
+}
