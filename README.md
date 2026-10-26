@@ -19,7 +19,7 @@ The shared material base of the .Craft mods. Other mods build on it instead of e
 
 - **Ores and raw materials:** new ores with world generation, plus the raw items, ingots and dusts they yield.
 - **Materials and alloys:** processed materials and alloys that serve as crafting ingredients for machines and equipment in the other mods, including intermediate forms such as plates, gears and rods.
-- **Compressed blocks:** 9 compression tiers (9 blocks per tier, up to 9^9) for a curated list of bulk blocks (stones, dirt, sand, gravel, metal and gem blocks, glass, terracotta, concrete, concrete powder, wool, planks and all logs and stems). Craft 3x3 up, 1 down to 9. One shared model; the tier shows as a two-tone (white/black, readable on light and dark blocks) riveted frame that grows with the tier (`tools/generate_overlays.py`). Hardness grows with the tier. Names use one translation key, so no per-block language entries.
+- **Compressed blocks:** 9 compression tiers (9 blocks per tier, up to 9^9) for a curated list of bulk blocks (stones, dirt, sand, gravel, metal and gem blocks, glass, terracotta, concrete, concrete powder, wool, planks and all logs and stems). Craft 3x3 up, 1 down to 9. One shared model; the tier shows as a two-tone (white/black, readable on light and dark blocks) riveted frame that grows with the tier (`tools/generate_overlays.py`). Hardness and the required tool grow with the tier: the base block's requirement for tiers 1-3, one material above for 4-6, two for 7-9 (gold skipped, capped at netherite; e.g. stone needs wood, so tiers 4-6 need stone, 7-9 copper). Blocks that need no tool stay free. Names use one translation key, so no per-block language entries.
 
 ### .Craft: Energy (`dotcraft_energy`)
 
@@ -43,6 +43,12 @@ Resources: compressed blocks are implemented, the rest is planned. Energy is a s
 ./gradlew :mods:resources:generateData  # regenerate src/generated/resources (models, lang, recipes, loot, tags); CI fails if it is stale
 ./gradlew installGitHooks       # enable the commit-msg hook (also runs on IDE sync)
 ```
+
+## Configuration
+
+`config/dotcraft_resources-common.toml` (applies after a restart or `/reload`):
+
+- `maxCompressLevel` (1-9, default 9): highest craftable compression level. Recipes that output a higher level are disabled; the decompress recipe of the first disabled level stays so existing blocks are not stuck.
 
 ## Compressed block sources
 

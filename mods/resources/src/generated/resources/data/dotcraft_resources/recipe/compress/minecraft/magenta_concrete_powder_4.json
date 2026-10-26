@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 4
+    }
+  ],
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "key": {

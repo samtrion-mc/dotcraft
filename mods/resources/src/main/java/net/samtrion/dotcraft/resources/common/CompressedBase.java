@@ -99,6 +99,16 @@ public final class CompressedBase {
     }
 
     /**
+     * The tool tier a compressed block of the given tier needs, see {@link ToolTier#progressed(int)}.
+     *
+     * @param tier the tier, {@code 1..MAX}
+     * @return the required tool tier
+     */
+    public ToolTier required(int tier) {
+        return need.progressed(tier);
+    }
+
+    /**
      * Tells whether the mod of the base block is loaded; other bases are neither registered nor generated.
      *
      * @return {@code true} for vanilla and for loaded mods

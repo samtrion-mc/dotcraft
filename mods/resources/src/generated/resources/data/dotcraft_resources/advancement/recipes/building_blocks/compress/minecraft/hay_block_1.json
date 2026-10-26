@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 1
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_hay_block": {

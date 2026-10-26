@@ -13,7 +13,10 @@ import net.samtrion.dotcraft.resources.common.CompressedBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 import net.samtrion.dotcraft.resources.tool.ToolTier;
 
-/** The tool and tool tier tags of the compressed blocks, and the links between the tiers. */
+/**
+ * The tool and tool tier tags of the compressed blocks, and the links between the tiers. The required tool tier
+ * rises with the compression tier, see {@link CompressedBase#required(int)}.
+ */
 final class CompressedTagsProvider extends BlockTagsProvider {
     CompressedTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
         super(output, lookup, CraftResources.MODID);
@@ -33,7 +36,7 @@ final class CompressedTagsProvider extends BlockTagsProvider {
             for (int tier = 1; tier <= CompressedTier.MAX; tier++) {
                 Block block = CompressedBlocks.block(base, tier).get();
                 if (base.tool.tag() != null) tag(base.tool.tag()).addOptional(block);
-                if (base.need.needsTag() != null) tag(base.need.needsTag()).addOptional(block);
+                if (base.required(tier).needsTag() != null) tag(base.required(tier).needsTag()).addOptional(block);
             }
         }
     }

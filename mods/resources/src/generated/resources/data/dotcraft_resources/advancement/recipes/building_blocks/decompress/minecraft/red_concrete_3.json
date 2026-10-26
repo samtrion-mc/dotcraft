@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 2
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_compressed/minecraft/red_concrete_3": {
