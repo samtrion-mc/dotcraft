@@ -1,0 +1,42 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:mod_loaded",
+      "modid": "dotcraftresources"
+    },
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 6
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/dotcraftresources/charcoal_block_5": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraftresources:compressed/dotcraftresources/charcoal_block_5"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:compress/dotcraftresources/charcoal_block_6"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/dotcraftresources/charcoal_block_5"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:compress/dotcraftresources/charcoal_block_6"
+    ]
+  }
+}

@@ -4,20 +4,18 @@ import java.util.Optional;
 
 import net.minecraft.client.data.models.BlockModelGenerators;
 import net.minecraft.client.data.models.ItemModelGenerators;
-import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.blockstates.MultiVariantGenerator;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.client.data.models.model.ModelTemplate;
 import net.minecraft.client.data.models.model.TextureMapping;
 import net.minecraft.client.data.models.model.TextureSlot;
 import net.minecraft.client.resources.model.sprite.Material;
-import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.block.Block;
-import net.samtrion.dotcraft.resources.CraftResources;
+import net.samtrion.dotcraft.resources.api.ModelPlugin;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
-import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedLook;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 import net.samtrion.dotcraft.resources.datagen.DataGenIds;
@@ -29,7 +27,7 @@ import net.samtrion.dotcraft.resources.datagen.DataGenIds;
  * per-tier overlay that grows with the tier, and {@code compressed_tinted.json} for grass-like blocks, which adds
  * a tinted top and a tinted side overlay. A block only gets a small child model with its textures.
  */
-public final class CompressedModelProvider extends ModelProvider {
+public final class CompressedModelPlugin implements ModelPlugin {
     private static final TextureSlot OVERLAY = TextureSlot.create("overlay");
     private static final TextureSlot TINT_OVERLAY = TextureSlot.create("tint_overlay");
     private static final ModelTemplate TEMPLATE = new ModelTemplate(
@@ -39,12 +37,8 @@ public final class CompressedModelProvider extends ModelProvider {
             Optional.of(DataGenIds.id("block/compressed_tinted")), Optional.empty(),
             TextureSlot.SIDE, TextureSlot.TOP, TextureSlot.BOTTOM, TINT_OVERLAY, OVERLAY);
 
-    public CompressedModelProvider(PackOutput output) {
-        super(output, CraftResources.MODID);
-    }
-
     @Override
-    protected void registerModels(BlockModelGenerators blocks, ItemModelGenerators items) {
+    public void registerModels(BlockModelGenerators blocks, ItemModelGenerators items) {
         for (CompressedBase base : CompressedBases.enabled().toList()) {
             boolean tinted = base.look == CompressedLook.GRASS;
             for (int tier = 1; tier <= CompressedTier.MAX; tier++) {

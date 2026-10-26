@@ -1,6 +1,18 @@
 {
   "values": [
     {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_6",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/amethyst_block_4",
       "required": false
     },

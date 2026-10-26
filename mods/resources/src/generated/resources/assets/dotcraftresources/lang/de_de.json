@@ -1,4 +1,5 @@
 {
+  "block.dotcraftresources.charcoal_block": "Holzkohleblock",
   "block.dotcraftresources.compressed": "Komprimiert: %1$s (Stufe %2$s)",
   "itemGroup.dotcraftresources.compressed": ".Craft: Komprimierte Blöcke"
 }

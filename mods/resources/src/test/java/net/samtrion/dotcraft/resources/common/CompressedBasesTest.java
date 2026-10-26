@@ -133,7 +133,7 @@ class CompressedBasesTest {
         List<CompressedBase> bases = shipped();
         Set<String> ids = bases.stream().map(b -> b.id.toString()).collect(Collectors.toSet());
         assertEquals(bases.size(), ids.size());
-        assertEquals(229, bases.size());
+        assertEquals(230, bases.size());
         assertTrue(ids.containsAll(Set.of("minecraft:stone", "minecraft:oak_log", "minecraft:stripped_warped_hyphae", "minecraft:terracotta", "minecraft:lime_concrete", "minecraft:black_concrete_powder", "minecraft:red_wool", "minecraft:podzol", "minecraft:grass_block")));
         CompressedBase stone = bases.stream().filter(b -> b.id.getPath().equals("stone")).findFirst().orElseThrow();
         assertEquals(ToolType.PICKAXE, stone.tool);

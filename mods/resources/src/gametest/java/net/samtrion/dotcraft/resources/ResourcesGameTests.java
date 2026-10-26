@@ -23,6 +23,7 @@ import net.samtrion.dotcraft.resources.common.CompressedBases;
 import net.samtrion.dotcraft.resources.common.CompressedLook;
 import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
+import net.samtrion.dotcraft.resources.common.ResourceBlockTags;
 import net.samtrion.dotcraft.resources.tool.ToolTier;
 
 /**
@@ -42,6 +43,9 @@ public final class ResourcesGameTests {
     private static final Identifier ICE = Identifier.fromNamespaceAndPath(CraftResources.MODID, "compressed_ice");
     private static final ResourceKey<Consumer<GameTestHelper>> ICE_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, ICE);
 
+    private static final Identifier CHARCOAL = Identifier.fromNamespaceAndPath(CraftResources.MODID, "charcoal_block");
+    private static final ResourceKey<Consumer<GameTestHelper>> CHARCOAL_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, CHARCOAL);
+
     private ResourcesGameTests() {}
 
     /**
@@ -56,6 +60,7 @@ public final class ResourcesGameTests {
             registry.register(FUEL, (Consumer<GameTestHelper>) ResourcesGameTests::compressedFuel);
             registry.register(MINING, (Consumer<GameTestHelper>) ResourcesGameTests::compressedMining);
             registry.register(ICE, (Consumer<GameTestHelper>) ResourcesGameTests::compressedIce);
+            registry.register(CHARCOAL, (Consumer<GameTestHelper>) ResourcesGameTests::charcoalBlock);
         });
     }
 
@@ -75,6 +80,8 @@ public final class ResourcesGameTests {
                 new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
         event.registerTest(ICE, new FunctionGameTestInstance(ICE_FUNCTION,
                 new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 40, 0, true)));
+        event.registerTest(CHARCOAL, new FunctionGameTestInstance(CHARCOAL_FUNCTION,
+                new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
     }
 
     private static CompressedBase base(String path) {
@@ -91,6 +98,7 @@ public final class ResourcesGameTests {
         var fuels = helper.getLevel().fuelValues();
         record Case(String base, int tier, int expected) {}
         for (Case c : new Case[] {
+                new Case("charcoal_block", 1, 16_000 * 9),
                 new Case("coal_block", 1, 16_000 * 9),
                 new Case("coal_block", 5, 16_000 * 59_049),
                 new Case("coal_block", 6, 0),
@@ -169,6 +177,35 @@ public final class ResourcesGameTests {
         var vanilla = helper.getBlockState(pos);
         vanilla.getBlock().playerDestroy(helper.getLevel(), player, helper.absolutePos(pos), vanilla, null, hand);
         helper.assertBlockPresent(net.minecraft.world.level.block.Blocks.WATER, pos);
+        helper.succeed();
+    }
+
+    /**
+     * The charcoal block mines like the coal block, burns as long, is tagged as a storage block and can be crafted
+     * from and back into charcoal.
+     *
+     * @param helper the game test helper
+     */
+    private static void charcoalBlock(GameTestHelper helper) {
+        var block = ResourceBlocks.CHARCOAL_BLOCK.get();
+        var coal = net.minecraft.world.level.block.Blocks.COAL_BLOCK;
+        var state = block.defaultBlockState();
+        var item = new net.minecraft.world.item.ItemStack(ResourceBlocks.CHARCOAL_BLOCK_ITEM.get());
+        helper.assertTrue(block.defaultDestroyTime() == coal.defaultDestroyTime(), "charcoal block has not the hardness of coal");
+        helper.assertTrue(state.requiresCorrectToolForDrops() && state.is(BlockTags.MINEABLE_WITH_PICKAXE), "charcoal block lacks its pickaxe gate");
+        helper.assertTrue(state.is(net.neoforged.neoforge.common.Tags.Blocks.STORAGE_BLOCKS)
+                && state.is(ResourceBlockTags.STORAGE_BLOCKS_CHARCOAL) && item.is(ResourceBlockTags.STORAGE_BLOCKS_CHARCOAL_ITEM)
+                && item.is(net.neoforged.neoforge.common.Tags.Items.STORAGE_BLOCKS), "charcoal block lacks its storage block tags");
+        int burn = item.getBurnTime(null, helper.getLevel().fuelValues());
+        helper.assertTrue(burn == 16_000, "charcoal block burns " + burn);
+        helper.assertTrue(block.getLootTable().isPresent()
+                && helper.getLevel().getServer().reloadableRegistries().getLootTable(block.getLootTable().get()) != LootTable.EMPTY,
+                "charcoal block has no loot table");
+        var recipes = helper.getLevel().getServer().getRecipeManager();
+        for (String recipe : new String[] {"charcoal_block", "charcoal_from_charcoal_block"}) {
+            helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(CraftResources.MODID, recipe))).isPresent(),
+                    "missing recipe " + recipe);
+        }
         helper.succeed();
     }
 
