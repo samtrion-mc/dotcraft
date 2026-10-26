@@ -11,21 +11,21 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.samtrion.dotcraft.resources.CraftResources;
 import net.samtrion.dotcraft.resources.datagen.compressed.CompressedBlockLootPlugin;
 import net.samtrion.dotcraft.resources.datagen.compressed.CompressedBlockTagsPlugin;
-import net.samtrion.dotcraft.resources.datagen.compressed.CompressedLanguagePlugin;
 import net.samtrion.dotcraft.resources.datagen.compressed.CompressedModelPlugin;
 import net.samtrion.dotcraft.resources.datagen.compressed.CompressedRecipePlugin;
+import net.samtrion.dotcraft.resources.datagen.language.EnglishUSLanguageProvider;
+import net.samtrion.dotcraft.resources.datagen.language.GermanLanguageProvider;
 import net.samtrion.dotcraft.resources.datagen.mod.ModBlockLootPlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModBlockTagsPlugin;
-import net.samtrion.dotcraft.resources.datagen.mod.ModLanguagePlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModModelPlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModRecipePlugin;
 
 /**
  * Wires the data providers of the resources mod. Run {@code ./gradlew :mods:resources:generateData}; the output
  * in {@code src/generated/resources} is committed. There is one provider per kind of data, as a data file can only
- * be written by one provider. The providers call plugins in the given order: first the ones of the own blocks of
- * the mod, in {@code mod}, then the ones of the compressed blocks, in {@code compressed}; the plugin interfaces are
- * in {@code api}.
+ * be written by one provider; the translations are one provider per language. The other providers call plugins
+ * in the given order: first the ones of the own blocks of the mod, in {@code mod}, then the ones of the compressed
+ * blocks, in {@code compressed}; the plugin interfaces are in {@code api}.
  */
 @EventBusSubscriber(modid = CraftResources.MODID)
 public final class ResourcesDataGen {
@@ -39,10 +39,8 @@ public final class ResourcesDataGen {
     @SubscribeEvent
     static void client(GatherDataEvent.Client event) {
         event.createProvider(o -> new ResourceModelProvider(o, new ModModelPlugin(), new CompressedModelPlugin()));
-        event.createProvider(o -> new ResourceLanguageProvider(o, "en_us", new ModLanguagePlugin("Block of Charcoal"),
-                new CompressedLanguagePlugin("Compressed %1$s (Tier %2$s)", ".Craft: Compressed Blocks")));
-        event.createProvider(o -> new ResourceLanguageProvider(o, "de_de", new ModLanguagePlugin("Holzkohleblock"),
-                new CompressedLanguagePlugin("Komprimiert: %1$s (Stufe %2$s)", ".Craft: Komprimierte Blöcke")));
+        event.createProvider(EnglishUSLanguageProvider::new);
+        event.createProvider(GermanLanguageProvider::new);
     }
 
     /**
