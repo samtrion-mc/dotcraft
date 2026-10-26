@@ -76,13 +76,13 @@ public final class ResourcesGameTests {
                 helper.assertTrue(base.block().defaultBlockState().requiresCorrectToolForDrops() == (base.need != ToolTier.NONE),
                         name + ": the tool tier does not match whether the base block needs a tool");
                 for (ToolTier t : ToolTier.materials().toList()) {
-                    helper.assertTrue(block.defaultBlockState().is(t.incorrectTag()) == !t.canMine(base.need),
+                    helper.assertTrue(block.defaultBlockState().is(t.incorrectTag()) == !t.canMine(base.required(tier)),
                             name + " has the wrong drop gate for " + t);
                 }
                 helper.assertTrue(block.defaultBlockState().hasProperty(RotatedPillarBlock.AXIS) == (base.look == CompressedLook.LOG),
                         name + " has the wrong axis state");
                 helper.assertTrue((base.tool.tag() == null || block.defaultBlockState().is(base.tool.tag()))
-                        && (base.need.needsTag() == null || block.defaultBlockState().is(base.need.needsTag())), name + " lacks its tool tags");
+                        && (base.required(tier).needsTag() == null || block.defaultBlockState().is(base.required(tier).needsTag())), name + " lacks its tool tags");
                 helper.assertTrue(block.defaultDestroyTime() == CompressedTier.hardness(base.block().defaultDestroyTime(), tier),
                         name + " has the wrong hardness");
                 helper.assertTrue(block.getLootTable().isPresent()

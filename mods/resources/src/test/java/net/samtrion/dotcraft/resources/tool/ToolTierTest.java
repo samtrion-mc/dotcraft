@@ -65,4 +65,22 @@ class ToolTierTest {
             assertEquals(expected, material.contradictions().toList(), material.name());
         }
     }
+
+    /** Tiers 1-3 keep the base requirement, 4-6 climb one material, 7-9 two; gold is skipped (wood: wood, stone, copper). */
+    @Test
+    void progressedClimbsEveryThreeTiers() {
+        List<ToolTier> expected = List.of(ToolTier.WOOD, ToolTier.WOOD, ToolTier.WOOD, ToolTier.STONE, ToolTier.STONE,
+                ToolTier.STONE, ToolTier.COPPER, ToolTier.COPPER, ToolTier.COPPER);
+        for (int tier = 1; tier <= 9; tier++) assertEquals(expected.get(tier - 1), ToolTier.WOOD.progressed(tier), "tier " + tier);
+    }
+
+    /** Blocks without a requirement stay free, the top is capped at netherite and gold climbs from copper. */
+    @Test
+    void progressedEdges() {
+        for (int tier = 1; tier <= 9; tier++) assertEquals(ToolTier.NONE, ToolTier.NONE.progressed(tier));
+        assertEquals(ToolTier.GOLD, ToolTier.GOLD.progressed(3));
+        assertEquals(ToolTier.IRON, ToolTier.GOLD.progressed(4));
+        assertEquals(ToolTier.NETHERITE, ToolTier.DIAMOND.progressed(4));
+        assertEquals(ToolTier.NETHERITE, ToolTier.NETHERITE.progressed(9));
+    }
 }

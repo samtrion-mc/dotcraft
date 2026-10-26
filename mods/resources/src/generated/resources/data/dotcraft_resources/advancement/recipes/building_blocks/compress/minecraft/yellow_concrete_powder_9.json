@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 9
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_compressed/minecraft/yellow_concrete_powder_8": {

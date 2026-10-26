@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 7
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_compressed/minecraft/sand_8": {

@@ -139,6 +139,27 @@ public enum ToolTier implements StringRepresentable {
         return Stream.of(values()).filter(t -> t.incorrectTag != null);
     }
 
+    /** Materials the requirement climbs through; gold is skipped as its tools are no real step up. */
+    private static final java.util.List<ToolTier> LADDER = java.util.List.of(WOOD, STONE, COPPER, IRON, DIAMOND, NETHERITE);
+
+    /** Compression tiers per step of the requirement. */
+    private static final int TIERS_PER_STEP = 3;
+
+    /**
+     * The tier a compressed block needs: tiers 1-3 keep the base requirement, 4-6 need one material further up
+     * the ladder, 7-9 two, capped at netherite. Blocks that need no tool stay free.
+     *
+     * @param compression the compression tier, {@code 1..MAX}
+     * @return the requirement of that tier, {@link #NONE} for {@link #NONE}
+     */
+    public ToolTier progressed(int compression) {
+        int steps = (compression - 1) / TIERS_PER_STEP;
+        if (this == NONE || steps == 0) return this;
+        int at = 0;
+        for (int i = 0; i < LADDER.size(); i++) if (LADDER.get(i).rank <= rank) at = i;
+        return LADDER.get(Math.min(at + steps, LADDER.size() - 1));
+    }
+
     @Override
     public String getSerializedName() {
         return name().toLowerCase(java.util.Locale.ROOT);

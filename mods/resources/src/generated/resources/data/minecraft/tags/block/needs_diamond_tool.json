@@ -1,6 +1,42 @@
 {
   "values": [
     {
+      "id": "dotcraft_resources:compressed/minecraft/diamond_block_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/diamond_block_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/diamond_block_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/emerald_block_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/emerald_block_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/emerald_block_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gold_block_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gold_block_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/gold_block_6",
+      "required": false
+    },
+    {
       "id": "dotcraft_resources:compressed/minecraft/netherite_block_1",
       "required": false
     },
@@ -10,30 +46,6 @@
     },
     {
       "id": "dotcraft_resources:compressed/minecraft/netherite_block_3",
-      "required": false
-    },
-    {
-      "id": "dotcraft_resources:compressed/minecraft/netherite_block_4",
-      "required": false
-    },
-    {
-      "id": "dotcraft_resources:compressed/minecraft/netherite_block_5",
-      "required": false
-    },
-    {
-      "id": "dotcraft_resources:compressed/minecraft/netherite_block_6",
-      "required": false
-    },
-    {
-      "id": "dotcraft_resources:compressed/minecraft/netherite_block_7",
-      "required": false
-    },
-    {
-      "id": "dotcraft_resources:compressed/minecraft/netherite_block_8",
-      "required": false
-    },
-    {
-      "id": "dotcraft_resources:compressed/minecraft/netherite_block_9",
       "required": false
     },
     {
@@ -49,27 +61,15 @@
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/obsidian_4",
+      "id": "dotcraft_resources:compressed/minecraft/raw_gold_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/obsidian_5",
+      "id": "dotcraft_resources:compressed/minecraft/raw_gold_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/obsidian_6",
-      "required": false
-    },
-    {
-      "id": "dotcraft_resources:compressed/minecraft/obsidian_7",
-      "required": false
-    },
-    {
-      "id": "dotcraft_resources:compressed/minecraft/obsidian_8",
-      "required": false
-    },
-    {
-      "id": "dotcraft_resources:compressed/minecraft/obsidian_9",
+      "id": "dotcraft_resources:compressed/minecraft/raw_gold_block_6",
       "required": false
     }
   ]

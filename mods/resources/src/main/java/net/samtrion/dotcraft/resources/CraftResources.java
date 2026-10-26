@@ -7,6 +7,10 @@ import com.mojang.logging.LogUtils;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.ModContainer;
+import net.neoforged.fml.config.ModConfig;
+import net.neoforged.neoforge.registries.DeferredRegister;
+import net.neoforged.neoforge.registries.NeoForgeRegistries;
+import net.samtrion.dotcraft.resources.common.MaxTierCondition;
 import net.samtrion.dotcraft.resources.common.CompressedBlocks;
 
 /**
@@ -22,6 +26,9 @@ public class CraftResources {
     /** Shared logger used by all .Craft mods. */
     public static final Logger LOGGER = LogUtils.getLogger();
 
+    private static final DeferredRegister<com.mojang.serialization.MapCodec<? extends net.neoforged.neoforge.common.conditions.ICondition>> CONDITIONS =
+            DeferredRegister.create(NeoForgeRegistries.Keys.CONDITION_CODECS, MODID);
+
     /**
      * Constructs the mod; invoked by NeoForge on load.
      *
@@ -30,5 +37,8 @@ public class CraftResources {
      */
     public CraftResources(IEventBus modEventBus, ModContainer modContainer) {
         CompressedBlocks.register(modEventBus);
+        CONDITIONS.register("max_tier", () -> MaxTierCondition.CODEC);
+        CONDITIONS.register(modEventBus);
+        modContainer.registerConfig(ModConfig.Type.COMMON, CraftResourcesConfig.SPEC);
     }
 }

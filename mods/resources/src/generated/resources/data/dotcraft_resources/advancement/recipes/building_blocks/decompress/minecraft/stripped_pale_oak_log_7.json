@@ -1,4 +1,10 @@
 {
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 6
+    }
+  ],
   "parent": "minecraft:recipes/root",
   "criteria": {
     "has_compressed/minecraft/stripped_pale_oak_log_7": {
