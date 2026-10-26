@@ -1,0 +1,18 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": {
+      "force_translucent": true,
+      "sprite": "minecraft:block/ice"
+    },
+    "overlay": "dotcraft_resources:block/compressed_overlay_9",
+    "side": {
+      "force_translucent": true,
+      "sprite": "minecraft:block/ice"
+    },
+    "top": {
+      "force_translucent": true,
+      "sprite": "minecraft:block/ice"
+    }
+  }
+}
