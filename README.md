@@ -19,6 +19,7 @@ The shared material base of the .Craft mods. Other mods build on it instead of e
 
 - **Ores and raw materials:** new ores with world generation, plus the raw items, ingots and dusts they yield.
 - **Materials and alloys:** processed materials and alloys that serve as crafting ingredients for machines and equipment in the other mods, including intermediate forms such as plates, gears and rods.
+- **Charcoal block:** like the coal block (pickaxe, 16000 ticks of fuel, 3x3 / 1 to 9 charcoal, `c:storage_blocks/charcoal`) and itself a base of the compressed blocks.
 - **Compressed blocks:** 9 compression tiers (9 blocks per tier, up to 9^9) for a curated list of bulk blocks (stones, dirt, sand, gravel, metal and gem blocks, glass, terracotta, concrete, concrete powder, wool, planks and all logs and stems). Craft 3x3 up, 1 down to 9. One shared model; the tier shows as a two-tone (white/black, readable on light and dark blocks) riveted frame that grows with the tier. Hardness and the required tool grow with the tier: the base block's requirement for tiers 1-3, one material above for 4-6, two for 7-9 (gold skipped, capped at netherite; e.g. stone needs wood, so tiers 4-6 need stone, 7-9 copper). Blocks that need no tool stay free. Names use one translation key, so no per-block language entries.
 
 ### .Craft: Energy (`dotcraftenergy`)

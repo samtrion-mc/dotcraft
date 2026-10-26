@@ -1,5 +1,42 @@
 {
   "values": [
+    "dotcraftresources:charcoal_block",
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_1",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_2",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_3",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_7",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_8",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/dotcraftresources/charcoal_block_9",
+      "required": false
+    },
     {
       "id": "dotcraftresources:compressed/minecraft/amethyst_block_1",
       "required": false

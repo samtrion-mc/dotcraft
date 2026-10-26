@@ -1,5 +1,5 @@
 /**
- * Data generators of the resources mod, one provider per kind of data; wired up by {@code ResourcesDataGen}.
+ * Provider plugins for the compressed blocks, called after the plugins of the own blocks of the mod.
  */
 @NullMarked
 package net.samtrion.dotcraft.resources.datagen.compressed;
