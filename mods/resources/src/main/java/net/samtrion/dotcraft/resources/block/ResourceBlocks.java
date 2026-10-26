@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.common;
+package net.samtrion.dotcraft.resources.block;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -24,13 +24,17 @@ import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.samtrion.dotcraft.resources.CraftResources;
+import net.samtrion.dotcraft.resources.common.CompressedBase;
+import net.samtrion.dotcraft.resources.common.CompressedBases;
+import net.samtrion.dotcraft.resources.common.CompressedLook;
+import net.samtrion.dotcraft.resources.common.CompressedTier;
 import net.samtrion.dotcraft.resources.tool.ToolTier;
 
 /**
  * Registers {@link CompressedTier#MAX} compressed blocks, their items and a creative tab for every
  * {@link CompressedBase}.
  */
-public final class CompressedBlocks {
+public final class ResourceBlocks {
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(CraftResources.MODID);
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(CraftResources.MODID);
     private static final DeferredRegister<CreativeModeTab> TABS =
@@ -80,7 +84,7 @@ public final class CompressedBlocks {
         return new CompressedBlock(properties, base.block(), tier);
     }
 
-    private CompressedBlocks() {}
+    private ResourceBlocks() {}
 
     @SuppressWarnings("deprecation") // ofFullCopy would also copy the base block's loot table and name
     private static BlockBehaviour.Properties properties(CompressedBase base, int tier) {

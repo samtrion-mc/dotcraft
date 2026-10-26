@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.common;
+package net.samtrion.dotcraft.resources.block;
 
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.world.level.block.Block;

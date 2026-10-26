@@ -13,7 +13,7 @@ import net.neoforged.neoforge.client.event.RegisterColorHandlersEvent;
 import net.samtrion.dotcraft.resources.CraftResources;
 import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
-import net.samtrion.dotcraft.resources.common.CompressedBlocks;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedLook;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 
@@ -36,7 +36,7 @@ public final class CompressedTints {
                 .filter(base -> base.look == CompressedLook.GRASS)
                 .collect(Collectors.groupingBy(CompressedBase::tint, Collectors.flatMapping(
                         base -> java.util.stream.IntStream.rangeClosed(1, CompressedTier.MAX)
-                                .mapToObj(tier -> (Block) CompressedBlocks.block(base, tier).get()),
+                                .mapToObj(tier -> (Block) ResourceBlocks.block(base, tier).get()),
                         Collectors.toList())));
         byColor.forEach((color, blocks) ->
                 event.register(List.of(BlockTintSources.constant(color)), blocks.toArray(Block[]::new)));

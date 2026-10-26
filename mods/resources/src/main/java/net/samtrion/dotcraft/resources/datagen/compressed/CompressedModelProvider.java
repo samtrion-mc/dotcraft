@@ -17,7 +17,7 @@ import net.minecraft.world.level.block.Block;
 import net.samtrion.dotcraft.resources.CraftResources;
 import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
-import net.samtrion.dotcraft.resources.common.CompressedBlocks;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedLook;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 import net.samtrion.dotcraft.resources.datagen.DataGenIds;
@@ -48,7 +48,7 @@ public final class CompressedModelProvider extends ModelProvider {
         for (CompressedBase base : CompressedBases.enabled().toList()) {
             boolean tinted = base.look == CompressedLook.GRASS;
             for (int tier = 1; tier <= CompressedTier.MAX; tier++) {
-                Block block = CompressedBlocks.block(base, tier).get();
+                Block block = ResourceBlocks.block(base, tier).get();
                 var textures = new TextureMapping()
                         .put(TextureSlot.SIDE, texture(base, base.sideTexture()))
                         .put(TextureSlot.TOP, texture(base, base.endTexture()))

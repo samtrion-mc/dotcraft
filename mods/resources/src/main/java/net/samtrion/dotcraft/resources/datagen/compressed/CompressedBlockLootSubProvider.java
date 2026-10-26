@@ -11,7 +11,7 @@ import net.neoforged.neoforge.common.conditions.ModLoadedCondition;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.samtrion.dotcraft.resources.common.CompressedBase;
 import net.samtrion.dotcraft.resources.common.CompressedBases;
-import net.samtrion.dotcraft.resources.common.CompressedBlocks;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 
 /** Every compressed block drops itself. */
@@ -24,7 +24,7 @@ public final class CompressedBlockLootSubProvider extends BlockLootSubProvider {
     protected void generate() {
         for (CompressedBase base : CompressedBases.enabled().toList()) {
             for (int tier = 1; tier <= CompressedTier.MAX; tier++) {
-                Block block = CompressedBlocks.block(base, tier).get();
+                Block block = ResourceBlocks.block(base, tier).get();
                 if (base.modId().equals("minecraft")) {
                     dropSelf(block);
                 } else {
@@ -37,6 +37,6 @@ public final class CompressedBlockLootSubProvider extends BlockLootSubProvider {
 
     @Override
     protected Iterable<Block> getKnownBlocks() {
-        return CompressedBlocks.blocks().<Block>map(DeferredBlock::get).toList();
+        return ResourceBlocks.blocks().<Block>map(DeferredBlock::get).toList();
     }
 }

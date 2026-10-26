@@ -3,7 +3,7 @@ package net.samtrion.dotcraft.resources.datagen.compressed;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.samtrion.dotcraft.resources.CraftResources;
-import net.samtrion.dotcraft.resources.common.CompressedBlock;
+import net.samtrion.dotcraft.resources.block.CompressedBlock;
 
 /** One translation for the name pattern instead of one per block, plus the creative tab title. */
 public final class CompressedLanguageProvider extends LanguageProvider {

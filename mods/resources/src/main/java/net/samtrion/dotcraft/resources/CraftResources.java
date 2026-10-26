@@ -11,7 +11,7 @@ import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.samtrion.dotcraft.resources.common.conditions.MaxTierCondition;
-import net.samtrion.dotcraft.resources.common.CompressedBlocks;
+import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 
 /**
  * Entry point of the {@code .Craft: Resources} mod.
@@ -36,7 +36,7 @@ public class CraftResources {
      * @param modContainer the container of this mod
      */
     public CraftResources(IEventBus modEventBus, ModContainer modContainer) {
-        CompressedBlocks.register(modEventBus);
+        ResourceBlocks.register(modEventBus);
         CONDITIONS.register("max_tier", () -> MaxTierCondition.CODEC);
         CONDITIONS.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.COMMON, CraftResourcesConfig.SPEC);
