@@ -49,6 +49,18 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/black_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/black_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/black_glazed_terracotta_6",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/black_terracotta_4",
       "required": false
     },
@@ -82,6 +94,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/blue_concrete_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/blue_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/blue_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/blue_glazed_terracotta_6",
       "required": false
     },
     {
@@ -130,6 +154,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/brown_concrete_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/brown_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/brown_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/brown_glazed_terracotta_6",
       "required": false
     },
     {
@@ -349,6 +385,18 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/cyan_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/cyan_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/cyan_glazed_terracotta_6",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/cyan_terracotta_4",
       "required": false
     },
@@ -481,6 +529,18 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/gray_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/gray_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/gray_glazed_terracotta_6",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/gray_terracotta_4",
       "required": false
     },
@@ -502,6 +562,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/green_concrete_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/green_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/green_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/green_glazed_terracotta_6",
       "required": false
     },
     {
@@ -565,6 +637,18 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/light_blue_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/light_blue_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/light_blue_glazed_terracotta_6",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/light_blue_terracotta_4",
       "required": false
     },
@@ -586,6 +670,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/light_gray_concrete_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/light_gray_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/light_gray_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/light_gray_glazed_terracotta_6",
       "required": false
     },
     {
@@ -613,6 +709,18 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/lime_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/lime_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/lime_glazed_terracotta_6",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/lime_terracotta_4",
       "required": false
     },
@@ -634,6 +742,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/magenta_concrete_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/magenta_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/magenta_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/magenta_glazed_terracotta_6",
       "required": false
     },
     {
@@ -721,6 +841,18 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/orange_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/orange_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/orange_glazed_terracotta_6",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/orange_terracotta_4",
       "required": false
     },
@@ -742,6 +874,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/pink_concrete_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/pink_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/pink_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/pink_glazed_terracotta_6",
       "required": false
     },
     {
@@ -802,6 +946,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/purple_concrete_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purple_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purple_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/purple_glazed_terracotta_6",
       "required": false
     },
     {
@@ -886,6 +1042,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/red_concrete_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/red_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/red_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/red_glazed_terracotta_6",
       "required": false
     },
     {
@@ -1033,6 +1201,18 @@
       "required": false
     },
     {
+      "id": "dotcraftresources:compressed/minecraft/white_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/white_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/white_glazed_terracotta_6",
+      "required": false
+    },
+    {
       "id": "dotcraftresources:compressed/minecraft/white_terracotta_4",
       "required": false
     },
@@ -1054,6 +1234,18 @@
     },
     {
       "id": "dotcraftresources:compressed/minecraft/yellow_concrete_6",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/yellow_glazed_terracotta_4",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/yellow_glazed_terracotta_5",
+      "required": false
+    },
+    {
+      "id": "dotcraftresources:compressed/minecraft/yellow_glazed_terracotta_6",
       "required": false
     },
     {

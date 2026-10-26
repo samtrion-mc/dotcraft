@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 1
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_black_glazed_terracotta": {
+      "conditions": {
+        "items": [
+          {
+            "items": "minecraft:black_glazed_terracotta"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:compress/minecraft/black_glazed_terracotta_1"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_black_glazed_terracotta"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:compress/minecraft/black_glazed_terracotta_1"
+    ]
+  }
+}
