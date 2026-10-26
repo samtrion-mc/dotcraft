@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.Block;
  * A compressed block. The name is composed from the base block, so a single translation key
  * covers every compressed block in every language.
  */
-public class CompressedBlock extends Block {
+public class CompressedBlock extends Block implements Compressed {
     /** Translation key of the shared name pattern, arguments: base name, tier. */
     public static final String NAME_KEY = "block.dotcraftresources.compressed";
 
@@ -26,6 +26,11 @@ public class CompressedBlock extends Block {
         super(properties);
         this.base = base;
         this.tier = tier;
+    }
+
+    @Override
+    public int tier() {
+        return tier;
     }
 
     @Override
