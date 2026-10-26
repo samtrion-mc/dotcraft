@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 8
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraftresources:compressed/minecraft/nether_bricks_9"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraftresources:compressed/minecraft/nether_bricks_8"
+  }
+}

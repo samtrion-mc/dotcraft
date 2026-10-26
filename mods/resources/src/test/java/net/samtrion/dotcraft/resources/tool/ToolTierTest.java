@@ -53,7 +53,7 @@ class ToolTierTest {
         assertEquals("neoforge:needs_wood_tool", ToolTier.WOOD.needsTag().location().toString());
         assertEquals("neoforge:needs_gold_tool", ToolTier.GOLD.needsTag().location().toString());
         assertEquals("neoforge:needs_netherite_tool", ToolTier.NETHERITE.needsTag().location().toString());
-        assertEquals("dotcraft_resources:needs_copper_tool", ToolTier.COPPER.needsTag().location().toString());
+        assertEquals("dotcraftresources:needs_copper_tool", ToolTier.COPPER.needsTag().location().toString());
         assertEquals("minecraft:needs_iron_tool", ToolTier.IRON.needsTag().location().toString());
         assertEquals(ToolTier.materials().count(), ToolTier.materials().map(ToolTier::needsTag).distinct().count());
     }

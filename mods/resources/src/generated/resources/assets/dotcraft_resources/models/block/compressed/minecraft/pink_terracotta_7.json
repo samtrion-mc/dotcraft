@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraft_resources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/pink_terracotta",
-    "overlay": "dotcraft_resources:block/compressed_overlay_7",
-    "side": "minecraft:block/pink_terracotta",
-    "top": "minecraft:block/pink_terracotta"
-  }
-}

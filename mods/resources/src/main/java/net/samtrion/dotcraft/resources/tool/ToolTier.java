@@ -22,7 +22,7 @@ import net.samtrion.dotcraft.resources.CraftResources;
  * The block lists live in one {@code needs_<material>_tool} tag per tier and the
  * {@code incorrect_for_*} tags only reference them. Stone, iron and diamond use the vanilla needs tags, wood, gold
  * and netherite those of NeoForge ({@link Tags.Blocks}); NeoForge already adds the netherite tag to every
- * incorrect tag. Copper has no common tag and uses {@code dotcraft_resources:needs_copper_tool}.
+ * incorrect tag. Copper has no common tag and uses {@code dotcraftresources:needs_copper_tool}.
  * <p>
  * Gold ranks equal to wood as in vanilla, so no vanilla entry contradicts the order.
  */

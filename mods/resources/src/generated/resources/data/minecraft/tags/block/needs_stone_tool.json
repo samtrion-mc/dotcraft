@@ -1,1071 +1,1071 @@
 {
   "values": [
     {
-      "id": "dotcraft_resources:compressed/minecraft/amethyst_block_4",
+      "id": "dotcraftresources:compressed/minecraft/amethyst_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/amethyst_block_5",
+      "id": "dotcraftresources:compressed/minecraft/amethyst_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/amethyst_block_6",
+      "id": "dotcraftresources:compressed/minecraft/amethyst_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/andesite_4",
+      "id": "dotcraftresources:compressed/minecraft/andesite_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/andesite_5",
+      "id": "dotcraftresources:compressed/minecraft/andesite_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/andesite_6",
+      "id": "dotcraftresources:compressed/minecraft/andesite_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/basalt_4",
+      "id": "dotcraftresources:compressed/minecraft/basalt_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/basalt_5",
+      "id": "dotcraftresources:compressed/minecraft/basalt_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/basalt_6",
+      "id": "dotcraftresources:compressed/minecraft/basalt_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/black_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/black_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/black_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/black_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/black_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/black_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blackstone_4",
+      "id": "dotcraftresources:compressed/minecraft/blackstone_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blackstone_5",
+      "id": "dotcraftresources:compressed/minecraft/blackstone_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blackstone_6",
+      "id": "dotcraftresources:compressed/minecraft/blackstone_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/blue_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/blue_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/blue_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/blue_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/blue_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/blue_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/bone_block_4",
+      "id": "dotcraftresources:compressed/minecraft/bone_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/bone_block_5",
+      "id": "dotcraftresources:compressed/minecraft/bone_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/bone_block_6",
+      "id": "dotcraftresources:compressed/minecraft/bone_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/brown_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/brown_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/brown_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/brown_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/brown_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/brown_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/calcite_4",
+      "id": "dotcraftresources:compressed/minecraft/calcite_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/calcite_5",
+      "id": "dotcraftresources:compressed/minecraft/calcite_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/calcite_6",
+      "id": "dotcraftresources:compressed/minecraft/calcite_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_deepslate_4",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_deepslate_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_deepslate_5",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_deepslate_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_deepslate_6",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_deepslate_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_nether_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_nether_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_nether_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_nether_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_nether_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_nether_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_polished_blackstone_4",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_polished_blackstone_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_polished_blackstone_5",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_polished_blackstone_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_polished_blackstone_6",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_polished_blackstone_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_quartz_block_4",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_quartz_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_quartz_block_5",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_quartz_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_quartz_block_6",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_quartz_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_resin_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_resin_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_resin_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_resin_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_resin_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_resin_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_stone_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_stone_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_stone_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_stone_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/chiseled_stone_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/chiseled_stone_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/coal_block_4",
+      "id": "dotcraftresources:compressed/minecraft/coal_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/coal_block_5",
+      "id": "dotcraftresources:compressed/minecraft/coal_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/coal_block_6",
+      "id": "dotcraftresources:compressed/minecraft/coal_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cobbled_deepslate_4",
+      "id": "dotcraftresources:compressed/minecraft/cobbled_deepslate_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cobbled_deepslate_5",
+      "id": "dotcraftresources:compressed/minecraft/cobbled_deepslate_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cobbled_deepslate_6",
+      "id": "dotcraftresources:compressed/minecraft/cobbled_deepslate_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cobblestone_4",
+      "id": "dotcraftresources:compressed/minecraft/cobblestone_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cobblestone_5",
+      "id": "dotcraftresources:compressed/minecraft/cobblestone_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cobblestone_6",
+      "id": "dotcraftresources:compressed/minecraft/cobblestone_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/copper_block_1",
+      "id": "dotcraftresources:compressed/minecraft/copper_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/copper_block_2",
+      "id": "dotcraftresources:compressed/minecraft/copper_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/copper_block_3",
+      "id": "dotcraftresources:compressed/minecraft/copper_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_deepslate_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/cracked_deepslate_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_deepslate_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/cracked_deepslate_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_deepslate_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/cracked_deepslate_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_deepslate_tiles_4",
+      "id": "dotcraftresources:compressed/minecraft/cracked_deepslate_tiles_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_deepslate_tiles_5",
+      "id": "dotcraftresources:compressed/minecraft/cracked_deepslate_tiles_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_deepslate_tiles_6",
+      "id": "dotcraftresources:compressed/minecraft/cracked_deepslate_tiles_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_nether_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/cracked_nether_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_nether_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/cracked_nether_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_nether_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/cracked_nether_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_polished_blackstone_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/cracked_polished_blackstone_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_polished_blackstone_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/cracked_polished_blackstone_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_polished_blackstone_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/cracked_polished_blackstone_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_stone_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/cracked_stone_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_stone_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/cracked_stone_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cracked_stone_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/cracked_stone_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/cyan_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/cyan_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/cyan_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/cyan_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/cyan_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/cyan_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dark_prismarine_4",
+      "id": "dotcraftresources:compressed/minecraft/dark_prismarine_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dark_prismarine_5",
+      "id": "dotcraftresources:compressed/minecraft/dark_prismarine_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dark_prismarine_6",
+      "id": "dotcraftresources:compressed/minecraft/dark_prismarine_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/deepslate_4",
+      "id": "dotcraftresources:compressed/minecraft/deepslate_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/deepslate_5",
+      "id": "dotcraftresources:compressed/minecraft/deepslate_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/deepslate_6",
+      "id": "dotcraftresources:compressed/minecraft/deepslate_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/deepslate_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/deepslate_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/deepslate_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/deepslate_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/deepslate_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/deepslate_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/deepslate_tiles_4",
+      "id": "dotcraftresources:compressed/minecraft/deepslate_tiles_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/deepslate_tiles_5",
+      "id": "dotcraftresources:compressed/minecraft/deepslate_tiles_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/deepslate_tiles_6",
+      "id": "dotcraftresources:compressed/minecraft/deepslate_tiles_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/diorite_4",
+      "id": "dotcraftresources:compressed/minecraft/diorite_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/diorite_5",
+      "id": "dotcraftresources:compressed/minecraft/diorite_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/diorite_6",
+      "id": "dotcraftresources:compressed/minecraft/diorite_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dripstone_block_4",
+      "id": "dotcraftresources:compressed/minecraft/dripstone_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dripstone_block_5",
+      "id": "dotcraftresources:compressed/minecraft/dripstone_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/dripstone_block_6",
+      "id": "dotcraftresources:compressed/minecraft/dripstone_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/end_stone_4",
+      "id": "dotcraftresources:compressed/minecraft/end_stone_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/end_stone_5",
+      "id": "dotcraftresources:compressed/minecraft/end_stone_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/end_stone_6",
+      "id": "dotcraftresources:compressed/minecraft/end_stone_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/end_stone_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/end_stone_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/end_stone_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/end_stone_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/end_stone_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/end_stone_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/granite_4",
+      "id": "dotcraftresources:compressed/minecraft/granite_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/granite_5",
+      "id": "dotcraftresources:compressed/minecraft/granite_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/granite_6",
+      "id": "dotcraftresources:compressed/minecraft/granite_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/gray_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/gray_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/gray_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/gray_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/gray_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/gray_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/green_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/green_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/green_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/green_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/green_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/green_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/ice_4",
+      "id": "dotcraftresources:compressed/minecraft/ice_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/ice_5",
+      "id": "dotcraftresources:compressed/minecraft/ice_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/ice_6",
+      "id": "dotcraftresources:compressed/minecraft/ice_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/iron_block_1",
+      "id": "dotcraftresources:compressed/minecraft/iron_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/iron_block_2",
+      "id": "dotcraftresources:compressed/minecraft/iron_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/iron_block_3",
+      "id": "dotcraftresources:compressed/minecraft/iron_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lapis_block_1",
+      "id": "dotcraftresources:compressed/minecraft/lapis_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lapis_block_2",
+      "id": "dotcraftresources:compressed/minecraft/lapis_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lapis_block_3",
+      "id": "dotcraftresources:compressed/minecraft/lapis_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/lime_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/lime_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/lime_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/lime_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/lime_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/lime_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/magenta_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/magenta_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/magenta_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/magenta_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/magenta_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/magenta_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magma_block_4",
+      "id": "dotcraftresources:compressed/minecraft/magma_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magma_block_5",
+      "id": "dotcraftresources:compressed/minecraft/magma_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magma_block_6",
+      "id": "dotcraftresources:compressed/minecraft/magma_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/mossy_stone_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/mossy_stone_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/mossy_stone_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/mossy_stone_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/mossy_stone_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/mossy_stone_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/mud_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/mud_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/mud_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/mud_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/mud_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/mud_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/nether_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/nether_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/nether_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/nether_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/netherrack_4",
+      "id": "dotcraftresources:compressed/minecraft/netherrack_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/netherrack_5",
+      "id": "dotcraftresources:compressed/minecraft/netherrack_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/netherrack_6",
+      "id": "dotcraftresources:compressed/minecraft/netherrack_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/orange_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/orange_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/orange_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/orange_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/orange_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/orange_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/pink_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/pink_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/pink_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/pink_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/pink_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/pink_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/polished_blackstone_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/polished_blackstone_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/polished_blackstone_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/polished_blackstone_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/polished_blackstone_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/polished_blackstone_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/prismarine_4",
+      "id": "dotcraftresources:compressed/minecraft/prismarine_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/prismarine_5",
+      "id": "dotcraftresources:compressed/minecraft/prismarine_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/prismarine_6",
+      "id": "dotcraftresources:compressed/minecraft/prismarine_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/prismarine_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/prismarine_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/prismarine_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/prismarine_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/prismarine_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/prismarine_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/purple_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/purple_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/purple_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/purple_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/purple_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/purple_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/quartz_block_4",
+      "id": "dotcraftresources:compressed/minecraft/quartz_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/quartz_block_5",
+      "id": "dotcraftresources:compressed/minecraft/quartz_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/quartz_block_6",
+      "id": "dotcraftresources:compressed/minecraft/quartz_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/quartz_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/quartz_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/quartz_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/quartz_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/quartz_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/quartz_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/quartz_pillar_4",
+      "id": "dotcraftresources:compressed/minecraft/quartz_pillar_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/quartz_pillar_5",
+      "id": "dotcraftresources:compressed/minecraft/quartz_pillar_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/quartz_pillar_6",
+      "id": "dotcraftresources:compressed/minecraft/quartz_pillar_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_copper_block_1",
+      "id": "dotcraftresources:compressed/minecraft/raw_copper_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_copper_block_2",
+      "id": "dotcraftresources:compressed/minecraft/raw_copper_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_copper_block_3",
+      "id": "dotcraftresources:compressed/minecraft/raw_copper_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_iron_block_1",
+      "id": "dotcraftresources:compressed/minecraft/raw_iron_block_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_iron_block_2",
+      "id": "dotcraftresources:compressed/minecraft/raw_iron_block_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/raw_iron_block_3",
+      "id": "dotcraftresources:compressed/minecraft/raw_iron_block_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/red_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/red_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/red_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_nether_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/red_nether_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_nether_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/red_nether_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_nether_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/red_nether_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/red_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/red_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/red_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/redstone_block_4",
+      "id": "dotcraftresources:compressed/minecraft/redstone_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/redstone_block_5",
+      "id": "dotcraftresources:compressed/minecraft/redstone_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/redstone_block_6",
+      "id": "dotcraftresources:compressed/minecraft/redstone_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/resin_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/resin_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/resin_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/resin_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/resin_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/resin_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/smooth_quartz_4",
+      "id": "dotcraftresources:compressed/minecraft/smooth_quartz_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/smooth_quartz_5",
+      "id": "dotcraftresources:compressed/minecraft/smooth_quartz_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/smooth_quartz_6",
+      "id": "dotcraftresources:compressed/minecraft/smooth_quartz_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/smooth_stone_4",
+      "id": "dotcraftresources:compressed/minecraft/smooth_stone_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/smooth_stone_5",
+      "id": "dotcraftresources:compressed/minecraft/smooth_stone_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/smooth_stone_6",
+      "id": "dotcraftresources:compressed/minecraft/smooth_stone_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/snow_block_4",
+      "id": "dotcraftresources:compressed/minecraft/snow_block_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/snow_block_5",
+      "id": "dotcraftresources:compressed/minecraft/snow_block_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/snow_block_6",
+      "id": "dotcraftresources:compressed/minecraft/snow_block_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/stone_4",
+      "id": "dotcraftresources:compressed/minecraft/stone_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/stone_5",
+      "id": "dotcraftresources:compressed/minecraft/stone_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/stone_6",
+      "id": "dotcraftresources:compressed/minecraft/stone_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/stone_bricks_4",
+      "id": "dotcraftresources:compressed/minecraft/stone_bricks_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/stone_bricks_5",
+      "id": "dotcraftresources:compressed/minecraft/stone_bricks_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/stone_bricks_6",
+      "id": "dotcraftresources:compressed/minecraft/stone_bricks_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/tuff_4",
+      "id": "dotcraftresources:compressed/minecraft/tuff_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/tuff_5",
+      "id": "dotcraftresources:compressed/minecraft/tuff_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/tuff_6",
+      "id": "dotcraftresources:compressed/minecraft/tuff_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/white_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/white_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/white_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/white_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/white_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/white_terracotta_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_4",
+      "id": "dotcraftresources:compressed/minecraft/yellow_concrete_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_5",
+      "id": "dotcraftresources:compressed/minecraft/yellow_concrete_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_concrete_6",
+      "id": "dotcraftresources:compressed/minecraft/yellow_concrete_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_terracotta_4",
+      "id": "dotcraftresources:compressed/minecraft/yellow_terracotta_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_terracotta_5",
+      "id": "dotcraftresources:compressed/minecraft/yellow_terracotta_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_terracotta_6",
+      "id": "dotcraftresources:compressed/minecraft/yellow_terracotta_6",
       "required": false
     }
   ]

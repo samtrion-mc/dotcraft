@@ -1,579 +1,579 @@
 {
   "values": [
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/black_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/black_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/black_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/black_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/black_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/black_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/black_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/black_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/black_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/black_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/blue_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/blue_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/blue_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/blue_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/blue_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/blue_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/blue_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/blue_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/blue_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/blue_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/brown_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/brown_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/brown_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/brown_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/brown_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/brown_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/brown_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/brown_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/brown_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/brown_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/cyan_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/cyan_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/cyan_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/cyan_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/cyan_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/cyan_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/cyan_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/cyan_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/cyan_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/cyan_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/gray_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/gray_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/gray_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/gray_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/gray_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/gray_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/gray_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/gray_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/gray_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/gray_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/green_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/green_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/green_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/green_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/green_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/green_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/green_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/green_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/green_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/green_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_blue_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/light_blue_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/light_gray_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/light_gray_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/lime_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/lime_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/lime_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/lime_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/lime_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/lime_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/lime_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/lime_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/lime_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/lime_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/magenta_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/magenta_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/magenta_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/magenta_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/magenta_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/magenta_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/magenta_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/magenta_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/magenta_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/magenta_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/orange_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/orange_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/orange_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/orange_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/orange_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/orange_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/orange_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/orange_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/orange_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/orange_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/pink_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/pink_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/pink_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/pink_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/pink_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/pink_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/pink_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/pink_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/pink_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/pink_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/purple_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/purple_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/purple_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/purple_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/purple_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/purple_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/purple_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/purple_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/purple_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/purple_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/red_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/red_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/red_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/red_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/red_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/red_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/red_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/red_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/red_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/red_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/white_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/white_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/white_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/white_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/white_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/white_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/white_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/white_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/white_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/white_wool_9",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_wool_1",
+      "id": "dotcraftresources:compressed/minecraft/yellow_wool_1",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_wool_2",
+      "id": "dotcraftresources:compressed/minecraft/yellow_wool_2",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_wool_3",
+      "id": "dotcraftresources:compressed/minecraft/yellow_wool_3",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_wool_4",
+      "id": "dotcraftresources:compressed/minecraft/yellow_wool_4",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_wool_5",
+      "id": "dotcraftresources:compressed/minecraft/yellow_wool_5",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_wool_6",
+      "id": "dotcraftresources:compressed/minecraft/yellow_wool_6",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_wool_7",
+      "id": "dotcraftresources:compressed/minecraft/yellow_wool_7",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_wool_8",
+      "id": "dotcraftresources:compressed/minecraft/yellow_wool_8",
       "required": false
     },
     {
-      "id": "dotcraft_resources:compressed/minecraft/yellow_wool_9",
+      "id": "dotcraftresources:compressed/minecraft/yellow_wool_9",
       "required": false
     }
   ]

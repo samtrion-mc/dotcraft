@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/green_terracotta",
+    "overlay": "dotcraftresources:block/compressed_overlay_4",
+    "side": "minecraft:block/green_terracotta",
+    "top": "minecraft:block/green_terracotta"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/dirt",
+    "overlay": "dotcraftresources:block/compressed_overlay_2",
+    "side": "minecraft:block/dirt",
+    "top": "minecraft:block/dirt"
+  }
+}

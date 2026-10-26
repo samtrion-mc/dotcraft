@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraft_resources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/amethyst_block",
-    "overlay": "dotcraft_resources:block/compressed_overlay_9",
-    "side": "minecraft:block/amethyst_block",
-    "top": "minecraft:block/amethyst_block"
-  }
-}

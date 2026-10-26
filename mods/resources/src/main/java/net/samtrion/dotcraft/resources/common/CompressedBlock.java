@@ -10,7 +10,7 @@ import net.minecraft.world.level.block.Block;
  */
 public class CompressedBlock extends Block {
     /** Translation key of the shared name pattern, arguments: base name, tier. */
-    public static final String NAME_KEY = "block.dotcraft_resources.compressed";
+    public static final String NAME_KEY = "block.dotcraftresources.compressed";
 
     private final Block base;
     private final int tier;

@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/prismarine",
+    "overlay": "dotcraftresources:block/compressed_overlay_7",
+    "side": "minecraft:block/prismarine",
+    "top": "minecraft:block/prismarine"
+  }
+}

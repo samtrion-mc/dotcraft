@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraft_resources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/soul_soil",
-    "overlay": "dotcraft_resources:block/compressed_overlay_8",
-    "side": "minecraft:block/soul_soil",
-    "top": "minecraft:block/soul_soil"
-  }
-}

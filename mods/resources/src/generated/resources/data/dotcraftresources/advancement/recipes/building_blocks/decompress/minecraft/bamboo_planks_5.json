@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 4
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/minecraft/bamboo_planks_5": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraftresources:compressed/minecraft/bamboo_planks_5"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:decompress/minecraft/bamboo_planks_5"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/minecraft/bamboo_planks_5"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:decompress/minecraft/bamboo_planks_5"
+    ]
+  }
+}

@@ -11,7 +11,7 @@ public class EnergyJeiPlugin implements IModPlugin {
     /**
      * {@inheritDoc}
      *
-     * @return the identifier {@code dotcraft_energy:jei}
+     * @return the identifier {@code dotcraftenergy:jei}
      */
     @Override
     public Identifier getPluginUid() {

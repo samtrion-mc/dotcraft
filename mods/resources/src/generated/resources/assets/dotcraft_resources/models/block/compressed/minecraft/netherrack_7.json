@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraft_resources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/netherrack",
-    "overlay": "dotcraft_resources:block/compressed_overlay_7",
-    "side": "minecraft:block/netherrack",
-    "top": "minecraft:block/netherrack"
-  }
-}

@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/blue_concrete",
+    "overlay": "dotcraftresources:block/compressed_overlay_7",
+    "side": "minecraft:block/blue_concrete",
+    "top": "minecraft:block/blue_concrete"
+  }
+}

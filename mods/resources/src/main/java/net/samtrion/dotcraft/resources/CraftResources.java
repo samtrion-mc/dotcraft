@@ -21,7 +21,7 @@ import net.samtrion.dotcraft.resources.common.CompressedBlocks;
 @Mod(CraftResources.MODID)
 public class CraftResources {
     /** Mod id of the resources mod. */
-    public static final String MODID = "dotcraft_resources";
+    public static final String MODID = "dotcraftresources";
 
     /** Shared logger used by all .Craft mods. */
     public static final Logger LOGGER = LogUtils.getLogger();

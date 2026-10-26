@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 1
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": "minecraft:birch_wood"
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "id": "dotcraftresources:compressed/minecraft/birch_wood_1"
+  }
+}

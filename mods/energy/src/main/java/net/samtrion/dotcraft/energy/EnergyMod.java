@@ -17,7 +17,7 @@ import net.samtrion.dotcraft.resources.CraftResources;
 @Mod(EnergyMod.MODID)
 public class EnergyMod {
     /** Mod id of the energy mod. */
-    public static final String MODID = "dotcraft_energy";
+    public static final String MODID = "dotcraftenergy";
 
     /**
      * Constructs the mod; invoked by NeoForge on load.

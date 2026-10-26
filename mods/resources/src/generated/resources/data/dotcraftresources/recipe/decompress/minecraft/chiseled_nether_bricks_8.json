@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 7
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraftresources:compressed/minecraft/chiseled_nether_bricks_8"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraftresources:compressed/minecraft/chiseled_nether_bricks_7"
+  }
+}

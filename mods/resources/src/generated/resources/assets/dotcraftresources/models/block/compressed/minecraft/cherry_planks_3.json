@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/cherry_planks",
+    "overlay": "dotcraftresources:block/compressed_overlay_3",
+    "side": "minecraft:block/cherry_planks",
+    "top": "minecraft:block/cherry_planks"
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/minecraft/mangrove_log_1": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraftresources:compressed/minecraft/mangrove_log_1"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:decompress/minecraft/mangrove_log_1"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/minecraft/mangrove_log_1"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:decompress/minecraft/mangrove_log_1"
+    ]
+  }
+}

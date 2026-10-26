@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraft_resources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/pumpkin_top",
-    "overlay": "dotcraft_resources:block/compressed_overlay_8",
-    "side": "minecraft:block/pumpkin_side",
-    "top": "minecraft:block/pumpkin_top"
-  }
-}

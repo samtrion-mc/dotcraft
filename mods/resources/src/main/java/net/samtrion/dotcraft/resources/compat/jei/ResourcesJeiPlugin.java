@@ -24,7 +24,7 @@ public class ResourcesJeiPlugin implements IModPlugin {
     /**
      * {@inheritDoc}
      *
-     * @return the identifier {@code dotcraft_resources:jei}
+     * @return the identifier {@code dotcraftresources:jei}
      */
     @Override
     public Identifier getPluginUid() {

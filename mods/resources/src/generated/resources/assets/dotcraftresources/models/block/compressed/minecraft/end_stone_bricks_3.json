@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/end_stone_bricks",
+    "overlay": "dotcraftresources:block/compressed_overlay_3",
+    "side": "minecraft:block/end_stone_bricks",
+    "top": "minecraft:block/end_stone_bricks"
+  }
+}

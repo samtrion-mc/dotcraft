@@ -4,7 +4,7 @@ Monorepo of NeoForge mods for Minecraft 26.1.2 (NeoForge 26.1.2.124, Java 25).
 
 ## Layout
 
-- `mods/<name>/` - one content mod per directory (`:mods:<name>`, mod id `dotcraft_<name>`, package `net.samtrion.dotcraft.<name>`). Metadata lives in the mod's `gradle.properties` (`mod_id`, `mod_name`, `mod_description`).
+- `mods/<name>/` - one content mod per directory (`:mods:<name>`, mod id `dotcraft<name>`, package `net.samtrion.dotcraft.<name>`). Metadata lives in the mod's `gradle.properties` (`mod_id`, `mod_name`, `mod_description`).
 - `dev/` - runs all mods together in one game. Every run of every project, also single mods, uses `run/` as game directory (shared saves, config and `run/mods`).
 - `build-logic/` - convention plugins (`dotcraft.neoforge-base`, `dotcraft.neoforge-mod`, `dotcraft.root`).
 - `.githooks/` - commit message check.
@@ -13,7 +13,7 @@ All mods share one version, derived from git tags by git-semver.
 
 ## Mods
 
-### .Craft: Resources (`dotcraft_resources`)
+### .Craft: Resources (`dotcraftresources`)
 
 The shared material base of the .Craft mods. Other mods build on it instead of each defining their own raw materials.
 
@@ -21,7 +21,7 @@ The shared material base of the .Craft mods. Other mods build on it instead of e
 - **Materials and alloys:** processed materials and alloys that serve as crafting ingredients for machines and equipment in the other mods, including intermediate forms such as plates, gears and rods.
 - **Compressed blocks:** 9 compression tiers (9 blocks per tier, up to 9^9) for a curated list of bulk blocks (stones, dirt, sand, gravel, metal and gem blocks, glass, terracotta, concrete, concrete powder, wool, planks and all logs and stems). Craft 3x3 up, 1 down to 9. One shared model; the tier shows as a two-tone (white/black, readable on light and dark blocks) riveted frame that grows with the tier (`tools/generate_overlays.py`). Hardness and the required tool grow with the tier: the base block's requirement for tiers 1-3, one material above for 4-6, two for 7-9 (gold skipped, capped at netherite; e.g. stone needs wood, so tiers 4-6 need stone, 7-9 copper). Blocks that need no tool stay free. Names use one translation key, so no per-block language entries.
 
-### .Craft: Energy (`dotcraft_energy`)
+### .Craft: Energy (`dotcraftenergy`)
 
 Adds an energy system to the game: power is produced, stored and consumed. Depends on Resources for its materials.
 
@@ -37,7 +37,7 @@ Resources: compressed blocks are implemented, the rest is planned. Energy is a s
 
 ```
 ./gradlew build                 # build and check everything
-./gradlew :dev:runClient        # all mods + JEI/Jade (REI is disabled for now; -Pdev.mods=dotcraft_resources,dotcraft_energy to limit, -Pdev.noCompat to drop JEI/Jade/REI)
+./gradlew :dev:runClient        # all mods + JEI/Jade (REI is disabled for now; -Pdev.mods=dotcraftresources,dotcraftenergy to limit, -Pdev.noCompat to drop JEI/Jade/REI)
 ./gradlew :mods:energy:runClient  # a single mod (same run/)
 ./gradlew newMod --id=magic --name="Magic" --depends=resources [--no-compat]
 ./gradlew generateData  # regenerate src/generated/resources of every mod (or :mods:<mod>:generateData) (models, lang, recipes, loot, tags); CI fails if it is stale
@@ -46,7 +46,7 @@ Resources: compressed blocks are implemented, the rest is planned. Energy is a s
 
 ## Configuration
 
-`config/dotcraft_resources-common.toml` (applies after a restart or `/reload`):
+`config/dotcraftresources-common.toml` (applies after a restart or `/reload`):
 
 - `maxCompressLevel` (1-9, default 9): highest craftable compression level. Recipes that output a higher level are disabled; the decompress recipe of the first disabled level stays so existing blocks are not stuck.
 

@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraftresources:compressed/minecraft/lapis_block_1"
+  ],
+  "result": {
+    "count": 9,
+    "id": "minecraft:lapis_block"
+  }
+}

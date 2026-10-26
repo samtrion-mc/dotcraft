@@ -44,7 +44,7 @@ abstract class NewModTask extends DefaultTask {
 
         def pkg = "net.samtrion.dotcraft.${id.replace('-', '')}"
         def cls = id.split('-').collect { it.capitalize() }.join('') + 'Mod'
-        def fullId = "dotcraft_${id.replace('-', '_')}"
+        def fullId = "dotcraft${id.replace('-', '')}"
         def pkgDir = new File(dir, "src/main/java/${pkg.replace('.', '/')}")
 
         def write = { File f, String text -> f.parentFile.mkdirs(); f.text = text.stripIndent().stripLeading() }
@@ -131,10 +131,10 @@ abstract class NewModTask extends DefaultTask {
 
             /** Unit tests for {@link $cls}. */
             class ${cls}Test {
-                /** The mod id must follow the {@code dotcraft_<name>} convention used by the scaffold. */
+                /** The mod id must follow the {@code dotcraft<name>} convention used by the scaffold. */
                 @Test
                 void modIdFollowsConvention() {
-                    assertTrue(${cls}.MODID.matches("dotcraft_[a-z0-9_]+"), ${cls}.MODID);
+                    assertTrue(${cls}.MODID.matches("dotcraft[a-z]+"), ${cls}.MODID);
                 }
             }
             """)
@@ -221,7 +221,7 @@ abstract class NewModTask extends DefaultTask {
             '''.stripIndent() +
                 dep('neoforge', 'required', '[${neo_version},)', 'NONE', 'BOTH') +
                 dep('minecraft', 'required', '${minecraft_version_range}', 'NONE', 'BOTH') +
-                deps.collect { dep("dotcraft_${it.replace('-', '_')}", 'required', '[${mod_version},)', 'AFTER', 'BOTH') }.join('') +
+                deps.collect { dep("dotcraft${it.replace('-', '')}", 'required', '[${mod_version},)', 'AFTER', 'BOTH') }.join('') +
                 (compat ? dep('jei', 'optional', '${jei_version_range}', 'AFTER', 'CLIENT', 'JEI integration') +
                         dep('jade', 'optional', '${jade_version_range}', 'AFTER', 'BOTH', 'Jade integration') +
                         dep('roughlyenoughitems', 'optional', '${rei_version_range}', 'AFTER', 'CLIENT', 'REI integration') : '')

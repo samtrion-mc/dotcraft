@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/diorite",
+    "overlay": "dotcraftresources:block/compressed_overlay_8",
+    "side": "minecraft:block/diorite",
+    "top": "minecraft:block/diorite"
+  }
+}

@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraft_resources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/magma",
-    "overlay": "dotcraft_resources:block/compressed_overlay_9",
-    "side": "minecraft:block/magma",
-    "top": "minecraft:block/magma"
-  }
-}
