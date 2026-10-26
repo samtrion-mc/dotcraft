@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/bamboo_mosaic",
+    "overlay": "dotcraft_resources:block/compressed_overlay_8",
+    "side": "minecraft:block/bamboo_mosaic",
+    "top": "minecraft:block/bamboo_mosaic"
+  }
+}

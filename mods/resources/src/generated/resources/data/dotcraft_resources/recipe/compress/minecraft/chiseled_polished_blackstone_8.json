@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 8
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": "dotcraft_resources:compressed/minecraft/chiseled_polished_blackstone_7"
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "id": "dotcraft_resources:compressed/minecraft/chiseled_polished_blackstone_8"
+  }
+}

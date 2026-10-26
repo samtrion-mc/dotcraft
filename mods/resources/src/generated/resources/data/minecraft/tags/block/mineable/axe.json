@@ -109,6 +109,114 @@
       "required": false
     },
     {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_block_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_block_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_block_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_block_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_block_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_block_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_block_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_block_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_block_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_mosaic_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_mosaic_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_mosaic_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_mosaic_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_mosaic_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_mosaic_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_mosaic_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_mosaic_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_mosaic_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_planks_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_planks_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_planks_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_planks_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_planks_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_planks_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_planks_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_planks_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/bamboo_planks_9",
+      "required": false
+    },
+    {
       "id": "dotcraft_resources:compressed/minecraft/birch_log_1",
       "required": false
     },
@@ -1222,6 +1330,42 @@
     },
     {
       "id": "dotcraft_resources:compressed/minecraft/stripped_acacia_wood_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/stripped_bamboo_block_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/stripped_bamboo_block_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/stripped_bamboo_block_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/stripped_bamboo_block_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/stripped_bamboo_block_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/stripped_bamboo_block_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/stripped_bamboo_block_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/stripped_bamboo_block_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/stripped_bamboo_block_9",
       "required": false
     },
     {

@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/chiseled_quartz_block_top",
+    "overlay": "dotcraft_resources:block/compressed_overlay_4",
+    "side": "minecraft:block/chiseled_quartz_block",
+    "top": "minecraft:block/chiseled_quartz_block_top"
+  }
+}

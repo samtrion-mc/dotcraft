@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraft_resources:compressed/minecraft/cracked_polished_blackstone_bricks_1"
+  ],
+  "result": {
+    "count": 9,
+    "id": "minecraft:cracked_polished_blackstone_bricks"
+  }
+}

@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 8
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/minecraft/chiseled_resin_bricks_7": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraft_resources:compressed/minecraft/chiseled_resin_bricks_7"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraft_resources:compress/minecraft/chiseled_resin_bricks_8"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/minecraft/chiseled_resin_bricks_7"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraft_resources:compress/minecraft/chiseled_resin_bricks_8"
+    ]
+  }
+}

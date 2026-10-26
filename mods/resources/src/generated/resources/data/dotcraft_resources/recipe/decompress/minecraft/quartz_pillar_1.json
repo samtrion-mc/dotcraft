@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraft_resources:compressed/minecraft/quartz_pillar_1"
+  ],
+  "result": {
+    "count": 9,
+    "id": "minecraft:quartz_pillar"
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 5
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": "dotcraft_resources:compressed/minecraft/smooth_quartz_4"
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "id": "dotcraft_resources:compressed/minecraft/smooth_quartz_5"
+  }
+}
