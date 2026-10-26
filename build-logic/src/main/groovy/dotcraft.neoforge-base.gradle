@@ -28,7 +28,7 @@ neoForge {
             programArgument '--nogui'
         }
         configureEach {
-            gameDirectory = rootProject.file("run/${project.name}")
+            gameDirectory = rootProject.file('run')
             systemProperty 'forge.logging.markers', 'REGISTRIES'
             logLevel = org.slf4j.event.Level.DEBUG
         }

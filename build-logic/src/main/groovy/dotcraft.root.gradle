@@ -52,7 +52,7 @@ abstract class NewModTask extends DefaultTask {
         // build.gradle
         def gradleDeps = deps.collect { "    implementation project(':mods:$it')" }
         if (compat) gradleDeps += ['', '    compileOnly libs.jei.api', '    compileOnly libs.jade', '    compileOnly libs.rei.api',
-                                   '    localRuntime libs.jei', '    localRuntime libs.jade', '    localRuntime libs.rei']
+                                   '    localRuntime libs.jei', '    localRuntime libs.jade'] // REI runtime disabled for now
         write(new File(dir, 'build.gradle'), "plugins {\n    id 'dotcraft.neoforge-mod'\n}\n" +
                 (gradleDeps ? "\ndependencies {\n${gradleDeps.join('\n')}\n}\n" : ''))
 
