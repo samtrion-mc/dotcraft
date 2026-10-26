@@ -1729,6 +1729,42 @@
       "required": false
     },
     {
+      "id": "dotcraft_resources:compressed/minecraft/ice_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_9",
+      "required": false
+    },
+    {
       "id": "dotcraft_resources:compressed/minecraft/iron_block_1",
       "required": false
     },
@@ -2410,6 +2446,42 @@
     },
     {
       "id": "dotcraft_resources:compressed/minecraft/orange_terracotta_9",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/packed_ice_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/packed_ice_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/packed_ice_3",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/packed_ice_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/packed_ice_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/packed_ice_6",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/packed_ice_7",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/packed_ice_8",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/packed_ice_9",
       "required": false
     },
     {

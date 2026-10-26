@@ -505,6 +505,18 @@
       "required": false
     },
     {
+      "id": "dotcraft_resources:compressed/minecraft/ice_1",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_2",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_3",
+      "required": false
+    },
+    {
       "id": "dotcraft_resources:compressed/minecraft/light_blue_concrete_1",
       "required": false
     },

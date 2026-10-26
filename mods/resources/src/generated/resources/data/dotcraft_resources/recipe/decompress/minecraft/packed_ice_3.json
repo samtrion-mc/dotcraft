@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 2
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraft_resources:compressed/minecraft/packed_ice_3"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraft_resources:compressed/minecraft/packed_ice_2"
+  }
+}

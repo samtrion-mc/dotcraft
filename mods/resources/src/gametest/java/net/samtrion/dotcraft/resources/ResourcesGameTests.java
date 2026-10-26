@@ -39,6 +39,9 @@ public final class ResourcesGameTests {
     private static final Identifier MINING = Identifier.fromNamespaceAndPath(CraftResources.MODID, "compressed_mining");
     private static final ResourceKey<Consumer<GameTestHelper>> MINING_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, MINING);
 
+    private static final Identifier ICE = Identifier.fromNamespaceAndPath(CraftResources.MODID, "compressed_ice");
+    private static final ResourceKey<Consumer<GameTestHelper>> ICE_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, ICE);
+
     private ResourcesGameTests() {}
 
     /**
@@ -52,6 +55,7 @@ public final class ResourcesGameTests {
             registry.register(COMPRESSED, (Consumer<GameTestHelper>) ResourcesGameTests::compressedBlocks);
             registry.register(FUEL, (Consumer<GameTestHelper>) ResourcesGameTests::compressedFuel);
             registry.register(MINING, (Consumer<GameTestHelper>) ResourcesGameTests::compressedMining);
+            registry.register(ICE, (Consumer<GameTestHelper>) ResourcesGameTests::compressedIce);
         });
     }
 
@@ -69,6 +73,8 @@ public final class ResourcesGameTests {
                 new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
         event.registerTest(MINING, new FunctionGameTestInstance(MINING_FUNCTION,
                 new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+        event.registerTest(ICE, new FunctionGameTestInstance(ICE_FUNCTION,
+                new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 40, 0, true)));
     }
 
     private static CompressedBase base(String path) {
@@ -111,6 +117,8 @@ public final class ResourcesGameTests {
         for (Case c : new Case[] {
                 new Case("stone", 1, net.minecraft.world.item.Items.WOODEN_PICKAXE, true),
                 new Case("stone", 1, net.minecraft.world.item.Items.AIR, false),
+                new Case("ice", 1, net.minecraft.world.item.Items.AIR, false),
+                new Case("ice", 1, net.minecraft.world.item.Items.WOODEN_PICKAXE, true),
                 new Case("obsidian", 1, net.minecraft.world.item.Items.IRON_PICKAXE, false),
                 new Case("obsidian", 1, net.minecraft.world.item.Items.DIAMOND_PICKAXE, true),
                 new Case("obsidian", 3, net.minecraft.world.item.Items.DIAMOND_PICKAXE, true),
@@ -131,6 +139,40 @@ public final class ResourcesGameTests {
     }
 
     /**
+     * Compressed ice broken without Silk Touch over a solid block melts one tier down, tier 1 into vanilla ice, which melts into water; the random
+     * tick without any light leaves it alone.
+     *
+     * @param helper the game test helper
+     */
+    private static void compressedIce(GameTestHelper helper) {
+        var ice = base("ice");
+        var pos = new net.minecraft.core.BlockPos(0, 2, 0);
+        var player = helper.makeMockPlayer(net.minecraft.world.level.GameType.SURVIVAL);
+        var hand = net.minecraft.world.item.ItemStack.EMPTY;
+        helper.setBlock(pos.below(), net.minecraft.world.level.block.Blocks.STONE);
+        helper.setBlock(pos, CompressedBlocks.block(ice, 3).get());
+        helper.getBlockState(pos).randomTick(helper.getLevel(), helper.absolutePos(pos), helper.getLevel().getRandom());
+        helper.assertBlockPresent(CompressedBlocks.block(ice, 3).get(), pos);
+        for (int tier = 3; tier >= 1; tier--) {
+            var state = helper.getBlockState(pos);
+            state.getBlock().playerDestroy(helper.getLevel(), player, helper.absolutePos(pos), state, null, hand);
+            helper.assertBlockPresent(tier == 1 ? ice.block() : CompressedBlocks.block(ice, tier - 1).get(), pos);
+        }
+        // also without ground below
+        helper.setBlock(pos.below(), net.minecraft.world.level.block.Blocks.AIR);
+        helper.setBlock(pos, CompressedBlocks.block(ice, 2).get());
+        var floating = helper.getBlockState(pos);
+        floating.getBlock().playerDestroy(helper.getLevel(), player, helper.absolutePos(pos), floating, null, hand);
+        helper.assertBlockPresent(CompressedBlocks.block(ice, 1).get(), pos);
+        helper.setBlock(pos.below(), net.minecraft.world.level.block.Blocks.STONE);
+        helper.setBlock(pos, ice.block());
+        var vanilla = helper.getBlockState(pos);
+        vanilla.getBlock().playerDestroy(helper.getLevel(), player, helper.absolutePos(pos), vanilla, null, hand);
+        helper.assertBlockPresent(net.minecraft.world.level.block.Blocks.WATER, pos);
+        helper.succeed();
+    }
+
+    /**
      * Every base has all tiers, with the right tool tags and drop gate, hardness, loot table, item name and
      * compress/decompress recipes.
      *
@@ -144,8 +186,8 @@ public final class ResourcesGameTests {
             for (int tier = 1; tier <= CompressedTier.MAX; tier++) {
                 Block block = CompressedBlocks.block(base, tier).get();
                 String name = base.path(tier);
-                helper.assertTrue(base.block().defaultBlockState().requiresCorrectToolForDrops() == (base.need != ToolTier.NONE),
-                        name + ": the tool tier does not match whether the base block needs a tool");
+                helper.assertTrue(block.defaultBlockState().requiresCorrectToolForDrops() == (base.need != ToolTier.NONE),
+                        name + ": the tool tier does not match whether the block needs a tool");
                 for (ToolTier t : ToolTier.materials().toList()) {
                     helper.assertTrue(block.defaultBlockState().is(t.incorrectTag()) == !t.canMine(base.required(tier)),
                             name + " has the wrong drop gate for " + t);

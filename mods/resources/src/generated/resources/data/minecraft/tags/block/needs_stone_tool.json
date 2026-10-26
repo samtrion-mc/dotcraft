@@ -517,6 +517,18 @@
       "required": false
     },
     {
+      "id": "dotcraft_resources:compressed/minecraft/ice_4",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_5",
+      "required": false
+    },
+    {
+      "id": "dotcraft_resources:compressed/minecraft/ice_6",
+      "required": false
+    },
+    {
       "id": "dotcraft_resources:compressed/minecraft/iron_block_1",
       "required": false
     },
