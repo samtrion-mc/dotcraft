@@ -5,6 +5,9 @@
     "dotcraftresources:rich_platinum_ore",
     "dotcraftresources:poor_deepslate_platinum_ore",
     "dotcraftresources:deepslate_platinum_ore",
-    "dotcraftresources:rich_deepslate_platinum_ore"
+    "dotcraftresources:rich_deepslate_platinum_ore",
+    "dotcraftresources:poor_nether_platinum_ore",
+    "dotcraftresources:nether_platinum_ore",
+    "dotcraftresources:rich_nether_platinum_ore"
   ]
 }

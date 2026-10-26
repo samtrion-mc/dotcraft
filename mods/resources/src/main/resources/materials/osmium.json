@@ -30,6 +30,16 @@
       "count": 4,
       "minY": -64,
       "maxY": 16
+    },
+    {
+      "id": "end",
+      "hosts": [
+        "end"
+      ],
+      "veinSize": 5,
+      "count": 3,
+      "minY": 0,
+      "maxY": 80
     }
   ]
 }

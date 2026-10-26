@@ -1,5 +1,11 @@
 {
   "values": [
+    "dotcraftresources:poor_end_iridium_ore",
+    "dotcraftresources:end_iridium_ore",
+    "dotcraftresources:rich_end_iridium_ore",
+    "dotcraftresources:poor_end_osmium_ore",
+    "dotcraftresources:end_osmium_ore",
+    "dotcraftresources:rich_end_osmium_ore",
     "dotcraftresources:poor_end_tin_ore",
     "dotcraftresources:end_tin_ore",
     "dotcraftresources:rich_end_tin_ore"

@@ -1,5 +1,14 @@
 {
   "values": [
+    "dotcraftresources:poor_nether_nickel_ore",
+    "dotcraftresources:nether_nickel_ore",
+    "dotcraftresources:rich_nether_nickel_ore",
+    "dotcraftresources:poor_nether_platinum_ore",
+    "dotcraftresources:nether_platinum_ore",
+    "dotcraftresources:rich_nether_platinum_ore",
+    "dotcraftresources:poor_nether_silver_ore",
+    "dotcraftresources:nether_silver_ore",
+    "dotcraftresources:rich_nether_silver_ore",
     "dotcraftresources:poor_nether_tin_ore",
     "dotcraftresources:nether_tin_ore",
     "dotcraftresources:rich_nether_tin_ore"

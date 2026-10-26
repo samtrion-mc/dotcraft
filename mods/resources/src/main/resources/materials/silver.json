@@ -30,6 +30,16 @@
       "count": 6,
       "minY": -48,
       "maxY": 32
+    },
+    {
+      "id": "nether",
+      "hosts": [
+        "nether"
+      ],
+      "veinSize": 6,
+      "count": 4,
+      "minY": 8,
+      "maxY": 110
     }
   ]
 }
