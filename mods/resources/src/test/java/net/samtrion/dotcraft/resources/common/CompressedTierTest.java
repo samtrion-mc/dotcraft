@@ -24,6 +24,16 @@ class CompressedTierTest {
         assertEquals(15f, CompressedTier.hardness(1.5f, 9));
     }
 
+    /** Burn time grows by the block count; what exceeds an int is no fuel. */
+    @Test
+    void burnTimeScalesAndCaps() {
+        assertEquals(144_000, CompressedTier.burnTime(16_000, 1));
+        assertEquals(16_000 * 59_049, CompressedTier.burnTime(16_000, 5));
+        assertEquals(0, CompressedTier.burnTime(16_000, 6));
+        assertEquals(0, CompressedTier.burnTime(Integer.MAX_VALUE, 1));
+        assertEquals(0, CompressedTier.burnTime(0, 5));
+    }
+
     /** Every tier has its overlay texture; a missing one would show as the purple missing texture. */
     @Test
     void overlayTexturesExist() {
