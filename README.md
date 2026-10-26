@@ -48,6 +48,7 @@ Resources: compressed blocks are implemented, the rest is planned. Energy is a s
 
 `config/dotcraftresources-common.toml` (applies after a restart or `/reload`):
 
+- `[compressed]` `enabled` (default true): switch for compressing; when off, all compress recipes are disabled and compressed blocks are hidden in JEI.
 - `[compressed]` `maxCompressLevel` (1-9, default 9): highest craftable compression level. Recipes that output a higher level are disabled; the decompress recipe of the first disabled level stays so existing blocks are not stuck.
 
 ## Compressed block sources
