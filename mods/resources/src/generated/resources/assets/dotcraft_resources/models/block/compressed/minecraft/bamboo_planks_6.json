@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/bamboo_planks",
+    "overlay": "dotcraft_resources:block/compressed_overlay_6",
+    "side": "minecraft:block/bamboo_planks",
+    "top": "minecraft:block/bamboo_planks"
+  }
+}

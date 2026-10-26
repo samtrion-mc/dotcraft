@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/red_nether_bricks",
+    "overlay": "dotcraft_resources:block/compressed_overlay_7",
+    "side": "minecraft:block/red_nether_bricks",
+    "top": "minecraft:block/red_nether_bricks"
+  }
+}

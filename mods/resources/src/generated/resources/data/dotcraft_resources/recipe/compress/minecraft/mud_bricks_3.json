@@ -1,0 +1,21 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 3
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "key": {
+    "#": "dotcraft_resources:compressed/minecraft/mud_bricks_2"
+  },
+  "pattern": [
+    "###",
+    "###",
+    "###"
+  ],
+  "result": {
+    "id": "dotcraft_resources:compressed/minecraft/mud_bricks_3"
+  }
+}

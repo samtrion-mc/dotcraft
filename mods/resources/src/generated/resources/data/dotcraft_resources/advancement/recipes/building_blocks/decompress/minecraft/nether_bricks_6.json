@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraft_resources:max_tier",
+      "level": 5
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/minecraft/nether_bricks_6": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraft_resources:compressed/minecraft/nether_bricks_6"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraft_resources:decompress/minecraft/nether_bricks_6"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/minecraft/nether_bricks_6"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraft_resources:decompress/minecraft/nether_bricks_6"
+    ]
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraft_resources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/chiseled_polished_blackstone",
+    "overlay": "dotcraft_resources:block/compressed_overlay_8",
+    "side": "minecraft:block/chiseled_polished_blackstone",
+    "top": "minecraft:block/chiseled_polished_blackstone"
+  }
+}
