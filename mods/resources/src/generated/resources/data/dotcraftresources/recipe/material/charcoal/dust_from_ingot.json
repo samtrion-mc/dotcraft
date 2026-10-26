@@ -1,0 +1,22 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "charcoal",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#dotcraftresources:charcoal"
+  ],
+  "result": {
+    "id": "dotcraftresources:charcoal_dust"
+  }
+}

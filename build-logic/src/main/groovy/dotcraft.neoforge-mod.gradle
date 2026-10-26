@@ -68,10 +68,12 @@ neoForge {
         // ./gradlew runClientData / runServerData
         clientData {
             clientData()
+            systemProperty 'dotcraftresources.datagen', 'true' // the conditions of the sources count as met, so all data is made
             programArguments.addAll(datagenArgs)
         }
         serverData {
             serverData()
+            systemProperty 'dotcraftresources.datagen', 'true'
             programArguments.addAll(datagenArgs)
         }
     }

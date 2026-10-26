@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "raw",
+      "material": "osmium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "osmium",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.7,
+  "ingredient": "#c:raw_materials/osmium",
+  "result": {
+    "id": "dotcraftresources:osmium_ingot"
+  }
+}

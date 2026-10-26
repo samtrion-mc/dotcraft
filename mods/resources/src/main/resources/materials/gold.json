@@ -1,0 +1,33 @@
+{
+  "id": "gold",
+  "color": "#FDF55F",
+  "name": {
+    "en_us": "Gold",
+    "de_de": "Gold"
+  },
+  "tier": "wood",
+  "forms": [
+    "dust",
+    "grains",
+    "plate",
+    "gear",
+    "rod"
+  ],
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "c:ingots/gold",
+          "item": "minecraft:gold_ingot"
+        },
+        "nugget": {
+          "tag": "c:nuggets/gold",
+          "item": "minecraft:gold_nugget"
+        },
+        "block": {
+          "tag": "c:storage_blocks/gold"
+        }
+      }
+    }
+  ]
+}

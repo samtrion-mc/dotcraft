@@ -1,0 +1,21 @@
+{
+  "id": "steel",
+  "color": "#8A8F96",
+  "name": {
+    "en_us": "Steel",
+    "de_de": "Stahl"
+  },
+  "tier": "iron",
+  "alloy": {
+    "inputs": [
+      {
+        "material": "iron",
+        "count": 1
+      },
+      {
+        "material": ["coal", "charcoal"],
+        "count": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,50 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ore",
+      "material": "aluminum",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "aluminum",
+      "switch": "material_form"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ores_aluminum": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ores/aluminum"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:material/aluminum/ingot_from_ore_smelting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ores_aluminum"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:material/aluminum/ingot_from_ore_smelting"
+    ]
+  }
+}

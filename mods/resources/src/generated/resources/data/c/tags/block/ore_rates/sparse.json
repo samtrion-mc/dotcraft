@@ -1,0 +1,25 @@
+{
+  "values": [
+    "dotcraftresources:poor_aluminum_ore",
+    "dotcraftresources:poor_deepslate_aluminum_ore",
+    "dotcraftresources:poor_deepslate_iridium_ore",
+    "dotcraftresources:poor_lead_ore",
+    "dotcraftresources:poor_deepslate_lead_ore",
+    "dotcraftresources:poor_nickel_ore",
+    "dotcraftresources:poor_deepslate_nickel_ore",
+    "dotcraftresources:poor_osmium_ore",
+    "dotcraftresources:poor_deepslate_osmium_ore",
+    "dotcraftresources:poor_platinum_ore",
+    "dotcraftresources:poor_deepslate_platinum_ore",
+    "dotcraftresources:poor_silver_ore",
+    "dotcraftresources:poor_deepslate_silver_ore",
+    "dotcraftresources:poor_tin_ore",
+    "dotcraftresources:poor_deepslate_tin_ore",
+    "dotcraftresources:poor_nether_tin_ore",
+    "dotcraftresources:poor_end_tin_ore",
+    "dotcraftresources:poor_uranium_ore",
+    "dotcraftresources:poor_deepslate_uranium_ore",
+    "dotcraftresources:poor_zinc_ore",
+    "dotcraftresources:poor_deepslate_zinc_ore"
+  ]
+}

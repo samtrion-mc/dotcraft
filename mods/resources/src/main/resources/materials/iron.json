@@ -1,0 +1,33 @@
+{
+  "id": "iron",
+  "color": "#D8D8D8",
+  "name": {
+    "en_us": "Iron",
+    "de_de": "Eisen"
+  },
+  "tier": "iron",
+  "forms": [
+    "dust",
+    "grains",
+    "plate",
+    "gear",
+    "rod"
+  ],
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "c:ingots/iron",
+          "item": "minecraft:iron_ingot"
+        },
+        "nugget": {
+          "tag": "c:nuggets/iron",
+          "item": "minecraft:iron_nugget"
+        },
+        "block": {
+          "tag": "c:storage_blocks/iron"
+        }
+      }
+    }
+  ]
+}

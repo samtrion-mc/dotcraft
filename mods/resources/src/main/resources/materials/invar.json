@@ -1,0 +1,21 @@
+{
+  "id": "invar",
+  "color": "#A9B2A8",
+  "name": {
+    "en_us": "Invar",
+    "de_de": "Invar"
+  },
+  "tier": "iron",
+  "alloy": {
+    "inputs": [
+      {
+        "material": "iron",
+        "count": 2
+      },
+      {
+        "material": "nickel",
+        "count": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "electrum",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "block",
+      "material": "electrum",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:storage_blocks/electrum"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraftresources:electrum_ingot"
+  }
+}

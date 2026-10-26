@@ -1,0 +1,50 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "constantan",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust_block",
+      "material": "constantan",
+      "switch": "material_form"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_storage_blocks_constantan_dust": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:storage_blocks/constantan_dust"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:material/constantan/dust_from_dust_block"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_storage_blocks_constantan_dust"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:material/constantan/dust_from_dust_block"
+    ]
+  }
+}

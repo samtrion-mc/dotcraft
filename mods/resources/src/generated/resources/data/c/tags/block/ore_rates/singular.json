@@ -1,0 +1,25 @@
+{
+  "values": [
+    "dotcraftresources:aluminum_ore",
+    "dotcraftresources:deepslate_aluminum_ore",
+    "dotcraftresources:deepslate_iridium_ore",
+    "dotcraftresources:lead_ore",
+    "dotcraftresources:deepslate_lead_ore",
+    "dotcraftresources:nickel_ore",
+    "dotcraftresources:deepslate_nickel_ore",
+    "dotcraftresources:osmium_ore",
+    "dotcraftresources:deepslate_osmium_ore",
+    "dotcraftresources:platinum_ore",
+    "dotcraftresources:deepslate_platinum_ore",
+    "dotcraftresources:silver_ore",
+    "dotcraftresources:deepslate_silver_ore",
+    "dotcraftresources:tin_ore",
+    "dotcraftresources:deepslate_tin_ore",
+    "dotcraftresources:nether_tin_ore",
+    "dotcraftresources:end_tin_ore",
+    "dotcraftresources:uranium_ore",
+    "dotcraftresources:deepslate_uranium_ore",
+    "dotcraftresources:zinc_ore",
+    "dotcraftresources:deepslate_zinc_ore"
+  ]
+}

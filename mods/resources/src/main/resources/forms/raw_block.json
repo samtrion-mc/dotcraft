@@ -1,0 +1,18 @@
+{
+  "id": "raw_block",
+  "kind": "block",
+  "order": 20,
+  "configKey": "raw_blocks",
+  "tag": { "parent": "storage_blocks", "name": "raw_%s" },
+  "name": {
+    "en_us": "Block of Raw %s",
+    "de_de": "Roh-%s-Block"
+  },
+  "block": { "mapColor": "raw_iron", "requiresTool": true, "hardness": 5.0, "resistance": 6.0, "tool": "pickaxe", "tierGated": true, "loot": "self" },
+  "mined": true,
+  "external": "excluded",
+  "requires": ["raw"],
+  "conversions": [
+    { "from": "raw", "kind": "pack", "ratio": 9 }
+  ]
+}

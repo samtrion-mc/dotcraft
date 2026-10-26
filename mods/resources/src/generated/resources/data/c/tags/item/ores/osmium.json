@@ -1,0 +1,10 @@
+{
+  "values": [
+    "dotcraftresources:poor_osmium_ore",
+    "dotcraftresources:osmium_ore",
+    "dotcraftresources:rich_osmium_ore",
+    "dotcraftresources:poor_deepslate_osmium_ore",
+    "dotcraftresources:deepslate_osmium_ore",
+    "dotcraftresources:rich_deepslate_osmium_ore"
+  ]
+}

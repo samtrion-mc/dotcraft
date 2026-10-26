@@ -1,0 +1,9 @@
+{
+  "id": "tin",
+  "color": "#C9D3D6",
+  "name": {
+    "en_us": "Tin",
+    "de_de": "Zinn"
+  },
+  "tier": "stone"
+}

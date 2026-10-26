@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "raw",
+      "material": "zinc",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "zinc",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.7,
+  "ingredient": "#c:raw_materials/zinc",
+  "result": {
+    "id": "dotcraftresources:zinc_ingot"
+  }
+}

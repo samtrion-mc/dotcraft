@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "electrum",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "material": "gold",
+      "switch": "material"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "silver",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:ingots/gold",
+    "#c:ingots/silver"
+  ],
+  "result": {
+    "count": 2,
+    "id": "dotcraftresources:electrum_ingot"
+  }
+}

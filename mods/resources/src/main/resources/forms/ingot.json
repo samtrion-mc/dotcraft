@@ -1,0 +1,20 @@
+{
+  "id": "ingot",
+  "kind": "item",
+  "order": 30,
+  "configKey": "ingots",
+  "tag": { "parent": "ingots" },
+  "name": {
+    "en_us": "%s Ingot",
+    "de_de": "%s-Barren"
+  },
+  "external": "excluded",
+  "icon": true,
+  "mix": { "external": "ingot" },
+  "conversions": [
+    { "from": "nugget", "kind": "pack", "ratio": 9 },
+    { "from": "dust", "kind": "cook", "xp": 0.7 },
+    { "from": "raw", "kind": "cook", "xp": 0.7 },
+    { "from": "ore", "kind": "cook", "xp": 0.7 }
+  ]
+}

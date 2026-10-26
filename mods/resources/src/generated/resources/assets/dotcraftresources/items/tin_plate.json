@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:item/material/plate",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -3550250
+      }
+    ]
+  }
+}

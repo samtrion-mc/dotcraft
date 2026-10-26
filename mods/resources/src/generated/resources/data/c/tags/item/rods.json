@@ -1,0 +1,27 @@
+{
+  "values": [
+    "#c:rods/aluminum",
+    "#c:rods/brass",
+    "#c:rods/bronze",
+    "#c:rods/constantan",
+    "#c:rods/copper",
+    "#c:rods/diamond",
+    "#c:rods/electrum",
+    "#c:rods/gold",
+    "#c:rods/invar",
+    "#c:rods/iridium",
+    "#c:rods/iron",
+    "#c:rods/lead",
+    "#c:rods/netherite",
+    "#c:rods/nickel",
+    "#c:rods/osmium",
+    "#c:rods/platinum",
+    "#c:rods/silver",
+    "#c:rods/steel",
+    "#c:rods/stone",
+    "#c:rods/tin",
+    "#c:rods/uranium",
+    "#c:rods/wood",
+    "#c:rods/zinc"
+  ]
+}

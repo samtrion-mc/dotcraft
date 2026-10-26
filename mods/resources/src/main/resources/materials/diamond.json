@@ -1,0 +1,28 @@
+{
+  "id": "diamond",
+  "color": "#4AEDD9",
+  "name": {
+    "en_us": "Diamond",
+    "de_de": "Diamant"
+  },
+  "tier": "diamond",
+  "forms": [
+    "dust",
+    "plate",
+    "gear",
+    "rod"
+  ],
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "c:gems/diamond",
+          "item": "minecraft:diamond"
+        },
+        "block": {
+          "tag": "c:storage_blocks/diamond"
+        }
+      }
+    }
+  ]
+}

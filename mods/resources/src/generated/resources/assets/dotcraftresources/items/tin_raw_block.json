@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:block/material/raw_block",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -3550250
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "id": "uranium",
+  "color": "#6FA83A",
+  "name": {
+    "en_us": "Uranium",
+    "de_de": "Uran"
+  },
+  "tier": "iron",
+  "forms": [
+    "raw",
+    "raw_block",
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "rod",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "veinSize": 5,
+      "count": 4,
+      "minY": -64,
+      "maxY": 16
+    }
+  ]
+}

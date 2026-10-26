@@ -1,0 +1,35 @@
+{
+  "id": "lead",
+  "color": "#5B5F7A",
+  "name": {
+    "en_us": "Lead",
+    "de_de": "Blei"
+  },
+  "tier": "stone",
+  "forms": [
+    "raw",
+    "raw_block",
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "rod",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "veinSize": 8,
+      "count": 8,
+      "minY": -48,
+      "maxY": 48
+    }
+  ]
+}

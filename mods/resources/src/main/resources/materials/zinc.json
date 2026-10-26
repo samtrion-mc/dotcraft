@@ -1,0 +1,35 @@
+{
+  "id": "zinc",
+  "color": "#A9B8B0",
+  "name": {
+    "en_us": "Zinc",
+    "de_de": "Zink"
+  },
+  "tier": "stone",
+  "forms": [
+    "raw",
+    "raw_block",
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "rod",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "veinSize": 8,
+      "count": 8,
+      "minY": -16,
+      "maxY": 72
+    }
+  ]
+}

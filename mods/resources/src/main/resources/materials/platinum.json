@@ -1,0 +1,35 @@
+{
+  "id": "platinum",
+  "color": "#9FD8E8",
+  "name": {
+    "en_us": "Platinum",
+    "de_de": "Platin"
+  },
+  "tier": "iron",
+  "forms": [
+    "raw",
+    "raw_block",
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "rod",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "veinSize": 4,
+      "count": 3,
+      "minY": -64,
+      "maxY": 0
+    }
+  ]
+}

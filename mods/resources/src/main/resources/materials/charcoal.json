@@ -1,0 +1,26 @@
+{
+  "id": "charcoal",
+  "color": "#4A3F36",
+  "name": {
+    "en_us": "Charcoal",
+    "de_de": "Holzkohle"
+  },
+  "tier": "none",
+  "forms": [
+    "dust"
+  ],
+  "cook": false,
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "dotcraftresources:charcoal",
+          "item": "minecraft:charcoal"
+        },
+        "block": {
+          "tag": "c:storage_blocks/charcoal"
+        }
+      }
+    }
+  ]
+}

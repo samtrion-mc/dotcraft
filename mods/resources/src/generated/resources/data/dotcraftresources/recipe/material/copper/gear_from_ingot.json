@@ -1,0 +1,25 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "gear",
+      "material": "copper",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:ingots/copper",
+    "#c:ingots/copper",
+    "#c:ingots/copper",
+    "#c:ingots/copper"
+  ],
+  "result": {
+    "id": "dotcraftresources:copper_gear"
+  }
+}

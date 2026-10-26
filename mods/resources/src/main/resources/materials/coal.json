@@ -1,0 +1,26 @@
+{
+  "id": "coal",
+  "color": "#2B2B2B",
+  "name": {
+    "en_us": "Coal",
+    "de_de": "Kohle"
+  },
+  "tier": "none",
+  "forms": [
+    "dust"
+  ],
+  "cook": false,
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "dotcraftresources:coal",
+          "item": "minecraft:coal"
+        },
+        "block": {
+          "tag": "c:storage_blocks/coal"
+        }
+      }
+    }
+  ]
+}

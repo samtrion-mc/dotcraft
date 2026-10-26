@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "platinum",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust_block",
+      "material": "platinum",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:storage_blocks/platinum_dust"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraftresources:platinum_dust"
+  }
+}

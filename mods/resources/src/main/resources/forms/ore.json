@@ -1,0 +1,30 @@
+{
+  "id": "ore",
+  "kind": "block",
+  "order": 120,
+  "configKey": "ores",
+  "tag": { "parent": "ores" },
+  "name": {
+    "en_us": "%1$s%2$s%3$s Ore",
+    "de_de": "%1$s%2$s%3$s-Erz"
+  },
+  "block": {
+    "tool": "pickaxe",
+    "tierGated": true,
+    "loot": "ore",
+    "drop": "raw",
+    "hosted": {
+      "richness": {
+        "en_us": { "poor": "Poor ", "normal": "", "rich": "Rich " },
+        "de_de": { "poor": "Armes ", "normal": "", "rich": "Reiches " }
+      },
+      "host": {
+        "en_us": { "stone": "", "deepslate": "Deepslate ", "nether": "Nether ", "end": "End ", "blackstone": "Blackstone ", "basalt": "Basalt " },
+        "de_de": { "stone": "", "deepslate": "Tiefenschiefer-", "nether": "Nether-", "end": "End-", "blackstone": "Schwarzstein-", "basalt": "Basalt-" }
+      }
+    }
+  },
+  "mined": true,
+  "external": "excluded",
+  "requires": ["raw", "ingot"]
+}

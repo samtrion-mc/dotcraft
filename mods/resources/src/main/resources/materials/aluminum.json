@@ -1,0 +1,35 @@
+{
+  "id": "aluminum",
+  "color": "#E1E6EA",
+  "name": {
+    "en_us": "Aluminum",
+    "de_de": "Aluminium"
+  },
+  "tier": "stone",
+  "forms": [
+    "raw",
+    "raw_block",
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "rod",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "veinSize": 8,
+      "count": 10,
+      "minY": -16,
+      "maxY": 96
+    }
+  ]
+}

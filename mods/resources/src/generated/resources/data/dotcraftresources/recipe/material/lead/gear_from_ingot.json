@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "lead",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "gear",
+      "material": "lead",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:ingots/lead",
+    "#c:ingots/lead",
+    "#c:ingots/lead",
+    "#c:ingots/lead"
+  ],
+  "result": {
+    "id": "dotcraftresources:lead_gear"
+  }
+}

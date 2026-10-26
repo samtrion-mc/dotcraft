@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "block",
+      "material": "bronze",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "material": "copper",
+      "switch": "material"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "block",
+      "material": "tin",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:storage_blocks/copper",
+    "#c:storage_blocks/copper",
+    "#c:storage_blocks/copper",
+    "#c:storage_blocks/tin"
+  ],
+  "result": {
+    "count": 4,
+    "id": "dotcraftresources:bronze_block"
+  }
+}

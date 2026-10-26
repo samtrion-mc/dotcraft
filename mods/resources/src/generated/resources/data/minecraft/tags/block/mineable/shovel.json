@@ -1043,6 +1043,22 @@
     {
       "id": "dotcraftresources:compressed/minecraft/yellow_concrete_powder_9",
       "required": false
-    }
+    },
+    "dotcraftresources:aluminum_dust_block",
+    "dotcraftresources:brass_dust_block",
+    "dotcraftresources:bronze_dust_block",
+    "dotcraftresources:constantan_dust_block",
+    "dotcraftresources:electrum_dust_block",
+    "dotcraftresources:invar_dust_block",
+    "dotcraftresources:iridium_dust_block",
+    "dotcraftresources:lead_dust_block",
+    "dotcraftresources:nickel_dust_block",
+    "dotcraftresources:osmium_dust_block",
+    "dotcraftresources:platinum_dust_block",
+    "dotcraftresources:silver_dust_block",
+    "dotcraftresources:steel_dust_block",
+    "dotcraftresources:tin_dust_block",
+    "dotcraftresources:uranium_dust_block",
+    "dotcraftresources:zinc_dust_block"
   ]
 }

@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "constantan",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "copper",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "nickel",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:small_dusts/copper",
+    "#c:small_dusts/nickel"
+  ],
+  "result": {
+    "count": 2,
+    "id": "dotcraftresources:constantan_grains"
+  }
+}

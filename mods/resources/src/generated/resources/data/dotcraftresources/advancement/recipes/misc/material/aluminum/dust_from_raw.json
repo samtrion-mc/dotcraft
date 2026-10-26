@@ -1,0 +1,50 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "raw",
+      "material": "aluminum",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "aluminum",
+      "switch": "material_form"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_raw_materials_aluminum": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:raw_materials/aluminum"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:material/aluminum/dust_from_raw"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_raw_materials_aluminum"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:material/aluminum/dust_from_raw"
+    ]
+  }
+}

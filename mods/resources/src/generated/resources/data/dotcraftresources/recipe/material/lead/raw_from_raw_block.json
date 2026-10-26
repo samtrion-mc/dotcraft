@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "raw",
+      "material": "lead",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "raw_block",
+      "material": "lead",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:storage_blocks/raw_lead"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraftresources:lead_raw"
+  }
+}

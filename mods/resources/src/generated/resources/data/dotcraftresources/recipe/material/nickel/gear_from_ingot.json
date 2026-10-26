@@ -1,0 +1,31 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "nickel",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "gear",
+      "material": "nickel",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:ingots/nickel",
+    "#c:ingots/nickel",
+    "#c:ingots/nickel",
+    "#c:ingots/nickel"
+  ],
+  "result": {
+    "id": "dotcraftresources:nickel_gear"
+  }
+}

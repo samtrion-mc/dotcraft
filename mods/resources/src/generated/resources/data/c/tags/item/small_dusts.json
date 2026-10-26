@@ -1,0 +1,23 @@
+{
+  "values": [
+    "#c:small_dusts/aluminum",
+    "#c:small_dusts/brass",
+    "#c:small_dusts/bronze",
+    "#c:small_dusts/constantan",
+    "#c:small_dusts/copper",
+    "#c:small_dusts/electrum",
+    "#c:small_dusts/gold",
+    "#c:small_dusts/invar",
+    "#c:small_dusts/iridium",
+    "#c:small_dusts/iron",
+    "#c:small_dusts/lead",
+    "#c:small_dusts/nickel",
+    "#c:small_dusts/osmium",
+    "#c:small_dusts/platinum",
+    "#c:small_dusts/silver",
+    "#c:small_dusts/steel",
+    "#c:small_dusts/tin",
+    "#c:small_dusts/uranium",
+    "#c:small_dusts/zinc"
+  ]
+}

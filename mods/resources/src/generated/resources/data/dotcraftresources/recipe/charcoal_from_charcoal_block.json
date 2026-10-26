@@ -2,7 +2,7 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "dotcraftresources:charcoal_block"
+    "#c:storage_blocks/charcoal"
   ],
   "result": {
     "count": 9,

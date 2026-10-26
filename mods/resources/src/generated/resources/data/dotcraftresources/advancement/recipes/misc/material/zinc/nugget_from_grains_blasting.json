@@ -1,0 +1,50 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "zinc",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "nugget",
+      "material": "zinc",
+      "switch": "material_form"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_small_dusts_zinc": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:small_dusts/zinc"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:material/zinc/nugget_from_grains_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_small_dusts_zinc"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:material/zinc/nugget_from_grains_blasting"
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "block",
+  "kind": "block",
+  "order": 60,
+  "configKey": "blocks",
+  "tag": { "parent": "storage_blocks" },
+  "name": {
+    "en_us": "Block of %s",
+    "de_de": "%s-Block"
+  },
+  "block": { "mapColor": "metal", "sound": "metal", "requiresTool": true, "hardness": 5.0, "resistance": 6.0, "tool": "pickaxe", "tierGated": true, "loot": "self" },
+  "external": "excluded",
+  "mix": { "external": "block" },
+  "conversions": [
+    { "from": "ingot", "kind": "pack", "ratio": 9 },
+    { "from": "dust_block", "kind": "cook", "xp": 6.3 }
+  ]
+}

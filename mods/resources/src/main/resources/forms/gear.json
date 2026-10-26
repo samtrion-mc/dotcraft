@@ -1,0 +1,15 @@
+{
+  "id": "gear",
+  "kind": "item",
+  "order": 100,
+  "configKey": "gears",
+  "tag": { "parent": "gears" },
+  "name": {
+    "en_us": "%s Gear",
+    "de_de": "%s-Zahnrad"
+  },
+  "external": "default",
+  "conversions": [
+    { "from": "ingot", "kind": "craft", "ratio": 4 }
+  ]
+}

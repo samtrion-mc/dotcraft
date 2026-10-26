@@ -1,0 +1,13 @@
+{
+  "id": "raw",
+  "kind": "item",
+  "order": 10,
+  "configKey": "raw",
+  "tag": { "parent": "raw_materials" },
+  "name": {
+    "en_us": "Raw %s",
+    "de_de": "Roh-%s"
+  },
+  "mined": true,
+  "external": "excluded"
+}

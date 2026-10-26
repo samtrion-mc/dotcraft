@@ -1,0 +1,35 @@
+{
+  "id": "osmium",
+  "color": "#7B9CC4",
+  "name": {
+    "en_us": "Osmium",
+    "de_de": "Osmium"
+  },
+  "tier": "iron",
+  "forms": [
+    "raw",
+    "raw_block",
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "rod",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "veinSize": 4,
+      "count": 4,
+      "minY": -64,
+      "maxY": 16
+    }
+  ]
+}

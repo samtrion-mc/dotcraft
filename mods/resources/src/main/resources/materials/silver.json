@@ -1,0 +1,35 @@
+{
+  "id": "silver",
+  "color": "#D8E2EE",
+  "name": {
+    "en_us": "Silver",
+    "de_de": "Silber"
+  },
+  "tier": "iron",
+  "forms": [
+    "raw",
+    "raw_block",
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "rod",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "veinSize": 7,
+      "count": 6,
+      "minY": -48,
+      "maxY": 32
+    }
+  ]
+}

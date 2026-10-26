@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:block/material/ore/deepslate_poor",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1972502
+      }
+    ]
+  }
+}

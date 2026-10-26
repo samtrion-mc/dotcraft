@@ -1,24 +1,32 @@
 package net.samtrion.dotcraft.resources.datagen;
 
+import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
-import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.data.ItemTagsProvider;
 import net.samtrion.dotcraft.resources.CraftResources;
-import net.samtrion.dotcraft.resources.block.ResourceBlocks;
-import net.samtrion.dotcraft.resources.common.ResourceBlockTags;
+import net.samtrion.dotcraft.resources.api.ItemTagsPlugin;
 
-/** The item tags of the own blocks of the mod, the compressed blocks have none. */
+/** The item tags of all items; the plugins are called in the given order. */
 public final class ResourceItemTagsProvider extends ItemTagsProvider {
-    public ResourceItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup) {
+    private final List<ItemTagsPlugin> plugins;
+
+    /**
+     * Creates the provider.
+     *
+     * @param output  the pack output
+     * @param lookup  the registries
+     * @param plugins the plugins
+     */
+    public ResourceItemTagsProvider(PackOutput output, CompletableFuture<HolderLookup.Provider> lookup, ItemTagsPlugin... plugins) {
         super(output, lookup, CraftResources.MODID);
+        this.plugins = List.of(plugins);
     }
 
     @Override
     protected void addTags(HolderLookup.Provider registries) {
-        tag(Tags.Items.STORAGE_BLOCKS).addTag(ResourceBlockTags.STORAGE_BLOCKS_CHARCOAL_ITEM);
-        tag(ResourceBlockTags.STORAGE_BLOCKS_CHARCOAL_ITEM).add(ResourceBlocks.CHARCOAL_BLOCK_ITEM.get());
+        plugins.forEach(plugin -> plugin.addTags(this::tag));
     }
 }

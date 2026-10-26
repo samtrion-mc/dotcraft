@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "tin",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "tin",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 0.7,
+  "ingredient": "#c:dusts/tin",
+  "result": {
+    "id": "dotcraftresources:tin_ingot"
+  }
+}

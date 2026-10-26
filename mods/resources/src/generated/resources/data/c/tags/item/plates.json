@@ -1,0 +1,25 @@
+{
+  "values": [
+    "#c:plates/aluminum",
+    "#c:plates/brass",
+    "#c:plates/bronze",
+    "#c:plates/constantan",
+    "#c:plates/copper",
+    "#c:plates/diamond",
+    "#c:plates/electrum",
+    "#c:plates/gold",
+    "#c:plates/invar",
+    "#c:plates/iridium",
+    "#c:plates/iron",
+    "#c:plates/lead",
+    "#c:plates/netherite",
+    "#c:plates/nickel",
+    "#c:plates/osmium",
+    "#c:plates/platinum",
+    "#c:plates/silver",
+    "#c:plates/steel",
+    "#c:plates/tin",
+    "#c:plates/uranium",
+    "#c:plates/zinc"
+  ]
+}

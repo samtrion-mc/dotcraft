@@ -1,0 +1,28 @@
+{
+  "id": "netherite",
+  "color": "#5A4A50",
+  "name": {
+    "en_us": "Netherite",
+    "de_de": "Netherit"
+  },
+  "tier": "netherite",
+  "forms": [
+    "dust",
+    "plate",
+    "gear",
+    "rod"
+  ],
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "c:ingots/netherite",
+          "item": "minecraft:netherite_ingot"
+        },
+        "block": {
+          "tag": "c:storage_blocks/netherite"
+        }
+      }
+    }
+  ]
+}

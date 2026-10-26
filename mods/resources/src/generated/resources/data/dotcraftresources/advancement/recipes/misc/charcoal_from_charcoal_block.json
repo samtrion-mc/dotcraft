@@ -1,11 +1,11 @@
 {
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_charcoal_block": {
+    "has_storage_blocks_charcoal": {
       "conditions": {
         "items": [
           {
-            "items": "dotcraftresources:charcoal_block"
+            "items": "#c:storage_blocks/charcoal"
           }
         ]
       },
@@ -21,7 +21,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_charcoal_block"
+      "has_storage_blocks_charcoal"
     ]
   ],
   "rewards": {
