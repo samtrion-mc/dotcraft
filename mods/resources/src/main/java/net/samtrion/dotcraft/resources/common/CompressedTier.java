@@ -37,6 +37,19 @@ public final class CompressedTier {
         return base * (tier + 1);
     }
 
+    /**
+     * Furnace burn time of a compressed block: the base burn time times {@link #count(int)}, capped at
+     * {@code Integer.MAX_VALUE - 1} ticks as the burn time of a fuel is an {@code int}.
+     *
+     * @param base the burn time of the base block in ticks, {@code 0} if it is no fuel
+     * @param tier the tier, {@code 1..MAX}
+     * @return the burn time of the compressed block in ticks
+     */
+    public static int burnTime(int base, int tier) {
+        check(tier);
+        return (int) Math.min((long) base * count(tier), Integer.MAX_VALUE - 1L);
+    }
+
     private static void check(int tier) {
         if (tier < 1 || tier > MAX) throw new IllegalArgumentException("tier " + tier + " not in 1.." + MAX);
     }

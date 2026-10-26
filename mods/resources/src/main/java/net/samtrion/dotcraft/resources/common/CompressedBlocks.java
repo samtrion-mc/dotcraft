@@ -12,8 +12,12 @@ import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.crafting.RecipeType;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.entity.FuelValues;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+import org.jspecify.annotations.Nullable;
+
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -47,6 +51,12 @@ public final class CompressedBlocks {
                     @Override
                     public Component getName(ItemStack stack) {
                         return CompressedBlock.name(base.block(), t);
+                    }
+
+                    // only fuel if the base is, also for fuels of other mods and data packs
+                    @Override
+                    public int getBurnTime(ItemStack stack, @Nullable RecipeType<?> type, FuelValues fuels) {
+                        return CompressedTier.burnTime(new ItemStack(base.block()).getBurnTime(type, fuels), t);
                     }
                 }, () -> new Item.Properties().useBlockDescriptionPrefix()));
             }
