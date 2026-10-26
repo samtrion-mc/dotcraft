@@ -11,13 +11,14 @@ import org.junit.jupiter.api.Test;
 
 /** Unit tests for {@link ToolTier}. */
 class ToolTierTest {
-    /** The order is strict: none, wood, stone, copper, gold, iron, diamond, netherite. */
+    /** The order is strict: none, wood = gold, stone, copper, iron, diamond, netherite. */
     @Test
     void orderIsStrict() {
-        List<ToolTier> expected = List.of(ToolTier.NONE, ToolTier.WOOD, ToolTier.STONE, ToolTier.COPPER, ToolTier.GOLD,
+        List<ToolTier> expected = List.of(ToolTier.NONE, ToolTier.WOOD, ToolTier.GOLD, ToolTier.STONE, ToolTier.COPPER,
                 ToolTier.IRON, ToolTier.DIAMOND, ToolTier.NETHERITE);
         assertEquals(expected, List.of(ToolTier.values()));
-        for (int i = 0; i < expected.size(); i++) assertEquals(i, expected.get(i).rank());
+        List<Integer> ranks = List.of(0, 1, 1, 2, 3, 4, 5, 6);
+        for (int i = 0; i < expected.size(); i++) assertEquals(ranks.get(i), expected.get(i).rank());
     }
 
     /** Netherite is told apart from diamond: only netherite mines what needs netherite. */
@@ -28,12 +29,12 @@ class ToolTierTest {
         assertTrue(ToolTier.NETHERITE.canMine(ToolTier.DIAMOND));
     }
 
-    /** Gold sits between copper and iron. */
+    /** Gold mines like wood, as in vanilla. */
     @Test
-    void goldBetweenCopperAndIron() {
-        assertTrue(ToolTier.GOLD.canMine(ToolTier.COPPER));
-        assertFalse(ToolTier.GOLD.canMine(ToolTier.IRON));
-        assertTrue(ToolTier.IRON.canMine(ToolTier.GOLD));
+    void goldEqualsWood() {
+        assertTrue(ToolTier.GOLD.canMine(ToolTier.WOOD));
+        assertTrue(ToolTier.WOOD.canMine(ToolTier.GOLD));
+        assertFalse(ToolTier.GOLD.canMine(ToolTier.STONE));
     }
 
     /** A block that needs a tier is off limits for exactly the materials below it. */
@@ -41,7 +42,7 @@ class ToolTierTest {
     void insufficientListsTheMaterialsBelow() {
         assertEquals(List.of(), ToolTier.NONE.insufficient().toList());
         assertEquals(List.of(), ToolTier.WOOD.insufficient().toList());
-        assertEquals(List.of(ToolTier.WOOD, ToolTier.STONE, ToolTier.COPPER, ToolTier.GOLD, ToolTier.IRON, ToolTier.DIAMOND),
+        assertEquals(List.of(ToolTier.WOOD, ToolTier.GOLD, ToolTier.STONE, ToolTier.COPPER, ToolTier.IRON, ToolTier.DIAMOND),
                 ToolTier.NETHERITE.insufficient().toList());
     }
 
@@ -57,16 +58,13 @@ class ToolTierTest {
         assertEquals(ToolTier.materials().count(), ToolTier.materials().map(ToolTier::needsTag).distinct().count());
     }
 
-    /** Only gold contradicts vanilla: it blocks stone blocks although gold ranks above stone. */
+    /** The order matches vanilla, nothing contradicts it. */
     @Test
-    void onlyGoldContradictsVanilla() {
-        for (ToolTier material : ToolTier.materials().toList()) {
-            List<ToolTier> expected = material == ToolTier.GOLD ? List.of(ToolTier.STONE) : List.of();
-            assertEquals(expected, material.contradictions().toList(), material.name());
-        }
+    void nothingContradictsVanilla() {
+        for (ToolTier material : ToolTier.materials().toList()) assertEquals(List.of(), material.contradictions().toList(), material.name());
     }
 
-    /** Tiers 1-3 keep the base requirement, 4-6 climb one material, 7-9 two; gold is skipped (wood: wood, stone, copper). */
+    /** Tiers 1-3 keep the base requirement, 4-6 climb one material, 7-9 two; gold equals wood (wood: wood, stone, copper). */
     @Test
     void progressedClimbsEveryThreeTiers() {
         List<ToolTier> expected = List.of(ToolTier.WOOD, ToolTier.WOOD, ToolTier.WOOD, ToolTier.STONE, ToolTier.STONE,
@@ -74,12 +72,12 @@ class ToolTierTest {
         for (int tier = 1; tier <= 9; tier++) assertEquals(expected.get(tier - 1), ToolTier.WOOD.progressed(tier), "tier " + tier);
     }
 
-    /** Blocks without a requirement stay free, the top is capped at netherite and gold climbs from copper. */
+    /** Blocks without a requirement stay free, the top is capped at netherite and gold climbs like wood. */
     @Test
     void progressedEdges() {
         for (int tier = 1; tier <= 9; tier++) assertEquals(ToolTier.NONE, ToolTier.NONE.progressed(tier));
         assertEquals(ToolTier.GOLD, ToolTier.GOLD.progressed(3));
-        assertEquals(ToolTier.IRON, ToolTier.GOLD.progressed(4));
+        assertEquals(ToolTier.STONE, ToolTier.GOLD.progressed(4));
         assertEquals(ToolTier.NETHERITE, ToolTier.DIAMOND.progressed(4));
         assertEquals(ToolTier.NETHERITE, ToolTier.NETHERITE.progressed(9));
     }

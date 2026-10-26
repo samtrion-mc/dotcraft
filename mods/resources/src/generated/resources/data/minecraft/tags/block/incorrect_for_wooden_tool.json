@@ -3,10 +3,6 @@
     {
       "id": "#dotcraft_resources:needs_copper_tool",
       "required": false
-    },
-    {
-      "id": "#neoforge:needs_gold_tool",
-      "required": false
     }
   ]
 }
