@@ -1,5 +1,6 @@
 package net.samtrion.dotcraft.resources.common.conditions;
 
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.AfterEach;
@@ -20,6 +21,7 @@ class MaxTierConditionTest {
         field.setAccessible(true);
         field.set(CraftResourcesConfig.SPEC, null);
         CraftResourcesConfig.MAX_COMPRESS_LEVEL.clearCache();
+        CraftResourcesConfig.COMPRESSED_ENABLED.clearCache();
     }
 
     /** The loaded-config type is sealed and package-private and {@code acceptConfig} would save it, so the field is set reflectively. */
@@ -46,5 +48,13 @@ class MaxTierConditionTest {
         for (int level = 1; level <= CompressedTier.MAX; level++) {
             assertTrue(new MaxTierCondition(level).test(ICondition.IContext.EMPTY) == (level <= 3), "level " + level);
         }
+    }
+
+    /** Disabling the feature disables every compress recipe, whatever the max level is. */
+    @Test
+    void disabledSwitchDisablesAllLevels() throws ReflectiveOperationException {
+        load();
+        CraftResourcesConfig.COMPRESSED_ENABLED.set(false);
+        for (int level = 1; level <= CompressedTier.MAX; level++) assertFalse(new MaxTierCondition(level).test(ICondition.IContext.EMPTY), "level " + level);
     }
 }
