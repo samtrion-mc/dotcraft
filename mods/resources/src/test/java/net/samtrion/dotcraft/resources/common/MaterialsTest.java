@@ -21,6 +21,8 @@ import net.samtrion.dotcraft.resources.tool.ToolTier;
 class MaterialsTest {
     /** The shipped forms, which the sources of the tests refer to. */
     private static final List<Form> FORMS = forms();
+    /** The forms a material without a {@code forms} list has: all but the tool forms. */
+    private static final List<Form> DEFAULT_FORMS = FORMS.stream().filter(f -> f.tool().isEmpty()).toList();
 
     /** Loads the shipped forms from the test classpath. */
     private static List<Form> forms() {
@@ -83,7 +85,7 @@ class MaterialsTest {
         Material m = only("{\"id\":\"m\",\"color\":\"#336699\"}");
         assertEquals(0xFF336699, m.color());
         assertEquals(ToolTier.STONE, m.tier());
-        assertEquals(FORMS, m.forms());
+        assertEquals(DEFAULT_FORMS, m.forms());
         assertEquals(List.of(Material.OreSpec.DEFAULT), m.oreSpecs());
         assertEquals("ore_0", m.oreSpecs().get(0).id());
         assertTrue(m.alloy().isEmpty());
@@ -114,12 +116,12 @@ class MaterialsTest {
         }
     }
 
-    /** Stone and wood add only gear to the vanilla materials. */
+    /** Stone and wood add only gear to the vanilla materials, and stone its tools. */
     @Test
     void stoneAndWood() throws Exception {
         for (String id : List.of("stone", "wood")) {
             Material m = shipped().stream().filter(x -> x.id().equals(id)).findFirst().orElseThrow();
-            assertEquals(List.of(form("gear")), m.forms(), id);
+            assertEquals(id.equals("stone") ? List.of(form("gear"), form("hammer"), form("sandpaper")) : List.of(form("gear")), m.forms(), id);
             assertTrue(m.isExternal(), id);
         }
     }
@@ -382,6 +384,29 @@ class MaterialsTest {
         assertThrows(IllegalArgumentException.class, () -> only("{\"id\":\"m\",\"color\":\"#000000\",\"forms\":[\"cake\"]}"));
     }
 
+    /** Tool forms are never default forms, need a {@code tools} entry, and get the durability of the tier unless the entry sets one. */
+    @Test
+    void toolForms() throws Exception {
+        Map<String, Material> byId = shipped().stream().collect(Collectors.toMap(Material::id, m -> m));
+        Form hammer = form("hammer");
+        Form sandpaper = form("sandpaper");
+        for (String id : List.of("stone", "iron", "steel", "diamond", "netherite")) assertTrue(byId.get(id).has(hammer), id);
+        for (String id : List.of("stone", "iron", "diamond")) assertTrue(byId.get(id).has(sandpaper), id);
+        assertFalse(byId.get("tin").has(hammer));
+        assertFalse(byId.get("bronze").has(sandpaper));
+        assertEquals(131, byId.get("stone").toolDurability(hammer));
+        assertEquals(250, byId.get("iron").toolDurability(hammer));
+        assertEquals(1561, byId.get("diamond").toolDurability(hammer));
+        assertEquals(2031, byId.get("netherite").toolDurability(hammer));
+        assertEquals(66, byId.get("stone").toolDurability(sandpaper));
+        int steel = byId.get("steel").toolDurability(hammer);
+        assertTrue(steel > 250 && steel < 1561, "steel hammer " + steel);
+        assertThrows(IllegalArgumentException.class, () -> only("{\"id\":\"m\",\"color\":\"#000000\",\"forms\":[\"ingot\",\"hammer\"]}"));
+        assertThrows(IllegalArgumentException.class, () -> only("{\"id\":\"m\",\"color\":\"#000000\",\"forms\":[\"ingot\"],\"tools\":{\"hammer\":{\"ingredient\":\"c:ingots/m\"}}}"));
+        Material m = only("{\"id\":\"m\",\"color\":\"#000000\",\"forms\":[\"ingot\",\"hammer\"],\"tools\":{\"hammer\":{\"ingredient\":\"c:ingots/m\",\"durability\":7}}}");
+        assertEquals(7, m.toolDurability(hammer));
+    }
+
     /** Tag names of the storage blocks of the three forms differ. */
     @Test
     void tagNames() {
@@ -412,7 +437,7 @@ class MaterialsTest {
         assertEquals(materials.size(), ids.size());
         assertTrue(ids.contains("tin"));
         Material tin = materials.stream().filter(m -> m.id().equals("tin")).findFirst().orElseThrow();
-        assertEquals(FORMS, tin.forms());
+        assertEquals(DEFAULT_FORMS, tin.forms());
         assertEquals(12, tin.oreVariants().size());
         assertEquals("Zinn", tin.displayName("de_de"));
         for (String id : List.of("aluminum", "lead", "zinc", "nickel", "silver", "platinum", "iridium", "osmium", "uranium")) {

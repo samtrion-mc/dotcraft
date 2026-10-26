@@ -48,7 +48,8 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  * </ul>
  * Every ingredient is an item tag ({@code c:ingots/tin}, ...), only the results are items. The item of a source without
  * a mod must be registered, else the data generation fails; the item of a mod source need not be. A material with
- * {@code "cook": false} has no cook recipes. Recipe ids are {@code material/<id>/<name>}.
+ * {@code "cook": false} has no cook recipes. A crafting tool form (see {@link Form.ToolSpec}) has its own recipe, made of tags
+ * only. Recipe ids are {@code material/<id>/<name>}.
  */
 public final class MaterialRecipePlugin implements RecipePlugin {
     /** Cooking time in a furnace, ticks. */
@@ -59,6 +60,7 @@ public final class MaterialRecipePlugin implements RecipePlugin {
     @Override
     public void buildRecipes(RecipeBuilders recipes, RecipeOutput all) {
         for (Material m : Materials.all()) {
+            m.forms().stream().filter(f -> f.tool().isPresent()).forEach(f -> tool(recipes, all, m, f));
             for (Form to : Forms.all()) {
                 for (Form.Conversion c : to.conversions()) {
                     Form from = Forms.get(c.from());
@@ -75,6 +77,33 @@ public final class MaterialRecipePlugin implements RecipePlugin {
                 }
             }
         }
+    }
+
+    /**
+     * Makes the recipe of a crafting tool: shaped with the pattern of its {@link Form.ToolSpec} where it has one, else
+     * shapeless; {@code #} is the ingredient of the material, see {@link Material.Tool}. Only the tool itself is made, the
+     * recipes that use it name its tag. The conditions are those of the material and the form.
+     *
+     * @param recipes the recipe builders
+     * @param all     the output of the provider
+     * @param m       the material
+     * @param form    a tool form the material has
+     */
+    private static void tool(RecipeBuilders recipes, RecipeOutput all, Material m, Form form) {
+        Form.ToolSpec spec = form.tool().orElseThrow();
+        RecipeOutput output = all.withConditions(conditions(m, form, null, null).toArray(ICondition[]::new));
+        TagKey<Item> head = TagKey.create(Registries.ITEM, m.tools().get(form.id()).ingredient());
+        ItemLike result = ResourceItems.item(m, form).get();
+        if (spec.pattern().isEmpty()) {
+            var shapeless = recipes.shapeless(RecipeCategory.TOOLS, result, 1).requires(recipes.tag(head));
+            spec.key().values().forEach(tag -> shapeless.requires(recipes.tag(TagKey.create(Registries.ITEM, tag))));
+            shapeless.unlockedBy(recipes.hasName(head), recipes.has(head)).save(output, key(m, form.id()));
+            return;
+        }
+        var shaped = recipes.shaped(RecipeCategory.TOOLS, result).define('#', head);
+        spec.key().forEach((symbol, tag) -> shaped.define(symbol.charAt(0), TagKey.create(Registries.ITEM, tag)));
+        spec.pattern().forEach(shaped::pattern);
+        shaped.unlockedBy(recipes.hasName(head), recipes.has(head)).save(output, key(m, form.id()));
     }
 
     /**

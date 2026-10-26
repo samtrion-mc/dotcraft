@@ -82,4 +82,17 @@ class MaterialRecipeTagsTest {
             assertTrue(generated(tag) || known.contains(tag), "undefined tag " + tag);
         }
     }
+
+    /** The tools have a recipe each, made of tags only (and so covered by the tag check above). */
+    @Test
+    void toolRecipesExist() throws Exception {
+        Path root = GENERATED.resolve("dotcraftresources/recipe/material");
+        for (String file : List.of("stone/hammer", "iron/hammer", "steel/hammer", "diamond/hammer", "netherite/hammer",
+                "stone/sandpaper", "iron/sandpaper", "diamond/sandpaper")) {
+            Path recipe = root.resolve(file + ".json");
+            assertTrue(Files.exists(recipe), "missing " + recipe);
+            collect(recipe, new HashSet<>());
+        }
+        assertFalse(Files.exists(root.resolve("tin/hammer.json")));
+    }
 }

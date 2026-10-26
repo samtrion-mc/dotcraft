@@ -1,0 +1,17 @@
+{
+  "id": "hammer",
+  "kind": "item",
+  "order": 130,
+  "configKey": "hammers",
+  "tag": { "parent": "tools/hammer" },
+  "name": {
+    "en_us": "%s Hammer",
+    "de_de": "%s-Hammer"
+  },
+  "external": "optional",
+  "tool": {
+    "durability": 1.0,
+    "pattern": ["##", "#|", " |"],
+    "key": { "|": "c:rods/wooden" }
+  }
+}

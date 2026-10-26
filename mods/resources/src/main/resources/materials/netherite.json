@@ -9,8 +9,14 @@
   "forms": [
     "dust",
     "plate",
-    "gear"
+    "gear",
+    "hammer"
   ],
+  "tools": {
+    "hammer": {
+      "ingredient": "c:ingots/netherite"
+    }
+  },
   "external": [
     {
       "forms": {

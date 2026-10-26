@@ -1,0 +1,23 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "sandpaper",
+      "material": "diamond",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "equipment",
+  "ingredients": [
+    "#c:dusts/diamond",
+    "#c:papers"
+  ],
+  "result": {
+    "id": "dotcraftresources:diamond_sandpaper"
+  }
+}

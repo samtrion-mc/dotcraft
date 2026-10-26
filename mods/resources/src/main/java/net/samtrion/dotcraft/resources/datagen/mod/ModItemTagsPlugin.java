@@ -11,7 +11,7 @@ import net.samtrion.dotcraft.resources.api.ItemTagsPlugin;
 import net.samtrion.dotcraft.resources.block.ResourceBlocks;
 import net.samtrion.dotcraft.resources.common.ResourceBlockTags;
 
-/** The item tags of the own blocks of the mod and of coal and charcoal, the compressed blocks have none. */
+/** The item tags of the own blocks of the mod and of coal, charcoal and paper, the compressed blocks have none. */
 public final class ModItemTagsPlugin implements ItemTagsPlugin {
     @Override
     public void addTags(Function<TagKey<Item>, TagAppender<Item, Item>> tags) {
@@ -19,5 +19,6 @@ public final class ModItemTagsPlugin implements ItemTagsPlugin {
         tags.apply(ResourceBlockTags.STORAGE_BLOCKS_CHARCOAL_ITEM).add(ResourceBlocks.CHARCOAL_BLOCK_ITEM.get());
         tags.apply(ResourceBlockTags.COAL).add(Items.COAL);
         tags.apply(ResourceBlockTags.CHARCOAL).add(Items.CHARCOAL);
+        tags.apply(ResourceBlockTags.PAPERS).add(Items.PAPER);
     }
 }

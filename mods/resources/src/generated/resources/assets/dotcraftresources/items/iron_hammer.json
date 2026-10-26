@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:item/material/hammer",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -2565928
+      }
+    ]
+  }
+}

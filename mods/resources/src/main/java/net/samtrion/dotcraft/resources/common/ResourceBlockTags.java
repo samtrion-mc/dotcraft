@@ -24,5 +24,9 @@ public final class ResourceBlockTags {
     public static final TagKey<Item> CHARCOAL =
             TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("dotcraftresources", "charcoal"));
 
+    /** Paper, for the sandpaper recipes; NeoForge has no paper tag. */
+    public static final TagKey<Item> PAPERS =
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "papers"));
+
     private ResourceBlockTags() {}
 }

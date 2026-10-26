@@ -50,6 +50,8 @@ import net.samtrion.dotcraft.resources.tool.ToolTier;
  * generation and the alloy recipes read them. The {@code ore} array has one config per element, see {@link OreSpec}. The standard {@code neoforge:conditions} list (see {@link Conditions}), e.g.
  * {@code [{"type": "neoforge:mod_loaded", "modid": "othermod"}]}, keeps the material out of the game while a condition fails: its items,
  * blocks, config switches and recipes do not exist; a form of the material that is left out by its own conditions is skipped.
+ * A material lists the crafting tool forms it has (see {@link Form.ToolSpec}) and gives the ingredient of each in {@code tools}
+ * ({@code "tools": {"hammer": {"ingredient": "c:ingots/iron", "durability": 600}}}, the durability optional).
  * The data generation makes everything, and every file of the material or of one of its forms carries the conditions of the
  * material and the form, see {@link #conditions(Form)}.
  *
@@ -64,10 +66,11 @@ import net.samtrion.dotcraft.resources.tool.ToolTier;
  * @param cook     whether the {@code cook} conversions of the forms (smelting and blasting dust, grains, raw and ore
  *                 into the ingot or, for an external material, the external item) are made; {@code false} for materials
  *                 whose dust is converted by hand-written recipes, such as coal
+ * @param tools    the ingredient and optional durability of each crafting tool form the material has, by form id, see {@link Tool}
  * @param conditions the {@code neoforge:conditions} of the source, see {@link Conditions}; the material is not loaded while one fails
  */
 public record Material(String id, int color, Map<String, String> names, ToolTier tier, List<Form> forms,
-                       Optional<List<OreSpec>> ore, Optional<Alloy> alloy, List<External> external, boolean cook,
+                       Optional<List<OreSpec>> ore, Optional<Alloy> alloy, List<External> external, boolean cook, Map<String, Tool> tools,
                        List<ICondition> conditions) {
     private static final Codec<String> ID = Codec.STRING.validate(s -> s.matches("[a-z][a-z0-9_]*")
             ? DataResult.success(s) : DataResult.error(() -> "\"id\" must be lower case letters, digits and _: " + s));
@@ -105,9 +108,10 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
                 Alloy.CODEC.optionalFieldOf("alloy").forGetter(Material::alloy),
                 External.CODEC.listOf().optionalFieldOf("external", List.of()).forGetter(Material::external),
                 Codec.BOOL.optionalFieldOf("cook", true).forGetter(Material::cook),
+                Codec.unboundedMap(Codec.STRING, Tool.CODEC).optionalFieldOf("tools", Map.of()).forGetter(Material::tools),
                 Conditions.FIELD.forGetter(Material::conditions)
-        ).apply(i, (id, color, names, tier, forms, ore, alloy, external, cook, conditions) ->
-                fromSource(all, id, color, names, tier, forms, ore, alloy, external, cook, conditions))).validate(m -> m.validate(all, excluded));
+        ).apply(i, (id, color, names, tier, forms, ore, alloy, external, cook, tools, conditions) ->
+                fromSource(all, id, color, names, tier, forms, ore, alloy, external, cook, tools, conditions))).validate(m -> m.validate(all, excluded));
     }
 
     /** Looks up a form of a source: empty if it is left out, an error if it does not exist. */
@@ -124,19 +128,20 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
         names = Map.copyOf(names);
         forms = List.copyOf(forms);
         external = List.copyOf(external);
+        tools = Map.copyOf(tools);
         conditions = List.copyOf(conditions);
     }
 
     /** Builds a material from the parsed source, with the default forms where {@code forms} is missing. */
     private static Material fromSource(List<Form> all, String id, String color, Map<String, String> names, ToolTier tier,
                                        Optional<List<Optional<Form>>> forms, Optional<List<OreSpec>> ore, Optional<Alloy> alloy,
-                                       List<External> external, boolean cook, List<ICondition> conditions) {
+                                       List<External> external, boolean cook, Map<String, Tool> tools, List<ICondition> conditions) {
         List<Form> list = forms.map(l -> l.stream().flatMap(Optional::stream).toList()).orElseGet(() -> all.stream()
-                .filter(f -> !external.isEmpty() ? f.external() == Form.ExternalRule.DEFAULT
-                        : alloy.isEmpty() || !f.mined())
+                .filter(f -> !external.isEmpty() ? f.tool().isEmpty() && f.external() == Form.ExternalRule.DEFAULT
+                        : f.tool().isEmpty() && (alloy.isEmpty() || !f.mined()))
                 .toList());
         List<Form> ordered = list.stream().distinct().sorted(Comparator.comparingInt(Form::order)).toList();
-        return new Material(id, 0xFF000000 | Integer.parseInt(color.substring(1), 16), names, tier, ordered, ore, alloy, external, cook, conditions);
+        return new Material(id, 0xFF000000 | Integer.parseInt(color.substring(1), 16), names, tier, ordered, ore, alloy, external, cook, tools, conditions);
     }
 
     /** Checks that the forms and settings fit together. */
@@ -187,7 +192,44 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
                 }
             }
         }
+        for (Form form : forms) {
+            if (form.tool().isPresent() && !tools.containsKey(form.id())) {
+                return DataResult.error(() -> id + ": the tool form \"" + form.id() + "\" needs a \"tools\" entry");
+            }
+        }
+        for (String key : tools.keySet()) {
+            if (forms.stream().noneMatch(f -> f.id().equals(key) && f.tool().isPresent())) {
+                return DataResult.error(() -> id + ": the \"tools\" key \"" + key + "\" is not a tool form of the material");
+            }
+        }
         return DataResult.success(this);
+    }
+
+    /**
+     * The durability of the tool of a tool form: the {@code durability} of its {@link Tool entry} where it has one, else the
+     * durability of vanilla tools of the {@link #tier() tier} times the factor of the form.
+     *
+     * @param form a tool form the material has
+     * @return the durability, at least {@code 1}
+     */
+    public int toolDurability(Form form) {
+        return tools.get(form.id()).durability()
+                .orElseGet(() -> Math.max(1, Math.round(tier.durability() * form.tool().orElseThrow().durability())));
+    }
+
+    /**
+     * What a material needs for one of its crafting tool forms.
+     *
+     * @param ingredient the item tag of the {@code #} of the recipe of the tool, e.g. {@code c:ingots/iron}
+     * @param durability the durability of the tool, for a tier that has no fitting value of vanilla tools such as steel;
+     *                   absent: that of the tier times the factor of the form
+     */
+    public record Tool(Identifier ingredient, Optional<Integer> durability) {
+        /** Source format: {@code {"ingredient": "c:ingots/iron", "durability": 600}}, the durability is optional. */
+        public static final Codec<Tool> CODEC = RecordCodecBuilder.create(i -> i.group(
+                Identifier.CODEC.fieldOf("ingredient").forGetter(Tool::ingredient),
+                Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("durability").forGetter(Tool::durability)
+        ).apply(i, Tool::new));
     }
 
     /**

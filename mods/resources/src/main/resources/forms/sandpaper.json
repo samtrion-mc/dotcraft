@@ -1,0 +1,16 @@
+{
+  "id": "sandpaper",
+  "kind": "item",
+  "order": 140,
+  "configKey": "sandpapers",
+  "tag": { "parent": "tools/sandpaper" },
+  "name": {
+    "en_us": "%s Sandpaper",
+    "de_de": "%s-Schleifpapier"
+  },
+  "external": "optional",
+  "tool": {
+    "durability": 0.5,
+    "key": { "P": "c:papers" }
+  }
+}

@@ -10,8 +10,18 @@
     "dust",
     "grains",
     "plate",
-    "gear"
+    "gear",
+    "hammer",
+    "sandpaper"
   ],
+  "tools": {
+    "hammer": {
+      "ingredient": "c:ingots/iron"
+    },
+    "sandpaper": {
+      "ingredient": "c:dusts/iron"
+    }
+  },
   "external": [
     {
       "forms": {

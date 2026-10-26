@@ -68,6 +68,9 @@ public final class ResourcesGameTests {
     private static final Identifier HOSTS = Identifier.fromNamespaceAndPath(CraftResources.MODID, "ore_hosts");
     private static final ResourceKey<Consumer<GameTestHelper>> HOSTS_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, HOSTS);
 
+    private static final Identifier TOOLS = Identifier.fromNamespaceAndPath(CraftResources.MODID, "crafting_tools");
+    private static final ResourceKey<Consumer<GameTestHelper>> TOOLS_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, TOOLS);
+
     private ResourcesGameTests() {}
 
     /**
@@ -87,6 +90,7 @@ public final class ResourcesGameTests {
             registry.register(SWITCHES, (Consumer<GameTestHelper>) ResourcesGameTests::materialSwitches);
             registry.register(EXPOSED, (Consumer<GameTestHelper>) ResourcesGameTests::exposedOre);
             registry.register(HOSTS, (Consumer<GameTestHelper>) ResourcesGameTests::oreHosts);
+            registry.register(TOOLS, (Consumer<GameTestHelper>) ResourcesGameTests::craftingTools);
         });
     }
 
@@ -114,6 +118,8 @@ public final class ResourcesGameTests {
                 new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
         event.registerTest(EXPOSED, new FunctionGameTestInstance(EXPOSED_FUNCTION,
                 new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
+        event.registerTest(TOOLS, new FunctionGameTestInstance(TOOLS_FUNCTION,
+                new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
         event.registerTest(HOSTS, new FunctionGameTestInstance(HOSTS_FUNCTION,
                 new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
     }
@@ -240,6 +246,29 @@ public final class ResourcesGameTests {
             helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(CraftResources.MODID, recipe))).isPresent(),
                     "missing recipe " + recipe);
         }
+        helper.succeed();
+    }
+
+    /**
+     * A crafting tool stays in the grid of a craft with one more damage, breaks with the last point, and has the
+     * durability of its material; the recipe of the tool exists.
+     *
+     * @param helper the game test helper
+     */
+    private static void craftingTools(GameTestHelper helper) {
+        var material = Materials.all().stream().filter(m -> m.id().equals("iron")).findFirst().orElseThrow();
+        var form = Forms.get("hammer");
+        var hammer = new ItemStack(ResourceItems.item(material, form).get());
+        helper.assertTrue(hammer.getMaxDamage() == 250, "iron hammer has the durability " + hammer.getMaxDamage());
+        var input = net.minecraft.world.item.crafting.CraftingInput.of(1, 1, java.util.List.of(hammer));
+        var left = net.minecraft.world.item.crafting.CraftingRecipe.defaultCraftingReminder(input).get(0);
+        helper.assertTrue(left.is(hammer.getItem()) && left.getDamageValue() == 1 && left.getCount() == 1, "the hammer is not left damaged: " + left);
+        hammer.setDamageValue(hammer.getMaxDamage() - 1);
+        var last = net.minecraft.world.item.crafting.CraftingRecipe.defaultCraftingReminder(
+                net.minecraft.world.item.crafting.CraftingInput.of(1, 1, java.util.List.of(hammer))).get(0);
+        helper.assertTrue(last.isEmpty(), "the worn hammer does not break");
+        helper.assertTrue(helper.getLevel().getServer().getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE,
+                Identifier.fromNamespaceAndPath(CraftResources.MODID, "material/iron/hammer"))).isPresent(), "missing the hammer recipe");
         helper.succeed();
     }
 

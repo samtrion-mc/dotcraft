@@ -9,8 +9,18 @@
   "forms": [
     "dust",
     "plate",
-    "gear"
+    "gear",
+    "hammer",
+    "sandpaper"
   ],
+  "tools": {
+    "hammer": {
+      "ingredient": "c:gems/diamond"
+    },
+    "sandpaper": {
+      "ingredient": "c:dusts/diamond"
+    }
+  },
   "external": [
     {
       "forms": {

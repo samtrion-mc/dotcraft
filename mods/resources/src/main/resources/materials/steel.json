@@ -17,5 +17,22 @@
         "count": 1
       }
     ]
+  },
+  "forms": [
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "hammer"
+  ],
+  "tools": {
+    "hammer": {
+      "ingredient": "c:ingots/steel",
+      "durability": 600
+    }
   }
 }

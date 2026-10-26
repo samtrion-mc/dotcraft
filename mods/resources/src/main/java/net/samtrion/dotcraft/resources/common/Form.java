@@ -12,6 +12,7 @@ import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.StringRepresentable;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.samtrion.dotcraft.resources.common.conditions.Conditions;
@@ -48,7 +49,7 @@ import net.samtrion.dotcraft.resources.tool.ToolType;
  * ({@code excluded}, {@code default} or {@code optional}: whether a material of an external metal must not have
  * the form, has it by default or may list it), {@code icon} (the form shown as the creative tab icon),
  * {@code requires} (forms a material needs to have this one), {@code mix} (alloys are mixed in this form, with
- * the {@code external} item key of an input that lacks the form) and {@code conversions}. The standard
+ * the {@code external} item key of an input that lacks the form), {@code tool} (a crafting tool, see {@link ToolSpec}) and {@code conversions}. The standard
  * {@code neoforge:conditions} list (see {@link Conditions}) keeps the form out of the game while a condition fails: it is
  * not registered, not in the config and has no recipes, and so is every form that {@code requires} it or
  * names it as the {@code drop} of its block (the ore of the raw form). The data generation makes everything and writes the conditions into the data of the form.
@@ -68,12 +69,14 @@ import net.samtrion.dotcraft.resources.tool.ToolType;
  * @param icon        whether the form is the creative tab icon, the first one a material has wins
  * @param requires    ids of the forms a material needs to have this one
  * @param mix         set if alloys are mixed in this form
+ * @param tool        set for a crafting tool such as the hammer: a damageable item that stays in the crafting grid, see {@link ToolSpec}
  * @param conversions how the form is made of other forms
  * @param conditions  the {@code neoforge:conditions} of the source, see {@link Conditions}; the form is not loaded while one fails
  */
 public record Form(String id, Kind kind, int order, String configKey, String template, boolean tinted, String pathPattern, Tag tag,
                    Map<String, String> names, Optional<BlockSpec> block, boolean mined, ExternalRule external,
-                   boolean icon, List<String> requires, Optional<Mix> mix, List<Conversion> conversions,
+                   boolean icon, List<String> requires, Optional<Mix> mix, Optional<ToolSpec> tool,
+                   List<Conversion> conversions,
                    List<ICondition> conditions) {
     private static final Codec<String> ID = Codec.STRING.validate(s -> s.matches("[a-z][a-z0-9_]*")
             ? DataResult.success(s) : DataResult.error(() -> "an id must be lower case letters, digits and _: " + s));
@@ -106,9 +109,10 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
             Conversion.CODEC.listOf().optionalFieldOf("conversions", List.of()).forGetter(Form::conversions)
     ).apply(i, Form::fromSource));
 
-    /** Source format, see the class description; the conditions are read apart as the record has more fields than a group takes. */
-    public static final Codec<Form> CODEC = Codec.mapPair(FIELDS, Conditions.FIELD).codec()
-            .xmap(p -> p.getFirst().withConditions(p.getSecond()), f -> Pair.of(f, f.conditions)).validate(Form::validate);
+    /** Source format, see the class description; the conditions and the tool are read apart as the record has more fields than a group takes. */
+    public static final Codec<Form> CODEC = Codec.mapPair(Codec.mapPair(FIELDS, Conditions.FIELD), ToolSpec.CODEC.optionalFieldOf("tool")).codec()
+            .xmap(p -> p.getFirst().getFirst().withConditions(p.getFirst().getSecond()).withTool(p.getSecond()),
+                    f -> Pair.of(Pair.of(f, f.conditions), f.tool)).validate(Form::validate);
 
     /** Makes the collections immutable. */
     public Form {
@@ -124,12 +128,18 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
                                    boolean mined, ExternalRule external, boolean icon, List<String> requires,
                                    Optional<Mix> mix, List<Conversion> conversions) {
         return new Form(id, kind, order, configKey, template.orElse(id), tinted, path.orElse("%s_" + id), tag, names, block, mined,
-                external, icon, requires, mix, conversions, List.of());
+                external, icon, requires, mix, Optional.empty(), conversions, List.of());
     }
 
     /** A copy with other conditions. */
     Form withConditions(List<ICondition> conditions) {
-        return new Form(id, kind, order, configKey, template, tinted, pathPattern, tag, names, block, mined, external, icon, requires, mix,
+        return new Form(id, kind, order, configKey, template, tinted, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
+                conversions, conditions);
+    }
+
+    /** A copy with another tool entry. */
+    Form withTool(Optional<ToolSpec> tool) {
+        return new Form(id, kind, order, configKey, template, tinted, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
                 conversions, conditions);
     }
 
@@ -137,6 +147,7 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
     private DataResult<Form> validate() {
         if (kind == Kind.BLOCK && block.isEmpty()) return DataResult.error(() -> id + ": a block form needs a \"block\" entry");
         if (kind == Kind.ITEM && block.isPresent()) return DataResult.error(() -> id + ": an item form has no \"block\" entry");
+        if (tool.isPresent() && kind != Kind.ITEM) return DataResult.error(() -> id + ": a \"tool\" form is an item");
         if (!pathPattern.contains("%s")) return DataResult.error(() -> id + ": \"path\" must contain %s");
         try {
             String.format(Locale.ROOT, pathPattern, "x");
@@ -369,6 +380,61 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
         public static final Codec<Mix> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.optionalFieldOf("external").forGetter(Mix::external)
         ).apply(i, Mix::new));
+    }
+
+    /**
+     * A crafting tool: a damageable item that stays in the crafting grid and loses one durability per craft, so a recipe
+     * that has it as an ingredient (by its tag) uses it up slowly instead of consuming it. Example, a hammer that makes
+     * its head of the material:
+     * <pre>
+     * "tool": { "durability": 1.0, "pattern": ["##", "#|", " |"], "key": { "|": "c:rods/wooden" } }
+     * </pre>
+     * The recipe of the tool itself is shaped with the {@code pattern} where there is one, else shapeless. {@code #} is
+     * the ingredient of the material, its {@code tools} entry (see {@link Material.Tool}); every other symbol is in the
+     * {@code key}, which names the item tag of each. Without a pattern the shapeless recipe takes the material
+     * ingredient and one of each tag of the {@code key}. A tool form is never a default form of a material: only
+     * materials that list it have it.
+     *
+     * @param durability factor of the durability of vanilla tools of the tier of the material, {@code 1.0} for the same
+     * @param pattern    the rows of the shaped recipe, empty for a shapeless one
+     * @param key        item tag id by one-character symbol
+     */
+    public record ToolSpec(float durability, List<String> pattern, Map<String, Identifier> key) {
+        /** The symbol of the ingredient of the material. */
+        public static final String MATERIAL = "#";
+
+        /** Source format, see the class description. */
+        public static final Codec<ToolSpec> CODEC = RecordCodecBuilder.<ToolSpec>create(i -> i.group(
+                Codec.FLOAT.optionalFieldOf("durability", 1.0F).forGetter(ToolSpec::durability),
+                Codec.STRING.listOf().optionalFieldOf("pattern", List.of()).forGetter(ToolSpec::pattern),
+                Codec.unboundedMap(Codec.STRING, Identifier.CODEC).optionalFieldOf("key", Map.of()).forGetter(ToolSpec::key)
+        ).apply(i, ToolSpec::new)).validate(ToolSpec::validate);
+
+        /** Makes the collections immutable. */
+        public ToolSpec {
+            pattern = List.copyOf(pattern);
+            key = Map.copyOf(key);
+        }
+
+        /** Checks the durability, the symbols of the key and that the pattern uses the material and only known symbols. */
+        private DataResult<ToolSpec> validate() {
+            if (durability <= 0) return DataResult.error(() -> "a tool \"durability\" must be above 0");
+            for (String symbol : key.keySet()) {
+                if (symbol.length() != 1 || symbol.equals(MATERIAL) || symbol.equals(" ")) {
+                    return DataResult.error(() -> "a tool \"key\" symbol must be one character, not # or a space: \"" + symbol + "\"");
+                }
+            }
+            if (!pattern.isEmpty()) {
+                String rows = String.join("", pattern);
+                if (!rows.contains(MATERIAL)) return DataResult.error(() -> "a tool \"pattern\" must use the material symbol #");
+                for (char c : rows.toCharArray()) {
+                    if (c != ' ' && c != '#' && !key.containsKey(String.valueOf(c))) {
+                        return DataResult.error(() -> "a tool \"pattern\" symbol is not in the \"key\": " + c);
+                    }
+                }
+            }
+            return DataResult.success(this);
+        }
     }
 
     /**

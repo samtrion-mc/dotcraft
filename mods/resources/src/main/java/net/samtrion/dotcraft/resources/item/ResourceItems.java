@@ -25,7 +25,7 @@ import net.samtrion.dotcraft.resources.common.OreHost;
 import net.samtrion.dotcraft.resources.common.OreRichness;
 
 /**
- * Registers the plain items of all {@link Materials} (every form that is not a block), and the creative tab
+ * Registers the plain items of all {@link Materials} (every form that is not a block; a tool form is a {@link CraftingToolItem}), and the creative tab
  * {@code materials} (which lists only the forms the config enables when it is opened), and is the one place to look up the item of any form, block forms included.
  */
 public final class ResourceItems {
@@ -47,7 +47,9 @@ public final class ResourceItems {
                 } else if (form.isBlock()) {
                     items.add(MaterialBlocks.item(material, form));
                 } else {
-                    items.add(ITEMS.registerSimpleItem(material.path(form)));
+                    items.add(form.tool().isPresent()
+                            ? ITEMS.registerItem(material.path(form), CraftingToolItem::new, p -> p.durability(material.toolDurability(form)))
+                            : ITEMS.registerSimpleItem(material.path(form)));
                 }
             }
             items.forEach(i -> BY_PATH.put(i.getId().getPath(), i));

@@ -45,9 +45,9 @@ class FormsTest {
     @Test
     void shippedSourcesAreValid() throws Exception {
         List<Form> forms = shipped();
-        assertEquals(List.of("raw", "raw_block", "ingot", "nugget", "grains", "block", "dust", "dust_block", "plate", "gear", "ore"),
+        assertEquals(List.of("raw", "raw_block", "ingot", "nugget", "grains", "block", "dust", "dust_block", "plate", "gear", "ore", "hammer", "sandpaper"),
                 forms.stream().map(Form::id).toList());
-        assertEquals(List.of("raw", "raw_blocks", "ingots", "nuggets", "grains", "blocks", "dusts", "dust_blocks", "plates", "gears", "ores"),
+        assertEquals(List.of("raw", "raw_blocks", "ingots", "nuggets", "grains", "blocks", "dusts", "dust_blocks", "plates", "gears", "ores", "hammers", "sandpapers"),
                 forms.stream().map(Form::configKey).toList());
         assertEquals(forms.size(), forms.stream().map(Form::configKey).distinct().count());
         for (Form f : forms) {
@@ -58,6 +58,21 @@ class FormsTest {
         assertEquals("%s_dust_block", Forms.find(forms, "dust_block").pathPattern());
         assertEquals("Rich Deepslate Tin Ore", Forms.find(forms, "ore").displayName("en_us", "Tin", OreHost.DEEPSLATE, OreRichness.RICH));
         assertEquals("Tin-Barren", Forms.find(forms, "ingot").displayName("de_de", "Tin"));
+    }
+
+    /** A tool form needs a pattern that uses {@code #} and only symbols of its key, and is no block. */
+    @Test
+    void toolSpec() throws Exception {
+        Form hammer = Forms.find(shipped(), "hammer");
+        assertEquals(1.0F, hammer.tool().orElseThrow().durability());
+        assertEquals(List.of("##", "#|", " |"), hammer.tool().orElseThrow().pattern());
+        assertTrue(Forms.find(shipped(), "sandpaper").tool().orElseThrow().pattern().isEmpty());
+        assertTrue(Forms.find(shipped(), "gear").tool().isEmpty());
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"tool\":{\"pattern\":[\"||\"],\"key\":{\"|\":\"c:rods/wooden\"}}"));
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"tool\":{\"pattern\":[\"#|\"]}"));
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"tool\":{\"key\":{\"#\":\"c:rods/wooden\"}}"));
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"tool\":{\"durability\":0}"));
+        parse("cog", 5, ",\"tool\":{\"pattern\":[\"#|\"],\"key\":{\"|\":\"c:rods/wooden\"}}");
     }
 
     /** Only id, kind, order, tag and name are required; template and path default to the id. */
