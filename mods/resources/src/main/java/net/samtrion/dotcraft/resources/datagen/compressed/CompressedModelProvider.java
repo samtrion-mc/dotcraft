@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.datagen;
+package net.samtrion.dotcraft.resources.datagen.compressed;
 
 import java.util.Optional;
 
@@ -20,6 +20,7 @@ import net.samtrion.dotcraft.resources.common.CompressedBases;
 import net.samtrion.dotcraft.resources.common.CompressedBlocks;
 import net.samtrion.dotcraft.resources.common.CompressedLook;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
+import net.samtrion.dotcraft.resources.datagen.DataGenIds;
 
 /**
  * Blockstates, block models and item definitions of the compressed blocks.
@@ -28,7 +29,7 @@ import net.samtrion.dotcraft.resources.common.CompressedTier;
  * per-tier overlay that grows with the tier, and {@code compressed_tinted.json} for grass-like blocks, which adds
  * a tinted top and a tinted side overlay. A block only gets a small child model with its textures.
  */
-final class CompressedModelProvider extends ModelProvider {
+public final class CompressedModelProvider extends ModelProvider {
     private static final TextureSlot OVERLAY = TextureSlot.create("overlay");
     private static final TextureSlot TINT_OVERLAY = TextureSlot.create("tint_overlay");
     private static final ModelTemplate TEMPLATE = new ModelTemplate(
@@ -38,7 +39,7 @@ final class CompressedModelProvider extends ModelProvider {
             Optional.of(DataGenIds.id("block/compressed_tinted")), Optional.empty(),
             TextureSlot.SIDE, TextureSlot.TOP, TextureSlot.BOTTOM, TINT_OVERLAY, OVERLAY);
 
-    CompressedModelProvider(PackOutput output) {
+    public CompressedModelProvider(PackOutput output) {
         super(output, CraftResources.MODID);
     }
 

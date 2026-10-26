@@ -1,4 +1,4 @@
-package net.samtrion.dotcraft.resources.common;
+package net.samtrion.dotcraft.resources.common.conditions;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -10,6 +10,7 @@ import com.electronwill.nightconfig.core.CommentedConfig;
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.samtrion.dotcraft.resources.CraftResourcesConfig;
+import net.samtrion.dotcraft.resources.common.CompressedTier;
 
 /** Unit tests for {@link MaxTierCondition} and its config. */
 class MaxTierConditionTest {
