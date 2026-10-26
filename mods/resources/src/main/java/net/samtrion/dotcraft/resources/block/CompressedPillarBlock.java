@@ -8,7 +8,7 @@ import net.minecraft.world.level.block.RotatedPillarBlock;
  * A compressed log or stem: like {@link CompressedBlock}, but it keeps the axis so it can be placed
  * upright and sideways.
  */
-public class CompressedPillarBlock extends RotatedPillarBlock {
+public class CompressedPillarBlock extends RotatedPillarBlock implements Compressed {
     private final Block base;
     private final int tier;
 
@@ -23,6 +23,11 @@ public class CompressedPillarBlock extends RotatedPillarBlock {
         super(properties);
         this.base = base;
         this.tier = tier;
+    }
+
+    @Override
+    public int tier() {
+        return tier;
     }
 
     @Override

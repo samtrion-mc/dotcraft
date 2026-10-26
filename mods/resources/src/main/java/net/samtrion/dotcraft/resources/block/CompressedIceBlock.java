@@ -23,7 +23,7 @@ import org.jspecify.annotations.Nullable;
  * Compressed ice: melts like vanilla ice (by light and when broken without Silk Touch), but only one tier down
  * instead of straight into water, and when broken it always leaves the lower tier, with or without ground below; tier 1 melts into vanilla ice, which melts into water on its own.
  */
-public class CompressedIceBlock extends HalfTransparentBlock {
+public class CompressedIceBlock extends HalfTransparentBlock implements Compressed {
     private final Block base;
     private final int tier;
     private final Supplier<BlockState> meltsInto;
@@ -41,6 +41,11 @@ public class CompressedIceBlock extends HalfTransparentBlock {
         this.base = base;
         this.tier = tier;
         this.meltsInto = meltsInto;
+    }
+
+    @Override
+    public int tier() {
+        return tier;
     }
 
     @Override

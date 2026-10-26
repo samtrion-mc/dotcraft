@@ -1,5 +1,6 @@
 {
   "block.dotcraftresources.charcoal_block": "Block of Charcoal",
   "block.dotcraftresources.compressed": "Compressed %1$s (Tier %2$s)",
-  "itemGroup.dotcraftresources.compressed": ".Craft: Compressed Blocks"
+  "itemGroup.dotcraftresources.compressed": ".Craft: Compressed Blocks",
+  "tooltip.dotcraftresources.compressed_count": "Contains %s blocks"
 }
