@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ public final class Materials {
     private static final String DIRECTORY = "materials";
 
     private static @Nullable List<Material> all;
+    private static @Nullable Map<String, List<Material>> byForm;
 
     /** Not instantiable. */
     private Materials() {}
@@ -42,6 +44,24 @@ public final class Materials {
     public static synchronized List<Material> all() {
         if (all == null) all = complete(parseAll(Sources.classpath(DIRECTORY), Forms.all(), Forms.excluded(), Conditions::loaded));
         return all;
+    }
+
+    /**
+     * The materials that have a form, from an index built once, so that a loop over the forms does not search every
+     * material for every form.
+     *
+     * @param form the form
+     * @return the materials with the form, sorted by id
+     */
+    public static synchronized List<Material> withForm(Form form) {
+        if (byForm == null) {
+            Map<String, List<Material>> index = new HashMap<>();
+            for (Material material : all()) {
+                for (Form f : material.forms()) index.computeIfAbsent(f.id(), k -> new ArrayList<>()).add(material);
+            }
+            byForm = index;
+        }
+        return byForm.getOrDefault(form.id(), List.of());
     }
 
     /**

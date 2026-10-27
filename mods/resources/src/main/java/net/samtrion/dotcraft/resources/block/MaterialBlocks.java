@@ -18,6 +18,7 @@ import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.samtrion.dotcraft.resources.CraftResources;
 import net.samtrion.dotcraft.resources.common.Form;
+import net.samtrion.dotcraft.resources.common.Forms;
 import net.samtrion.dotcraft.resources.common.Material;
 import net.samtrion.dotcraft.resources.common.Materials;
 import net.samtrion.dotcraft.resources.common.OreHost;
@@ -46,9 +47,11 @@ public final class MaterialBlocks {
 
     static {
         for (Material material : Materials.all()) {
-            List<DeferredBlock<Block>> blocks = new ArrayList<>();
-            List<DeferredBlock<Block>> tinted = new ArrayList<>();
-            for (Form form : material.forms()) {
+            BLOCKS_BY_MATERIAL.put(material, new ArrayList<>());
+            TINTED_BY_MATERIAL.put(material, new ArrayList<>());
+        }
+        for (Form form : Forms.all()) {
+            for (Material material : Materials.withForm(form)) {
                 List<DeferredBlock<Block>> added = new ArrayList<>();
                 if (form.hosted()) {
                     for (Material.OreVariant variant : material.oreVariants()) {
@@ -57,11 +60,9 @@ public final class MaterialBlocks {
                 } else if (form.isBlock()) {
                     added.add(add(material.path(form), () -> properties(form)));
                 }
-                blocks.addAll(added);
-                if (form.tinted()) tinted.addAll(added);
+                BLOCKS_BY_MATERIAL.get(material).addAll(added);
+                if (form.tinted()) TINTED_BY_MATERIAL.get(material).addAll(added);
             }
-            BLOCKS_BY_MATERIAL.put(material, blocks);
-            TINTED_BY_MATERIAL.put(material, tinted);
         }
     }
 

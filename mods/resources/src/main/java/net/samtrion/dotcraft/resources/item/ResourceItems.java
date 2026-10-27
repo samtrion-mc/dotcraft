@@ -20,6 +20,7 @@ import net.samtrion.dotcraft.resources.CraftResourcesConfig;
 import net.samtrion.dotcraft.resources.block.MaterialBlocks;
 import net.samtrion.dotcraft.resources.common.Material;
 import net.samtrion.dotcraft.resources.common.Form;
+import net.samtrion.dotcraft.resources.common.Forms;
 import net.samtrion.dotcraft.resources.common.Materials;
 import net.samtrion.dotcraft.resources.common.OreHost;
 import net.samtrion.dotcraft.resources.common.OreRichness;
@@ -37,9 +38,10 @@ public final class ResourceItems {
     private static final Map<Material, List<DeferredItem<? extends Item>>> BY_MATERIAL = new LinkedHashMap<>();
 
     static {
-        for (Material material : Materials.all()) {
-            List<DeferredItem<? extends Item>> items = new ArrayList<>();
-            for (Form form : material.forms()) {
+        for (Material material : Materials.all()) BY_MATERIAL.put(material, new ArrayList<>());
+        for (Form form : Forms.all()) {
+            for (Material material : Materials.withForm(form)) {
+                List<DeferredItem<? extends Item>> items = new ArrayList<>();
                 if (form.hosted()) {
                     for (Material.OreVariant variant : material.oreVariants()) {
                         items.add(MaterialBlocks.oreItem(material, variant.host(), variant.richness()));
@@ -51,18 +53,18 @@ public final class ResourceItems {
                             ? ITEMS.registerItem(material.path(form), CraftingToolItem::new, p -> p.durability(material.toolDurability(form)))
                             : ITEMS.registerSimpleItem(material.path(form)));
                 }
+                items.forEach(i -> BY_PATH.put(i.getId().getPath(), i));
+                BY_MATERIAL.get(material).addAll(items);
             }
-            items.forEach(i -> BY_PATH.put(i.getId().getPath(), i));
-            BY_MATERIAL.put(material, items);
         }
         TABS.register("materials", () -> CreativeModeTab.builder()
                 .title(Component.translatable("itemGroup." + CraftResources.MODID + ".materials"))
                 .icon(() -> new ItemStack(Materials.all().stream().findFirst()
                         .map(m -> (Item) item(m, iconForm(m)).get())
                         .orElse(Items.IRON_INGOT)))
-                .displayItems((params, output) -> Materials.all().forEach(m -> m.forms().stream()
-                        .filter(f -> CraftResourcesConfig.formEnabled(m.id(), f.id()))
-                        .forEach(f -> items(m, f).forEach(i -> output.accept(i.get())))))
+                .displayItems((params, output) -> Forms.all().forEach(f -> Materials.withForm(f).stream()
+                        .filter(m -> CraftResourcesConfig.formEnabled(m.id(), f.id()))
+                        .forEach(m -> items(m, f).forEach(i -> output.accept(i.get())))))
                 .build());
     }
 
