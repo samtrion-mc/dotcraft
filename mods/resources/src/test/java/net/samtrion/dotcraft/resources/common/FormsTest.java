@@ -60,19 +60,22 @@ class FormsTest {
         assertEquals("Tin-Barren", Forms.find(forms, "ingot").displayName("de_de", "Tin"));
     }
 
-    /** A tool form needs a pattern that uses {@code #} and only symbols of its key, and is no block. */
+    /** A tool form has a durability above 0 and is no block; its recipe is a shaped or shapeless conversion with {@code #} for the material. */
     @Test
     void toolSpec() throws Exception {
         Form hammer = Forms.find(shipped(), "hammer");
         assertEquals(1.0F, hammer.tool().orElseThrow().durability());
-        assertEquals(List.of(" # ", " |#", "|  "), hammer.tool().orElseThrow().pattern());
-        assertTrue(Forms.find(shipped(), "sandpaper").tool().orElseThrow().pattern().isEmpty());
+        assertEquals(List.of(" # ", " |#", "|  "), hammer.conversions().get(0).pattern());
+        assertEquals(Form.Conversion.Kind.SHAPED, hammer.conversions().get(0).kind());
+        Form sandpaper = Forms.find(shipped(), "sandpaper");
+        assertEquals(Form.Conversion.Kind.SHAPELESS, sandpaper.conversions().get(0).kind());
+        assertEquals(List.of("#PS"), sandpaper.conversions().get(0).pattern());
         assertTrue(Forms.find(shipped(), "gear").tool().isEmpty());
-        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"tool\":{\"pattern\":[\"||\"],\"key\":{\"|\":\"c:rods/wooden\"}}"));
-        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"tool\":{\"pattern\":[\"#|\"]}"));
-        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"tool\":{\"key\":{\"#\":\"c:rods/wooden\"}}"));
         assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"tool\":{\"durability\":0}"));
-        parse("cog", 5, ",\"tool\":{\"pattern\":[\"#|\"],\"key\":{\"|\":\"c:rods/wooden\"}}");
+        parse("cog", 5, ",\"tool\":{},\"conversions\":[{\"kind\":\"shaped\",\"ratio\":1,\"pattern\":[\"#|\"],\"key\":{\"|\":\"c:rods/wooden\"}}]");
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"conversions\":[{\"kind\":\"shaped\",\"ratio\":1,\"pattern\":[\"#|\"]}]"));
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"conversions\":[{\"kind\":\"shapeless\",\"ratio\":1,\"pattern\":[\"##\",\"##\"]}]"));
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"conversions\":[{\"from\":\"cog\",\"kind\":\"forge\",\"ratio\":4}]"));
     }
 
     /** Only id, kind, order, tag and name are required; template and path default to the id. */

@@ -399,64 +399,32 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
 
     /**
      * A crafting tool: a damageable item that stays in the crafting grid and loses one durability per craft, so a recipe
-     * that has it as an ingredient (by its tag) uses it up slowly instead of consuming it. Example, a hammer that makes
-     * its head of the material:
+     * that has it as an ingredient (by its tag) uses it up slowly instead of consuming it. Its own recipe is a
+     * {@code shaped} or {@code shapeless} conversion of the form, where the symbol {@code #} is the ingredient of the
+     * material, its {@code tools} entry (see {@link Material.Tool}):
      * <pre>
-     * "tool": { "durability": 1.0, "pattern": ["##", "#|", " |"], "key": { "|": "c:rods/wooden" } }
+     * "tool": { "durability": 1.0 }
      * </pre>
-     * The recipe of the tool itself is shaped with the {@code pattern} where there is one, else shapeless. {@code #} is
-     * the ingredient of the material, its {@code tools} entry (see {@link Material.Tool}); every other symbol is in the
-     * {@code key}, which names the item tag of each. Without a pattern the shapeless recipe takes the material
-     * ingredient and one of each tag of the {@code key}. A tool form is never a default form of a material: only
-     * materials that list it have it.
+     * A tool form is never a default form of a material: only materials that list it have it.
      *
      * @param durability factor of the durability of vanilla tools of the tier of the material, {@code 1.0} for the same
-     * @param pattern    the rows of the shaped recipe, empty for a shapeless one
-     * @param key        item tag id by one-character symbol
      */
-    public record ToolSpec(float durability, List<String> pattern, Map<String, Identifier> key) {
-        /** The symbol of the ingredient of the material. */
+    public record ToolSpec(float durability) {
+        /** The symbol of the ingredient of the material in the pattern of a conversion. */
         public static final String MATERIAL = "#";
 
         /** Source format, see the class description. */
         public static final Codec<ToolSpec> CODEC = RecordCodecBuilder.<ToolSpec>create(i -> i.group(
-                Codec.FLOAT.optionalFieldOf("durability", 1.0F).forGetter(ToolSpec::durability),
-                Codec.STRING.listOf().optionalFieldOf("pattern", List.of()).forGetter(ToolSpec::pattern),
-                Codec.unboundedMap(Codec.STRING, Identifier.CODEC).optionalFieldOf("key", Map.of()).forGetter(ToolSpec::key)
-        ).apply(i, ToolSpec::new)).validate(ToolSpec::validate);
-
-        /** Makes the collections immutable. */
-        public ToolSpec {
-            pattern = List.copyOf(pattern);
-            key = Map.copyOf(key);
-        }
-
-        /** Checks the durability, the symbols of the key and that the pattern uses the material and only known symbols. */
-        private DataResult<ToolSpec> validate() {
-            if (durability <= 0) return DataResult.error(() -> "a tool \"durability\" must be above 0");
-            for (String symbol : key.keySet()) {
-                if (symbol.length() != 1 || symbol.equals(MATERIAL) || symbol.equals(" ")) {
-                    return DataResult.error(() -> "a tool \"key\" symbol must be one character, not # or a space: \"" + symbol + "\"");
-                }
-            }
-            if (!pattern.isEmpty()) {
-                String rows = String.join("", pattern);
-                if (!rows.contains(MATERIAL)) return DataResult.error(() -> "a tool \"pattern\" must use the material symbol #");
-                for (char c : rows.toCharArray()) {
-                    if (c != ' ' && c != '#' && !key.containsKey(String.valueOf(c))) {
-                        return DataResult.error(() -> "a tool \"pattern\" symbol is not in the \"key\": " + c);
-                    }
-                }
-            }
-            return DataResult.success(this);
-        }
+                Codec.FLOAT.optionalFieldOf("durability", 1.0F).forGetter(ToolSpec::durability)
+        ).apply(i, ToolSpec::new)).validate(t -> t.durability <= 0
+                ? DataResult.error(() -> "a tool \"durability\" must be above 0") : DataResult.success(t));
     }
 
     /**
      * How the form is made of another form of the same material; the recipes are made where the material has
      * both forms.
      *
-     * @param from            id of the other form, empty for an {@code alloy}
+     * @param from            id of the other form, empty for an {@code alloy}, a {@code shaped} and a {@code shapeless}
      * @param kind            {@code pack}: {@code ratio} items of the other form make one of this form and one makes
      *                        {@code ratio} back; {@code smelt}: one item is smelted and blasted into one of this form; {@code blast}: one item is only blasted into one of this form;
      *                        {@code craft}: {@code ratio} items of the other form make one of this form, shapeless and
@@ -464,16 +432,22 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
      * @param ratio           items of a pack, {@code 4} or {@code 9}; of a craft, {@code 1..9}
      *                        {@code alloy}: alloys are mixed in this form, from the forms of the alloy inputs
      *                        (see {@link Material.Alloy}); {@code external} is the key of the {@code external} item of an input that lacks the form;
+     *                        {@code forge}: a shaped recipe of the hammer tag over a row of {@code ratio} (1 to 3) items of the other form, making one item;
+     *                        {@code shaped}: a shaped recipe of {@code pattern} and {@code key}, making one item (its {@code ratio} must be 1);
+     *                        {@code shapeless}: the same shapeless, the {@code pattern} is one row whose symbols are the ingredients, a repeated symbol is
+     *                        used that often; in both, the symbol {@code #} is the ingredient of a tool form, see {@link ToolSpec};
      *                        {@code crush}: like a craft, but the hammer tag is an ingredient as well (the hammer stays and
      *                        wears) and {@code ratio} is the number of items that come out
      * @param xp              experience of a smelt or blast
      * @param materials       ids of the materials the conversion is made for, all where empty
      * @param external        of an {@code alloy}: the {@code external} key that resolves an input that lacks the form
+     * @param pattern         of a {@code shaped}: the rows of the shaped recipe
+     * @param key             of a {@code shaped}: what each symbol of the pattern is, the id of a form (its tag for the material) or an item tag such as {@code minecraft:planks}
      * @param externalRequired whether a material of an external metal that has the other form but not this one must
      *                        name the external item of this form, which then is the result of the smelt or blast
      */
     public record Conversion(String from, Kind kind, int ratio, float xp, List<String> materials, Optional<String> external,
-                             boolean externalRequired) {
+                             List<String> pattern, Map<String, String> key, boolean externalRequired) {
         /** Source format: {@code {"from": "nugget", "kind": "pack", "ratio": 9}}, {@code {"from": "dust", "kind": "smelt", "xp": 0.7}} or {@code {"from": "ingot", "kind": "craft", "ratio": 1}}. */
         public static final Codec<Conversion> CODEC = RecordCodecBuilder.<Conversion>create(i -> i.group(
                 Codec.STRING.optionalFieldOf("from", "").forGetter(Conversion::from),
@@ -482,9 +456,40 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
                 Codec.FLOAT.optionalFieldOf("xp", 0.0F).forGetter(Conversion::xp),
                 Codec.STRING.listOf().optionalFieldOf("materials", List.of()).forGetter(Conversion::materials),
                 Codec.STRING.optionalFieldOf("external").forGetter(Conversion::external),
+                Codec.STRING.listOf().optionalFieldOf("pattern", List.of()).forGetter(Conversion::pattern),
+                Codec.unboundedMap(Codec.STRING, Codec.STRING).optionalFieldOf("key", Map.of()).forGetter(Conversion::key),
                 Codec.BOOL.optionalFieldOf("externalRequired", false).forGetter(Conversion::externalRequired)
-        ).apply(i, Conversion::new)).validate(c -> (c.kind == Kind.ALLOY) == c.from.isEmpty() ? DataResult.success(c)
-                : DataResult.error(() -> c.kind == Kind.ALLOY ? "an \"alloy\" has no \"from\"" : "a conversion needs a \"from\""));
+        ).apply(i, Conversion::new)).validate(Conversion::check);
+
+        /** Checks that the entries fit the kind: an {@code alloy} and a {@code shaped} have no {@code from}, a {@code shaped} has a pattern and a key. */
+        private DataResult<Conversion> check() {
+            boolean fromless = kind == Kind.ALLOY || kind == Kind.SHAPED || kind == Kind.SHAPELESS;
+            if (fromless != from.isEmpty()) {
+                return DataResult.error(() -> fromless ? "an \"" + kind.getSerializedName() + "\" has no \"from\"" : "a conversion needs a \"from\"");
+            }
+            if (kind == Kind.FORGE && (ratio < 1 || ratio > 3)) {
+                return DataResult.error(() -> "a \"forge\" has a \"ratio\" of 1 to 3, the items fill one row");
+            }
+            if (kind == Kind.SHAPED || kind == Kind.SHAPELESS) {
+                boolean shaped = kind == Kind.SHAPED;
+                if (ratio != 1) return DataResult.error(() -> "a \"" + kind.getSerializedName() + "\" makes one item, its \"ratio\" must be 1");
+                if (shaped ? pattern.isEmpty() || pattern.size() > 3 || pattern.stream().anyMatch(r -> r.isEmpty() || r.length() > 3)
+                        : pattern.size() != 1 || pattern.get(0).isEmpty() || pattern.get(0).length() > 9) {
+                    return DataResult.error(() -> shaped ? "a \"shaped\" needs a \"pattern\" of 1 to 3 rows of 1 to 3 symbols"
+                            : "a \"shapeless\" needs a \"pattern\" of one row of 1 to 9 symbols");
+                }
+                for (String row : pattern) {
+                    for (char symbol : row.toCharArray()) {
+                        if (symbol != ' ' && !ToolSpec.MATERIAL.equals(String.valueOf(symbol)) && !key.containsKey(String.valueOf(symbol))) {
+                            return DataResult.error(() -> "the symbol \"" + symbol + "\" of the \"pattern\" is not in the \"key\"");
+                        }
+                    }
+                }
+            } else if (!pattern.isEmpty() || !key.isEmpty()) {
+                return DataResult.error(() -> "only a \"shaped\" and a \"shapeless\" have a \"pattern\" and a \"key\"");
+            }
+            return DataResult.success(this);
+        }
 
         /** The kind of a conversion. */
         public enum Kind implements StringRepresentable {
@@ -498,6 +503,12 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
             CRAFT,
             /** Shapeless crafting with a hammer in one direction, the hammer wears. */
             CRUSH,
+            /** Shaped crafting with a hammer over a row of items of the other form, which make one. */
+            FORGE,
+            /** A shaped recipe of forms and tags. */
+            SHAPED,
+            /** A shapeless recipe of forms and tags. */
+            SHAPELESS,
             /** The alloys are mixed in this form, one shapeless recipe of the inputs of the alloy. */
             ALLOY;
 

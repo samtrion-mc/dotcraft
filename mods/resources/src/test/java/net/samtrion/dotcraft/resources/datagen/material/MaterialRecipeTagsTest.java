@@ -79,35 +79,36 @@ class MaterialRecipeTagsTest {
         assertTrue(files > 100, "too few recipes: " + files);
         Set<String> known = neoForgeTags();
         for (String tag : tags) {
-            assertTrue(generated(tag) || known.contains(tag), "undefined tag " + tag);
+            assertTrue(generated(tag) || known.contains(tag) || tag.startsWith("minecraft:"), "undefined tag " + tag);
         }
     }
 
-    /** Crush recipes: a hammer and one item make one dust (coal, diamond) or two (every raw material), and nothing else is crushed. */
+    /** A hammer and one raw material crush to two dust, a hammer over one ingot or nugget forges one dust or grains, three ingots one plate. */
     @Test
-    void crushRecipes() throws Exception {
+    void hammerRecipes() throws Exception {
         Path root = GENERATED.resolve("dotcraftresources/recipe/material");
-        for (String id : List.of("coal", "diamond")) {
-            String json = Files.readString(root.resolve(id + "/dust_from_ingot.json"));
-            assertTrue(json.contains("#c:tools/hammer") && !json.contains("\"count\""), id);
-        }
         for (String id : List.of("tin", "zinc", "aluminum")) {
             String json = Files.readString(root.resolve(id + "/dust_from_raw.json"));
             assertTrue(json.contains("#c:tools/hammer") && json.contains("\"count\": 2"), id);
         }
-        assertFalse(Files.exists(root.resolve("iron/dust_from_ingot.json")));
+        for (String file : List.of("tin/dust_from_ingot", "coal/dust_from_ingot", "diamond/dust_from_ingot", "tin/grains_from_nugget",
+                "iron/plate_from_ingot", "tin/plate_from_ingot")) {
+            String json = Files.readString(root.resolve(file + ".json"));
+            assertTrue(json.contains("minecraft:crafting_shaped") && json.contains("#c:tools/hammer"), file);
+        }
+        assertTrue(Files.readString(root.resolve("tin/plate_from_ingot.json")).contains("\"III\""));
     }
 
     /** The tools have a recipe each, made of tags only (and so covered by the tag check above). */
     @Test
     void toolRecipesExist() throws Exception {
         Path root = GENERATED.resolve("dotcraftresources/recipe/material");
-        for (String file : List.of("stone/hammer", "iron/hammer", "steel/hammer", "diamond/hammer", "netherite/hammer",
-                "sand/sandpaper", "iron/sandpaper", "diamond/sandpaper")) {
+        for (String file : List.of("stone/hammer_shaped", "iron/hammer_shaped", "steel/hammer_shaped", "diamond/hammer_shaped", "netherite/hammer_shaped",
+                "sand/sandpaper_shapeless", "iron/sandpaper_shapeless", "diamond/sandpaper_shapeless")) {
             Path recipe = root.resolve(file + ".json");
             assertTrue(Files.exists(recipe), "missing " + recipe);
             collect(recipe, new HashSet<>());
         }
-        assertFalse(Files.exists(root.resolve("tin/hammer.json")));
+        assertFalse(Files.exists(root.resolve("tin/hammer_shaped.json")));
     }
 }

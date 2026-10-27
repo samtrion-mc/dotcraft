@@ -1,7 +1,10 @@
 package net.samtrion.dotcraft.resources.datagen.material;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 import org.jspecify.annotations.Nullable;
 
@@ -43,6 +46,8 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  *   first {@link Material.External external} source that names one. Every further source (it names a mod) gets the
  *   same recipes with its own item and the recipe id suffix {@code _<mod>}; a source that names a mod adds the
  *   {@code mod_loaded} condition to its recipes, also the first one;</li>
+ *   <li>a {@code forge} conversion: shaped, the hammer tag over a row of {@code ratio} items of the other form make one; a {@code crush} conversion: a hammer and one item make {@code ratio} items; a {@code shaped} conversion: a shaped
+ *   recipe of its {@code pattern} and {@code key}, see {@link Form.Conversion};</li>
  *   <li>a {@code craft} conversion: shapeless, {@code ratio} items of the tag of the other form make one of the form. An
  *   {@code external} material that lacks the other form uses the tag its sources name for it, one recipe per source
  *   (suffix and {@code mod_loaded} as for the smelt).</li>
@@ -61,13 +66,16 @@ public final class MaterialRecipePlugin implements RecipePlugin {
     @Override
     public void buildRecipes(RecipeBuilders recipes, RecipeOutput all) {
         for (Material m : Materials.all()) {
-            m.forms().stream().filter(f -> f.tool().isPresent()).forEach(f -> tool(recipes, all, m, f));
             for (Form to : Forms.all()) {
                 for (Form.Conversion c : to.conversions()) {
                     if (c.kind() == Form.Conversion.Kind.ALLOY) continue; // made by MaterialAlloyRecipePlugin
-                    Form from = Forms.get(c.from());
                     if (!c.materials().isEmpty() && !c.materials().contains(m.id())) continue;
-                    if (c.kind() == Form.Conversion.Kind.CRAFT || c.kind() == Form.Conversion.Kind.CRUSH) {
+                    if (c.kind() == Form.Conversion.Kind.SHAPED || c.kind() == Form.Conversion.Kind.SHAPELESS) {
+                        if (m.has(to)) shaped(recipes, all, m, to, c);
+                        continue;
+                    }
+                    Form from = Forms.get(c.from());
+                    if (c.kind() == Form.Conversion.Kind.CRAFT || c.kind() == Form.Conversion.Kind.CRUSH || c.kind() == Form.Conversion.Kind.FORGE) {
                         if (m.has(to)) craft(recipes, all, m, from, to, c);
                         continue;
                     }
@@ -81,33 +89,6 @@ public final class MaterialRecipePlugin implements RecipePlugin {
                 }
             }
         }
-    }
-
-    /**
-     * Makes the recipe of a crafting tool: shaped with the pattern of its {@link Form.ToolSpec} where it has one, else
-     * shapeless; {@code #} is the ingredient of the material, see {@link Material.Tool}. Only the tool itself is made, the
-     * recipes that use it name its tag. The conditions are those of the material and the form.
-     *
-     * @param recipes the recipe builders
-     * @param all     the output of the provider
-     * @param m       the material
-     * @param form    a tool form the material has
-     */
-    private static void tool(RecipeBuilders recipes, RecipeOutput all, Material m, Form form) {
-        Form.ToolSpec spec = form.tool().orElseThrow();
-        RecipeOutput output = all.withConditions(conditions(m, form, null, null).toArray(ICondition[]::new));
-        TagKey<Item> head = TagKey.create(Registries.ITEM, m.tools().get(form.id()).ingredient());
-        ItemLike result = ResourceItems.item(m, form).get();
-        if (spec.pattern().isEmpty()) {
-            var shapeless = recipes.shapeless(RecipeCategory.TOOLS, result, 1).requires(recipes.tag(head), m.tools().get(form.id()).count());
-            spec.key().entrySet().stream().sorted(java.util.Map.Entry.comparingByKey()).map(java.util.Map.Entry::getValue).forEach(tag -> shapeless.requires(recipes.tag(TagKey.create(Registries.ITEM, tag))));
-            shapeless.unlockedBy(recipes.hasName(head), recipes.has(head)).save(output, key(m, form.id()));
-            return;
-        }
-        var shaped = recipes.shaped(RecipeCategory.TOOLS, result).define('#', head);
-        spec.key().forEach((symbol, tag) -> shaped.define(symbol.charAt(0), TagKey.create(Registries.ITEM, tag)));
-        spec.pattern().forEach(shaped::pattern);
-        shaped.unlockedBy(recipes.hasName(head), recipes.has(head)).save(output, key(m, form.id()));
     }
 
     /**
@@ -172,6 +153,10 @@ public final class MaterialRecipePlugin implements RecipePlugin {
      */
     private static void craft(RecipeBuilders recipes, RecipeOutput output, Material m, TagKey<Item> input, Form to,
                               Form.Conversion c, String name) {
+        if (c.kind() == Form.Conversion.Kind.FORGE) {
+            forge(recipes, output, m, input, to, c.ratio(), name);
+            return;
+        }
         boolean crush = c.kind() == Form.Conversion.Kind.CRUSH;
         var builder = recipes.shapeless(RecipeCategory.MISC, ResourceItems.item(m, to).get(), crush ? c.ratio() : 1)
                 .requires(recipes.tag(input), crush ? 1 : c.ratio());
@@ -230,6 +215,69 @@ public final class MaterialRecipePlugin implements RecipePlugin {
                 .requires(recipes.tag(bigTag))
                 .unlockedBy(recipes.hasName(bigTag), recipes.has(bigTag))
                 .save(output, key(m, small.id() + "_from_" + big.id()));
+    }
+
+    /**
+     * A {@code forge} is a shaped recipe: the hammer tag sits over a row of {@code ratio} items of the tag, e.g. {@code " H "} over
+     * {@code "III"} for three, and makes one item of the form.
+     */
+    private static void forge(RecipeBuilders recipes, RecipeOutput output, Material m, TagKey<Item> input, Form to, int ratio,
+                              String name) {
+        var shaped = recipes.shaped(RecipeCategory.MISC, ResourceItems.item(m, to).get())
+                .define('H', ResourceBlockTags.HAMMERS).define('I', input)
+                .pattern(" ".repeat((ratio - 1) / 2) + "H" + " ".repeat(ratio / 2))
+                .pattern("I".repeat(ratio));
+        shaped.unlockedBy(recipes.hasName(input), recipes.has(input)).save(output, key(m, name));
+    }
+
+    /**
+     * Makes the recipe of a {@code shaped} or {@code shapeless} conversion. Each symbol of the key is an item tag, or the tag of a
+     * form of the material, which, where the material lacks the form, is the tag its first source that names one gives for it.
+     * The symbol {@code #} is the ingredient of the material for the tool form (its {@code tools} entry), and in a shapeless recipe
+     * it stands for as many items as the {@code count} of that entry. The recipe is skipped where a form of the key is missing in
+     * both, and where the tool form is used by a material without a {@code tools} entry.
+     */
+    private static void shaped(RecipeBuilders recipes, RecipeOutput all, Material m, Form to, Form.Conversion c) {
+        Map<Character, TagKey<Item>> tags = new LinkedHashMap<>();
+        Form first = null;
+        Material.External external = null;
+        for (var entry : c.key().entrySet()) {
+            String value = entry.getValue();
+            if (value.contains(":")) {
+                tags.put(entry.getKey().charAt(0), TagKey.create(Registries.ITEM, Identifier.parse(value)));
+            } else if (m.has(value)) {
+                Form form = Forms.get(value);
+                first = first == null ? form : first;
+                tags.put(entry.getKey().charAt(0), MaterialTags.item(form, m));
+            } else {
+                Optional<Material.External> source = m.external().stream().filter(e -> e.tag(value).isPresent()).findFirst();
+                if (source.isEmpty()) return;
+                external = external == null ? source.get() : external;
+                tags.put(entry.getKey().charAt(0), TagKey.create(Registries.ITEM, source.get().tag(value).orElseThrow()));
+            }
+        }
+        Material.Tool tool = m.tools().get(to.id());
+        if (c.pattern().stream().anyMatch(r -> r.contains(Form.ToolSpec.MATERIAL))) {
+            if (tool == null) return;
+            tags.put('#', TagKey.create(Registries.ITEM, tool.ingredient()));
+        }
+        ItemLike result = ResourceItems.item(m, to).get();
+        RecipeCategory category = to.tool().isPresent() ? RecipeCategory.TOOLS : RecipeCategory.MISC;
+        TagKey<Item> unlock = tags.values().iterator().next();
+        RecipeOutput output = first != null ? out(all, m, first, to, external) : out(all, m, to, null, external);
+        if (c.kind() == Form.Conversion.Kind.SHAPELESS) {
+            var shapeless = recipes.shapeless(category, result, 1);
+            for (char symbol : c.pattern().get(0).toCharArray()) {
+                if (symbol != '#') shapeless.requires(recipes.tag(tags.get(symbol)));
+            }
+            if (tags.containsKey('#')) shapeless.requires(recipes.tag(tags.get('#')), tool.count());
+            shapeless.unlockedBy(recipes.hasName(unlock), recipes.has(unlock)).save(output, key(m, to.id() + "_shapeless"));
+            return;
+        }
+        var shaped = recipes.shaped(category, result);
+        tags.forEach(shaped::define);
+        c.pattern().forEach(shaped::pattern);
+        shaped.unlockedBy(recipes.hasName(unlock), recipes.has(unlock)).save(output, key(m, to.id() + "_shaped"));
     }
 
     /**

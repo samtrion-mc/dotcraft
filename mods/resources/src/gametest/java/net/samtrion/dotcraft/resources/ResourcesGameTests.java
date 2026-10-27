@@ -268,7 +268,7 @@ public final class ResourcesGameTests {
                 net.minecraft.world.item.crafting.CraftingInput.of(1, 1, java.util.List.of(hammer))).get(0);
         helper.assertTrue(last.isEmpty(), "the worn hammer does not break");
         helper.assertTrue(helper.getLevel().getServer().getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE,
-                Identifier.fromNamespaceAndPath(CraftResources.MODID, "material/iron/hammer"))).isPresent(), "missing the hammer recipe");
+                Identifier.fromNamespaceAndPath(CraftResources.MODID, "material/iron/hammer_shaped"))).isPresent(), "missing the hammer recipe");
         helper.succeed();
     }
 

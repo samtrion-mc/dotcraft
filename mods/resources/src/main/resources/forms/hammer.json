@@ -10,8 +10,14 @@
   },
   "external": "optional",
   "tool": {
-    "durability": 1.0,
-    "pattern": [" # ", " |#", "|  "],
-    "key": { "|": "c:rods/wooden" }
-  }
+    "durability": 1.0
+  },
+  "conversions": [
+    {
+      "kind": "shaped",
+      "ratio": 1,
+      "pattern": [" # ", " |#", "|  "],
+      "key": { "|": "c:rods/wooden" }
+    }
+  ]
 }

@@ -153,7 +153,10 @@ public final class Forms {
         for (Form form : result) {
             for (String other : form.requires()) require(ids, form, other);
             for (Form.Conversion c : form.conversions()) {
-                if (c.kind() == Form.Conversion.Kind.ALLOY) continue;
+                if (c.kind() == Form.Conversion.Kind.SHAPED || c.kind() == Form.Conversion.Kind.SHAPELESS) {
+                    c.key().values().stream().filter(v -> !v.contains(":")).forEach(v -> require(ids, form, v));
+                }
+                if (c.kind() == Form.Conversion.Kind.ALLOY || c.kind() == Form.Conversion.Kind.SHAPED || c.kind() == Form.Conversion.Kind.SHAPELESS) continue;
                 require(ids, form, c.from());
                 if (c.kind() == Form.Conversion.Kind.PACK && find(result, c.from()).hosted()) {
                     throw new IllegalArgumentException(form.id() + ": a \"pack\" cannot be from the hosted form " + c.from());

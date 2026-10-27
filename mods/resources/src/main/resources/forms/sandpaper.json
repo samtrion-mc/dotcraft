@@ -10,7 +10,14 @@
   },
   "external": "optional",
   "tool": {
-    "durability": 0.1,
-    "key": { "P": "c:papers", "S": "c:slime_balls" }
-  }
+    "durability": 0.1
+  },
+  "conversions": [
+    {
+      "kind": "shapeless",
+      "ratio": 1,
+      "pattern": ["#PS"],
+      "key": { "P": "c:papers", "S": "c:slime_balls" }
+    }
+  ]
 }
