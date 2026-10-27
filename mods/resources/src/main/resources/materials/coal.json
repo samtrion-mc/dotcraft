@@ -13,6 +13,9 @@
   "external": [
     {
       "forms": {
+        "ore": {
+          "tag": "c:ores/coal"
+        },
         "ingot": {
           "tag": "dotcraftresources:coal",
           "item": "minecraft:coal"

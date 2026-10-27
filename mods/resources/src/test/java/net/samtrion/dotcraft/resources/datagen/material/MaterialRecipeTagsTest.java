@@ -83,6 +83,21 @@ class MaterialRecipeTagsTest {
         }
     }
 
+    /** Crush recipes: a hammer and one item make one dust (coal, diamond) or two (every ore), and nothing else is crushed. */
+    @Test
+    void crushRecipes() throws Exception {
+        Path root = GENERATED.resolve("dotcraftresources/recipe/material");
+        for (String id : List.of("coal", "diamond")) {
+            String json = Files.readString(root.resolve(id + "/dust_from_ingot.json"));
+            assertTrue(json.contains("#c:tools/hammer") && !json.contains("\"count\""), id);
+        }
+        for (String id : List.of("iron", "copper", "gold", "coal", "tin", "zinc")) {
+            String json = Files.readString(root.resolve(id + "/dust_from_ore.json"));
+            assertTrue(json.contains("#c:tools/hammer") && json.contains("\"count\": 2"), id);
+        }
+        assertFalse(Files.exists(root.resolve("iron/dust_from_ingot.json")));
+    }
+
     /** The tools have a recipe each, made of tags only (and so covered by the tag check above). */
     @Test
     void toolRecipesExist() throws Exception {

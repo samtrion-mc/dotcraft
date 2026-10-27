@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ore",
+      "material": "uranium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "uranium",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:ores/uranium",
+    "#c:tools/hammer"
+  ],
+  "result": {
+    "count": 2,
+    "id": "dotcraftresources:uranium_dust"
+  }
+}

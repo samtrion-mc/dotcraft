@@ -26,6 +26,9 @@
   "external": [
     {
       "forms": {
+        "ore": {
+          "tag": "c:ores/iron"
+        },
         "ingot": {
           "tag": "c:ingots/iron",
           "item": "minecraft:iron_ingot"

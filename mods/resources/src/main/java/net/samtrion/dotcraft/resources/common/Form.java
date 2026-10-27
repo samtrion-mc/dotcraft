@@ -468,17 +468,21 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
      *                        {@code craft}: {@code ratio} items of the other form make one of this form, shapeless and
      *                        one way, also for an external material whose source names a tag for the other form
      * @param ratio           items of a pack, {@code 4} or {@code 9}; of a craft, {@code 1..9}
+     *                        {@code crush}: like a craft, but the hammer tag is an ingredient as well (the hammer stays and
+     *                        wears) and {@code ratio} is the number of items that come out
      * @param xp              experience of a cook
+     * @param materials       ids of the materials the conversion is made for, all where empty
      * @param externalRequired whether a material of an external metal that has the other form but not this one must
      *                        name the external item of this form, which then is the result of the cook
      */
-    public record Conversion(String from, Kind kind, int ratio, float xp, boolean externalRequired) {
+    public record Conversion(String from, Kind kind, int ratio, float xp, List<String> materials, boolean externalRequired) {
         /** Source format: {@code {"from": "nugget", "kind": "pack", "ratio": 9}}, {@code {"from": "dust", "kind": "cook", "xp": 0.7}} or {@code {"from": "ingot", "kind": "craft", "ratio": 1}}. */
         public static final Codec<Conversion> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Codec.STRING.fieldOf("from").forGetter(Conversion::from),
                 Kind.CODEC.fieldOf("kind").forGetter(Conversion::kind),
                 Codec.INT.optionalFieldOf("ratio", 9).forGetter(Conversion::ratio),
                 Codec.FLOAT.optionalFieldOf("xp", 0.0F).forGetter(Conversion::xp),
+                Codec.STRING.listOf().optionalFieldOf("materials", List.of()).forGetter(Conversion::materials),
                 Codec.BOOL.optionalFieldOf("externalRequired", false).forGetter(Conversion::externalRequired)
         ).apply(i, Conversion::new));
 
@@ -489,7 +493,9 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
             /** Smelting and blasting. */
             COOK,
             /** Shapeless crafting in one direction. */
-            CRAFT;
+            CRAFT,
+            /** Shapeless crafting with a hammer in one direction, the hammer wears. */
+            CRUSH;
 
             /** Codec that reads the lower case name. */
             public static final Codec<Kind> CODEC = StringRepresentable.fromEnum(Kind::values);

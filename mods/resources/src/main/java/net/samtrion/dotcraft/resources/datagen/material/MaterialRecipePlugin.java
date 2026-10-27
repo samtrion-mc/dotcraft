@@ -22,6 +22,7 @@ import net.samtrion.dotcraft.resources.api.RecipePlugin;
 import net.samtrion.dotcraft.resources.common.Form;
 import net.samtrion.dotcraft.resources.common.Forms;
 import net.samtrion.dotcraft.resources.common.Material;
+import net.samtrion.dotcraft.resources.common.ResourceBlockTags;
 import net.samtrion.dotcraft.resources.common.MaterialTags;
 import net.samtrion.dotcraft.resources.common.Materials;
 import net.samtrion.dotcraft.resources.common.conditions.Conditions;
@@ -64,7 +65,8 @@ public final class MaterialRecipePlugin implements RecipePlugin {
             for (Form to : Forms.all()) {
                 for (Form.Conversion c : to.conversions()) {
                     Form from = Forms.get(c.from());
-                    if (c.kind() == Form.Conversion.Kind.CRAFT) {
+                    if (!c.materials().isEmpty() && !c.materials().contains(m.id())) continue;
+                    if (c.kind() == Form.Conversion.Kind.CRAFT || c.kind() == Form.Conversion.Kind.CRUSH) {
                         if (m.has(to)) craft(recipes, all, m, from, to, c);
                         continue;
                     }
@@ -150,7 +152,7 @@ public final class MaterialRecipePlugin implements RecipePlugin {
     private static void craft(RecipeBuilders recipes, RecipeOutput all, Material m, Form from, Form to, Form.Conversion c) {
         String name = to.id() + "_from_" + from.id();
         if (m.has(from)) {
-            craft(recipes, out(all, m, from, to, null), m, MaterialTags.item(from, m), to, c.ratio(), name);
+            craft(recipes, out(all, m, from, to, null), m, MaterialTags.item(from, m), to, c, name);
             return;
         }
         List<Material.External> sources = m.external().stream().filter(e -> e.tag(from.id()).isPresent()).toList();
@@ -158,17 +160,21 @@ public final class MaterialRecipePlugin implements RecipePlugin {
             Material.External source = sources.get(i);
             TagKey<Item> input = TagKey.create(Registries.ITEM, source.tag(from.id()).orElseThrow());
             String suffix = i == 0 ? "" : "_" + source.mod().orElseThrow();
-            craft(recipes, out(all, m, to, null, source), m, input, to, c.ratio(), name + suffix);
+            craft(recipes, out(all, m, to, null, source), m, input, to, c, name + suffix);
         }
     }
 
-    /** One shapeless recipe: {@code count} items of a tag make one item of a form; the name ends the recipe id. */
-    private static void craft(RecipeBuilders recipes, RecipeOutput output, Material m, TagKey<Item> input, Form to, int count,
-                              String name) {
-        recipes.shapeless(RecipeCategory.MISC, ResourceItems.item(m, to).get(), 1)
-                .requires(recipes.tag(input), count)
-                .unlockedBy(recipes.hasName(input), recipes.has(input))
-                .save(output, key(m, name));
+    /**
+     * One shapeless recipe: {@code ratio} items of a tag make one item of a form, or, for a crush, one item of the tag and a
+     * hammer make {@code ratio} items of the form; the name ends the recipe id.
+     */
+    private static void craft(RecipeBuilders recipes, RecipeOutput output, Material m, TagKey<Item> input, Form to,
+                              Form.Conversion c, String name) {
+        boolean crush = c.kind() == Form.Conversion.Kind.CRUSH;
+        var builder = recipes.shapeless(RecipeCategory.MISC, ResourceItems.item(m, to).get(), crush ? c.ratio() : 1)
+                .requires(recipes.tag(input), crush ? 1 : c.ratio());
+        if (crush) builder.requires(recipes.tag(ResourceBlockTags.HAMMERS));
+        builder.unlockedBy(recipes.hasName(input), recipes.has(input)).save(output, key(m, name));
     }
 
     /**

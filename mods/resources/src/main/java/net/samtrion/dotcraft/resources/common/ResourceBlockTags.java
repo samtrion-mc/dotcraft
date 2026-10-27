@@ -28,5 +28,9 @@ public final class ResourceBlockTags {
     public static final TagKey<Item> PAPERS =
             TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "papers"));
 
+    /** Every hammer of the materials, for the crush recipes. */
+    public static final TagKey<Item> HAMMERS =
+            TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "tools/hammer"));
+
     private ResourceBlockTags() {}
 }

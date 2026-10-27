@@ -11,6 +11,8 @@
   "external": "default",
   "mix": {},
   "conversions": [
-    { "from": "grains", "kind": "pack", "ratio": 9 }
+    { "from": "grains", "kind": "pack", "ratio": 9 },
+    { "from": "ore", "kind": "crush", "ratio": 2 },
+    { "from": "ingot", "kind": "crush", "ratio": 1, "materials": ["coal", "diamond"] }
   ]
 }
