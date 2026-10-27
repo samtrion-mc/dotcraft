@@ -9,6 +9,7 @@
   "forms": [
     "dust",
     "grains",
+    "dust_block",
     "plate",
     "gear",
     "hammer",

@@ -8,6 +8,7 @@
   "tier": "stone",
   "forms": [
     "dust",
+    "dust_block",
     "grains",
     "plate",
     "gear",
