@@ -13,6 +13,7 @@
   "conversions": [
     { "from": "ingot", "kind": "craft", "ratio": 1 },
     { "from": "raw", "kind": "craft", "ratio": 1 },
-    { "from": "ore", "kind": "craft", "ratio": 1 }
+    { "from": "ore", "kind": "craft", "ratio": 1 },
+    { "from": "grains", "kind": "pack", "ratio": 9 }
   ]
 }

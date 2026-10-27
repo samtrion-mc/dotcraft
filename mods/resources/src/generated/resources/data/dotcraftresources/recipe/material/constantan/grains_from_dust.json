@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "constantan",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "constantan",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:dusts/constantan"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraftresources:constantan_grains"
+  }
+}
