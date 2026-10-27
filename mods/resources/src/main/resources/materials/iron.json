@@ -12,7 +12,36 @@
     "plate",
     "gear",
     "hammer",
-    "sandpaper"
+    "sandpaper",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "poor"
+      ],
+      "veinSize": 8,
+      "count": 8,
+      "minY": -16,
+      "maxY": 120
+    },
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "rich"
+      ],
+      "veinSize": 5,
+      "count": 3,
+      "minY": -64,
+      "maxY": 32
+    }
   ],
   "tools": {
     "hammer": {
@@ -27,9 +56,6 @@
   "external": [
     {
       "forms": {
-        "ore": {
-          "tag": "c:ores/iron"
-        },
         "ingot": {
           "tag": "c:ingots/iron",
           "item": "minecraft:iron_ingot"
@@ -40,6 +66,10 @@
         },
         "block": {
           "tag": "c:storage_blocks/iron"
+        },
+        "raw": {
+          "tag": "c:raw_materials/iron",
+          "item": "minecraft:raw_iron"
         }
       }
     }

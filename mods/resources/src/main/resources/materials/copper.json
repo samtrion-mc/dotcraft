@@ -10,14 +10,40 @@
     "dust",
     "grains",
     "plate",
-    "gear"
+    "gear",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "poor"
+      ],
+      "veinSize": 8,
+      "count": 8,
+      "minY": -16,
+      "maxY": 112
+    },
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "rich"
+      ],
+      "veinSize": 5,
+      "count": 3,
+      "minY": -16,
+      "maxY": 64
+    }
   ],
   "external": [
     {
       "forms": {
-        "ore": {
-          "tag": "c:ores/copper"
-        },
         "ingot": {
           "tag": "c:ingots/copper",
           "item": "minecraft:copper_ingot"
@@ -28,6 +54,10 @@
         },
         "block": {
           "tag": "c:storage_blocks/copper"
+        },
+        "raw": {
+          "tag": "c:raw_materials/copper",
+          "item": "minecraft:raw_copper"
         }
       }
     }

@@ -149,7 +149,7 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
         if (forms.isEmpty()) return DataResult.error(() -> id + ": \"forms\" must not be empty");
         for (Form form : forms) {
             for (String required : form.requires()) {
-                if (!has(required)) {
+                if (!has(required) && external.isEmpty()) {
                     return DataResult.error(() -> id + ": the \"" + form.id() + "\" form needs the \"" + required + "\" form");
                 }
             }
@@ -161,10 +161,11 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
             return DataResult.error(() -> id + ": an alloy is not mined, it has no mined forms such as \"raw\" and \"ore\"");
         }
         if (!external.isEmpty()) {
-            if (alloy.isPresent() || ore.isPresent()) {
-                return DataResult.error(() -> id + ": an \"external\" material has no \"alloy\" and \"ore\"");
+            if (alloy.isPresent()) {
+                return DataResult.error(() -> id + ": an \"external\" material has no \"alloy\"");
             }
-            List<String> excluded = all.stream().filter(f -> f.external() == Form.ExternalRule.EXCLUDED).map(Form::id).toList();
+            List<String> excluded = all.stream().filter(f -> f.external() == Form.ExternalRule.EXCLUDED && !(ore.isPresent() && f.hosted()))
+                    .map(Form::id).toList();
             if (forms.stream().anyMatch(f -> excluded.contains(f.id()))) {
                 return DataResult.error(() -> id + ": an \"external\" material must not have the forms " + excluded);
             }

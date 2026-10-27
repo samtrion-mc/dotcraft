@@ -10,14 +10,40 @@
     "dust",
     "grains",
     "plate",
-    "gear"
+    "gear",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "poor"
+      ],
+      "veinSize": 6,
+      "count": 4,
+      "minY": -48,
+      "maxY": 32
+    },
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "rich"
+      ],
+      "veinSize": 4,
+      "count": 1,
+      "minY": -64,
+      "maxY": -16
+    }
   ],
   "external": [
     {
       "forms": {
-        "ore": {
-          "tag": "c:ores/gold"
-        },
         "ingot": {
           "tag": "c:ingots/gold",
           "item": "minecraft:gold_ingot"
@@ -28,6 +54,10 @@
         },
         "block": {
           "tag": "c:storage_blocks/gold"
+        },
+        "raw": {
+          "tag": "c:raw_materials/gold",
+          "item": "minecraft:raw_gold"
         }
       }
     }

@@ -73,6 +73,7 @@ public final class MaterialRecipePlugin implements RecipePlugin {
                     if (!m.has(from)) continue;
                     if (c.kind() == Form.Conversion.Kind.PACK) {
                         if (m.has(to)) pack(recipes, out(all, m, from, to, null), m, from, to, c.ratio());
+                        else packExternal(recipes, all, m, from, to, c.ratio());
                     } else if (m.cook()) {
                         cook(recipes, all, m, from, to, c);
                     }
@@ -228,6 +229,29 @@ public final class MaterialRecipePlugin implements RecipePlugin {
                 .requires(recipes.tag(bigTag))
                 .unlockedBy(recipes.hasName(bigTag), recipes.has(bigTag))
                 .save(output, key(m, small.id() + "_from_" + big.id()));
+    }
+
+    /**
+     * The pack of a form whose big form is an external item (nine redstone grains make the vanilla redstone, which makes nine
+     * grains back): nine of the small form are crafted shapeless into the external item, and its tag crafts the small ones.
+     * Made only for a material that has the small form and whose source names a tag and an item for the big form.
+     */
+    private static void packExternal(RecipeBuilders recipes, RecipeOutput all, Material m, Form small, Form big, int ratio) {
+        if (!m.has(small) || ratio == 4) return;
+        for (Material.External source : m.external().stream().filter(e -> e.item(big.id()).isPresent() && e.tag(big.id()).isPresent()).toList()) {
+            TagKey<Item> smallTag = MaterialTags.item(small, m);
+            TagKey<Item> bigTag = TagKey.create(Registries.ITEM, source.tag(big.id()).orElseThrow());
+            Identifier bigItem = source.item(big.id()).orElseThrow();
+            RecipeOutput output = out(all, m, small, null, source);
+            recipes.shapeless(RecipeCategory.MISC, BuiltInRegistries.ITEM.getValue(bigItem), 1)
+                    .requires(recipes.tag(smallTag), ratio)
+                    .unlockedBy(recipes.hasName(smallTag), recipes.has(smallTag))
+                    .save(output, key(m, big.id() + "_from_" + small.id()));
+            recipes.shapeless(RecipeCategory.MISC, ResourceItems.item(m, small).get(), ratio)
+                    .requires(recipes.tag(bigTag))
+                    .unlockedBy(recipes.hasName(bigTag), recipes.has(bigTag))
+                    .save(output, key(m, small.id() + "_from_" + big.id()));
+        }
     }
 
     /** Smelting and blasting of every item of a tag into a result; the suffix ends the recipe ids. */

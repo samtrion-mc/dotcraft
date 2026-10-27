@@ -27,9 +27,6 @@
   "external": [
     {
       "forms": {
-        "ore": {
-          "tag": "c:ores/diamond"
-        },
         "ingot": {
           "tag": "c:gems/diamond",
           "item": "minecraft:diamond"

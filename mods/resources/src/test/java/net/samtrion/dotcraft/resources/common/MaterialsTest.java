@@ -466,7 +466,7 @@ class MaterialsTest {
         assertThrows(IllegalArgumentException.class, () -> Materials.parseAll(Map.of("enabled.json", "{\"id\":\"enabled\",\"tier\":\"stone\",\"color\":\"#000000\"}"), FORMS));
         for (String id : List.of("coal", "charcoal")) {
             Material m = shipped().stream().filter(x -> x.id().equals(id)).findFirst().orElseThrow();
-            assertEquals(List.of(form("dust")), m.forms(), id);
+            assertEquals(id.equals("coal") ? List.of(form("dust"), form("ore")) : List.of(form("dust")), m.forms(), id);
             assertFalse(m.cook(), id);
             assertEquals("minecraft:" + id, m.external().get(0).item("ingot").orElseThrow().toString());
         }
@@ -474,6 +474,23 @@ class MaterialsTest {
         assertEquals("c:storage_blocks/charcoal", charcoal.external().get(0).tag("block").orElseThrow().toString());
         Material steel = shipped().stream().filter(x -> x.id().equals("steel")).findFirst().orElseThrow();
         assertEquals(Set.of("coal", "charcoal"), steel.alloy().orElseThrow().alternatives());
+    }
+
+    /** Vanilla ores get only the poor and rich variants (the vanilla block is the normal one), the gems and dusts only poor, diamond none. */
+    @Test
+    void vanillaOreVariants() throws Exception {
+        Map<String, List<OreRichness>> expected = Map.of(
+                "iron", List.of(OreRichness.POOR, OreRichness.RICH), "copper", List.of(OreRichness.POOR, OreRichness.RICH),
+                "gold", List.of(OreRichness.POOR, OreRichness.RICH), "coal", List.of(OreRichness.POOR),
+                "lapis", List.of(OreRichness.POOR), "redstone", List.of(OreRichness.POOR));
+        Map<String, Material> byId = shipped().stream().collect(Collectors.toMap(Material::id, m -> m));
+        for (var e : expected.entrySet()) {
+            Material m = byId.get(e.getKey());
+            assertTrue(m.isExternal() && m.has("ore"), e.getKey());
+            assertEquals(Set.copyOf(e.getValue()), m.oreVariants().stream().map(Material.OreVariant::richness).collect(Collectors.toSet()), e.getKey());
+        }
+        assertFalse(byId.get("diamond").has("ore"));
+        assertTrue(byId.get("redstone").has("grains") && !byId.get("redstone").has("dust"));
     }
 
     /** Every shipped material is named in every supported locale, and only in those. */

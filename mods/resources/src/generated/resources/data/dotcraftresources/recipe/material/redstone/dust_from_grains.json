@@ -1,0 +1,30 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "redstone",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:small_dusts/redstone",
+    "#c:small_dusts/redstone",
+    "#c:small_dusts/redstone",
+    "#c:small_dusts/redstone",
+    "#c:small_dusts/redstone",
+    "#c:small_dusts/redstone",
+    "#c:small_dusts/redstone",
+    "#c:small_dusts/redstone",
+    "#c:small_dusts/redstone"
+  ],
+  "result": {
+    "id": "minecraft:redstone"
+  }
+}

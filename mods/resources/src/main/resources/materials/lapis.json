@@ -1,0 +1,37 @@
+{
+  "id": "lapis",
+  "color": "#2A52BE",
+  "name": {
+    "en_us": "Lapis Lazuli",
+    "de_de": "Lapislazuli"
+  },
+  "tier": "stone",
+  "forms": [
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "poor"
+      ],
+      "veinSize": 5,
+      "count": 3,
+      "minY": -48,
+      "maxY": 32
+    }
+  ],
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "c:gems/lapis",
+          "item": "minecraft:lapis_lazuli"
+        }
+      }
+    }
+  ]
+}

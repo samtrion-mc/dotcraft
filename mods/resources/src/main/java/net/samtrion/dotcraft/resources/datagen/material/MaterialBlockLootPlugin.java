@@ -34,7 +34,7 @@ public final class MaterialBlockLootPlugin implements LootPlugin {
                 Form.BlockSpec spec = form.block().orElseThrow();
                 if (spec.loot() == Form.BlockSpec.Loot.ORE) {
                     Form dropForm = Forms.get(spec.drop().orElseThrow());
-                    var drop = ResourceItems.item(material, dropForm).get();
+                    var drop = drop(material, dropForm);
                     List<ICondition> conditions = material.conditions(form);
                     for (var variant : material.oreVariants()) {
                         Block ore = MaterialBlocks.ore(material, variant.host(), variant.richness()).get();
@@ -48,6 +48,22 @@ public final class MaterialBlockLootPlugin implements LootPlugin {
                 }
             }
         }
+    }
+
+    /**
+     * The item an ore drops: the item of the drop form where the material has the form, else the external item of that form
+     * (the raw item of a vanilla metal), else the external item of its {@code ingot} (the gem or dust of a vanilla ore).
+     *
+     * @param material the material
+     * @param dropForm the {@code drop} form of the ore
+     * @return the item that drops
+     */
+    private static net.minecraft.world.level.ItemLike drop(net.samtrion.dotcraft.resources.common.Material material, Form dropForm) {
+        if (material.has(dropForm)) return ResourceItems.item(material, dropForm).get();
+        var id = material.externalItem(dropForm.id()).or(() -> material.externalItem("ingot"))
+                .flatMap(source -> source.item(dropForm.id()).or(() -> source.item("ingot")))
+                .orElseThrow(() -> new IllegalStateException(material.id() + ": no item for the drop of its ore"));
+        return net.minecraft.core.registries.BuiltInRegistries.ITEM.getValue(id);
     }
 
     /**
