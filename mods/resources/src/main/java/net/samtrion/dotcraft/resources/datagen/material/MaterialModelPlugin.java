@@ -31,7 +31,9 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  * Blockstates and item definitions of the material items and blocks. Nothing is generated per material but the
  * definitions: all share the hand written grayscale models {@code models/item/material/<template>.json} and
  * {@code models/block/material/<template>.json} of their {@link Form#template() form}, and the item definition
- * and the block tint colour them (except for forms that are not {@link Form#tinted() tinted}). The ores
+ * and the block tint colour them (except for forms that are not {@link Form#tinted() tinted}). Only the first
+ * layer is tinted: the hammer and the sandpaper put an untinted layer (the wooden handle) over the tinted head. A form
+ * with {@link Form#variants() variants} uses the model {@code <template>_<n>} its material hashes to. The ores
  * share one small model per host and richness, {@code models/block/material/<template>/<host>_<richness>.json},
  * which puts the tinted overlay on the host texture.
  */
@@ -55,7 +57,7 @@ public final class MaterialModelPlugin implements ModelPlugin {
                     block(blocks, MaterialBlocks.block(material, form).get(), DataGenIds.id("block/material/" + form.template()), tint);
                 } else {
                     blocks.itemModelOutput.accept(ResourceItems.item(material, form).get(),
-                            itemModel(DataGenIds.id("item/material/" + form.template()), tint));
+                            itemModel(DataGenIds.id("item/material/" + form.modelOf(material.id())), tint));
                 }
             }
         }

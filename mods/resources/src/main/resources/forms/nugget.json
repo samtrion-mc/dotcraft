@@ -2,6 +2,7 @@
   "id": "nugget",
   "kind": "item",
   "order": 40,
+  "variants": 4,
   "configKey": "nuggets",
   "tag": { "parent": "nuggets" },
   "name": {

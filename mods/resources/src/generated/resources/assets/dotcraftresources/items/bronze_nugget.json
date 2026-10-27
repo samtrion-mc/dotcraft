@@ -1,7 +1,7 @@
 {
   "model": {
     "type": "minecraft:model",
-    "model": "dotcraftresources:item/material/nugget",
+    "model": "dotcraftresources:item/material/nugget_2",
     "tints": [
       {
         "type": "minecraft:constant",

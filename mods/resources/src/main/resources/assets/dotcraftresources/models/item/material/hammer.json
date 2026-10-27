@@ -1,6 +1,7 @@
 {
-  "parent": "minecraft:item/generated",
+  "parent": "minecraft:item/handheld",
   "textures": {
-    "layer0": "dotcraftresources:item/material/hammer"
+    "layer0": "dotcraftresources:item/material/hammer",
+    "layer1": "dotcraftresources:item/material/hammer_handle"
   }
 }

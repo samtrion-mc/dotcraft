@@ -87,6 +87,23 @@ class FormsTest {
         assertEquals("x", f.tagFolder());
     }
 
+    /** A form with variants picks a stable one per material, and the shipped nugget textures and models exist for each. */
+    @Test
+    void variants() throws Exception {
+        Form f = parse("cog", 5, ",\"variants\":4").get(0);
+        assertEquals(f.modelOf("tin"), f.modelOf("tin"));
+        assertEquals(4, java.util.stream.IntStream.range(0, 200).mapToObj(i -> f.modelOf("m" + i)).distinct().count());
+        assertEquals("cog", parse("cog", 5, "").get(0).modelOf("tin"));
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"variants\":0"));
+        Form nugget = Forms.find(shipped(), "nugget");
+        for (int i = 0; i < nugget.variants(); i++) {
+            for (String dir : new String[] {"textures", "models"}) {
+                String file = "/assets/dotcraftresources/" + dir + "/item/material/nugget_" + i + (dir.equals("models") ? ".json" : ".png");
+                assertTrue(FormsTest.class.getResource(file) != null, "missing " + file);
+            }
+        }
+    }
+
     /** Broken sources fail instead of being skipped. */
     @Test
     void brokenSourcesFail() {

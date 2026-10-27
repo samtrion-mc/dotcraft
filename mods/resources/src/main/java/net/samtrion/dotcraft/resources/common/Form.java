@@ -44,7 +44,8 @@ import net.samtrion.dotcraft.resources.tool.ToolType;
  * locale, see {@link Locales}, with the material name as {@code %s}), and the {@code block} entry of a block.
  * The {@code configKey} (plural style, e.g. {@code ingots}) names the form in the config, see {@link #CONFIG_KEY}.
  * Optional are {@code template} (name of the model and texture template, default the id), {@code tinted}
- * (default true, the template is colored with the material color), {@code path} (registry path pattern, default
+ * (default true, the template is colored with the material color), {@code variants} (default 1; with more the
+ * model and texture are {@code <template>_<n>} and a material uses the one its id hashes to, see {@link #modelOf}), {@code path} (registry path pattern, default
  * {@code %s_<id>}), {@code mined} (the form is only found in the ground, so alloys lack it), {@code external}
  * ({@code excluded}, {@code default} or {@code optional}: whether a material of an external metal must not have
  * the form, has it by default or may list it), {@code icon} (the form shown as the creative tab icon),
@@ -60,6 +61,7 @@ import net.samtrion.dotcraft.resources.tool.ToolType;
  * @param configKey   name of the form in the config, {@code materials.<material>.<configKey>.enabled}, unique
  * @param template    name of the model and texture template {@code <kind>/material/<template>}
  * @param tinted      whether the model is colored with the color of the material
+ * @param variants    the number of pre-rotated templates {@code <template>_<n>} a material picks from by a hash of its id, 1 for a single template
  * @param pathPattern registry path of an item or block, the material id is {@code %s}
  * @param tag         the convention tag of the form
  * @param names       display name pattern by locale, the material name is {@code %s}
@@ -73,7 +75,7 @@ import net.samtrion.dotcraft.resources.tool.ToolType;
  * @param conversions how the form is made of other forms
  * @param conditions  the {@code neoforge:conditions} of the source, see {@link Conditions}; the form is not loaded while one fails
  */
-public record Form(String id, Kind kind, int order, String configKey, String template, boolean tinted, String pathPattern, Tag tag,
+public record Form(String id, Kind kind, int order, String configKey, String template, boolean tinted, int variants, String pathPattern, Tag tag,
                    Map<String, String> names, Optional<BlockSpec> block, boolean mined, ExternalRule external,
                    boolean icon, List<String> requires, Optional<Mix> mix, Optional<ToolSpec> tool,
                    List<Conversion> conversions,
@@ -110,9 +112,11 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
     ).apply(i, Form::fromSource));
 
     /** Source format, see the class description; the conditions and the tool are read apart as the record has more fields than a group takes. */
-    public static final Codec<Form> CODEC = Codec.mapPair(Codec.mapPair(FIELDS, Conditions.FIELD), ToolSpec.CODEC.optionalFieldOf("tool")).codec()
-            .xmap(p -> p.getFirst().getFirst().withConditions(p.getFirst().getSecond()).withTool(p.getSecond()),
-                    f -> Pair.of(Pair.of(f, f.conditions), f.tool)).validate(Form::validate);
+    public static final Codec<Form> CODEC = Codec.mapPair(Codec.mapPair(Codec.mapPair(FIELDS, Conditions.FIELD),
+                    ToolSpec.CODEC.optionalFieldOf("tool")), Codec.intRange(1, 16).optionalFieldOf("variants", 1)).codec()
+            .xmap(p -> p.getFirst().getFirst().getFirst().withConditions(p.getFirst().getFirst().getSecond())
+                            .withTool(p.getFirst().getSecond()).withVariants(p.getSecond()),
+                    f -> Pair.of(Pair.of(Pair.of(f, f.conditions), f.tool), f.variants)).validate(Form::validate);
 
     /** Makes the collections immutable. */
     public Form {
@@ -127,19 +131,24 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
                                    Optional<String> path, Tag tag, Map<String, String> names, Optional<BlockSpec> block,
                                    boolean mined, ExternalRule external, boolean icon, List<String> requires,
                                    Optional<Mix> mix, List<Conversion> conversions) {
-        return new Form(id, kind, order, configKey, template.orElse(id), tinted, path.orElse("%s_" + id), tag, names, block, mined,
+        return new Form(id, kind, order, configKey, template.orElse(id), tinted, 1, path.orElse("%s_" + id), tag, names, block, mined,
                 external, icon, requires, mix, Optional.empty(), conversions, List.of());
     }
 
     /** A copy with other conditions. */
     Form withConditions(List<ICondition> conditions) {
-        return new Form(id, kind, order, configKey, template, tinted, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
+        return new Form(id, kind, order, configKey, template, tinted, variants, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
                 conversions, conditions);
     }
 
     /** A copy with another tool entry. */
+    Form withVariants(int variants) {
+        return new Form(id, kind, order, configKey, template, tinted, variants, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
+                conversions, conditions);
+    }
+
     Form withTool(Optional<ToolSpec> tool) {
-        return new Form(id, kind, order, configKey, template, tinted, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
+        return new Form(id, kind, order, configKey, template, tinted, variants, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
                 conversions, conditions);
     }
 
@@ -206,6 +215,18 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
     }
 
     /** @return {@code true} if the form is a block (with a block item), {@code false} for plain items */
+    /**
+     * The model of this form for a material: the {@link #template() template} itself, or when the form has several
+     * {@link #variants() variants} (pre-rotated or mirrored textures, as of the nuggets, so that not all look alike)
+     * {@code <template>_<n>} with {@code n} taken from a stable hash of the material id.
+     *
+     * @param materialId the id of the material
+     * @return the name of the model and texture below {@code item/material/}
+     */
+    public String modelOf(String materialId) {
+        return variants == 1 ? template : template + "_" + Math.floorMod(materialId.hashCode(), variants);
+    }
+
     public boolean isBlock() {
         return kind == Kind.BLOCK;
     }
