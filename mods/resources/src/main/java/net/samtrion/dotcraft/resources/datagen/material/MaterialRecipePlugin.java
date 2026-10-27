@@ -46,7 +46,10 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  *   first {@link Material.External external} source that names one. Every further source (it names a mod) gets the
  *   same recipes with its own item and the recipe id suffix {@code _<mod>}; a source that names a mod adds the
  *   {@code mod_loaded} condition to its recipes, also the first one;</li>
- *   <li>a {@code forge} conversion: shaped, the hammer tag over a row of {@code ratio} items of the other form make one; a {@code crush} conversion: a hammer and one item make {@code ratio} items; a {@code shaped} conversion: a shaped
+ *   <li>a {@code forge} conversion: shaped, a hammer over a row of {@code ratio} items of the other form make one; a {@code crush} conversion: a hammer and one item make {@code ratio} items; the hammer is
+ *   the tag of the tier of the material ({@link ResourceBlockTags#hammers}), so a hammer of a lower tier cannot work it, and
+ *   the recipe carries the {@link ConfigCondition.Switch#TOOL} condition of that tier, so it is dropped where no such hammer is
+ *   enabled; a {@code shaped} conversion: a shaped
  *   recipe of its {@code pattern} and {@code key}, see {@link Form.Conversion};</li>
  *   <li>a {@code craft} conversion: shapeless, {@code ratio} items of the tag of the other form make one of the form. An
  *   {@code external} material that lacks the other form uses the tag its sources name for it, one recipe per source
@@ -55,7 +58,15 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  * Every ingredient is an item tag ({@code c:ingots/tin}, ...), only the results are items. The item of a source without
  * a mod must be registered, else the data generation fails; the item of a mod source need not be. A material with
  * {@code "smelt": false} has no smelt and blast recipes. A crafting tool form (see {@link Form.ToolSpec}) has its own recipe, made of tags
- * only. Recipe ids are {@code material/<id>/<name>}.
+ * only. Recipe ids are {@code material/<id>/<name>}, where the name is
+ * <ul>
+ *   <li>{@code <to>_from_<from>} for a pack (both directions) and a craft;</li>
+ *   <li>{@code <to>_from_<from>_smelting} and {@code <to>_from_<from>_blasting} for a smelt or blast;</li>
+ *   <li>{@code <to>_from_<from>_crushing} for a crush and {@code <to>_from_<from>_forging} for a forge;</li>
+ *   <li>{@code <to>} for a shaped or shapeless conversion ({@code gear}, {@code hammer}, {@code sandpaper});</li>
+ * </ul>
+ * and a source of another mod adds {@code _<mod>} at the end; the alloys, see {@link MaterialAlloyRecipePlugin}, are
+ * {@code <to>_from_alloy}.
  */
 public final class MaterialRecipePlugin implements RecipePlugin {
     /** Cooking time in a furnace, ticks. */
@@ -123,7 +134,7 @@ public final class MaterialRecipePlugin implements RecipePlugin {
 
     /**
      * Makes the craft recipes of one conversion: from the form of the material, or from the tag that each external source
-     * names for it.
+     * names for it. A crush or forge also needs the config switch of a hammer of the tier of the material.
      *
      * @param recipes the recipe builders
      * @param all     the output of the provider
@@ -133,9 +144,15 @@ public final class MaterialRecipePlugin implements RecipePlugin {
      * @param c       the conversion
      */
     private static void craft(RecipeBuilders recipes, RecipeOutput all, Material m, Form from, Form to, Form.Conversion c) {
-        String name = to.id() + "_from_" + from.id();
+        String name = to.id() + "_from_" + from.id() + (switch (c.kind()) {
+            case CRUSH -> "_crushing";
+            case FORGE -> "_forging";
+            default -> "";
+        });
+        List<ICondition> hammer = c.kind() == Form.Conversion.Kind.CRUSH || c.kind() == Form.Conversion.Kind.FORGE
+                ? List.of(ConfigCondition.ofTool(ResourceBlockTags.HAMMER_FORM, m.tier())) : List.of();
         if (m.has(from)) {
-            craft(recipes, out(all, m, from, to, null), m, MaterialTags.item(from, m), to, c, name);
+            craft(recipes, out(all, m, from, to, null, hammer), m, MaterialTags.item(from, m), to, c, name);
             return;
         }
         List<Material.External> sources = m.external().stream().filter(e -> e.tag(from.id()).isPresent()).toList();
@@ -143,13 +160,13 @@ public final class MaterialRecipePlugin implements RecipePlugin {
             Material.External source = sources.get(i);
             TagKey<Item> input = TagKey.create(Registries.ITEM, source.tag(from.id()).orElseThrow());
             String suffix = i == 0 ? "" : "_" + source.mod().orElseThrow();
-            craft(recipes, out(all, m, to, null, source), m, input, to, c, name + suffix);
+            craft(recipes, out(all, m, to, null, source, hammer), m, input, to, c, name + suffix);
         }
     }
 
     /**
      * One shapeless recipe: {@code ratio} items of a tag make one item of a form, or, for a crush, one item of the tag and a
-     * hammer make {@code ratio} items of the form; the name ends the recipe id.
+     * hammer of the tier of the material make {@code ratio} items of the form; the name ends the recipe id.
      */
     private static void craft(RecipeBuilders recipes, RecipeOutput output, Material m, TagKey<Item> input, Form to,
                               Form.Conversion c, String name) {
@@ -160,7 +177,7 @@ public final class MaterialRecipePlugin implements RecipePlugin {
         boolean crush = c.kind() == Form.Conversion.Kind.CRUSH;
         var builder = recipes.shapeless(RecipeCategory.MISC, ResourceItems.item(m, to).get(), crush ? c.ratio() : 1)
                 .requires(recipes.tag(input), crush ? 1 : c.ratio());
-        if (crush) builder.requires(recipes.tag(ResourceBlockTags.HAMMERS));
+        if (crush) builder.requires(recipes.tag(ResourceBlockTags.hammers(m.tier())));
         builder.unlockedBy(recipes.hasName(input), recipes.has(input)).save(output, key(m, name));
     }
 
@@ -176,7 +193,23 @@ public final class MaterialRecipePlugin implements RecipePlugin {
      * @return the output that adds the conditions
      */
     private static RecipeOutput out(RecipeOutput all, Material m, Form from, @Nullable Form to, Material.@Nullable External source) {
-        return all.withConditions(conditions(m, from, to, source).toArray(ICondition[]::new));
+        return out(all, m, from, to, source, List.of());
+    }
+
+    /**
+     * Like {@link #out(RecipeOutput, Material, Form, Form, Material.External)}, with further conditions of the recipe.
+     *
+     * @param all    the output of the provider
+     * @param m      the material
+     * @param from   the form that is used
+     * @param to     the form that is made, {@code null} where the result is an external item
+     * @param source the external source of the result, {@code null} where the result is an item of the material
+     * @param extra  the further conditions, e.g. that a hammer is enabled
+     * @return the output that adds the conditions
+     */
+    private static RecipeOutput out(RecipeOutput all, Material m, Form from, @Nullable Form to, Material.@Nullable External source,
+                                    List<ICondition> extra) {
+        return all.withConditions(conditions(m, from, to, source, extra).toArray(ICondition[]::new));
     }
 
     /**
@@ -191,11 +224,27 @@ public final class MaterialRecipePlugin implements RecipePlugin {
      * @return the conditions without repeats
      */
     static List<ICondition> conditions(Material m, Form from, @Nullable Form to, Material.@Nullable External source) {
+        return conditions(m, from, to, source, List.of());
+    }
+
+    /**
+     * The conditions of the recipes between forms of a material with further conditions, which come after {@code mod_loaded}
+     * of the source and before the {@code neoforge:conditions}.
+     *
+     * @param m      the material
+     * @param from   the form that is used
+     * @param to     the form that is made, {@code null} where the result is an external item
+     * @param source the external source of the result, {@code null} where the result is an item of the material
+     * @param extra  the further conditions, e.g. {@link ConfigCondition#ofTool} for a recipe that needs a hammer
+     * @return the conditions without repeats
+     */
+    static List<ICondition> conditions(Material m, Form from, @Nullable Form to, Material.@Nullable External source, List<ICondition> extra) {
         List<ICondition> conditions = new ArrayList<>();
         conditions.add(new ConfigCondition(ConfigCondition.Switch.MATERIALS));
         conditions.add(ConfigCondition.ofForm(m.id(), from.id()));
         if (to != null) conditions.add(ConfigCondition.ofForm(m.id(), to.id()));
         if (source != null && source.mod().isPresent()) conditions.add(new ModLoadedCondition(source.mod().get()));
+        conditions.addAll(extra);
         return Conditions.merge(conditions, m.conditions(from), to == null ? List.of() : m.conditions(to));
     }
 
@@ -218,13 +267,13 @@ public final class MaterialRecipePlugin implements RecipePlugin {
     }
 
     /**
-     * A {@code forge} is a shaped recipe: the hammer tag sits over a row of {@code ratio} items of the tag, e.g. {@code " H "} over
-     * {@code "III"} for three, and makes one item of the form.
+     * A {@code forge} is a shaped recipe: the hammer tag of the tier of the material sits over a row of {@code ratio} items of the
+     * tag, e.g. {@code " H "} over {@code "III"} for three, and makes one item of the form.
      */
     private static void forge(RecipeBuilders recipes, RecipeOutput output, Material m, TagKey<Item> input, Form to, int ratio,
                               String name) {
         var shaped = recipes.shaped(RecipeCategory.MISC, ResourceItems.item(m, to).get())
-                .define('H', ResourceBlockTags.HAMMERS).define('I', input)
+                .define('H', ResourceBlockTags.hammers(m.tier())).define('I', input)
                 .pattern(" ".repeat((ratio - 1) / 2) + "H" + " ".repeat(ratio / 2))
                 .pattern("I".repeat(ratio));
         shaped.unlockedBy(recipes.hasName(input), recipes.has(input)).save(output, key(m, name));
@@ -271,13 +320,13 @@ public final class MaterialRecipePlugin implements RecipePlugin {
                 if (symbol != '#') shapeless.requires(recipes.tag(tags.get(symbol)));
             }
             if (tags.containsKey('#')) shapeless.requires(recipes.tag(tags.get('#')), tool.count());
-            shapeless.unlockedBy(recipes.hasName(unlock), recipes.has(unlock)).save(output, key(m, to.id() + "_shapeless"));
+            shapeless.unlockedBy(recipes.hasName(unlock), recipes.has(unlock)).save(output, key(m, to.id()));
             return;
         }
         var shaped = recipes.shaped(category, result);
         tags.forEach(shaped::define);
         c.pattern().forEach(shaped::pattern);
-        shaped.unlockedBy(recipes.hasName(unlock), recipes.has(unlock)).save(output, key(m, to.id() + "_shaped"));
+        shaped.unlockedBy(recipes.hasName(unlock), recipes.has(unlock)).save(output, key(m, to.id()));
     }
 
     /**

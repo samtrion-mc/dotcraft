@@ -9,6 +9,7 @@ import net.samtrion.dotcraft.resources.common.CompressedTier;
 import net.samtrion.dotcraft.resources.common.Form;
 import net.samtrion.dotcraft.resources.common.Material;
 import net.samtrion.dotcraft.resources.common.Materials;
+import net.samtrion.dotcraft.resources.tool.ToolTier;
 
 /**
  * Common config of the resources mod ({@code config/dotcraft/resources.toml}). Recipes are checked when the data
@@ -39,7 +40,8 @@ import net.samtrion.dotcraft.resources.common.Materials;
  * {@code hammers}, {@code sandpapers},
  * {@code ores}); only the forms a material has are listed. A disabled form drops every generated
  * recipe that makes or uses it, is hidden in the creative tab, JEI and REI, and (the ores) is not generated in
- * the world; the registered items and blocks, their loot tables and tags stay, so existing ones keep working.
+ * the world; the registered items and blocks, their loot tables and tags stay, so existing ones keep working. The recipes
+ * that need a hammer (crush and forge) are dropped when no hammer form of the tier they need is enabled, see {@link #toolEnabled}.
  */
 public final class CraftResourcesConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
@@ -168,6 +170,21 @@ public final class CraftResourcesConfig {
         ModConfigSpec.BooleanValue value = MATERIAL_SWITCHES.get(materialId + "." + formId);
         if (value == null) return false;
         return !SPEC.isLoaded() || (materialEnabled(materialId) && value.get());
+    }
+
+    /**
+     * Whether some tool form is enabled for a tier: at least one material of that tier or a better one has the form, and
+     * the form of that material is enabled (see {@link #formEnabled}). Recipes that need a tool (the crush and forge recipes
+     * need a hammer) are only loaded while this holds for the tier they need; on while the config is not loaded (e.g. in
+     * datagen) as far as a material has the form. An unknown form is disabled.
+     *
+     * @param formId the id of the tool form, e.g. {@code hammer}
+     * @param tier   the lowest tier that counts, {@link ToolTier#NONE} for every material
+     * @return {@code true} if a tool of the form of that tier or better may exist
+     */
+    public static boolean toolEnabled(String formId, ToolTier tier) {
+        return Materials.all().stream()
+                .anyMatch(m -> m.has(formId) && m.tier().canMine(tier) && formEnabled(m.id(), formId));
     }
 
     /**

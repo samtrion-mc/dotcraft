@@ -94,6 +94,15 @@ class MaterialConditionsTest {
                 MaterialRecipePlugin.conditions(material("p"), form("ingot"), null, null));
     }
 
+    /** A further condition (the hammer of a crush or forge) comes after the config conditions and before the {@code neoforge:conditions}. */
+    @Test
+    void extraConditionsComeBeforeTheDataConditions() {
+        ICondition hammer = ConfigCondition.ofTool("hammer", net.samtrion.dotcraft.resources.tool.ToolTier.STONE);
+        assertEquals(List.of(new ConfigCondition(ConfigCondition.Switch.MATERIALS), ConfigCondition.ofForm("t", "dust"),
+                ConfigCondition.ofForm("t", "ingot"), hammer, MATERIAL_MOD, FORM_MOD),
+                MaterialRecipePlugin.conditions(material("t"), form("dust"), form("ingot"), null, List.of(hammer)));
+    }
+
     /** Without any {@code neoforge:conditions} the recipes carry the config conditions only, as before. */
     @Test
     void withoutConditionsNothingIsAdded() {

@@ -20,6 +20,7 @@ import net.samtrion.dotcraft.resources.common.Form;
 import net.samtrion.dotcraft.resources.common.Forms;
 import net.samtrion.dotcraft.resources.common.Material;
 import net.samtrion.dotcraft.resources.common.Materials;
+import net.samtrion.dotcraft.resources.tool.ToolTier;
 
 /** Unit tests for the material and form switches of {@link ConfigCondition} and the config built from the materials. */
 class ConfigConditionTest {
@@ -163,13 +164,49 @@ class ConfigConditionTest {
         assertFalse(ConfigCondition.ofOre("tin", "ore_0").test(CONTEXT));
     }
 
+    /** Without a loaded config every tier that has a hammer is on; a form that no material has is off. */
+    @Test
+    void toolSwitchDefaultsWhenNotLoaded() {
+        for (ToolTier tier : List.of(ToolTier.NONE, ToolTier.STONE, ToolTier.IRON, ToolTier.DIAMOND, ToolTier.NETHERITE)) {
+            assertTrue(ConfigCondition.ofTool("hammer", tier).test(CONTEXT), tier.name());
+        }
+        assertFalse(ConfigCondition.ofTool("nothing", ToolTier.NONE).test(CONTEXT));
+    }
+
+    /**
+     * The hammer condition of a tier holds while some hammer form of that tier or a better one is on: switching off a hammer
+     * drops only the tiers it alone satisfied (steel counts as iron), the last hammer drops them all, and so does the master switch.
+     */
+    @Test
+    void toolSwitchFollowsTheHammerForms() throws ReflectiveOperationException {
+        load();
+        CraftResourcesConfig.formSwitch("netherite", "hammer").set(false);
+        assertFalse(ConfigCondition.ofTool("hammer", ToolTier.NETHERITE).test(CONTEXT));
+        assertTrue(ConfigCondition.ofTool("hammer", ToolTier.DIAMOND).test(CONTEXT));
+        CraftResourcesConfig.formSwitch("diamond", "hammer").set(false);
+        assertFalse(ConfigCondition.ofTool("hammer", ToolTier.DIAMOND).test(CONTEXT));
+        assertTrue(ConfigCondition.ofTool("hammer", ToolTier.IRON).test(CONTEXT));
+        CraftResourcesConfig.formSwitch("iron", "hammer").set(false);
+        assertTrue(ConfigCondition.ofTool("hammer", ToolTier.IRON).test(CONTEXT), "the steel hammer is of the iron tier");
+        CraftResourcesConfig.materialSwitch("steel").set(false);
+        assertFalse(ConfigCondition.ofTool("hammer", ToolTier.IRON).test(CONTEXT));
+        assertTrue(ConfigCondition.ofTool("hammer", ToolTier.STONE).test(CONTEXT));
+        assertTrue(ConfigCondition.ofTool("hammer", ToolTier.NONE).test(CONTEXT));
+        CraftResourcesConfig.formSwitch("stone", "hammer").set(false);
+        assertFalse(ConfigCondition.ofTool("hammer", ToolTier.NONE).test(CONTEXT), "no hammer form is left");
+        CraftResourcesConfig.formSwitch("stone", "hammer").set(true);
+        assertTrue(ConfigCondition.ofTool("hammer", ToolTier.NONE).test(CONTEXT));
+        CraftResourcesConfig.MATERIALS_ENABLED.set(false);
+        assertFalse(ConfigCondition.ofTool("hammer", ToolTier.NONE).test(CONTEXT));
+    }
+
     /** The JSON shape: the global switches stay as they were, the new ones add {@code material} and {@code form}. */
     @Test
     void codec() {
         var codec = ConfigCondition.CODEC.codec();
         for (ConfigCondition c : List.of(new ConfigCondition(ConfigCondition.Switch.MATERIALS), new ConfigCondition(ConfigCondition.Switch.WORLDGEN),
                 ConfigCondition.ofMaterial("tin"), ConfigCondition.ofForm("tin", "gear"), ConfigCondition.ofRecipe("steel", "charcoal"),
-                ConfigCondition.ofOre("tin", "surface"))) {
+                ConfigCondition.ofOre("tin", "surface"), ConfigCondition.ofTool("hammer", ToolTier.IRON))) {
             var json = codec.encodeStart(JsonOps.INSTANCE, c).getOrThrow();
             assertEquals(c, codec.parse(JsonOps.INSTANCE, json).getOrThrow());
         }
@@ -179,6 +216,8 @@ class ConfigConditionTest {
                 codec.encodeStart(JsonOps.INSTANCE, ConfigCondition.ofForm("tin", "gear")).getOrThrow());
         assertEquals(JsonParser.parseString("{\"switch\":\"material_ore\",\"material\":\"tin\",\"ore\":\"surface\"}"),
                 codec.encodeStart(JsonOps.INSTANCE, ConfigCondition.ofOre("tin", "surface")).getOrThrow());
+        assertEquals(JsonParser.parseString("{\"switch\":\"tool\",\"form\":\"hammer\",\"tier\":\"iron\"}"),
+                codec.encodeStart(JsonOps.INSTANCE, ConfigCondition.ofTool("hammer", ToolTier.IRON)).getOrThrow());
     }
 
     /** A switch needs exactly its fields. */
@@ -189,6 +228,10 @@ class ConfigConditionTest {
                 "{\"switch\":\"materials\",\"material\":\"tin\"}", "{\"switch\":\"material\",\"material\":\"tin\",\"form\":\"gear\"}",
                 "{\"switch\":\"material_recipe\",\"material\":\"steel\"}", "{\"switch\":\"material\",\"material\":\"tin\",\"recipe\":\"coal\"}",
                 "{\"switch\":\"material_ore\",\"material\":\"tin\"}", "{\"switch\":\"material\",\"material\":\"tin\",\"ore\":\"surface\"}",
+                "{\"switch\":\"tool\",\"form\":\"hammer\"}", "{\"switch\":\"tool\",\"tier\":\"iron\"}",
+                "{\"switch\":\"tool\",\"form\":\"hammer\",\"tier\":\"mithril\"}",
+                "{\"switch\":\"tool\",\"form\":\"hammer\",\"tier\":\"iron\",\"material\":\"tin\"}",
+                "{\"switch\":\"material_form\",\"material\":\"tin\",\"form\":\"gear\",\"tier\":\"iron\"}",
                 "{\"switch\":\"nope\"}")) {
             assertTrue(codec.parse(JsonOps.INSTANCE, JsonParser.parseString(json)).error().isPresent(), json);
         }

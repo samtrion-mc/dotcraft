@@ -33,7 +33,7 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  * {@link ConfigCondition}). For each material with an {@code alloy} and each of its forms with a {@code alloy} conversion
  * (dust and grains), one shapeless recipe turns the item tag of the same form of every input
  * material into the alloy form, making the {@code result} of the alloy, else as many items as the inputs have items together. An input material that lacks
- * a form is resolved through the tag of its {@code external} sources (the key of the {@code mix} entry of the form);
+ * a form is resolved through the tag of its {@code external} sources (the {@code external} key of the {@code alloy} conversion of the form);
  * when that fails too, the material is no {@link Option} of that form.
  *
  * <p>An input that lists alternatives ({@code "material": ["coal", "charcoal"]}) and an input material with several
@@ -66,13 +66,13 @@ public final class MaterialAlloyRecipePlugin implements RecipePlugin {
         for (Material m : Materials.all()) {
             if (m.alloy().isEmpty()) continue;
             for (Form form : m.forms()) {
-                if (form.alloy().isPresent()) mix(recipes, all, m, form);
+                if (form.alloy().isPresent()) craftAlloy(recipes, all, m, form);
             }
         }
     }
 
     /** Makes the recipes of one form, one for every combination of the options of the inputs. */
-    private static void mix(RecipeBuilders recipes, RecipeOutput all, Material m, Form form) {
+    private static void craftAlloy(RecipeBuilders recipes, RecipeOutput all, Material m, Form form) {
         List<Material.Alloy.Input> inputs = m.alloy().orElseThrow().inputs();
         int total = inputs.stream().mapToInt(Material.Alloy.Input::count).sum();
         if (total > GRID) throw new IllegalStateException(m.id() + ": alloy inputs have " + total + " items, the grid holds " + GRID);
@@ -148,7 +148,7 @@ public final class MaterialAlloyRecipePlugin implements RecipePlugin {
 
     /**
      * The ways to supply an input in a form: for each alternative material the tag of the form where it has the
-     * form, else one option per {@code external} source that has the tag of the key of the {@code mix} entry of the form.
+     * form, else one option per {@code external} source that has the tag of the {@code external} key of the {@code alloy} conversion of the form.
      *
      * @param alloy the alloy
      * @param in    the input

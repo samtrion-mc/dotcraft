@@ -9,7 +9,7 @@
     "en_us": "%s Nugget",
     "de_de": "%s-Klumpen"
   },
-  "external": "excluded",
+  "external": "optional",
   "conversions": [
     { "from": "grains", "kind": "smelt", "xp": 0.1, "externalRequired": true }
   ]

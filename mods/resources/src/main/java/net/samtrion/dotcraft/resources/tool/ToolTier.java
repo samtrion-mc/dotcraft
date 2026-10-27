@@ -171,6 +171,16 @@ public enum ToolTier implements StringRepresentable {
         return LADDER.get(Math.min(at + steps, LADDER.size() - 1));
     }
 
+    /**
+     * Looks a tier up by its serialized name.
+     *
+     * @param name the lower case name, e.g. {@code iron}
+     * @return the tier, empty for an unknown name
+     */
+    public static java.util.Optional<ToolTier> byName(String name) {
+        return Stream.of(values()).filter(t -> t.getSerializedName().equals(name)).findFirst();
+    }
+
     @Override
     public String getSerializedName() {
         return name().toLowerCase(java.util.Locale.ROOT);

@@ -10,6 +10,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.util.StringRepresentable;
 import net.neoforged.neoforge.common.conditions.ICondition;
 import net.samtrion.dotcraft.resources.CraftResourcesConfig;
+import net.samtrion.dotcraft.resources.tool.ToolTier;
 
 /**
  * Data condition that holds while a switch of the config is on; attached to the recipes of the materials and
@@ -25,7 +26,12 @@ import net.samtrion.dotcraft.resources.CraftResourcesConfig;
  * where {@code recipe} is the id of the alternative input material, and one ore generation entry of a material (see
  * {@code Material.OreSpec}) by
  * <pre>{"type": "dotcraftresources:config", "switch": "material_ore", "material": "tin", "ore": "surface"}</pre>
- * where {@code ore} is the id of the entry ({@code materials.tin.ores.surface.enabled}). A material switch
+ * where {@code ore} is the id of the entry ({@code materials.tin.ores.surface.enabled}), and a tool form (the
+ * hammer) by
+ * <pre>{"type": "dotcraftresources:config", "switch": "tool", "form": "hammer", "tier": "iron"}</pre>
+ * which holds while at least one material that has the form, with the form switched on, is of that tier or a better one
+ * ({@code "tier": "none"}: any material), so a recipe that needs a hammer of a tier is dropped where no such hammer is
+ * left. A material switch
  * also needs {@code materials.enabled}, a form, recipe or ore switch also the switch of its material (the form switch of the
  * ores is a condition of its own). A material, form, recipe or ore that is unknown counts as disabled.
  *
@@ -34,8 +40,9 @@ import net.samtrion.dotcraft.resources.CraftResourcesConfig;
  * @param form     the id of the form, only for {@link Switch#MATERIAL_FORM}, else empty
  * @param recipe   the id of the alternative input material, only for {@link Switch#MATERIAL_RECIPE}, else empty
  * @param ore      the id of the ore entry, only for {@link Switch#MATERIAL_ORE}, else empty
+ * @param tier     the name of the lowest {@link ToolTier}, only for {@link Switch#TOOL}, else empty
  */
-public record ConfigCondition(Switch switchId, String material, String form, String recipe, String ore) implements ICondition {
+public record ConfigCondition(Switch switchId, String material, String form, String recipe, String ore, String tier) implements ICondition {
     /** The switches of the config. */
     public enum Switch implements StringRepresentable {
         /** {@code materials.enabled}. */
@@ -49,7 +56,9 @@ public record ConfigCondition(Switch switchId, String material, String form, Str
         /** {@code materials.<material>.recipes.<alternative>.enabled}, with the switches of the material. */
         MATERIAL_RECIPE,
         /** {@code materials.<material>.ores.<entry>.enabled}, with the switches of the material. */
-        MATERIAL_ORE;
+        MATERIAL_ORE,
+        /** {@code materials.<material>.<configKey>.enabled} of some material of at least a tier that has the tool form. */
+        TOOL;
 
         /** Codec that reads and writes the lower case name. */
         public static final Codec<Switch> CODEC = StringRepresentable.fromEnum(Switch::values);
@@ -60,14 +69,28 @@ public record ConfigCondition(Switch switchId, String material, String form, Str
         }
     }
 
-    /** Serialized as in the class description; {@code material}, {@code form}, {@code recipe} and {@code ore} are left out where empty. */
+    /** Serialized as in the class description; {@code material}, {@code form}, {@code recipe}, {@code ore} and {@code tier} are left out where empty. */
     public static final MapCodec<ConfigCondition> CODEC = RecordCodecBuilder.<ConfigCondition>mapCodec(i -> i.group(
             Switch.CODEC.fieldOf("switch").forGetter(ConfigCondition::switchId),
             Codec.STRING.optionalFieldOf("material", "").forGetter(ConfigCondition::material),
             Codec.STRING.optionalFieldOf("form", "").forGetter(ConfigCondition::form),
             Codec.STRING.optionalFieldOf("recipe", "").forGetter(ConfigCondition::recipe),
-            Codec.STRING.optionalFieldOf("ore", "").forGetter(ConfigCondition::ore)
+            Codec.STRING.optionalFieldOf("ore", "").forGetter(ConfigCondition::ore),
+            Codec.STRING.optionalFieldOf("tier", "").forGetter(ConfigCondition::tier)
     ).apply(i, ConfigCondition::new)).flatXmap(ConfigCondition::validate, ConfigCondition::validate);
+
+    /**
+     * A switch without a tier.
+     *
+     * @param switchId the switch
+     * @param material the id of the material, or empty
+     * @param form     the id of the form, or empty
+     * @param recipe   the id of the alternative input material, or empty
+     * @param ore      the id of the ore entry, or empty
+     */
+    public ConfigCondition(Switch switchId, String material, String form, String recipe, String ore) {
+        this(switchId, material, form, recipe, ore, "");
+    }
 
     /**
      * A switch without an ore entry.
@@ -133,6 +156,17 @@ public record ConfigCondition(Switch switchId, String material, String form, Str
         return new ConfigCondition(Switch.MATERIAL_ORE, materialId, "", "", oreId);
     }
 
+    /**
+     * The switch of a tool form: on while some material of at least the tier has the form switched on.
+     *
+     * @param formId the id of the tool form, e.g. {@code hammer}
+     * @param tier   the lowest tier that counts, {@link ToolTier#NONE} for every material
+     * @return the condition
+     */
+    public static ConfigCondition ofTool(String formId, ToolTier tier) {
+        return new ConfigCondition(Switch.TOOL, "", formId, "", "", tier.getSerializedName());
+    }
+
     /** Checks that the switch has the fields it needs and no others. */
     private DataResult<ConfigCondition> validate() {
         boolean needsMaterial = switchId == Switch.MATERIAL || switchId == Switch.MATERIAL_FORM || switchId == Switch.MATERIAL_RECIPE
@@ -140,8 +174,14 @@ public record ConfigCondition(Switch switchId, String material, String form, Str
         if (needsMaterial != !material.isEmpty()) {
             return DataResult.error(() -> "\"material\" is needed by the material, material_form, material_recipe and material_ore switches only: " + switchId);
         }
-        if ((switchId == Switch.MATERIAL_FORM) != !form.isEmpty()) {
-            return DataResult.error(() -> "\"form\" is needed by the switch material_form only: " + switchId);
+        if ((switchId == Switch.MATERIAL_FORM || switchId == Switch.TOOL) != !form.isEmpty()) {
+            return DataResult.error(() -> "\"form\" is needed by the switches material_form and tool only: " + switchId);
+        }
+        if ((switchId == Switch.TOOL) != !tier.isEmpty()) {
+            return DataResult.error(() -> "\"tier\" is needed by the switch tool only: " + switchId);
+        }
+        if (switchId == Switch.TOOL && ToolTier.byName(tier).isEmpty()) {
+            return DataResult.error(() -> "unknown tool tier \"" + tier + "\"");
         }
         if ((switchId == Switch.MATERIAL_RECIPE) != !recipe.isEmpty()) {
             return DataResult.error(() -> "\"recipe\" is needed by the switch material_recipe only: " + switchId);
@@ -161,6 +201,7 @@ public record ConfigCondition(Switch switchId, String material, String form, Str
             case MATERIAL_FORM -> CraftResourcesConfig.formEnabled(material, form);
             case MATERIAL_RECIPE -> CraftResourcesConfig.recipeEnabled(material, recipe);
             case MATERIAL_ORE -> CraftResourcesConfig.oreEnabled(material, ore);
+            case TOOL -> CraftResourcesConfig.toolEnabled(form, ToolTier.byName(tier).orElse(ToolTier.NONE));
         };
     }
 

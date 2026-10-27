@@ -268,7 +268,7 @@ public final class ResourcesGameTests {
                 net.minecraft.world.item.crafting.CraftingInput.of(1, 1, java.util.List.of(hammer))).get(0);
         helper.assertTrue(last.isEmpty(), "the worn hammer does not break");
         helper.assertTrue(helper.getLevel().getServer().getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE,
-                Identifier.fromNamespaceAndPath(CraftResources.MODID, "material/iron/hammer_shaped"))).isPresent(), "missing the hammer recipe");
+                Identifier.fromNamespaceAndPath(CraftResources.MODID, "material/iron/hammer"))).isPresent(), "missing the hammer recipe");
         helper.succeed();
     }
 
@@ -345,7 +345,7 @@ public final class ResourcesGameTests {
             }
         }
         var recipes = helper.getLevel().getServer().getRecipeManager();
-        for (String recipe : new String[] {"material/tin/ingot_from_dust_smelting", "material/tin/ingot_from_nugget", "material/tin/dust_from_raw", "material/diamond/dust_from_ingot"}) {
+        for (String recipe : new String[] {"material/tin/ingot_from_dust_smelting", "material/tin/ingot_from_nugget", "material/tin/dust_from_raw_crushing", "material/diamond/dust_from_ingot_forging"}) {
             helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, id(recipe))).isPresent(), "missing recipe " + recipe);
         }
         var features = helper.getLevel().registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
@@ -534,6 +534,16 @@ public final class ResourcesGameTests {
         }
         helper.assertTrue(gear.test(context), "tin gears must be enabled again");
         var ironHammer = ResourceItems.item(Materials.all().stream().filter(m -> m.id().equals("iron")).findFirst().orElseThrow(), Forms.get("hammer"));
+        // the hammer tier tags: the stone hammer works only stone-tier materials, the iron one also iron-tier, the netherite one all
+        var hammerForm = Forms.get("hammer");
+        var hammerOf = (java.util.function.Function<String, ItemStack>) id -> new ItemStack(ResourceItems.item(
+                Materials.all().stream().filter(m -> m.id().equals(id)).findFirst().orElseThrow(), hammerForm).get());
+        var stoneTier = net.samtrion.dotcraft.resources.common.ResourceBlockTags.hammerTier(net.samtrion.dotcraft.resources.tool.ToolTier.STONE);
+        var ironTier = net.samtrion.dotcraft.resources.common.ResourceBlockTags.hammerTier(net.samtrion.dotcraft.resources.tool.ToolTier.IRON);
+        helper.assertTrue(hammerOf.apply("stone").is(stoneTier) && !hammerOf.apply("stone").is(ironTier),
+                "the stone hammer must count for the stone tier only");
+        helper.assertTrue(hammerOf.apply("steel").is(ironTier) && hammerOf.apply("netherite").is(stoneTier) && hammerOf.apply("netherite").is(ironTier),
+                "the steel hammer counts as iron and the netherite hammer for every tier");
         helper.assertTrue(ResourceItems.vanillaTabItems(false).contains(ResourceItems.item(tin(), Forms.get("gear")))
                 && ResourceItems.vanillaTabItems(true).contains(ironHammer) && !ResourceItems.vanillaTabItems(false).contains(ironHammer),
                 "the material items are not listed in the vanilla tabs");

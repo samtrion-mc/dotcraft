@@ -1,0 +1,56 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "silver",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "plate",
+      "material": "silver",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "iron"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_ingots_silver": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:ingots/silver"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:material/silver/plate_from_ingot_forging"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_ingots_silver"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:material/silver/plate_from_ingot_forging"
+    ]
+  }
+}
