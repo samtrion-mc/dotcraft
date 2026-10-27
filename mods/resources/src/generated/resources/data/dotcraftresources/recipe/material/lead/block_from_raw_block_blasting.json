@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "raw_block",
+      "material": "lead",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "block",
+      "material": "lead",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:blasting",
+  "category": "misc",
+  "cookingtime": 100,
+  "experience": 6.3,
+  "ingredient": "#c:storage_blocks/raw_lead",
+  "result": {
+    "id": "dotcraftresources:lead_block"
+  }
+}
