@@ -13,8 +13,6 @@
   "mix": { "external": "ingot" },
   "conversions": [
     { "from": "nugget", "kind": "pack", "ratio": 9 },
-    { "from": "dust", "kind": "cook", "xp": 0.7 },
-    { "from": "raw", "kind": "cook", "xp": 0.7 },
-    { "from": "ore", "kind": "cook", "xp": 0.7 }
+    { "from": "dust", "kind": "cook", "xp": 0.7 }
   ]
 }

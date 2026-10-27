@@ -9,7 +9,5 @@
     "de_de": "%s-Platte"
   },
   "external": "default",
-  "conversions": [
-    { "from": "ingot", "kind": "craft", "ratio": 1 }
-  ]
+  "conversions": []
 }

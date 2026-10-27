@@ -9,7 +9,5 @@
     "de_de": "%s-K\u00f6rner"
   },
   "mix": { "external": "nugget" },
-  "conversions": [
-    { "from": "nugget", "kind": "craft", "ratio": 1 }
-  ]
+  "conversions": []
 }

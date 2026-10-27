@@ -9,7 +9,5 @@
     "de_de": "%s-Zahnrad"
   },
   "external": "default",
-  "conversions": [
-    { "from": "ingot", "kind": "craft", "ratio": 4 }
-  ]
+  "conversions": []
 }

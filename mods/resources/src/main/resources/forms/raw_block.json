@@ -12,7 +12,5 @@
   "mined": true,
   "external": "excluded",
   "requires": ["raw"],
-  "conversions": [
-    { "from": "raw", "kind": "pack", "ratio": 9 }
-  ]
+  "conversions": []
 }

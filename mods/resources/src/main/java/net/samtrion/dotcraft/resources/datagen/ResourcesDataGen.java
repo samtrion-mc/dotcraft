@@ -15,7 +15,6 @@ import net.samtrion.dotcraft.resources.datagen.compressed.CompressedModelPlugin;
 import net.samtrion.dotcraft.resources.datagen.compressed.CompressedRecipePlugin;
 import net.samtrion.dotcraft.resources.datagen.language.EnglishUSLanguageProvider;
 import net.samtrion.dotcraft.resources.datagen.language.GermanLanguageProvider;
-import net.samtrion.dotcraft.resources.datagen.material.MaterialAlloyRecipePlugin;
 import net.samtrion.dotcraft.resources.datagen.material.MaterialBlockLootPlugin;
 import net.samtrion.dotcraft.resources.datagen.material.MaterialBlockTagsPlugin;
 import net.samtrion.dotcraft.resources.datagen.material.MaterialItemTagsPlugin;
@@ -60,7 +59,7 @@ public final class ResourcesDataGen {
      */
     @SubscribeEvent
     static void server(GatherDataEvent.Server event) {
-        event.createProvider((o, l) -> new ResourceRecipeProvider(o, l, new ModRecipePlugin(), new CompressedRecipePlugin(), new MaterialRecipePlugin(), new MaterialAlloyRecipePlugin()));
+        event.createProvider((o, l) -> new ResourceRecipeProvider(o, l, new ModRecipePlugin(), new CompressedRecipePlugin(), new MaterialRecipePlugin()));
         event.createProvider((o, l) -> new LootTableProvider(o, Set.of(),
                 List.of(new LootTableProvider.SubProviderEntry(
                         r -> new ResourceBlockLootSubProvider(r, new ModBlockLootPlugin(), new CompressedBlockLootPlugin(), new MaterialBlockLootPlugin()),
