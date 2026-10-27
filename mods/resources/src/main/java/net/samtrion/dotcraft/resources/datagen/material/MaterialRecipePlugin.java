@@ -96,7 +96,7 @@ public final class MaterialRecipePlugin implements RecipePlugin {
         ItemLike result = ResourceItems.item(m, form).get();
         if (spec.pattern().isEmpty()) {
             var shapeless = recipes.shapeless(RecipeCategory.TOOLS, result, 1).requires(recipes.tag(head), m.tools().get(form.id()).count());
-            spec.key().values().forEach(tag -> shapeless.requires(recipes.tag(TagKey.create(Registries.ITEM, tag))));
+            spec.key().entrySet().stream().sorted(java.util.Map.Entry.comparingByKey()).map(java.util.Map.Entry::getValue).forEach(tag -> shapeless.requires(recipes.tag(TagKey.create(Registries.ITEM, tag))));
             shapeless.unlockedBy(recipes.hasName(head), recipes.has(head)).save(output, key(m, form.id()));
             return;
         }

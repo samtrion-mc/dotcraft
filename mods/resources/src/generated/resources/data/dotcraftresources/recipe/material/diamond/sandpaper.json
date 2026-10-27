@@ -14,9 +14,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    "#c:dusts/diamond",
-    "#c:dusts/diamond",
-    "#c:dusts/diamond",
+    "#c:small_dusts/diamond",
+    "#c:small_dusts/diamond",
+    "#c:small_dusts/diamond",
     "#c:papers",
     "#c:slime_balls"
   ],

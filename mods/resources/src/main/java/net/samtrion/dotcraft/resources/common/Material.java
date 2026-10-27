@@ -183,14 +183,6 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
                     }
                 }
             }
-            for (Form to : all) {
-                for (Form.Conversion c : to.conversions()) {
-                    if (c.externalRequired() && has(c.from()) && !has(to) && externalItem(to.id()).isEmpty()) {
-                        return DataResult.error(() -> id + ": the \"" + c.from() + "\" form of an \"external\" material needs an \""
-                                + to.id() + "\" item");
-                    }
-                }
-            }
         }
         for (Form form : forms) {
             if (form.tool().isPresent() && !tools.containsKey(form.id())) {

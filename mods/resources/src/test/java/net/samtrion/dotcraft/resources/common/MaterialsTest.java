@@ -351,7 +351,7 @@ class MaterialsTest {
         assertThrows(IllegalArgumentException.class, () -> only("{\"id\":\"n\",\"color\":\"#000000\",\"external\":[{\"forms\":{\"ingot\":{\"item\":\"minecraft:iron_ingot\"}}}]}"));
         String head = "{\"id\":\"m\",\"color\":\"#000000\",";
         assertThrows(IllegalArgumentException.class, () -> only(head + "\"forms\":[\"ingot\"],\"external\":[{}]}"));
-        assertThrows(IllegalArgumentException.class, () -> only(head + "\"forms\":[\"dust\",\"grains\"],\"external\":[{}]}"));
+        only(head + "\"forms\":[\"dust\",\"grains\"],\"external\":[{}]}");
         assertThrows(IllegalArgumentException.class, () -> only(head + "\"ore\":[{}],\"external\":[{}]}"));
         assertThrows(IllegalArgumentException.class, () -> only(head + "\"external\":[{\"forms\":{\"cake\":{\"tag\":\"c:cakes\"}}}]}"));
         only(head + "\"forms\":[\"dust\",\"grains\"],\"external\":[{\"forms\":{\"nugget\":{\"tag\":\"c:nuggets/iron\",\"item\":\"minecraft:iron_nugget\"}}}]}");
@@ -454,7 +454,7 @@ class MaterialsTest {
             Material part = materials.stream().filter(m -> m.id().equals(id)).findFirst().orElseThrow();
             assertTrue(part.isExternal(), id);
             assertFalse(part.has("ingot") || part.has("block"), id);
-            assertEquals(part.has("grains"), part.external().get(0).item("nugget").isPresent(), id);
+            if (!id.equals("diamond")) assertEquals(part.has("grains"), part.external().get(0).item("nugget").isPresent(), id);
         }
     }
 

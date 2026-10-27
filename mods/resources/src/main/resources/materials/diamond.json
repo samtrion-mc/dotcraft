@@ -8,6 +8,7 @@
   "tier": "diamond",
   "forms": [
     "dust",
+    "grains",
     "plate",
     "gear",
     "hammer",
@@ -18,7 +19,7 @@
       "ingredient": "c:storage_blocks/diamond"
     },
     "sandpaper": {
-      "ingredient": "c:dusts/diamond",
+      "ingredient": "c:small_dusts/diamond",
       "count": 3
     }
   },

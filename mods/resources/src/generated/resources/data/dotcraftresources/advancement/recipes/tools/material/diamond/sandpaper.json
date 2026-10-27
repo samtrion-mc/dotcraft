@@ -13,11 +13,11 @@
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_dusts_diamond": {
+    "has_small_dusts_diamond": {
       "conditions": {
         "items": [
           {
-            "items": "#c:dusts/diamond"
+            "items": "#c:small_dusts/diamond"
           }
         ]
       },
@@ -33,7 +33,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_dusts_diamond"
+      "has_small_dusts_diamond"
     ]
   ],
   "rewards": {
