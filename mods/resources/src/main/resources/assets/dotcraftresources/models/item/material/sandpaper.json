@@ -1,6 +1,7 @@
 {
   "parent": "minecraft:item/generated",
   "textures": {
-    "layer0": "dotcraftresources:item/material/sandpaper"
+    "layer0": "dotcraftresources:item/material/sandpaper",
+    "layer1": "dotcraftresources:item/material/sandpaper_paper"
   }
 }
