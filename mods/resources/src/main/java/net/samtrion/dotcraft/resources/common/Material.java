@@ -45,7 +45,7 @@ import net.samtrion.dotcraft.resources.tool.ToolTier;
  * data is generated, so the integration of another mod is one more source and no code. A material with an
  * {@code external} list (also the empty source {@code [{}]}) registers none of the forms that the external metal
  * provides (see {@link Form.ExternalRule}) and has the forms that are {@code default} for it unless it lists its forms.
- * Its dust and grains smelt to the first external item of the form unless {@code "cook": false} turns all cook
+ * Its dust and grains smelt to the first external item of the form unless {@code "smelt": false} turns all smelt and blast
  * conversions of the material off. The {@code ore} array and the {@code alloy} settings are validated here; the world
  * generation and the alloy recipes read them. The {@code ore} array has one config per element, see {@link OreSpec}. The standard {@code neoforge:conditions} list (see {@link Conditions}), e.g.
  * {@code [{"type": "neoforge:mod_loaded", "modid": "othermod"}]}, keeps the material out of the game while a condition fails: its items,
@@ -63,14 +63,14 @@ import net.samtrion.dotcraft.resources.tool.ToolTier;
  * @param ore      the world generation entries of the ore (see {@link OreSpec}), only with a hosted form; absent for one default entry
  * @param alloy    the recipe of an alloy
  * @param external the sources of a material that only adds parts to a metal provided from outside, empty for a plain material
- * @param cook     whether the {@code cook} conversions of the forms (smelting and blasting dust, grains, raw and ore
+ * @param smelt    whether the {@code smelt} and {@code blast} conversions of the forms (smelting and blasting dust, grains, raw and ore
  *                 into the ingot or, for an external material, the external item) are made; {@code false} for materials
  *                 whose dust is converted by hand-written recipes, such as coal
  * @param tools    the ingredient and optional durability of each crafting tool form the material has, by form id, see {@link Tool}
  * @param conditions the {@code neoforge:conditions} of the source, see {@link Conditions}; the material is not loaded while one fails
  */
 public record Material(String id, int color, Map<String, String> names, ToolTier tier, List<Form> forms,
-                       Optional<List<OreSpec>> ore, Optional<Alloy> alloy, List<External> external, boolean cook, Map<String, Tool> tools,
+                       Optional<List<OreSpec>> ore, Optional<Alloy> alloy, List<External> external, boolean smelt, Map<String, Tool> tools,
                        List<ICondition> conditions) {
     private static final Codec<String> ID = Codec.STRING.validate(s -> s.matches("[a-z][a-z0-9_]*")
             ? DataResult.success(s) : DataResult.error(() -> "\"id\" must be lower case letters, digits and _: " + s));
@@ -107,11 +107,11 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
                 OreSpec.LIST_CODEC.optionalFieldOf("ore").forGetter(Material::ore),
                 Alloy.CODEC.optionalFieldOf("alloy").forGetter(Material::alloy),
                 External.CODEC.listOf().optionalFieldOf("external", List.of()).forGetter(Material::external),
-                Codec.BOOL.optionalFieldOf("cook", true).forGetter(Material::cook),
+                Codec.BOOL.optionalFieldOf("smelt", true).forGetter(Material::smelt),
                 Codec.unboundedMap(Codec.STRING, Tool.CODEC).optionalFieldOf("tools", Map.of()).forGetter(Material::tools),
                 Conditions.FIELD.forGetter(Material::conditions)
-        ).apply(i, (id, color, names, tier, forms, ore, alloy, external, cook, tools, conditions) ->
-                fromSource(all, id, color, names, tier, forms, ore, alloy, external, cook, tools, conditions))).validate(m -> m.validate(all, excluded));
+        ).apply(i, (id, color, names, tier, forms, ore, alloy, external, smelt, tools, conditions) ->
+                fromSource(all, id, color, names, tier, forms, ore, alloy, external, smelt, tools, conditions))).validate(m -> m.validate(all, excluded));
     }
 
     /** Looks up a form of a source: empty if it is left out, an error if it does not exist. */
@@ -135,13 +135,13 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
     /** Builds a material from the parsed source, with the default forms where {@code forms} is missing. */
     private static Material fromSource(List<Form> all, String id, String color, Map<String, String> names, ToolTier tier,
                                        Optional<List<Optional<Form>>> forms, Optional<List<OreSpec>> ore, Optional<Alloy> alloy,
-                                       List<External> external, boolean cook, Map<String, Tool> tools, List<ICondition> conditions) {
+                                       List<External> external, boolean smelt, Map<String, Tool> tools, List<ICondition> conditions) {
         List<Form> list = forms.map(l -> l.stream().flatMap(Optional::stream).toList()).orElseGet(() -> all.stream()
                 .filter(f -> !external.isEmpty() ? f.tool().isEmpty() && f.external() == Form.ExternalRule.DEFAULT
                         : f.tool().isEmpty() && (alloy.isEmpty() || !f.mined()))
                 .toList());
         List<Form> ordered = list.stream().distinct().sorted(Comparator.comparingInt(Form::order)).toList();
-        return new Material(id, 0xFF000000 | Integer.parseInt(color.substring(1), 16), names, tier, ordered, ore, alloy, external, cook, tools, conditions);
+        return new Material(id, 0xFF000000 | Integer.parseInt(color.substring(1), 16), names, tier, ordered, ore, alloy, external, smelt, tools, conditions);
     }
 
     /** Checks that the forms and settings fit together. */
@@ -243,7 +243,7 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
     }
 
     /**
-     * The first external source that names a result item for a form, the one the cook recipes make.
+     * The first external source that names a result item for a form, the one the smelt and blast recipes make.
      *
      * @param formId the id of the form, e.g. {@code ingot}
      * @return the source, empty if none names an item

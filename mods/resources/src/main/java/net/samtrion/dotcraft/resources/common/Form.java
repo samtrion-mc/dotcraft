@@ -49,8 +49,7 @@ import net.samtrion.dotcraft.resources.tool.ToolType;
  * {@code %s_<id>}), {@code mined} (the form is only found in the ground, so alloys lack it), {@code external}
  * ({@code excluded}, {@code default} or {@code optional}: whether a material of an external metal must not have
  * the form, has it by default or may list it), {@code icon} (the form shown as the creative tab icon),
- * {@code requires} (forms a material needs to have this one), {@code mix} (alloys are mixed in this form, with
- * the {@code external} item key of an input that lacks the form), {@code tool} (a crafting tool, see {@link ToolSpec}) and {@code conversions}. The standard
+ * {@code requires} (forms a material needs to have this one), {@code tool} (a crafting tool, see {@link ToolSpec}) and {@code conversions}. The standard
  * {@code neoforge:conditions} list (see {@link Conditions}) keeps the form out of the game while a condition fails: it is
  * not registered, not in the config and has no recipes, and so is every form that {@code requires} it or
  * names it as the {@code drop} of its block (the ore of the raw form). The data generation makes everything and writes the conditions into the data of the form.
@@ -70,14 +69,13 @@ import net.samtrion.dotcraft.resources.tool.ToolType;
  * @param external     what a material of an external metal does with the form
  * @param icon        whether the form is the creative tab icon, the first one a material has wins
  * @param requires    ids of the forms a material needs to have this one
- * @param mix         set if alloys are mixed in this form
  * @param tool        set for a crafting tool such as the hammer: a damageable item that stays in the crafting grid, see {@link ToolSpec}
  * @param conversions how the form is made of other forms
  * @param conditions  the {@code neoforge:conditions} of the source, see {@link Conditions}; the form is not loaded while one fails
  */
 public record Form(String id, Kind kind, int order, String configKey, String template, boolean tinted, int variants, String pathPattern, Tag tag,
                    Map<String, String> names, Optional<BlockSpec> block, boolean mined, ExternalRule external,
-                   boolean icon, List<String> requires, Optional<Mix> mix, Optional<ToolSpec> tool,
+                   boolean icon, List<String> requires, Optional<ToolSpec> tool,
                    List<Conversion> conversions,
                    List<ICondition> conditions) {
     private static final Codec<String> ID = Codec.STRING.validate(s -> s.matches("[a-z][a-z0-9_]*")
@@ -107,7 +105,6 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
             ExternalRule.CODEC.optionalFieldOf("external", ExternalRule.OPTIONAL).forGetter(Form::external),
             Codec.BOOL.optionalFieldOf("icon", false).forGetter(Form::icon),
             ID.listOf().optionalFieldOf("requires", List.of()).forGetter(Form::requires),
-            Mix.CODEC.optionalFieldOf("mix").forGetter(Form::mix),
             Conversion.CODEC.listOf().optionalFieldOf("conversions", List.of()).forGetter(Form::conversions)
     ).apply(i, Form::fromSource));
 
@@ -126,29 +123,38 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
         conditions = List.copyOf(conditions);
     }
 
+    /**
+     * The conversion that mixes alloys in this form.
+     *
+     * @return the {@code alloy} conversion, empty if alloys are not mixed in this form
+     */
+    public Optional<Conversion> alloy() {
+        return conversions.stream().filter(c -> c.kind() == Conversion.Kind.ALLOY).findFirst();
+    }
+
     /** Builds a form from the parsed source, with the defaults of {@code template} and {@code path}. */
     private static Form fromSource(String id, Kind kind, int order, String configKey, Optional<String> template, boolean tinted,
                                    Optional<String> path, Tag tag, Map<String, String> names, Optional<BlockSpec> block,
                                    boolean mined, ExternalRule external, boolean icon, List<String> requires,
-                                   Optional<Mix> mix, List<Conversion> conversions) {
+                                   List<Conversion> conversions) {
         return new Form(id, kind, order, configKey, template.orElse(id), tinted, 1, path.orElse("%s_" + id), tag, names, block, mined,
-                external, icon, requires, mix, Optional.empty(), conversions, List.of());
+                external, icon, requires, Optional.empty(), conversions, List.of());
     }
 
     /** A copy with other conditions. */
     Form withConditions(List<ICondition> conditions) {
-        return new Form(id, kind, order, configKey, template, tinted, variants, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
+        return new Form(id, kind, order, configKey, template, tinted, variants, pathPattern, tag, names, block, mined, external, icon, requires, tool,
                 conversions, conditions);
     }
 
     /** A copy with another tool entry. */
     Form withVariants(int variants) {
-        return new Form(id, kind, order, configKey, template, tinted, variants, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
+        return new Form(id, kind, order, configKey, template, tinted, variants, pathPattern, tag, names, block, mined, external, icon, requires, tool,
                 conversions, conditions);
     }
 
     Form withTool(Optional<ToolSpec> tool) {
-        return new Form(id, kind, order, configKey, template, tinted, variants, pathPattern, tag, names, block, mined, external, icon, requires, mix, tool,
+        return new Form(id, kind, order, configKey, template, tinted, variants, pathPattern, tag, names, block, mined, external, icon, requires, tool,
                 conversions, conditions);
     }
 
@@ -392,18 +398,6 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
     }
 
     /**
-     * Alloys are mixed in this form.
-     *
-     * @param external key in the {@code external} entry of an input material that lacks the form, e.g. {@code nugget}
-     */
-    public record Mix(Optional<String> external) {
-        /** Source format: {@code {}} or {@code {"external": "nugget"}}. */
-        public static final Codec<Mix> CODEC = RecordCodecBuilder.create(i -> i.group(
-                Codec.STRING.optionalFieldOf("external").forGetter(Mix::external)
-        ).apply(i, Mix::new));
-    }
-
-    /**
      * A crafting tool: a damageable item that stays in the crafting grid and loses one durability per craft, so a recipe
      * that has it as an ingredient (by its tag) uses it up slowly instead of consuming it. Example, a hammer that makes
      * its head of the material:
@@ -462,40 +456,50 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
      * How the form is made of another form of the same material; the recipes are made where the material has
      * both forms.
      *
-     * @param from            id of the other form
+     * @param from            id of the other form, empty for an {@code alloy}
      * @param kind            {@code pack}: {@code ratio} items of the other form make one of this form and one makes
-     *                        {@code ratio} back; {@code cook}: one item is smelted and blasted into one of this form;
+     *                        {@code ratio} back; {@code smelt}: one item is smelted and blasted into one of this form; {@code blast}: one item is only blasted into one of this form;
      *                        {@code craft}: {@code ratio} items of the other form make one of this form, shapeless and
      *                        one way, also for an external material whose source names a tag for the other form
      * @param ratio           items of a pack, {@code 4} or {@code 9}; of a craft, {@code 1..9}
+     *                        {@code alloy}: alloys are mixed in this form, from the forms of the alloy inputs
+     *                        (see {@link Material.Alloy}); {@code external} is the key of the {@code external} item of an input that lacks the form;
      *                        {@code crush}: like a craft, but the hammer tag is an ingredient as well (the hammer stays and
      *                        wears) and {@code ratio} is the number of items that come out
-     * @param xp              experience of a cook
+     * @param xp              experience of a smelt or blast
      * @param materials       ids of the materials the conversion is made for, all where empty
+     * @param external        of an {@code alloy}: the {@code external} key that resolves an input that lacks the form
      * @param externalRequired whether a material of an external metal that has the other form but not this one must
-     *                        name the external item of this form, which then is the result of the cook
+     *                        name the external item of this form, which then is the result of the smelt or blast
      */
-    public record Conversion(String from, Kind kind, int ratio, float xp, List<String> materials, boolean externalRequired) {
-        /** Source format: {@code {"from": "nugget", "kind": "pack", "ratio": 9}}, {@code {"from": "dust", "kind": "cook", "xp": 0.7}} or {@code {"from": "ingot", "kind": "craft", "ratio": 1}}. */
-        public static final Codec<Conversion> CODEC = RecordCodecBuilder.create(i -> i.group(
-                Codec.STRING.fieldOf("from").forGetter(Conversion::from),
+    public record Conversion(String from, Kind kind, int ratio, float xp, List<String> materials, Optional<String> external,
+                             boolean externalRequired) {
+        /** Source format: {@code {"from": "nugget", "kind": "pack", "ratio": 9}}, {@code {"from": "dust", "kind": "smelt", "xp": 0.7}} or {@code {"from": "ingot", "kind": "craft", "ratio": 1}}. */
+        public static final Codec<Conversion> CODEC = RecordCodecBuilder.<Conversion>create(i -> i.group(
+                Codec.STRING.optionalFieldOf("from", "").forGetter(Conversion::from),
                 Kind.CODEC.fieldOf("kind").forGetter(Conversion::kind),
                 Codec.INT.optionalFieldOf("ratio", 9).forGetter(Conversion::ratio),
                 Codec.FLOAT.optionalFieldOf("xp", 0.0F).forGetter(Conversion::xp),
                 Codec.STRING.listOf().optionalFieldOf("materials", List.of()).forGetter(Conversion::materials),
+                Codec.STRING.optionalFieldOf("external").forGetter(Conversion::external),
                 Codec.BOOL.optionalFieldOf("externalRequired", false).forGetter(Conversion::externalRequired)
-        ).apply(i, Conversion::new));
+        ).apply(i, Conversion::new)).validate(c -> (c.kind == Kind.ALLOY) == c.from.isEmpty() ? DataResult.success(c)
+                : DataResult.error(() -> c.kind == Kind.ALLOY ? "an \"alloy\" has no \"from\"" : "a conversion needs a \"from\""));
 
         /** The kind of a conversion. */
         public enum Kind implements StringRepresentable {
             /** Crafting in both directions. */
             PACK,
             /** Smelting and blasting. */
-            COOK,
+            SMELT,
+            /** Blasting only. */
+            BLAST,
             /** Shapeless crafting in one direction. */
             CRAFT,
             /** Shapeless crafting with a hammer in one direction, the hammer wears. */
-            CRUSH;
+            CRUSH,
+            /** The alloys are mixed in this form, one shapeless recipe of the inputs of the alloy. */
+            ALLOY;
 
             /** Codec that reads the lower case name. */
             public static final Codec<Kind> CODEC = StringRepresentable.fromEnum(Kind::values);

@@ -84,9 +84,9 @@ class MaterialConditionsTest {
     /** A recipe between forms carries the conditions of its material and of both forms, after the config conditions. */
     @Test
     void conversionRecipesCarryConditions() {
-        List<ICondition> cook = MaterialRecipePlugin.conditions(material("t"), form("dust"), form("ingot"), null);
+        List<ICondition> smelt = MaterialRecipePlugin.conditions(material("t"), form("dust"), form("ingot"), null);
         assertEquals(List.of(new ConfigCondition(ConfigCondition.Switch.MATERIALS), ConfigCondition.ofForm("t", "dust"),
-                ConfigCondition.ofForm("t", "ingot"), MATERIAL_MOD, FORM_MOD), cook);
+                ConfigCondition.ofForm("t", "ingot"), MATERIAL_MOD, FORM_MOD), smelt);
         assertEquals(List.of(new ConfigCondition(ConfigCondition.Switch.MATERIALS), ConfigCondition.ofForm("p", "dust"),
                 ConfigCondition.ofForm("p", "ingot"), FORM_MOD), MaterialRecipePlugin.conditions(material("p"), form("dust"), form("ingot"), null));
         // the form that is only used also counts, and the result of an external item has no form

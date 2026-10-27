@@ -12,6 +12,6 @@
   "icon": true,
   "conversions": [
     { "from": "nugget", "kind": "pack", "ratio": 9 },
-    { "from": "dust", "kind": "cook", "xp": 0.7 }
+    { "from": "dust", "kind": "smelt", "xp": 0.7 }
   ]
 }

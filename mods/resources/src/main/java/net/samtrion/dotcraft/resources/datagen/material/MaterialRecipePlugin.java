@@ -38,18 +38,18 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  * <ul>
  *   <li>a {@code pack} conversion: shaped, the {@code ratio} items of the other form make one of the form, and
  *   shapeless, one of the form makes the {@code ratio} items back;</li>
- *   <li>a {@code cook} conversion: one item of the tag of the other form (all ore blocks for a hosted form) is smelted and
- *   blasted into one of the form, or, for an {@code external} material that lacks the form, into the item of its
+ *   <li>a {@code smelt} or {@code blast} conversion: one item of the tag of the other form (all ore blocks for a hosted form) is
+ *   smelted in a furnace and blasted in a blast furnace (a {@code smelt}) or only blasted (a {@code blast}) into one of the form, or, for an {@code external} material that lacks the form, into the item of its
  *   first {@link Material.External external} source that names one. Every further source (it names a mod) gets the
  *   same recipes with its own item and the recipe id suffix {@code _<mod>}; a source that names a mod adds the
  *   {@code mod_loaded} condition to its recipes, also the first one;</li>
  *   <li>a {@code craft} conversion: shapeless, {@code ratio} items of the tag of the other form make one of the form. An
  *   {@code external} material that lacks the other form uses the tag its sources name for it, one recipe per source
- *   (suffix and {@code mod_loaded} as for the cook).</li>
+ *   (suffix and {@code mod_loaded} as for the smelt).</li>
  * </ul>
  * Every ingredient is an item tag ({@code c:ingots/tin}, ...), only the results are items. The item of a source without
  * a mod must be registered, else the data generation fails; the item of a mod source need not be. A material with
- * {@code "cook": false} has no cook recipes. A crafting tool form (see {@link Form.ToolSpec}) has its own recipe, made of tags
+ * {@code "smelt": false} has no smelt and blast recipes. A crafting tool form (see {@link Form.ToolSpec}) has its own recipe, made of tags
  * only. Recipe ids are {@code material/<id>/<name>}.
  */
 public final class MaterialRecipePlugin implements RecipePlugin {
@@ -64,6 +64,7 @@ public final class MaterialRecipePlugin implements RecipePlugin {
             m.forms().stream().filter(f -> f.tool().isPresent()).forEach(f -> tool(recipes, all, m, f));
             for (Form to : Forms.all()) {
                 for (Form.Conversion c : to.conversions()) {
+                    if (c.kind() == Form.Conversion.Kind.ALLOY) continue; // made by MaterialAlloyRecipePlugin
                     Form from = Forms.get(c.from());
                     if (!c.materials().isEmpty() && !c.materials().contains(m.id())) continue;
                     if (c.kind() == Form.Conversion.Kind.CRAFT || c.kind() == Form.Conversion.Kind.CRUSH) {
@@ -74,8 +75,8 @@ public final class MaterialRecipePlugin implements RecipePlugin {
                     if (c.kind() == Form.Conversion.Kind.PACK) {
                         if (m.has(to)) pack(recipes, out(all, m, from, to, null), m, from, to, c.ratio());
                         else packExternal(recipes, all, m, from, to, c.ratio());
-                    } else if (m.cook()) {
-                        cook(recipes, all, m, from, to, c);
+                    } else if (m.smelt()) {
+                        smelt(recipes, all, m, from, to, c);
                     }
                 }
             }
@@ -110,21 +111,21 @@ public final class MaterialRecipePlugin implements RecipePlugin {
     }
 
     /**
-     * Makes the cook recipes of one conversion: into the item of the form, or into the external items.
+     * Makes the smelting and blasting recipes of one conversion: into the item of the form, or into the external items.
      *
      * @param recipes the recipe builders
      * @param all     the output of the provider
      * @param m       the material
-     * @param from    the form that is cooked
+     * @param from    the form that is smelted or blasted
      * @param to      the form that comes out
      * @param c       the conversion
      */
-    private static void cook(RecipeBuilders recipes, RecipeOutput all, Material m, Form from, Form to, Form.Conversion c) {
+    private static void smelt(RecipeBuilders recipes, RecipeOutput all, Material m, Form from, Form to, Form.Conversion c) {
         String name = to.id() + "_from_" + from.id();
         TagKey<Item> input = MaterialTags.item(from, m);
         if (m.has(to)) {
             Identifier result = BuiltInRegistries.ITEM.getKey(ResourceItems.item(m, to).get());
-            cook(recipes, out(all, m, from, to, null), m, input, result, name, "", c.xp());
+            furnace(recipes, out(all, m, from, to, null), m, input, result, name, "", c);
             return;
         }
         List<Material.External> sources = m.external().stream().filter(e -> e.item(to.id()).isPresent()).toList();
@@ -135,7 +136,7 @@ public final class MaterialRecipePlugin implements RecipePlugin {
                 throw new IllegalStateException(m.id() + ": the external item " + result + " of \"" + to.id() + "\" is not registered");
             }
             String suffix = i == 0 ? "" : "_" + source.mod().orElseThrow();
-            cook(recipes, out(all, m, from, null, source), m, input, result, name, suffix, c.xp());
+            furnace(recipes, out(all, m, from, null, source), m, input, result, name, suffix, c);
         }
     }
 
@@ -254,13 +255,15 @@ public final class MaterialRecipePlugin implements RecipePlugin {
         }
     }
 
-    /** Smelting and blasting of every item of a tag into a result; the suffix ends the recipe ids. */
-    private static void cook(RecipeBuilders recipes, RecipeOutput output, Material m, TagKey<Item> input, Identifier result,
-                             String name, String suffix, float xp) {
-        recipes.smelting(input, result, xp, SMELT_TIME)
-                .unlockedBy(recipes.hasName(input), recipes.has(input))
-                .save(output, key(m, name + "_smelting" + suffix));
-        recipes.blasting(input, result, xp, BLAST_TIME)
+    /** Smelting and blasting (a {@code smelt}) or only blasting (a {@code blast}) of every item of a tag into a result; the suffix ends the recipe ids. */
+    private static void furnace(RecipeBuilders recipes, RecipeOutput output, Material m, TagKey<Item> input, Identifier result,
+                             String name, String suffix, Form.Conversion c) {
+        if (c.kind() == Form.Conversion.Kind.SMELT) {
+            recipes.smelting(input, result, c.xp(), SMELT_TIME)
+                    .unlockedBy(recipes.hasName(input), recipes.has(input))
+                    .save(output, key(m, name + "_smelting" + suffix));
+        }
+        recipes.blasting(input, result, c.xp(), BLAST_TIME)
                 .unlockedBy(recipes.hasName(input), recipes.has(input))
                 .save(output, key(m, name + "_blasting" + suffix));
     }

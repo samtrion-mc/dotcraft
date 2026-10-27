@@ -12,7 +12,7 @@
   "external": "excluded",
   "conversions": [
     { "from": "ingot", "kind": "pack", "ratio": 9 },
-    { "from": "dust_block", "kind": "cook", "xp": 6.3 },
-    { "from": "raw_block", "kind": "cook", "xp": 6.3 }
+    { "from": "dust_block", "kind": "smelt", "xp": 6.3 },
+    { "from": "raw_block", "kind": "blast", "xp": 6.3 }
   ]
 }

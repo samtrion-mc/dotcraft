@@ -458,16 +458,16 @@ class MaterialsTest {
         }
     }
 
-    /** Coal and charcoal are dust only, have no cook recipes, and name their vanilla items and blocks; "enabled" is no material id. */
+    /** Coal and charcoal are dust only, have no smelt or blast recipes, and name their vanilla items and blocks; "enabled" is no material id. */
     @Test
     void coalAndCharcoal() throws Exception {
-        assertTrue(only("{\"id\":\"m\",\"color\":\"#000000\"}").cook());
-        assertFalse(only("{\"id\":\"m\",\"color\":\"#000000\",\"cook\":false}").cook());
+        assertTrue(only("{\"id\":\"m\",\"color\":\"#000000\"}").smelt());
+        assertFalse(only("{\"id\":\"m\",\"color\":\"#000000\",\"smelt\":false}").smelt());
         assertThrows(IllegalArgumentException.class, () -> Materials.parseAll(Map.of("enabled.json", "{\"id\":\"enabled\",\"tier\":\"stone\",\"color\":\"#000000\"}"), FORMS));
         for (String id : List.of("coal", "charcoal")) {
             Material m = shipped().stream().filter(x -> x.id().equals(id)).findFirst().orElseThrow();
             assertEquals(id.equals("coal") ? List.of(form("dust"), form("ore")) : List.of(form("dust")), m.forms(), id);
-            assertFalse(m.cook(), id);
+            assertFalse(m.smelt(), id);
             assertEquals("minecraft:" + id, m.external().get(0).item("ingot").orElseThrow().toString());
         }
         Material charcoal = shipped().stream().filter(x -> x.id().equals("charcoal")).findFirst().orElseThrow();

@@ -25,7 +25,7 @@
       "maxY": 128
     }
   ],
-  "cook": false,
+  "smelt": false,
   "external": [
     {
       "forms": {

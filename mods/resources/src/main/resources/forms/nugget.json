@@ -11,6 +11,6 @@
   },
   "external": "excluded",
   "conversions": [
-    { "from": "grains", "kind": "cook", "xp": 0.1, "externalRequired": true }
+    { "from": "grains", "kind": "smelt", "xp": 0.1, "externalRequired": true }
   ]
 }

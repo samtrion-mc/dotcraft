@@ -10,6 +10,7 @@
   },
   "block": { "mapColor": "sand", "sound": "sand", "hardness": 0.5, "tool": "shovel", "loot": "self" },
   "conversions": [
+    { "kind": "alloy" },
     { "from": "dust", "kind": "pack", "ratio": 9 }
   ]
 }

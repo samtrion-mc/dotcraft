@@ -513,7 +513,7 @@ public final class ResourcesGameTests {
         for (String coal : new String[] {"coal", "charcoal"}) {
             for (String kind : new String[] {"smelting", "blasting"}) {
                 helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, id("material/" + coal + "/ingot_from_dust_" + kind))).isEmpty(),
-                        coal + " dust must not be cooked");
+                        coal + " dust must not be smelted");
             }
         }
         var gear = net.samtrion.dotcraft.resources.common.conditions.ConfigCondition.ofForm("tin", "gear");
@@ -537,7 +537,7 @@ public final class ResourcesGameTests {
         helper.assertTrue(ResourceItems.vanillaTabItems(false).contains(ResourceItems.item(tin(), Forms.get("gear")))
                 && ResourceItems.vanillaTabItems(true).contains(ironHammer) && !ResourceItems.vanillaTabItems(false).contains(ironHammer),
                 "the material items are not listed in the vanilla tabs");
-        helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, id("material/steel/ingot_from_mix"))).isEmpty(),
+        helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, id("material/steel/dust_from_alloy"))).isEmpty(),
                 "steel has one recipe per alternative, not a plain one");
         var charcoal = net.samtrion.dotcraft.resources.common.conditions.ConfigCondition.ofRecipe("steel", "charcoal");
         var charcoalSwitch = CraftResourcesConfig.recipeSwitch("steel", "charcoal");

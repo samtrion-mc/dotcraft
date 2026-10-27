@@ -30,7 +30,7 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
 /**
  * The mixing recipes of the alloys, disabled by {@code materials.enabled}, by the config switches of the alloy form and
  * by the switches of every input (the form of an input material that has it, else the input material, see
- * {@link ConfigCondition}). For each material with an {@code alloy} and each of its forms with a {@code mix} entry
+ * {@link ConfigCondition}). For each material with an {@code alloy} and each of its forms with a {@code alloy} conversion
  * (dust and grains), one shapeless recipe turns the item tag of the same form of every input
  * material into the alloy form, making the {@code result} of the alloy, else as many items as the inputs have items together. An input material that lacks
  * a form is resolved through the tag of its {@code external} sources (the key of the {@code mix} entry of the form);
@@ -39,9 +39,9 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  * <p>An input that lists alternatives ({@code "material": ["coal", "charcoal"]}) and an input material with several
  * external sources each give several options; one recipe is made for every combination of the options of the inputs,
  * so no recipe has to accept several tags and two recipes never share their ingredients. A recipe is skipped when an
- * input has no option at all. The id of the recipe is {@code material/<id>/<form>_from_mix}, followed for each input in
+ * input has no option at all. The id of the recipe is {@code material/<id>/<form>_from_alloy}, followed for each input in
  * order by {@code _<material>} where the input has alternatives and by {@code _<mod>} where the option is a source of a mod,
- * e.g. {@code material/steel/ingot_from_mix_charcoal}. The conditions of a recipe are those of the
+ * e.g. {@code material/steel/ingot_from_alloy_charcoal}. The conditions of a recipe are those of the
  * alloy form (with its {@code neoforge:conditions} and those of the alloy, see {@link Conditions}), of every option (the form or material switch of the option material and {@code mod_loaded} of a mod
  * source) and, for an input with alternatives, the switch {@code materials.<id>.recipes.<material>.enabled} of the chosen
  * alternative. Every option also adds the {@code neoforge:conditions} of its material, and of its form where it has it, so
@@ -66,7 +66,7 @@ public final class MaterialAlloyRecipePlugin implements RecipePlugin {
         for (Material m : Materials.all()) {
             if (m.alloy().isEmpty()) continue;
             for (Form form : m.forms()) {
-                if (form.mix().isPresent()) mix(recipes, all, m, form);
+                if (form.alloy().isPresent()) mix(recipes, all, m, form);
             }
         }
     }
@@ -88,7 +88,7 @@ public final class MaterialAlloyRecipePlugin implements RecipePlugin {
             TagKey<Item> first = choice.get(0).tag();
             builder.unlockedBy(recipes.hasName(first), recipes.has(first))
                     .save(all.withConditions(conditions(m, form, choice).toArray(ICondition[]::new)),
-                            DataGenIds.recipeKey("material/" + m.id() + "/" + form.id() + "_from_mix" + suffix));
+                            DataGenIds.recipeKey("material/" + m.id() + "/" + form.id() + "_from_alloy" + suffix));
         }
     }
 
@@ -165,7 +165,7 @@ public final class MaterialAlloyRecipePlugin implements RecipePlugin {
                 options.add(new Option(source, null, MaterialTags.item(form, source)));
                 continue;
             }
-            Optional<String> key = form.mix().flatMap(Form.Mix::external);
+            Optional<String> key = form.alloy().flatMap(Form.Conversion::external);
             if (key.isEmpty()) continue;
             for (Material.External external : source.external()) {
                 external.tag(key.get()).ifPresent(tag -> options.add(new Option(source, external, TagKey.create(Registries.ITEM, tag))));

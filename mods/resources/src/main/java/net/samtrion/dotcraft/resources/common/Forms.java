@@ -153,6 +153,7 @@ public final class Forms {
         for (Form form : result) {
             for (String other : form.requires()) require(ids, form, other);
             for (Form.Conversion c : form.conversions()) {
+                if (c.kind() == Form.Conversion.Kind.ALLOY) continue;
                 require(ids, form, c.from());
                 if (c.kind() == Form.Conversion.Kind.PACK && find(result, c.from()).hosted()) {
                     throw new IllegalArgumentException(form.id() + ": a \"pack\" cannot be from the hosted form " + c.from());

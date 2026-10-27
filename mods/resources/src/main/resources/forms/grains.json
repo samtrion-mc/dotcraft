@@ -8,6 +8,7 @@
     "en_us": "%s Grains",
     "de_de": "%s-K\u00f6rner"
   },
-  "mix": { "external": "nugget" },
-  "conversions": []
+  "conversions": [
+    { "kind": "alloy", "external": "nugget" }
+  ]
 }

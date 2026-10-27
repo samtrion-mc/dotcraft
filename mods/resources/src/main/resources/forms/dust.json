@@ -9,8 +9,8 @@
     "de_de": "%s-Staub"
   },
   "external": "default",
-  "mix": {},
   "conversions": [
+    { "kind": "alloy" },
     { "from": "grains", "kind": "pack", "ratio": 9 },
     { "from": "raw", "kind": "crush", "ratio": 2 },
     { "from": "ingot", "kind": "crush", "ratio": 1, "materials": ["charcoal", "coal", "diamond"] }

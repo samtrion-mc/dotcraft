@@ -9,7 +9,7 @@
   "forms": [
     "dust"
   ],
-  "cook": false,
+  "smelt": false,
   "external": [
     {
       "forms": {

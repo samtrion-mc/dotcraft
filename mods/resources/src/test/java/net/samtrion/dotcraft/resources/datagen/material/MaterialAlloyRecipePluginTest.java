@@ -55,7 +55,7 @@ class MaterialAlloyRecipePluginTest {
         for (Material m : all) {
             if (m.alloy().isEmpty()) continue;
             for (Form form : forms()) {
-                if (form.mix().isEmpty() || !m.has(form)) continue;
+                if (form.alloy().isEmpty() || !m.has(form)) continue;
                 for (Map<String, Integer> items : ingredients(m, form, all)) {
                     recipes++;
                     String old = seen.put(items, m.id() + "/" + form.id());

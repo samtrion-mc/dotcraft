@@ -110,8 +110,8 @@ class FormsTest {
         assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"block\":{\"tool\":\"pickaxe\"}"));
         assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"path\":\"cog\""));
         assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"requires\":[\"nope\"]"));
-        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"conversions\":[{\"from\":\"nope\",\"kind\":\"cook\"}]"));
-        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"conversions\":[{\"from\":\"cog\",\"kind\":\"cook\"}]"));
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"conversions\":[{\"from\":\"nope\",\"kind\":\"smelt\"}]"));
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"conversions\":[{\"from\":\"cog\",\"kind\":\"smelt\"}]"));
         assertThrows(IllegalArgumentException.class, () -> Forms.parseAll(Map.of("x.json", String.format(ITEM, "cog", 5, ""))));
         assertThrows(IllegalArgumentException.class, () -> Forms.parseAll(Map.of(
                 "a.json", String.format(ITEM, "a", 5, ""), "b.json", String.format(ITEM, "b", 5, ""))));
@@ -161,7 +161,7 @@ class FormsTest {
         Map<String, String> sources = Map.of(
                 "a.json", String.format(ITEM, "a", 1, "," + MOD),
                 "b.json", String.format(ITEM, "b", 2, ",\"requires\":[\"a\"]"),
-                "c.json", String.format(ITEM, "c", 3, ",\"conversions\":[{\"from\":\"a\",\"kind\":\"cook\"}]"),
+                "c.json", String.format(ITEM, "c", 3, ",\"conversions\":[{\"from\":\"a\",\"kind\":\"smelt\"}]"),
                 "d.json", String.format(ITEM, "d", 4, ""));
         Forms.Loaded without = parseWithMods(sources);
         assertEquals(List.of("c", "d"), without.forms().stream().map(Form::id).toList());
