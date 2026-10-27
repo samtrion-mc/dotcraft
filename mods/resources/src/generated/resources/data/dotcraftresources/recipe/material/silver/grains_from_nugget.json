@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "nugget",
+      "material": "silver",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "silver",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#c:tools/hammer",
+    "I": "#c:nuggets/silver"
+  },
+  "pattern": [
+    "H",
+    "I"
+  ],
+  "result": {
+    "id": "dotcraftresources:silver_grains"
+  }
+}

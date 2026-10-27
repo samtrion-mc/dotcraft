@@ -9,6 +9,7 @@
     "de_de": "%s-K\u00f6rner"
   },
   "conversions": [
-    { "kind": "alloy", "external": "nugget" }
+    { "kind": "alloy", "external": "nugget" },
+    { "from": "nugget", "kind": "forge", "ratio": 1 }
   ]
 }

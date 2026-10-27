@@ -12,7 +12,7 @@
   "conversions": [
     { "kind": "alloy" },
     { "from": "grains", "kind": "pack", "ratio": 9 },
-    { "from": "raw", "kind": "crush", "ratio": 2 },
-    { "from": "ingot", "kind": "crush", "ratio": 1, "materials": ["charcoal", "coal", "diamond"] }
+    { "from": "ingot", "kind": "forge", "ratio": 1 },
+    { "from": "raw", "kind": "crush", "ratio": 2 }
   ]
 }

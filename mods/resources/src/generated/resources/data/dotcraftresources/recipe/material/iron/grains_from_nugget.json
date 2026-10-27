@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "iron",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#c:tools/hammer",
+    "I": "#c:nuggets/iron"
+  },
+  "pattern": [
+    "H",
+    "I"
+  ],
+  "result": {
+    "id": "dotcraftresources:iron_grains"
+  }
+}

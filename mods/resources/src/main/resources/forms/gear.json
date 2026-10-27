@@ -9,5 +9,12 @@
     "de_de": "%s-Zahnrad"
   },
   "external": "default",
-  "conversions": []
+  "conversions": [
+    {
+      "kind": "shaped",
+      "ratio": 1,
+      "pattern": ["NIN", "IPI", "NIN"],
+      "key": { "N": "nugget", "I": "ingot", "P": "minecraft:planks" }
+    }
+  ]
 }

@@ -9,5 +9,7 @@
     "de_de": "%s-Platte"
   },
   "external": "default",
-  "conversions": []
+  "conversions": [
+    { "from": "ingot", "kind": "forge", "ratio": 3 }
+  ]
 }

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "iridium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "iridium",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#c:tools/hammer",
+    "I": "#c:ingots/iridium"
+  },
+  "pattern": [
+    "H",
+    "I"
+  ],
+  "result": {
+    "id": "dotcraftresources:iridium_dust"
+  }
+}

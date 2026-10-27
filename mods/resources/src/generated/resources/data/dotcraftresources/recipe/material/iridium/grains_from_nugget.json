@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "nugget",
+      "material": "iridium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "iridium",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#c:tools/hammer",
+    "I": "#c:nuggets/iridium"
+  },
+  "pattern": [
+    "H",
+    "I"
+  ],
+  "result": {
+    "id": "dotcraftresources:iridium_grains"
+  }
+}

@@ -11,11 +11,15 @@
       "switch": "material_form"
     }
   ],
-  "type": "minecraft:crafting_shapeless",
+  "type": "minecraft:crafting_shaped",
   "category": "misc",
-  "ingredients": [
-    "#dotcraftresources:charcoal",
-    "#c:tools/hammer"
+  "key": {
+    "H": "#c:tools/hammer",
+    "I": "#dotcraftresources:charcoal"
+  },
+  "pattern": [
+    "H",
+    "I"
   ],
   "result": {
     "id": "dotcraftresources:charcoal_dust"

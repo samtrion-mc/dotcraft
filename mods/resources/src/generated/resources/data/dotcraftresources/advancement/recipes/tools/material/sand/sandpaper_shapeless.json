@@ -1,0 +1,44 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "sandpaper",
+      "material": "sand",
+      "switch": "material_form"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_papers": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:papers"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:material/sand/sandpaper_shapeless"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_papers"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:material/sand/sandpaper_shapeless"
+    ]
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "steel",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "plate",
+      "material": "steel",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#c:tools/hammer",
+    "I": "#c:ingots/steel"
+  },
+  "pattern": [
+    " H ",
+    "III"
+  ],
+  "result": {
+    "id": "dotcraftresources:steel_plate"
+  }
+}

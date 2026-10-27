@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "nickel",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "plate",
+      "material": "nickel",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#c:tools/hammer",
+    "I": "#c:ingots/nickel"
+  },
+  "pattern": [
+    " H ",
+    "III"
+  ],
+  "result": {
+    "id": "dotcraftresources:nickel_plate"
+  }
+}
