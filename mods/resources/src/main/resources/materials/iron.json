@@ -20,7 +20,8 @@
     },
     "sandpaper": {
       "ingredient": "c:small_dusts/iron",
-      "count": 3
+      "count": 3,
+      "durability": 32
     }
   },
   "external": [

@@ -398,7 +398,7 @@ class MaterialsTest {
         assertEquals(250, byId.get("iron").toolDurability(hammer));
         assertEquals(1561, byId.get("diamond").toolDurability(hammer));
         assertEquals(2031, byId.get("netherite").toolDurability(hammer));
-        assertEquals(13, byId.get("sand").toolDurability(sandpaper));
+        assertEquals(16, byId.get("sand").toolDurability(sandpaper));
         int steel = byId.get("steel").toolDurability(hammer);
         assertTrue(steel > 250 && steel < 1561, "steel hammer " + steel);
         assertThrows(IllegalArgumentException.class, () -> only("{\"id\":\"m\",\"color\":\"#000000\",\"forms\":[\"ingot\",\"hammer\"]}"));

@@ -12,7 +12,8 @@
   "tools": {
     "sandpaper": {
       "ingredient": "c:sands",
-      "count": 3
+      "count": 3,
+      "durability": 16
     }
   },
   "external": [
