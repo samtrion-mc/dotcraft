@@ -25,10 +25,10 @@
       "richness": [
         "poor"
       ],
-      "veinSize": 8,
-      "count": 8,
-      "minY": -16,
-      "maxY": 120
+      "veinSize": 6,
+      "count": 6,
+      "minY": 0,
+      "maxY": 96
     },
     {
       "hosts": [
@@ -38,10 +38,10 @@
       "richness": [
         "rich"
       ],
-      "veinSize": 5,
-      "count": 3,
-      "minY": -64,
-      "maxY": 32
+      "veinSize": 4,
+      "count": 12,
+      "minY": -56,
+      "maxY": 16
     }
   ],
   "tools": {

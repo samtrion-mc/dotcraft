@@ -25,7 +25,7 @@
         "deepslate"
       ],
       "veinSize": 3,
-      "count": 2,
+      "count": 1,
       "minY": -64,
       "maxY": -16
     },
@@ -34,8 +34,8 @@
       "hosts": [
         "end"
       ],
-      "veinSize": 4,
-      "count": 2,
+      "veinSize": 3,
+      "count": 1,
       "minY": 0,
       "maxY": 80
     }

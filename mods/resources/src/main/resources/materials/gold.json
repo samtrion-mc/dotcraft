@@ -23,8 +23,8 @@
       "richness": [
         "poor"
       ],
-      "veinSize": 6,
-      "count": 4,
+      "veinSize": 4,
+      "count": 3,
       "minY": -48,
       "maxY": 32
     },
@@ -36,8 +36,8 @@
       "richness": [
         "rich"
       ],
-      "veinSize": 4,
-      "count": 1,
+      "veinSize": 3,
+      "count": 4,
       "minY": -64,
       "maxY": -16
     }

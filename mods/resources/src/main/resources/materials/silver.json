@@ -25,8 +25,8 @@
         "stone",
         "deepslate"
       ],
-      "veinSize": 7,
-      "count": 6,
+      "veinSize": 6,
+      "count": 3,
       "minY": -48,
       "maxY": 32
     },
@@ -35,8 +35,8 @@
       "hosts": [
         "nether"
       ],
-      "veinSize": 6,
-      "count": 4,
+      "veinSize": 5,
+      "count": 3,
       "minY": 8,
       "maxY": 110
     }

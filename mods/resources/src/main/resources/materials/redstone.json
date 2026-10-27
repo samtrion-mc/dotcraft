@@ -19,10 +19,10 @@
       "richness": [
         "poor"
       ],
-      "veinSize": 6,
+      "veinSize": 4,
       "count": 4,
       "minY": -64,
-      "maxY": 16
+      "maxY": 0
     }
   ],
   "external": [

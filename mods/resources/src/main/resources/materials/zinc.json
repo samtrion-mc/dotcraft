@@ -25,8 +25,8 @@
         "stone",
         "deepslate"
       ],
-      "veinSize": 8,
-      "count": 8,
+      "veinSize": 7,
+      "count": 5,
       "minY": -16,
       "maxY": 72
     }

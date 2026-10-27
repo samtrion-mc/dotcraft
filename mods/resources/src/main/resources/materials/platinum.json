@@ -26,7 +26,7 @@
         "deepslate"
       ],
       "veinSize": 4,
-      "count": 3,
+      "count": 2,
       "minY": -64,
       "maxY": 0
     },
@@ -35,8 +35,8 @@
       "hosts": [
         "nether"
       ],
-      "veinSize": 5,
-      "count": 3,
+      "veinSize": 4,
+      "count": 2,
       "minY": 8,
       "maxY": 110
     }

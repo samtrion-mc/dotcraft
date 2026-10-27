@@ -455,6 +455,7 @@ class MaterialsTest {
             assertTrue(part.isExternal(), id);
             assertFalse(part.has("ingot") || part.has("block"), id);
             if (!id.equals("diamond")) assertEquals(part.has("grains"), part.external().get(0).item("nugget").isPresent(), id);
+            assertEquals(id.equals("netherite"), part.has("nugget"), id);
         }
     }
 
@@ -491,6 +492,40 @@ class MaterialsTest {
         }
         assertFalse(byId.get("diamond").has("ore"));
         assertTrue(byId.get("redstone").has("grains") && !byId.get("redstone").has("dust"));
+    }
+
+    /**
+     * The ore blocks a chunk gets from one entry in one dimension, the placement of the world generation:
+     * poor ore 1.5 times as many veins as the entry names, normal ore as many, rich ore a quarter (at least one).
+     */
+    private static int oreBlocksPerChunk(Material.OreSpec spec) {
+        int veins = 0;
+        if (spec.richness().contains(OreRichness.POOR)) veins += (spec.count() * 3 + 1) / 2;
+        if (spec.richness().contains(OreRichness.NORMAL)) veins += spec.count();
+        if (spec.richness().contains(OreRichness.RICH)) veins += Math.max(1, spec.count() / 4);
+        return veins * spec.veinSize();
+    }
+
+    /**
+     * The shipped ore entries stay in line with vanilla: no entry places more ore blocks per chunk than vanilla iron does
+     * (about 130 below y 72), and the poor and rich ores added to a vanilla metal, together, stay below 60 percent of the
+     * vanilla amount per chunk (iron 130, copper 160, gold 40, coal 340, lapis 14, redstone 64).
+     */
+    @Test
+    void shippedOreAmountsFollowVanilla() throws Exception {
+        Map<String, Integer> vanilla = Map.of("iron", 130, "copper", 160, "gold", 40, "coal", 340, "lapis", 14, "redstone", 64);
+        for (Material m : shipped()) {
+            if (m.hostedForm().isEmpty()) continue;
+            for (Material.OreSpec spec : m.oreSpecs()) {
+                assertTrue(oreBlocksPerChunk(spec) <= 130, m.id() + " " + spec.id() + " places " + oreBlocksPerChunk(spec) + " blocks per chunk");
+                assertTrue(spec.minY() >= -64 && spec.maxY() <= 320, m.id() + " " + spec.id());
+            }
+            Integer limit = vanilla.get(m.id());
+            if (limit != null) {
+                int total = m.oreSpecs().stream().mapToInt(MaterialsTest::oreBlocksPerChunk).sum();
+                assertTrue(total * 10 <= limit * 6, m.id() + " adds " + total + " blocks per chunk against " + limit + " in vanilla");
+            }
+        }
     }
 
     /** Every shipped material is named in every supported locale, and only in those. */
