@@ -65,12 +65,11 @@ class MaterialAlloyRecipePluginTest {
         }
         assertTrue(recipes > 0);
         Material steel = all.stream().filter(m -> m.id().equals("steel")).findFirst().orElseThrow();
-        assertEquals(List.of(Map.of("c:dusts/iron", 1, "c:dusts/coal", 1), Map.of("c:dusts/iron", 1, "c:dusts/charcoal", 1)),
+        assertEquals(List.of(Map.of("c:dusts/iron", 1, "c:dusts/coal", 3), Map.of("c:dusts/iron", 1, "c:dusts/charcoal", 3)),
                 ingredients(steel, form("dust"), all));
-        assertEquals(List.of(Map.of("c:ingots/iron", 1, "dotcraftresources:coal", 1), Map.of("c:ingots/iron", 1, "dotcraftresources:charcoal", 1)),
-                ingredients(steel, form("ingot"), all));
-        assertEquals(List.of(Map.of("c:storage_blocks/iron", 1, "c:storage_blocks/coal", 1), Map.of("c:storage_blocks/iron", 1, "c:storage_blocks/charcoal", 1)),
-                ingredients(steel, form("block"), all));
+        assertTrue(ingredients(steel, form("ingot"), all).isEmpty(), "only dust and grains are mixed");
+        assertTrue(ingredients(steel, form("block"), all).isEmpty(), "only dust and grains are mixed");
+        assertEquals(1, steel.alloy().orElseThrow().yield());
         assertTrue(ingredients(steel, form("grains"), all).isEmpty());
         assertTrue(ingredients(steel, form("dust_block"), all).isEmpty());
     }
@@ -78,23 +77,23 @@ class MaterialAlloyRecipePluginTest {
     /** Alternatives and several sources of a mod each give their own option; a source of a mod is marked by its mod. */
     @Test
     void alternativesAndModSources(@org.junit.jupiter.api.io.TempDir java.nio.file.Path dir) throws Exception {
-        String ingot = "{\"forms\":{\"ingot\":{\"tag\":\"c:ingots/m\",\"item\":\"minecraft:iron_ingot\"}}}";
-        String fake = "{\"mod\":\"fakemod\",\"forms\":{\"ingot\":{\"tag\":\"fakemod:ingots/m\",\"item\":\"fakemod:m_ingot\"}}}";
+        String ingot = "{\"forms\":{\"nugget\":{\"tag\":\"c:nuggets/m\",\"item\":\"minecraft:iron_nugget\"}}}";
+        String fake = "{\"mod\":\"fakemod\",\"forms\":{\"nugget\":{\"tag\":\"fakemod:nuggets/m\",\"item\":\"fakemod:m_nugget\"}}}";
         String head = "{\"tier\":\"stone\",\"color\":\"#000000\",\"name\":{\"en_us\":\"M\",\"de_de\":\"M\"},\"id\":\"";
         Map<String, String> sources = Map.of(
                 "m.json", head + "m\",\"external\":[" + ingot + "," + fake + "]}",
-                "n.json", head + "n\",\"forms\":[\"ingot\"]}",
+                "n.json", head + "n\",\"forms\":[\"grains\"]}",
                 "a.json", head + "a\",\"alloy\":{\"inputs\":[{\"material\":[\"m\",\"n\"]},{\"material\":\"n\",\"count\":2}]}}");
         for (var e : sources.entrySet()) java.nio.file.Files.writeString(dir.resolve(e.getKey()), e.getValue());
         List<Material> all = Materials.load(dir, forms());
         Material alloy = all.stream().filter(x -> x.id().equals("a")).findFirst().orElseThrow();
-        var options = MaterialAlloyRecipePlugin.options(alloy, alloy.alloy().orElseThrow().inputs().get(0), form("ingot"), all);
-        assertEquals(List.of("c:ingots/m", "fakemod:ingots/m", "c:ingots/n"),
+        var options = MaterialAlloyRecipePlugin.options(alloy, alloy.alloy().orElseThrow().inputs().get(0), form("grains"), all);
+        assertEquals(List.of("c:nuggets/m", "fakemod:nuggets/m", "c:small_dusts/n"),
                 options.stream().map(o -> o.tag().location().toString()).toList());
         assertNull(options.get(0).source().mod().orElse(null));
         assertEquals("fakemod", options.get(1).source().mod().orElseThrow());
         assertNull(options.get(2).source());
-        assertEquals(3, MaterialAlloyRecipePlugin.combinations(alloy, form("ingot"), all).size());
+        assertEquals(3, MaterialAlloyRecipePlugin.combinations(alloy, form("grains"), all).size());
     }
 
     /** An unknown input material fails loudly. */

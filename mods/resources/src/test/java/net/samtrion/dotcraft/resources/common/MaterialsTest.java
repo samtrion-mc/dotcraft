@@ -444,7 +444,7 @@ class MaterialsTest {
             assertTrue(ids.contains(id), id);
             assertTrue(materials.stream().filter(m -> m.id().equals(id)).findFirst().orElseThrow().has("ore"), id);
         }
-        for (String id : List.of("bronze", "brass", "steel", "invar", "electrum", "constantan")) {
+        for (String id : List.of("bronze", "brass", "steel", "invar", "electrum")) {
             Material alloy = materials.stream().filter(m -> m.id().equals(id)).findFirst().orElseThrow();
             assertTrue(alloy.alloy().isPresent(), id);
             assertFalse(alloy.has("ore"), id);

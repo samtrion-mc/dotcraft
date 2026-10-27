@@ -557,13 +557,24 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
      * The recipe of an alloy: materials mixed in the given amounts, in every form the alloy has.
      *
      * @param inputs what the alloy is made of
+     * @param result how many items one mix makes, the sum of the input counts where empty
      */
-    public record Alloy(List<Input> inputs) {
-        /** Source format: {@code {"inputs": [{"material": "copper", "count": 3}]}}. */
+    public record Alloy(List<Input> inputs, Optional<Integer> result) {
+        /** Source format: {@code {"inputs": [{"material": "copper", "count": 3}], "result": 4}}; the result is optional. */
         public static final Codec<Alloy> CODEC = RecordCodecBuilder.<Alloy>create(i -> i.group(
-                Input.CODEC.listOf().fieldOf("inputs").forGetter(Alloy::inputs)
+                Input.CODEC.listOf().fieldOf("inputs").forGetter(Alloy::inputs),
+                Codec.intRange(1, 9).optionalFieldOf("result").forGetter(Alloy::result)
         ).apply(i, Alloy::new)).validate(a -> a.inputs.size() >= 2 ? DataResult.success(a)
                 : DataResult.error(() -> "an alloy needs at least 2 \"inputs\""));
+
+        /**
+         * How many items one mix makes.
+         *
+         * @return the {@code result}, else the sum of the input counts
+         */
+        public int yield() {
+            return result.orElseGet(() -> inputs.stream().mapToInt(Input::count).sum());
+        }
 
         /**
          * The materials that are an alternative of some input, in source order; each is switched by

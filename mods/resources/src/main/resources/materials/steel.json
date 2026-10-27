@@ -13,10 +13,14 @@
         "count": 1
       },
       {
-        "material": ["coal", "charcoal"],
-        "count": 1
+        "material": [
+          "coal",
+          "charcoal"
+        ],
+        "count": 3
       }
-    ]
+    ],
+    "result": 1
   },
   "forms": [
     "ingot",

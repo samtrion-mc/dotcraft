@@ -31,8 +31,8 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  * The mixing recipes of the alloys, disabled by {@code materials.enabled}, by the config switches of the alloy form and
  * by the switches of every input (the form of an input material that has it, else the input material, see
  * {@link ConfigCondition}). For each material with an {@code alloy} and each of its forms with a {@code mix} entry
- * (dust, grains, ingot, block and dust block), one shapeless recipe turns the item tag of the same form of every input
- * material into the alloy form, making as many items as the inputs have items together. An input material that lacks
+ * (dust and grains), one shapeless recipe turns the item tag of the same form of every input
+ * material into the alloy form, making the {@code result} of the alloy, else as many items as the inputs have items together. An input material that lacks
  * a form is resolved through the tag of its {@code external} sources (the key of the {@code mix} entry of the form);
  * when that fails too, the material is no {@link Option} of that form.
  *
@@ -83,7 +83,7 @@ public final class MaterialAlloyRecipePlugin implements RecipePlugin {
                 if (inputs.get(i).hasAlternatives()) suffix.append('_').append(option.material().id());
                 if (option.source() != null && option.source().mod().isPresent()) suffix.append('_').append(option.source().mod().get());
             }
-            ShapelessRecipeBuilder builder = recipes.shapeless(RecipeCategory.MISC, ResourceItems.item(m, form).get(), total);
+            ShapelessRecipeBuilder builder = recipes.shapeless(RecipeCategory.MISC, ResourceItems.item(m, form).get(), m.alloy().orElseThrow().yield());
             for (int i = 0; i < inputs.size(); i++) builder.requires(recipes.tag(choice.get(i).tag()), inputs.get(i).count());
             TagKey<Item> first = choice.get(0).tag();
             builder.unlockedBy(recipes.hasName(first), recipes.has(first))

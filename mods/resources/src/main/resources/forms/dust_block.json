@@ -9,7 +9,6 @@
     "de_de": "%s-Staubblock"
   },
   "block": { "mapColor": "sand", "sound": "sand", "hardness": 0.5, "tool": "shovel", "loot": "self" },
-  "mix": {},
   "conversions": [
     { "from": "dust", "kind": "pack", "ratio": 9 }
   ]
