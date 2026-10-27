@@ -10,7 +10,7 @@
   },
   "external": "optional",
   "tool": {
-    "durability": 0.5,
+    "durability": 0.1,
     "key": { "P": "c:papers", "S": "c:slime_balls" }
   }
 }
