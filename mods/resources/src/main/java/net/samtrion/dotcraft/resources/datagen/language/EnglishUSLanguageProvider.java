@@ -25,6 +25,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(CompressedTooltips.COUNT_KEY, "Contains %s blocks");
         add("itemGroup." + CraftResources.MODID + ".compressed", ".Craft: Compressed Blocks");
         add(ResourceBlocks.CHARCOAL_BLOCK.get(), "Block of Charcoal");
+        add("config.jade.plugin_dotcraftresources.ore_richness", "Ore richness");
         add("jade.dotcraftresources.ore_richness", "Richness: %s");
         add("jade.dotcraftresources.ore_richness.poor", "Poor");
         add("jade.dotcraftresources.ore_richness.normal", "Normal");

@@ -121,6 +121,7 @@
   "block.dotcraftresources.zinc_dust_block": "Block of Zinc Dust",
   "block.dotcraftresources.zinc_ore": "Zinc Ore",
   "block.dotcraftresources.zinc_raw_block": "Block of Raw Zinc",
+  "config.jade.plugin_dotcraftresources.ore_richness": "Ore richness",
   "item.dotcraftresources.aluminum_dust": "Aluminum Dust",
   "item.dotcraftresources.aluminum_gear": "Aluminum Gear",
   "item.dotcraftresources.aluminum_grains": "Aluminum Grains",

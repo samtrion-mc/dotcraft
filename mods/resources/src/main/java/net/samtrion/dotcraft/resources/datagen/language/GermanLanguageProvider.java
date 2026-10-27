@@ -25,6 +25,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(CompressedTooltips.COUNT_KEY, "Enthält %s Blöcke");
         add("itemGroup." + CraftResources.MODID + ".compressed", ".Craft: Komprimierte Blöcke");
         add(ResourceBlocks.CHARCOAL_BLOCK.get(), "Holzkohleblock");
+        add("config.jade.plugin_dotcraftresources.ore_richness", "Erz-Ergiebigkeit");
         add("jade.dotcraftresources.ore_richness", "Ergiebigkeit: %s");
         add("jade.dotcraftresources.ore_richness.poor", "Arm");
         add("jade.dotcraftresources.ore_richness.normal", "Normal");
