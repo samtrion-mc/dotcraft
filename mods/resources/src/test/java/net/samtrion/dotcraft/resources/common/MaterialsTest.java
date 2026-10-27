@@ -121,7 +121,7 @@ class MaterialsTest {
     void stoneAndWood() throws Exception {
         for (String id : List.of("stone", "wood")) {
             Material m = shipped().stream().filter(x -> x.id().equals(id)).findFirst().orElseThrow();
-            assertEquals(id.equals("stone") ? List.of(form("gear"), form("hammer"), form("sandpaper")) : List.of(form("gear")), m.forms(), id);
+            assertEquals(id.equals("stone") ? List.of(form("gear"), form("hammer")) : List.of(form("gear")), m.forms(), id);
             assertTrue(m.isExternal(), id);
         }
     }
@@ -391,14 +391,14 @@ class MaterialsTest {
         Form hammer = form("hammer");
         Form sandpaper = form("sandpaper");
         for (String id : List.of("stone", "iron", "steel", "diamond", "netherite")) assertTrue(byId.get(id).has(hammer), id);
-        for (String id : List.of("stone", "iron", "diamond")) assertTrue(byId.get(id).has(sandpaper), id);
+        for (String id : List.of("sand", "iron", "diamond")) assertTrue(byId.get(id).has(sandpaper), id);
         assertFalse(byId.get("tin").has(hammer));
         assertFalse(byId.get("bronze").has(sandpaper));
         assertEquals(131, byId.get("stone").toolDurability(hammer));
         assertEquals(250, byId.get("iron").toolDurability(hammer));
         assertEquals(1561, byId.get("diamond").toolDurability(hammer));
         assertEquals(2031, byId.get("netherite").toolDurability(hammer));
-        assertEquals(66, byId.get("stone").toolDurability(sandpaper));
+        assertEquals(66, byId.get("sand").toolDurability(sandpaper));
         int steel = byId.get("steel").toolDurability(hammer);
         assertTrue(steel > 250 && steel < 1561, "steel hammer " + steel);
         assertThrows(IllegalArgumentException.class, () -> only("{\"id\":\"m\",\"color\":\"#000000\",\"forms\":[\"ingot\",\"hammer\"]}"));

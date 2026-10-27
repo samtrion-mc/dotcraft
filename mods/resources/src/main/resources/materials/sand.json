@@ -1,0 +1,21 @@
+{
+  "id": "sand",
+  "color": "#DBD3A0",
+  "name": {
+    "en_us": "Sand",
+    "de_de": "Sand"
+  },
+  "tier": "stone",
+  "forms": [
+    "sandpaper"
+  ],
+  "tools": {
+    "sandpaper": {
+      "ingredient": "c:sands",
+      "count": 3
+    }
+  },
+  "external": [
+    {}
+  ]
+}

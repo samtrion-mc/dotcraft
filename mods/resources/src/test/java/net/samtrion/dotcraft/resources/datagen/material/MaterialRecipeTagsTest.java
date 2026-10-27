@@ -88,7 +88,7 @@ class MaterialRecipeTagsTest {
     void toolRecipesExist() throws Exception {
         Path root = GENERATED.resolve("dotcraftresources/recipe/material");
         for (String file : List.of("stone/hammer", "iron/hammer", "steel/hammer", "diamond/hammer", "netherite/hammer",
-                "stone/sandpaper", "iron/sandpaper", "diamond/sandpaper")) {
+                "sand/sandpaper", "iron/sandpaper", "diamond/sandpaper")) {
             Path recipe = root.resolve(file + ".json");
             assertTrue(Files.exists(recipe), "missing " + recipe);
             collect(recipe, new HashSet<>());

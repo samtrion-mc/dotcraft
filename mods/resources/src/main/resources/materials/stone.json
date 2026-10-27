@@ -8,16 +8,11 @@
   "tier": "stone",
   "forms": [
     "gear",
-    "hammer",
-    "sandpaper"
+    "hammer"
   ],
   "tools": {
     "hammer": {
       "ingredient": "c:cobblestones"
-    },
-    "sandpaper": {
-      "ingredient": "c:sands",
-      "count": 3
     }
   },
   "external": [

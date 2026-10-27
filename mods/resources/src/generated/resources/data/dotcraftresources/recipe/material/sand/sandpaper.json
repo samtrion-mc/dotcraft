@@ -7,7 +7,7 @@
     {
       "type": "dotcraftresources:config",
       "form": "sandpaper",
-      "material": "stone",
+      "material": "sand",
       "switch": "material_form"
     }
   ],
@@ -21,6 +21,6 @@
     "#c:slime_balls"
   ],
   "result": {
-    "id": "dotcraftresources:stone_sandpaper"
+    "id": "dotcraftresources:sand_sandpaper"
   }
 }

@@ -7,7 +7,7 @@
     {
       "type": "dotcraftresources:config",
       "form": "sandpaper",
-      "material": "stone",
+      "material": "sand",
       "switch": "material_form"
     }
   ],
@@ -25,7 +25,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dotcraftresources:material/stone/sandpaper"
+        "recipe": "dotcraftresources:material/sand/sandpaper"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -38,7 +38,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dotcraftresources:material/stone/sandpaper"
+      "dotcraftresources:material/sand/sandpaper"
     ]
   }
 }
