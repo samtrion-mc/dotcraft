@@ -221,13 +221,15 @@ public record Material(String id, int color, Map<String, String> names, ToolTier
      * What a material needs for one of its crafting tool forms.
      *
      * @param ingredient the item tag of the {@code #} of the recipe of the tool, e.g. {@code c:ingots/iron}
+     * @param count      how many items of the tag a shapeless recipe of the tool takes, 1 if the source does not say
      * @param durability the durability of the tool, for a tier that has no fitting value of vanilla tools such as steel;
      *                   absent: that of the tier times the factor of the form
      */
-    public record Tool(Identifier ingredient, Optional<Integer> durability) {
-        /** Source format: {@code {"ingredient": "c:ingots/iron", "durability": 600}}, the durability is optional. */
+    public record Tool(Identifier ingredient, int count, Optional<Integer> durability) {
+        /** Source format: {@code {"ingredient": "c:ingots/iron", "count": 3, "durability": 600}}, the count and the durability are optional. */
         public static final Codec<Tool> CODEC = RecordCodecBuilder.create(i -> i.group(
                 Identifier.CODEC.fieldOf("ingredient").forGetter(Tool::ingredient),
+                Codec.intRange(1, 9).optionalFieldOf("count", 1).forGetter(Tool::count),
                 Codec.intRange(1, Integer.MAX_VALUE).optionalFieldOf("durability").forGetter(Tool::durability)
         ).apply(i, Tool::new));
     }

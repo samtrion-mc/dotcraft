@@ -11,7 +11,7 @@
   "external": "optional",
   "tool": {
     "durability": 1.0,
-    "pattern": ["##", "#|", " |"],
+    "pattern": [" # ", " |#", "|  "],
     "key": { "|": "c:rods/wooden" }
   }
 }

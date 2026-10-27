@@ -14,13 +14,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "#c:gems/diamond",
+    "#": "#c:storage_blocks/diamond",
     "|": "#c:rods/wooden"
   },
   "pattern": [
-    "##",
-    "#|",
-    " |"
+    " # ",
+    " |#",
+    "|  "
   ],
   "result": {
     "id": "dotcraftresources:diamond_hammer"

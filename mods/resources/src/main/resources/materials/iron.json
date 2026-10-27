@@ -16,10 +16,11 @@
   ],
   "tools": {
     "hammer": {
-      "ingredient": "c:ingots/iron"
+      "ingredient": "c:storage_blocks/iron"
     },
     "sandpaper": {
-      "ingredient": "c:dusts/iron"
+      "ingredient": "c:small_dusts/iron",
+      "count": 3
     }
   },
   "external": [

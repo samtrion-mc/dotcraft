@@ -14,7 +14,7 @@
   ],
   "tools": {
     "hammer": {
-      "ingredient": "c:ingots/netherite"
+      "ingredient": "c:storage_blocks/netherite"
     }
   },
   "external": [

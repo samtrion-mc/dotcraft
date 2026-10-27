@@ -13,11 +13,11 @@
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_dusts_iron": {
+    "has_small_dusts_iron": {
       "conditions": {
         "items": [
           {
-            "items": "#c:dusts/iron"
+            "items": "#c:small_dusts/iron"
           }
         ]
       },
@@ -33,7 +33,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_dusts_iron"
+      "has_small_dusts_iron"
     ]
   ],
   "rewards": {

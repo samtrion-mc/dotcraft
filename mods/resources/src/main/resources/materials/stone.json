@@ -16,7 +16,8 @@
       "ingredient": "c:cobblestones"
     },
     "sandpaper": {
-      "ingredient": "c:sands"
+      "ingredient": "c:sands",
+      "count": 3
     }
   },
   "external": [

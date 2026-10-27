@@ -18,9 +18,9 @@
     "|": "#c:rods/wooden"
   },
   "pattern": [
-    "##",
-    "#|",
-    " |"
+    " # ",
+    " |#",
+    "|  "
   ],
   "result": {
     "id": "dotcraftresources:stone_hammer"

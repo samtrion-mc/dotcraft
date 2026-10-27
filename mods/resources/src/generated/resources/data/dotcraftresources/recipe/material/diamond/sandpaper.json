@@ -15,7 +15,10 @@
   "category": "equipment",
   "ingredients": [
     "#c:dusts/diamond",
-    "#c:papers"
+    "#c:dusts/diamond",
+    "#c:dusts/diamond",
+    "#c:papers",
+    "#c:slime_balls"
   ],
   "result": {
     "id": "dotcraftresources:diamond_sandpaper"

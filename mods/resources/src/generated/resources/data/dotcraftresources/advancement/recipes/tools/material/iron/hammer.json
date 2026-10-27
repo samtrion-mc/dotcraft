@@ -13,11 +13,11 @@
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ingots_iron": {
+    "has_storage_blocks_iron": {
       "conditions": {
         "items": [
           {
-            "items": "#c:ingots/iron"
+            "items": "#c:storage_blocks/iron"
           }
         ]
       },
@@ -33,7 +33,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ingots_iron"
+      "has_storage_blocks_iron"
     ]
   ],
   "rewards": {

@@ -14,8 +14,11 @@
   "type": "minecraft:crafting_shapeless",
   "category": "equipment",
   "ingredients": [
-    "#c:dusts/iron",
-    "#c:papers"
+    "#c:small_dusts/iron",
+    "#c:small_dusts/iron",
+    "#c:small_dusts/iron",
+    "#c:papers",
+    "#c:slime_balls"
   ],
   "result": {
     "id": "dotcraftresources:iron_sandpaper"

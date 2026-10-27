@@ -13,11 +13,11 @@
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ingots_netherite": {
+    "has_storage_blocks_netherite": {
       "conditions": {
         "items": [
           {
-            "items": "#c:ingots/netherite"
+            "items": "#c:storage_blocks/netherite"
           }
         ]
       },
@@ -33,7 +33,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ingots_netherite"
+      "has_storage_blocks_netherite"
     ]
   ],
   "rewards": {

@@ -14,13 +14,13 @@
   "type": "minecraft:crafting_shaped",
   "category": "equipment",
   "key": {
-    "#": "#c:ingots/steel",
+    "#": "#c:storage_blocks/steel",
     "|": "#c:rods/wooden"
   },
   "pattern": [
-    "##",
-    "#|",
-    " |"
+    " # ",
+    " |#",
+    "|  "
   ],
   "result": {
     "id": "dotcraftresources:steel_hammer"

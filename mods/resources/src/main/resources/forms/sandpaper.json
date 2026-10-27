@@ -11,6 +11,6 @@
   "external": "optional",
   "tool": {
     "durability": 0.5,
-    "key": { "P": "c:papers" }
+    "key": { "P": "c:papers", "S": "c:slime_balls" }
   }
 }

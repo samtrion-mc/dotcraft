@@ -15,7 +15,10 @@
   "category": "equipment",
   "ingredients": [
     "#c:sands",
-    "#c:papers"
+    "#c:sands",
+    "#c:sands",
+    "#c:papers",
+    "#c:slime_balls"
   ],
   "result": {
     "id": "dotcraftresources:stone_sandpaper"

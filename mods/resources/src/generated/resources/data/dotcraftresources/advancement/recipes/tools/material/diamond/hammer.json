@@ -13,11 +13,11 @@
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_gems_diamond": {
+    "has_storage_blocks_diamond": {
       "conditions": {
         "items": [
           {
-            "items": "#c:gems/diamond"
+            "items": "#c:storage_blocks/diamond"
           }
         ]
       },
@@ -33,7 +33,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_gems_diamond"
+      "has_storage_blocks_diamond"
     ]
   ],
   "rewards": {

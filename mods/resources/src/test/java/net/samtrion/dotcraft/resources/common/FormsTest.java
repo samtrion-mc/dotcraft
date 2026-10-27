@@ -65,7 +65,7 @@ class FormsTest {
     void toolSpec() throws Exception {
         Form hammer = Forms.find(shipped(), "hammer");
         assertEquals(1.0F, hammer.tool().orElseThrow().durability());
-        assertEquals(List.of("##", "#|", " |"), hammer.tool().orElseThrow().pattern());
+        assertEquals(List.of(" # ", " |#", "|  "), hammer.tool().orElseThrow().pattern());
         assertTrue(Forms.find(shipped(), "sandpaper").tool().orElseThrow().pattern().isEmpty());
         assertTrue(Forms.find(shipped(), "gear").tool().isEmpty());
         assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"tool\":{\"pattern\":[\"||\"],\"key\":{\"|\":\"c:rods/wooden\"}}"));
