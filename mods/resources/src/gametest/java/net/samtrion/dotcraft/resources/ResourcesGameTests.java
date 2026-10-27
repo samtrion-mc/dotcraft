@@ -524,6 +524,8 @@ public final class ResourcesGameTests {
         gearSwitch.set(false);
         try {
             helper.assertTrue(!gear.test(context) && tin.test(context), "a disabled tin gear form must fail only its own condition");
+            var gearItem = ResourceItems.item(tin(), Forms.get("gear"));
+            helper.assertTrue(!ResourceItems.vanillaTabItems(false).contains(gearItem), "the disabled tin gear is listed in the ingredients tab");
             helper.assertTrue(!net.samtrion.dotcraft.resources.compat.HiddenItems.items().isEmpty()
                     && net.samtrion.dotcraft.resources.compat.HiddenItems.items().contains(ResourceItems.item(tin(), Forms.get("gear")).get()),
                     "the disabled tin gear is not hidden");
@@ -531,6 +533,10 @@ public final class ResourcesGameTests {
             gearSwitch.set(true);
         }
         helper.assertTrue(gear.test(context), "tin gears must be enabled again");
+        var ironHammer = ResourceItems.item(Materials.all().stream().filter(m -> m.id().equals("iron")).findFirst().orElseThrow(), Forms.get("hammer"));
+        helper.assertTrue(ResourceItems.vanillaTabItems(false).contains(ResourceItems.item(tin(), Forms.get("gear")))
+                && ResourceItems.vanillaTabItems(true).contains(ironHammer) && !ResourceItems.vanillaTabItems(false).contains(ironHammer),
+                "the material items are not listed in the vanilla tabs");
         helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, id("material/steel/ingot_from_mix"))).isEmpty(),
                 "steel has one recipe per alternative, not a plain one");
         var charcoal = net.samtrion.dotcraft.resources.common.conditions.ConfigCondition.ofRecipe("steel", "charcoal");

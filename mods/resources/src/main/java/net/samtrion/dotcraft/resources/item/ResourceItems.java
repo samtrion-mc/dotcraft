@@ -9,10 +9,12 @@ import java.util.stream.Stream;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.samtrion.dotcraft.resources.CraftResources;
@@ -85,6 +87,33 @@ public final class ResourceItems {
     public static void register(IEventBus bus) {
         ITEMS.register(bus);
         TABS.register(bus);
+        bus.addListener(ResourceItems::addToVanillaTabs);
+    }
+
+    /**
+     * Lists the item forms in the vanilla tabs as well: tool forms in tools and utilities, all other item forms
+     * (block forms and ores stay in the block tabs) in ingredients, ordered by form and then material, and only
+     * where the config enables the form.
+     */
+    private static void addToVanillaTabs(BuildCreativeModeTabContentsEvent event) {
+        boolean tools = event.getTabKey() == CreativeModeTabs.TOOLS_AND_UTILITIES;
+        if (!tools && event.getTabKey() != CreativeModeTabs.INGREDIENTS) return;
+        vanillaTabItems(tools).forEach(i -> event.accept(i.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS));
+    }
+
+    /**
+     * The items listed in a vanilla tab, see {@link #addToVanillaTabs}.
+     *
+     * @param tools true for the tools and utilities tab, false for the ingredients tab
+     * @return the enabled items, ordered by form and then material
+     */
+    public static List<DeferredItem<? extends Item>> vanillaTabItems(boolean tools) {
+        return Forms.all().stream()
+                .filter(f -> !f.isBlock() && f.tool().isPresent() == tools)
+                .flatMap(f -> Materials.withForm(f).stream()
+                        .filter(m -> CraftResourcesConfig.formEnabled(m.id(), f.id()))
+                        .<DeferredItem<? extends Item>>map(m -> item(m, f)))
+                .toList();
     }
 
     /**
