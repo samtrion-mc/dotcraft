@@ -6,19 +6,25 @@
     },
     {
       "type": "dotcraftresources:config",
+      "form": "raw",
+      "material": "platinum",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
       "form": "dust",
-      "material": "copper",
+      "material": "platinum",
       "switch": "material_form"
     }
   ],
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "#c:ores/copper",
+    "#c:raw_materials/platinum",
     "#c:tools/hammer"
   ],
   "result": {
     "count": 2,
-    "id": "dotcraftresources:copper_dust"
+    "id": "dotcraftresources:platinum_dust"
   }
 }

@@ -91,6 +91,17 @@ def syncGenerated = tasks.register('syncGenerated', Copy) {
     mustRunAfter 'runClientData', 'runServerData'
     outputs.upToDateWhen { false } // processResources shares the folder and drops what it does not know
 }
+// Copy leaves behind what a source no longer has (a removed recipe would stay in the game), so both copies drop the
+// data and assets that no resource folder has any more
+def resourceDirs = sourceSets.main.resources.srcDirs.toList()
+def dropStale = { File dest ->
+    dest.eachFileRecurse(groovy.io.FileType.FILES) { file ->
+        def rel = dest.toPath().relativize(file.toPath()).toString().replace(File.separatorChar, (char) '/')
+        if ((rel.startsWith('data/') || rel.startsWith('assets/')) && !resourceDirs.any { new File(it, rel).exists() }) file.delete()
+    }
+}
+tasks.named('processResources') { doFirst { dropStale(destinationDir) } }
+syncGenerated.configure { doFirst { dropStale(destinationDir) } }
 tasks.register('generateData') {
     group = 'dotcraft'
     description = 'Regenerates src/generated/resources from scratch'

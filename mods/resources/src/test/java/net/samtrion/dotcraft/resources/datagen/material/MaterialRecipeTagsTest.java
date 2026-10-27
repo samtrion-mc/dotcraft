@@ -83,7 +83,7 @@ class MaterialRecipeTagsTest {
         }
     }
 
-    /** Crush recipes: a hammer and one item make one dust (coal, diamond) or two (every ore), and nothing else is crushed. */
+    /** Crush recipes: a hammer and one item make one dust (coal, diamond) or two (every raw material), and nothing else is crushed. */
     @Test
     void crushRecipes() throws Exception {
         Path root = GENERATED.resolve("dotcraftresources/recipe/material");
@@ -91,8 +91,8 @@ class MaterialRecipeTagsTest {
             String json = Files.readString(root.resolve(id + "/dust_from_ingot.json"));
             assertTrue(json.contains("#c:tools/hammer") && !json.contains("\"count\""), id);
         }
-        for (String id : List.of("iron", "copper", "gold", "coal", "tin", "zinc")) {
-            String json = Files.readString(root.resolve(id + "/dust_from_ore.json"));
+        for (String id : List.of("tin", "zinc", "aluminum")) {
+            String json = Files.readString(root.resolve(id + "/dust_from_raw.json"));
             assertTrue(json.contains("#c:tools/hammer") && json.contains("\"count\": 2"), id);
         }
         assertFalse(Files.exists(root.resolve("iron/dust_from_ingot.json")));

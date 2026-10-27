@@ -6,25 +6,25 @@
     },
     {
       "type": "dotcraftresources:config",
-      "form": "ore",
-      "material": "nickel",
+      "form": "raw",
+      "material": "uranium",
       "switch": "material_form"
     },
     {
       "type": "dotcraftresources:config",
       "form": "dust",
-      "material": "nickel",
+      "material": "uranium",
       "switch": "material_form"
     }
   ],
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "#c:ores/nickel",
+    "#c:raw_materials/uranium",
     "#c:tools/hammer"
   ],
   "result": {
     "count": 2,
-    "id": "dotcraftresources:nickel_dust"
+    "id": "dotcraftresources:uranium_dust"
   }
 }

@@ -6,18 +6,24 @@
     },
     {
       "type": "dotcraftresources:config",
+      "form": "raw",
+      "material": "nickel",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
       "form": "dust",
-      "material": "coal",
+      "material": "nickel",
       "switch": "material_form"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ores_coal": {
+    "has_raw_materials_nickel": {
       "conditions": {
         "items": [
           {
-            "items": "#c:ores/coal"
+            "items": "#c:raw_materials/nickel"
           }
         ]
       },
@@ -25,7 +31,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dotcraftresources:material/coal/dust_from_ore"
+        "recipe": "dotcraftresources:material/nickel/dust_from_raw"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -33,12 +39,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ores_coal"
+      "has_raw_materials_nickel"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dotcraftresources:material/coal/dust_from_ore"
+      "dotcraftresources:material/nickel/dust_from_raw"
     ]
   }
 }

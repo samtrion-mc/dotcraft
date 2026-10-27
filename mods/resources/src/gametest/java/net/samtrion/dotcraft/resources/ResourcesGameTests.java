@@ -345,7 +345,7 @@ public final class ResourcesGameTests {
             }
         }
         var recipes = helper.getLevel().getServer().getRecipeManager();
-        for (String recipe : new String[] {"material/bronze/dust_from_mix", "material/bronze/ingot_from_mix", "material/steel/block_from_mix_coal", "material/steel/block_from_mix_charcoal", "material/steel/ingot_from_mix_coal", "material/steel/ingot_from_mix_charcoal", "material/tin/ingot_from_dust_smelting"}) {
+        for (String recipe : new String[] {"material/tin/ingot_from_dust_smelting", "material/tin/ingot_from_nugget", "material/tin/dust_from_raw", "material/diamond/dust_from_ingot"}) {
             helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, id(recipe))).isPresent(), "missing recipe " + recipe);
         }
         var features = helper.getLevel().registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);

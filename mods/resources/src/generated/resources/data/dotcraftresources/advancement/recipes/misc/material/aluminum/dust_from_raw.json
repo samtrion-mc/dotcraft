@@ -6,24 +6,24 @@
     },
     {
       "type": "dotcraftresources:config",
-      "form": "ore",
-      "material": "zinc",
+      "form": "raw",
+      "material": "aluminum",
       "switch": "material_form"
     },
     {
       "type": "dotcraftresources:config",
       "form": "dust",
-      "material": "zinc",
+      "material": "aluminum",
       "switch": "material_form"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ores_zinc": {
+    "has_raw_materials_aluminum": {
       "conditions": {
         "items": [
           {
-            "items": "#c:ores/zinc"
+            "items": "#c:raw_materials/aluminum"
           }
         ]
       },
@@ -31,7 +31,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dotcraftresources:material/zinc/dust_from_ore"
+        "recipe": "dotcraftresources:material/aluminum/dust_from_raw"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -39,12 +39,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ores_zinc"
+      "has_raw_materials_aluminum"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dotcraftresources:material/zinc/dust_from_ore"
+      "dotcraftresources:material/aluminum/dust_from_raw"
     ]
   }
 }

@@ -6,24 +6,24 @@
     },
     {
       "type": "dotcraftresources:config",
-      "form": "ore",
-      "material": "lead",
+      "form": "raw",
+      "material": "platinum",
       "switch": "material_form"
     },
     {
       "type": "dotcraftresources:config",
       "form": "dust",
-      "material": "lead",
+      "material": "platinum",
       "switch": "material_form"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ores_lead": {
+    "has_raw_materials_platinum": {
       "conditions": {
         "items": [
           {
-            "items": "#c:ores/lead"
+            "items": "#c:raw_materials/platinum"
           }
         ]
       },
@@ -31,7 +31,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dotcraftresources:material/lead/dust_from_ore"
+        "recipe": "dotcraftresources:material/platinum/dust_from_raw"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -39,12 +39,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ores_lead"
+      "has_raw_materials_platinum"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dotcraftresources:material/lead/dust_from_ore"
+      "dotcraftresources:material/platinum/dust_from_raw"
     ]
   }
 }

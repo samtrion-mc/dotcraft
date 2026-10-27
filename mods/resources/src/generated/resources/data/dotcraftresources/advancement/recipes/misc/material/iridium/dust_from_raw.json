@@ -6,18 +6,24 @@
     },
     {
       "type": "dotcraftresources:config",
+      "form": "raw",
+      "material": "iridium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
       "form": "dust",
-      "material": "diamond",
+      "material": "iridium",
       "switch": "material_form"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ores_diamond": {
+    "has_raw_materials_iridium": {
       "conditions": {
         "items": [
           {
-            "items": "#c:ores/diamond"
+            "items": "#c:raw_materials/iridium"
           }
         ]
       },
@@ -25,7 +31,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dotcraftresources:material/diamond/dust_from_ore"
+        "recipe": "dotcraftresources:material/iridium/dust_from_raw"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -33,12 +39,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ores_diamond"
+      "has_raw_materials_iridium"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dotcraftresources:material/diamond/dust_from_ore"
+      "dotcraftresources:material/iridium/dust_from_raw"
     ]
   }
 }

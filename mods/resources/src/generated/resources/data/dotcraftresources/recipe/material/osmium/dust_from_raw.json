@@ -6,25 +6,25 @@
     },
     {
       "type": "dotcraftresources:config",
-      "form": "ore",
-      "material": "silver",
+      "form": "raw",
+      "material": "osmium",
       "switch": "material_form"
     },
     {
       "type": "dotcraftresources:config",
       "form": "dust",
-      "material": "silver",
+      "material": "osmium",
       "switch": "material_form"
     }
   ],
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    "#c:ores/silver",
+    "#c:raw_materials/osmium",
     "#c:tools/hammer"
   ],
   "result": {
     "count": 2,
-    "id": "dotcraftresources:silver_dust"
+    "id": "dotcraftresources:osmium_dust"
   }
 }

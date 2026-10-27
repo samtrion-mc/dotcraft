@@ -6,24 +6,24 @@
     },
     {
       "type": "dotcraftresources:config",
-      "form": "ore",
-      "material": "platinum",
+      "form": "raw",
+      "material": "osmium",
       "switch": "material_form"
     },
     {
       "type": "dotcraftresources:config",
       "form": "dust",
-      "material": "platinum",
+      "material": "osmium",
       "switch": "material_form"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_ores_platinum": {
+    "has_raw_materials_osmium": {
       "conditions": {
         "items": [
           {
-            "items": "#c:ores/platinum"
+            "items": "#c:raw_materials/osmium"
           }
         ]
       },
@@ -31,7 +31,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dotcraftresources:material/platinum/dust_from_ore"
+        "recipe": "dotcraftresources:material/osmium/dust_from_raw"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -39,12 +39,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_ores_platinum"
+      "has_raw_materials_osmium"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dotcraftresources:material/platinum/dust_from_ore"
+      "dotcraftresources:material/osmium/dust_from_raw"
     ]
   }
 }
