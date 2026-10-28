@@ -27,6 +27,10 @@ public final class EnergyModelProvider extends ModelProvider {
     protected void registerModels(BlockModelGenerators blocks, ItemModelGenerators items) {
         blocks.itemModelOutput.accept(EnergyItems.POTATO_BATTERY.get(), ItemModelUtils.plainModel(model("potato_battery")));
         blocks.itemModelOutput.accept(EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), ItemModelUtils.plainModel(model("rechargeable_potato_battery")));
+        blocks.itemModelOutput.accept(EnergyItems.BATTERY_TIER_2.get(), ItemModelUtils.plainModel(model("battery_tier_2")));
+        blocks.itemModelOutput.accept(EnergyItems.BATTERY_TIER_3.get(), ItemModelUtils.plainModel(model("battery_tier_3")));
+        blocks.itemModelOutput.accept(EnergyItems.BATTERY_TIER_4.get(), ItemModelUtils.plainModel(model("battery_tier_4")));
+        blocks.itemModelOutput.accept(EnergyItems.BATTERY_TIER_5.get(), ItemModelUtils.plainModel(model("battery_tier_5")));
     }
 
     private static Identifier model(String name) {

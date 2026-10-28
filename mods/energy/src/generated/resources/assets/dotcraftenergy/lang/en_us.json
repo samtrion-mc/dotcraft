@@ -1,4 +1,8 @@
 {
+  "item.dotcraftenergy.battery_tier_2": "Battery (Tier 2)",
+  "item.dotcraftenergy.battery_tier_3": "Battery (Tier 3)",
+  "item.dotcraftenergy.battery_tier_4": "Battery (Tier 4)",
+  "item.dotcraftenergy.battery_tier_5": "Battery (Tier 5)",
   "item.dotcraftenergy.potato_battery": "Potato Battery",
   "item.dotcraftenergy.rechargeable_potato_battery": "Rechargeable Potato Battery",
   "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"

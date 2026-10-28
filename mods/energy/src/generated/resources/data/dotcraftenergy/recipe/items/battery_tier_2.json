@@ -1,0 +1,27 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_2"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:ingots/lead",
+    "B": "dotcraftenergy:rechargeable_potato_battery",
+    "C": "#c:ingots/tin",
+    "R": "#c:small_dusts/redstone"
+  },
+  "pattern": [
+    "BRB",
+    "CRA",
+    "CRA"
+  ],
+  "result": {
+    "components": {
+      "dotcraftenergy:energy": 0
+    },
+    "id": "dotcraftenergy:battery_tier_2"
+  }
+}
