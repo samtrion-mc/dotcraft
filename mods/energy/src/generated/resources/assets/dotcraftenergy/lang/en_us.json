@@ -1,0 +1,5 @@
+{
+  "item.dotcraftenergy.potato_battery": "Potato Battery",
+  "item.dotcraftenergy.rechargeable_potato_battery": "Rechargeable Potato Battery",
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+}
