@@ -7,8 +7,5 @@ dependencies {
     compileOnly project(':mods:resources')
     compileOnly project(':mods:energy')
     compileOnly libs.rei.api
-    // localRuntime libs.rei // REI disabled for now
+    localRuntime libs.rei
 }
-
-// REI is not on the runtime classpath (see above), so the mod cannot load for a data run, and it has no data to generate
-tasks.matching { it.name in ['runClientData', 'runServerData'] }.configureEach { enabled = false }
