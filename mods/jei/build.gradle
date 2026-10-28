@@ -1,0 +1,12 @@
+plugins {
+    id 'dotcraft.neoforge-mod'
+}
+
+dependencies {
+    // the dotcraft mods are optional at runtime; only their classes are compiled against, never bundled
+    compileOnly project(':mods:resources')
+    compileOnly project(':mods:energy')
+
+    compileOnly libs.jei.api
+    localRuntime libs.jei
+}

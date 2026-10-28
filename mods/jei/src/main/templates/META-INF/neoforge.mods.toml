@@ -1,0 +1,46 @@
+license="${mod_license}"
+
+[[mods]]
+modId="${mod_id}"
+version="${mod_version}"
+displayName="${mod_name}"
+authors="samtrion"
+description='''${mod_description}'''
+
+[[dependencies.${mod_id}]]
+    modId="neoforge"
+    type="required"
+    versionRange="[${neo_version},)"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version_range}"
+    ordering="NONE"
+    side="BOTH"
+
+[[dependencies.${mod_id}]]
+    modId="jei"
+    type="required"
+    versionRange="${compat_version_range}"
+    ordering="AFTER"
+    side="CLIENT"
+    reason="JEI integration"
+
+[[dependencies.${mod_id}]]
+    modId="dotcraftresources"
+    type="optional"
+    versionRange="[${mod_version},)"
+    ordering="AFTER"
+    side="BOTH"
+    reason="Resources integration"
+
+[[dependencies.${mod_id}]]
+    modId="dotcraftenergy"
+    type="optional"
+    versionRange="[${mod_version},)"
+    ordering="AFTER"
+    side="BOTH"
+    reason="Energy integration"

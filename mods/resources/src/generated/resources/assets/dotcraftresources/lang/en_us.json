@@ -140,7 +140,6 @@
   "block.dotcraftresources.zinc_dust_block": "Block of Zinc Dust",
   "block.dotcraftresources.zinc_ore": "Zinc Ore",
   "block.dotcraftresources.zinc_raw_block": "Block of Raw Zinc",
-  "config.jade.plugin_dotcraftresources.ore_richness": "Ore richness",
   "item.dotcraftresources.aluminum_dust": "Aluminum Dust",
   "item.dotcraftresources.aluminum_gear": "Aluminum Gear",
   "item.dotcraftresources.aluminum_grains": "Aluminum Grains",
@@ -276,9 +275,5 @@
   "item.dotcraftresources.zinc_raw": "Raw Zinc",
   "itemGroup.dotcraftresources.compressed": ".Craft: Compressed Blocks",
   "itemGroup.dotcraftresources.materials": ".Craft: Materials",
-  "jade.dotcraftresources.ore_richness": "Richness: %s",
-  "jade.dotcraftresources.ore_richness.normal": "Normal",
-  "jade.dotcraftresources.ore_richness.poor": "Poor",
-  "jade.dotcraftresources.ore_richness.rich": "Rich",
   "tooltip.dotcraftresources.compressed_count": "Contains %s blocks"
 }

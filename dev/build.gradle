@@ -2,18 +2,28 @@ plugins {
     id 'dotcraft.neoforge-base'
 }
 
-// -Pdev.mods=dotcraftresources,dotcraftenergy limits the dev runs to those mods; -Pdev.noCompat drops JEI/Jade/REI
+// -Pdev.mods=dotcraftresources,dotcraftenergy limits the dev runs to those content mods; the compat mods dotcraftjei/jade/rei
+// are not affected by it and are always included, -Pdev.noCompat drops them
+// -Pdev.rei swaps JEI for REI (they do not run side by side)
 def only = findProperty('dev.mods')?.toString()?.split(',') as List
+def noCompat = project.hasProperty('dev.noCompat')
+def rei = project.hasProperty('dev.rei') && !noCompat
 def allMods = rootProject.subprojects.findAll { it.path.startsWith(':mods:') }
 allMods.each { evaluationDependsOn(it.path) }
-def modProjects = allMods.findAll { only == null || it.property('mod_id') in only }
+def compatIds = ['dotcraftjei', 'dotcraftjade', 'dotcraftrei']
+// dotcraftrei requires roughlyenoughitems and dotcraftjei requires jei, so each only joins with its own runtime jar
+def excludedIds = rei ? ['dotcraftjei'] : ['dotcraftrei']
+def modProjects = allMods.findAll {
+    def id = it.property('mod_id')
+    id in compatIds ? (!noCompat && !(id in excludedIds)) : (only == null || id in only)
+}
 
 dependencies {
     modProjects.each { implementation it }
-    if (!project.hasProperty('dev.noCompat')) {
-        localRuntime libs.jei
+    // localRuntime of the compat mods is not transitive, so the dev run needs the third-party jars itself
+    if (!noCompat) {
+        if (rei) localRuntime libs.rei else localRuntime libs.jei
         localRuntime libs.jade
-        // localRuntime libs.rei // REI disabled for now
     }
 }
 

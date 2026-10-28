@@ -1,0 +1,11 @@
+plugins {
+    id 'dotcraft.neoforge-mod'
+}
+
+dependencies {
+    compileOnly project(':mods:resources')
+    compileOnly project(':mods:energy')
+
+    compileOnly libs.jade
+    localRuntime libs.jade
+}

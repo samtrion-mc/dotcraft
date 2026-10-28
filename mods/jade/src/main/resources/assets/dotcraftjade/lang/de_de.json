@@ -1,0 +1,7 @@
+{
+  "config.jade.plugin_dotcraftresources.ore_richness": "Erz-Ergiebigkeit",
+  "jade.dotcraftresources.ore_richness": "Ergiebigkeit: %s",
+  "jade.dotcraftresources.ore_richness.normal": "Normal",
+  "jade.dotcraftresources.ore_richness.poor": "Arm",
+  "jade.dotcraftresources.ore_richness.rich": "Reich"
+}

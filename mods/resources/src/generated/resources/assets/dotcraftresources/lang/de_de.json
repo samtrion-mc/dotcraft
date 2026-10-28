@@ -140,7 +140,6 @@
   "block.dotcraftresources.zinc_dust_block": "Zink-Staubblock",
   "block.dotcraftresources.zinc_ore": "Zink-Erz",
   "block.dotcraftresources.zinc_raw_block": "Roh-Zink-Block",
-  "config.jade.plugin_dotcraftresources.ore_richness": "Erz-Ergiebigkeit",
   "item.dotcraftresources.aluminum_dust": "Aluminium-Staub",
   "item.dotcraftresources.aluminum_gear": "Aluminium-Zahnrad",
   "item.dotcraftresources.aluminum_grains": "Aluminium-Körner",
@@ -276,9 +275,5 @@
   "item.dotcraftresources.zinc_raw": "Roh-Zink",
   "itemGroup.dotcraftresources.compressed": ".Craft: Komprimierte Blöcke",
   "itemGroup.dotcraftresources.materials": ".Craft: Materialien",
-  "jade.dotcraftresources.ore_richness": "Ergiebigkeit: %s",
-  "jade.dotcraftresources.ore_richness.normal": "Normal",
-  "jade.dotcraftresources.ore_richness.poor": "Arm",
-  "jade.dotcraftresources.ore_richness.rich": "Reich",
   "tooltip.dotcraftresources.compressed_count": "Enthält %s Blöcke"
 }

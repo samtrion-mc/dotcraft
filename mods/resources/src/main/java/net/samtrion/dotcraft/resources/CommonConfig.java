@@ -47,7 +47,7 @@ import net.samtrion.dotcraft.resources.tool.ToolTier;
  * {@code nuggets}, {@code grains}, {@code blocks}, {@code dusts}, {@code dust_blocks}, {@code plates}, {@code gears},
  * {@code hammers}, {@code sandpapers},
  * {@code ores}); only the forms a material has are listed. A disabled form drops every generated
- * recipe that makes or uses it, is hidden in the creative tab, JEI and REI, and (the ores) is not generated in
+ * recipe that makes or uses it, is hidden in the creative tab and the recipe viewers, and (the ores) is not generated in
  * the world; the registered items and blocks, their loot tables and tags stay, so existing ones keep working. The recipes
  * that need a hammer (crush and forge) are dropped when no hammer form of the tier they need is enabled, see {@link #toolEnabled}.
  */
@@ -57,7 +57,7 @@ public final class CommonConfig {
     /** Master switch of the compression feature; when off, no compress recipe is craftable. */
     public static final ModConfigSpec.BooleanValue COMPRESSED_ENABLED = BUILDER
             .push("compressed")
-            .comment("Enables compressing blocks. When disabled, all compress recipes are disabled and the compressed blocks are hidden in JEI; existing blocks can still be decompressed.")
+            .comment("Enables compressing blocks. When disabled, all compress recipes are disabled and the compressed blocks are hidden in the recipe viewers; existing blocks can still be decompressed.")
             .define("enabled", true);
 
     /** Highest compression tier that can be crafted; recipes that output a higher tier are disabled. */
@@ -69,10 +69,10 @@ public final class CommonConfig {
         BUILDER.pop();
     }
 
-    /** Master switch of the materials; when off, no material recipe is craftable and the items are hidden in JEI. */
+    /** Master switch of the materials; when off, no material recipe is craftable and the items are hidden in the recipe viewers. */
     public static final ModConfigSpec.BooleanValue MATERIALS_ENABLED = BUILDER
             .push("materials")
-            .comment("Enables the materials (ores, ingots, dusts, ...). When disabled, all material recipes are disabled and the items are hidden in JEI; existing items stay in the world. Overrides the switches of the single materials and forms.")
+            .comment("Enables the materials (ores, ingots, dusts, ...). When disabled, all material recipes are disabled and the items are hidden in the recipe viewers; existing items stay in the world. Overrides the switches of the single materials and forms.")
             .define("enabled", true);
 
     /** The switches of the single materials and forms by {@code <material>} and {@code <material>.<form id>}. */
@@ -88,7 +88,7 @@ public final class CommonConfig {
                 if (form.tool().isPresent()) continue; // the startup spec has it
                 BUILDER.push(form.configKey());
                 MATERIAL_SWITCHES.put(material.id() + "." + form.id(), BUILDER
-                        .comment("Enables the form " + form.id() + " of " + material.id() + ". When disabled, its recipes (also alloy recipes that use it) are disabled, it is hidden in the creative tab and JEI, and the ore does not generate.")
+                        .comment("Enables the form " + form.id() + " of " + material.id() + ". When disabled, its recipes (also alloy recipes that use it) are disabled, it is hidden in the creative tab, and the ore does not generate.")
                         .define("enabled", true));
                 if (form.hosted()) {
                     // materials.<id>.ores.<entry>.enabled next to the switch of the form; an entry id is never "enabled"

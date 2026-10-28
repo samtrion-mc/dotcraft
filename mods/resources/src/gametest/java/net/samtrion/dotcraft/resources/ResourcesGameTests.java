@@ -545,8 +545,8 @@ public final class ResourcesGameTests {
             helper.assertTrue(!gear.test(context) && tin.test(context), "a disabled tin gear form must fail only its own condition");
             var gearItem = ResourceItems.item(tin(), Forms.get("gear"));
             helper.assertTrue(!ResourceItems.vanillaTabItems(false).contains(gearItem), "the disabled tin gear is listed in the ingredients tab");
-            helper.assertTrue(!net.samtrion.dotcraft.resources.compat.HiddenItems.items().isEmpty()
-                    && net.samtrion.dotcraft.resources.compat.HiddenItems.items().contains(ResourceItems.item(tin(), Forms.get("gear")).get()),
+            helper.assertTrue(!net.samtrion.dotcraft.resources.api.HiddenItems.items().isEmpty()
+                    && net.samtrion.dotcraft.resources.api.HiddenItems.items().contains(ResourceItems.item(tin(), Forms.get("gear")).get()),
                     "the disabled tin gear is not hidden");
         } finally {
             gearSwitch.set(true);
