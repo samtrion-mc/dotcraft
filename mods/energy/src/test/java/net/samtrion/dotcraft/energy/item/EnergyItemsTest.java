@@ -1,0 +1,41 @@
+package net.samtrion.dotcraft.energy.item;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import org.junit.jupiter.api.Test;
+
+import net.samtrion.dotcraft.energy.EnergyCommonConfig;
+import net.samtrion.dotcraft.energy.EnergyStartupConfig;
+
+/** Unit tests for the battery config defaults and the item bar of {@link BatteryItem}. */
+class EnergyItemsTest {
+    /** Without a loaded config the batteries keep the specified defaults and are enabled. */
+    @Test
+    void configDefaults() {
+        var potato = EnergyCommonConfig.POTATO_BATTERY;
+        var rechargeable = EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY;
+        assertTrue(EnergyStartupConfig.enabled("potato_battery") && EnergyStartupConfig.enabled("rechargeable_potato_battery"));
+        assertEquals(4000, potato.capacity());
+        assertEquals(0, potato.maxInput());
+        assertEquals(40, potato.maxOutput());
+        assertEquals(20000, rechargeable.capacity());
+        assertEquals(100, rechargeable.maxInput());
+        assertEquals(100, rechargeable.maxOutput());
+    }
+
+    /** The tooltip key lives in the namespace of the mod. */
+    @Test
+    void tooltipKey() {
+        assertTrue(EnergyItems.TOOLTIP_KEY.startsWith("tooltip.dotcraftenergy."), EnergyItems.TOOLTIP_KEY);
+    }
+
+    /** The bar is empty at 0 FE, full at the capacity and in between proportional. */
+    @Test
+    void barWidth() {
+        assertEquals(0, BatteryBar.width(0, 4000));
+        assertEquals(13, BatteryBar.width(4000, 4000));
+        assertEquals(7, BatteryBar.width(2000, 4000));
+        assertEquals(13, BatteryBar.width(30000, 20000));
+    }
+}
