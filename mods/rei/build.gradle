@@ -9,3 +9,6 @@ dependencies {
     compileOnly libs.rei.api
     // localRuntime libs.rei // REI disabled for now
 }
+
+// REI is not on the runtime classpath (see above), so the mod cannot load for a data run, and it has no data to generate
+tasks.matching { it.name in ['runClientData', 'runServerData'] }.configureEach { enabled = false }
