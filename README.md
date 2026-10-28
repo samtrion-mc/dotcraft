@@ -47,14 +47,16 @@ Resources: compressed blocks are implemented, the rest is planned. Energy is a s
 
 ## Configuration
 
-`config/dotcraftresources-common.toml` (applies after a restart or `/reload`):
+`config/dotcraft/resources/common.toml` (applies after a restart or `/reload`):
 
 - `[compressed]` `enabled` (default true): switch for compressing; when off, all compress recipes are disabled and compressed blocks are hidden in JEI.
 - `[compressed]` `maxCompressLevel` (1-9, default 9): highest craftable compression level. Recipes that output a higher level are disabled; the decompress recipe of the first disabled level stays so existing blocks are not stuck.
 - `[materials]` `enabled` (default true): master switch of all materials and their recipes; it overrides the switches below.
-- `[materials.<material>]` `enabled`: one material. `[materials.<material>.<configKey>]` `enabled`: one form of it (the config key of the form, e.g. `ingots`, `gears`, `hammers`); when off, its recipes (also alloy recipes that use it) are dropped and it is hidden, and a switched-off ore form stops the ore generation. Items and blocks that already exist stay.
+- `[materials.<material>]` `enabled`: one material. `[materials.<material>.<configKey>]` `enabled`: one form of it (the config key of the form, e.g. `ingots`, `gears`); the tool forms (`hammers`, `sandpapers`) are not here but in the startup config below; when off, its recipes (also alloy recipes that use it) are dropped and it is hidden, and a switched-off ore form stops the ore generation. Items and blocks that already exist stay.
 - `[materials.<material>.ores.<entry>]` `enabled`: one ore generation entry of a material (`ore_<index>` where the entry has no id). `[materials.<alloy>.recipes.<alternative>]` `enabled`: the recipes of an alloy that use one alternative input.
 - `[worldgen]` `enabled`: generation of material ores in new chunks.
+
+`config/dotcraft/resources/startup.toml` (a startup config, read before anything is registered; needs a restart): `[materials.<material>.<configKey>]` `enabled` for each tool form a material has (`hammers`, `sandpapers`). A tool form that is switched off is not registered at all: no item, so it is not in the game, its tags or recipes. Because the registries then differ, a client and a server with different values may fail to connect; keep the file equal on both. The master switch `[materials] enabled` and `[materials.<material>] enabled` of the common config still drop the recipes and hide the tool items, but cannot unregister them.
 
 ## Materials and forms
 
@@ -104,7 +106,7 @@ In `shaped` and `shapeless`, the symbol `#` is the ingredient of the material fo
 
 ### Hammers
 
-Crush and forge need a hammer. A hammer has to be at least as good as the material it works, so a recipe takes the tag `dotcraftresources:hammers/<tier>`, generated per tier that has a hammer (stone, iron, diamond, netherite; steel counts as iron). Such a tag holds every hammer of that tier or a better one: a diamond material needs a diamond or netherite hammer, a stone hammer works stone-tier materials. For materials below the lowest hammer tier (`none`, `wood`, `gold`) the tag is `c:tools/hammer`, which holds every hammer. Every crush and forge recipe also carries the config condition `{"type": "dotcraftresources:config", "switch": "tool", "form": "hammer", "tier": "<tier>"}`, which holds while some material of that tier or better has its hammer form switched on, so the recipe is dropped when no usable hammer is left. The tags are static: a hammer item that is switched off still counts as an ingredient while another enabled hammer keeps the recipe loaded.
+Crush and forge need a hammer. A hammer has to be at least as good as the material it works, so a recipe takes the tag `dotcraftresources:hammers/<tier>`, generated per tier that has a hammer (stone, iron, diamond, netherite; steel counts as iron). Such a tag holds every hammer of that tier or a better one: a diamond material needs a diamond or netherite hammer, a stone hammer works stone-tier materials. For materials below the lowest hammer tier (`none`, `wood`, `gold`) the tag is `c:tools/hammer`, which holds every hammer. Every crush and forge recipe also carries the config condition `{"type": "dotcraftresources:config", "switch": "tool", "form": "hammer", "tier": "<tier>"}`, which holds while some material of that tier or better has its hammer form switched on, so the recipe is dropped when no usable hammer is left. The tags are static: a hammer that is switched off in the startup config is not registered, its entry in the tags is optional (`required: false`) and is skipped, so the data loads without errors; a hammer that is only hidden by the common master or material switch still counts as an ingredient while another enabled hammer keeps the recipe loaded.
 
 ### Materials
 
