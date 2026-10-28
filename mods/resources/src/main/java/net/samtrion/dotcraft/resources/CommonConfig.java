@@ -12,8 +12,16 @@ import net.samtrion.dotcraft.resources.common.Materials;
 import net.samtrion.dotcraft.resources.tool.ToolTier;
 
 /**
- * Common config of the resources mod ({@code config/dotcraft/resources.toml}). Recipes are checked when the data
- * packs load, so a changed value applies after a restart or {@code /reload}.
+ * The config of the resources mod, in two files: the common config ({@code config/dotcraft/resources/common.toml}, this class)
+ * holds all switches but those of the tool forms; recipes are checked when the data packs load, so a changed value
+ * applies after a restart or {@code /reload}. The {@link StartupConfig} ({@code config/dotcraft/resources/startup.toml})
+ * holds only the switches of the tool forms (hammers, sandpapers, every form with a
+ * {@link Form#tool() tool}) at the same path {@code materials.<material>.<configKey>.enabled}. A common config is loaded
+ * after the registries are filled, a startup config as soon as it is registered, so only the startup config can decide
+ * what is registered: an item of a tool form that is switched off there is not registered at all. A restart is
+ * needed after a change, and a client and a server with different values may fail to connect (the registries differ).
+ * The switches {@code materials.enabled} and {@code materials.<id>.enabled} of the common config still drop the recipes
+ * and hide the tool items, but cannot unregister them.
  *
  * <p>The material switches are built from the loaded {@link Materials}, so a new material file gets its switches
  * without code. Example of the {@code materials} table (all values default to {@code true}):
@@ -43,7 +51,7 @@ import net.samtrion.dotcraft.resources.tool.ToolTier;
  * the world; the registered items and blocks, their loot tables and tags stay, so existing ones keep working. The recipes
  * that need a hammer (crush and forge) are dropped when no hammer form of the tier they need is enabled, see {@link #toolEnabled}.
  */
-public final class CraftResourcesConfig {
+public final class CommonConfig {
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     /** Master switch of the compression feature; when off, no compress recipe is craftable. */
@@ -77,6 +85,7 @@ public final class CraftResourcesConfig {
                     .comment("Enables the material " + material.id() + ". When disabled, all its forms are disabled.")
                     .define("enabled", true));
             for (Form form : material.forms()) {
+                if (form.tool().isPresent()) continue; // the startup spec has it
                 BUILDER.push(form.configKey());
                 MATERIAL_SWITCHES.put(material.id() + "." + form.id(), BUILDER
                         .comment("Enables the form " + form.id() + " of " + material.id() + ". When disabled, its recipes (also alloy recipes that use it) are disabled, it is hidden in the creative tab and JEI, and the ore does not generate.")
@@ -124,7 +133,27 @@ public final class CraftResourcesConfig {
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     /** Not instantiable. */
-    private CraftResourcesConfig() {}
+    private CommonConfig() {}
+
+    /**
+     * The switch stored under a key.
+     *
+     * @param key a material id, {@code <material>.<form id>}, an ore entry key or a recipe key
+     * @return its config value, {@code null} if there is none
+     */
+    private static ModConfigSpec.BooleanValue value(String key) {
+        return MATERIAL_SWITCHES.get(key);
+    }
+
+    /** Key of an ore entry switch in {@link #MATERIAL_SWITCHES}; the {@code #} cannot occur in a form id or a material id. */
+    private static String oreKey(String materialId, String oreId) {
+        return materialId + ".ore#" + oreId;
+    }
+
+    /** Key of a recipe switch in {@link #MATERIAL_SWITCHES}; the {@code #} cannot occur in a form id. */
+    private static String recipeKey(String materialId, String alternativeId) {
+        return materialId + "#" + alternativeId;
+    }
 
     /**
      * The configured maximum level; the default while the config is not loaded (e.g. in datagen).
@@ -153,7 +182,7 @@ public final class CraftResourcesConfig {
      * @return {@code true} if the forms of the material may be active
      */
     public static boolean materialEnabled(String materialId) {
-        ModConfigSpec.BooleanValue value = MATERIAL_SWITCHES.get(materialId);
+        ModConfigSpec.BooleanValue value = value(materialId);
         if (value == null) return false;
         return !SPEC.isLoaded() || (MATERIALS_ENABLED.get() && value.get());
     }
@@ -164,10 +193,12 @@ public final class CraftResourcesConfig {
      *
      * @param materialId the id of the material, e.g. {@code tin}
      * @param formId     the id of the form, e.g. {@code gear} (not the config key)
-     * @return {@code true} if the items and blocks of the form may be active
+     * @return {@code true} if the items and blocks of the form may be active; for a tool form its startup switch counts too
      */
     public static boolean formEnabled(String materialId, String formId) {
-        ModConfigSpec.BooleanValue value = MATERIAL_SWITCHES.get(materialId + "." + formId);
+        ModConfigSpec.BooleanValue tool = StartupConfig.tool(materialId + "." + formId);
+        if (tool != null) return StartupConfig.on(tool) && materialEnabled(materialId);
+        ModConfigSpec.BooleanValue value = value(materialId + "." + formId);
         if (value == null) return false;
         return !SPEC.isLoaded() || (materialEnabled(materialId) && value.get());
     }
@@ -207,7 +238,8 @@ public final class CraftResourcesConfig {
      * @throws IllegalArgumentException if the material lacks the form
      */
     public static ModConfigSpec.BooleanValue formSwitch(String materialId, String formId) {
-        return switchOf(materialId + "." + formId);
+        ModConfigSpec.BooleanValue tool = StartupConfig.tool(materialId + "." + formId);
+        return tool != null ? tool : switchOf(materialId + "." + formId);
     }
 
     /**
@@ -220,7 +252,7 @@ public final class CraftResourcesConfig {
      * @return {@code true} if the recipes with that alternative may be active
      */
     public static boolean recipeEnabled(String materialId, String alternativeId) {
-        ModConfigSpec.BooleanValue value = MATERIAL_SWITCHES.get(recipeKey(materialId, alternativeId));
+        ModConfigSpec.BooleanValue value = value(recipeKey(materialId, alternativeId));
         if (value == null) return false;
         return !SPEC.isLoaded() || (materialEnabled(materialId) && value.get());
     }
@@ -237,19 +269,9 @@ public final class CraftResourcesConfig {
         return switchOf(recipeKey(materialId, alternativeId));
     }
 
-    /** Key of an ore entry switch in {@link #MATERIAL_SWITCHES}; the {@code #} cannot occur in a form id or a material id. */
-    private static String oreKey(String materialId, String oreId) {
-        return materialId + ".ore#" + oreId;
-    }
-
-    /** Key of a recipe switch in {@link #MATERIAL_SWITCHES}; the {@code #} cannot occur in a form id. */
-    private static String recipeKey(String materialId, String alternativeId) {
-        return materialId + "#" + alternativeId;
-    }
-
-    /** Looks up a switch by its key in {@link #MATERIAL_SWITCHES}. */
+    /** Looks up a switch by its key in {@link CommonConfig}. */
     private static ModConfigSpec.BooleanValue switchOf(String key) {
-        ModConfigSpec.BooleanValue value = MATERIAL_SWITCHES.get(key);
+        ModConfigSpec.BooleanValue value = value(key);
         if (value == null) throw new IllegalArgumentException("no config switch for " + key);
         return value;
     }
@@ -265,7 +287,7 @@ public final class CraftResourcesConfig {
      * @return {@code true} if the entry may generate
      */
     public static boolean oreEnabled(String materialId, String oreId) {
-        ModConfigSpec.BooleanValue value = MATERIAL_SWITCHES.get(oreKey(materialId, oreId));
+        ModConfigSpec.BooleanValue value = value(oreKey(materialId, oreId));
         if (value == null) return false;
         return !SPEC.isLoaded() || (materialEnabled(materialId) && value.get());
     }

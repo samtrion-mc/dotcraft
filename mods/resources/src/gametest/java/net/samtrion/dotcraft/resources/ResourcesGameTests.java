@@ -256,9 +256,24 @@ public final class ResourcesGameTests {
      * @param helper the game test helper
      */
     private static void craftingTools(GameTestHelper helper) {
+        // a tool form is in the item registry exactly when its startup switch is on (the default config: all of them)
+        boolean allRegistered = true;
+        for (var m : Materials.all()) {
+            for (var f : m.forms()) {
+                if (f.tool().isEmpty()) continue;
+                boolean registered = net.minecraft.core.registries.BuiltInRegistries.ITEM.containsKey(id(m.path(f)));
+                helper.assertTrue(registered == StartupConfig.registered(m.id(), f.id()), m.path(f) + " registered: " + registered);
+                helper.assertTrue(registered == (ResourceItems.item(m, f) != null), m.path(f) + " lookup does not match the registry");
+                allRegistered &= registered;
+            }
+        }
+        if (!allRegistered) {
+            helper.succeed(); // switched off in the startup config: the rest needs the hammers
+            return;
+        }
         var material = Materials.all().stream().filter(m -> m.id().equals("iron")).findFirst().orElseThrow();
         var form = Forms.get("hammer");
-        var hammer = new ItemStack(ResourceItems.item(material, form).get());
+        var hammer =new ItemStack(ResourceItems.item(material, form).get());
         helper.assertTrue(hammer.getMaxDamage() == 250, "iron hammer has the durability " + hammer.getMaxDamage());
         var input = net.minecraft.world.item.crafting.CraftingInput.of(1, 1, java.util.List.of(hammer));
         var left = net.minecraft.world.item.crafting.CraftingRecipe.defaultCraftingReminder(input).get(0);
@@ -346,6 +361,10 @@ public final class ResourcesGameTests {
         }
         var recipes = helper.getLevel().getServer().getRecipeManager();
         for (String recipe : new String[] {"material/tin/ingot_from_dust_smelting", "material/tin/ingot_from_nugget", "material/tin/dust_from_raw_crushing", "material/diamond/dust_from_ingot_forging"}) {
+            // the crush and forge recipes need a hammer: dropped when the startup config switches all hammers off
+            if (recipe.contains("crushing") || recipe.contains("forging")) {
+                if (!CommonConfig.toolEnabled("hammer", net.samtrion.dotcraft.resources.tool.ToolTier.NONE)) continue;
+            }
             helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, id(recipe))).isPresent(), "missing recipe " + recipe);
         }
         var features = helper.getLevel().registryAccess().lookupOrThrow(Registries.CONFIGURED_FEATURE);
@@ -520,7 +539,7 @@ public final class ResourcesGameTests {
         var tin = net.samtrion.dotcraft.resources.common.conditions.ConfigCondition.ofMaterial("tin");
         var context = net.neoforged.neoforge.common.conditions.ICondition.IContext.EMPTY;
         helper.assertTrue(gear.test(context) && tin.test(context), "tin must be enabled by default");
-        var gearSwitch = CraftResourcesConfig.formSwitch("tin", "gear");
+        var gearSwitch = CommonConfig.formSwitch("tin", "gear");
         gearSwitch.set(false);
         try {
             helper.assertTrue(!gear.test(context) && tin.test(context), "a disabled tin gear form must fail only its own condition");
@@ -533,24 +552,28 @@ public final class ResourcesGameTests {
             gearSwitch.set(true);
         }
         helper.assertTrue(gear.test(context), "tin gears must be enabled again");
-        var ironHammer = ResourceItems.item(Materials.all().stream().filter(m -> m.id().equals("iron")).findFirst().orElseThrow(), Forms.get("hammer"));
-        // the hammer tier tags: the stone hammer works only stone-tier materials, the iron one also iron-tier, the netherite one all
-        var hammerForm = Forms.get("hammer");
-        var hammerOf = (java.util.function.Function<String, ItemStack>) id -> new ItemStack(ResourceItems.item(
-                Materials.all().stream().filter(m -> m.id().equals(id)).findFirst().orElseThrow(), hammerForm).get());
-        var stoneTier = net.samtrion.dotcraft.resources.common.ResourceBlockTags.hammerTier(net.samtrion.dotcraft.resources.tool.ToolTier.STONE);
-        var ironTier = net.samtrion.dotcraft.resources.common.ResourceBlockTags.hammerTier(net.samtrion.dotcraft.resources.tool.ToolTier.IRON);
-        helper.assertTrue(hammerOf.apply("stone").is(stoneTier) && !hammerOf.apply("stone").is(ironTier),
-                "the stone hammer must count for the stone tier only");
-        helper.assertTrue(hammerOf.apply("steel").is(ironTier) && hammerOf.apply("netherite").is(stoneTier) && hammerOf.apply("netherite").is(ironTier),
-                "the steel hammer counts as iron and the netherite hammer for every tier");
+        // the hammer parts need the hammers, which a startup config may switch off (they are then not registered)
+        boolean hammers = Materials.all().stream().allMatch(m -> m.forms().stream().allMatch(f -> f.tool().isEmpty() || StartupConfig.registered(m.id(), f.id())));
+        var ironHammer = hammers ? ResourceItems.item(Materials.all().stream().filter(m -> m.id().equals("iron")).findFirst().orElseThrow(), Forms.get("hammer")) : null;
+        if (hammers) {
+            // the hammer tier tags: the stone hammer works only stone-tier materials, the iron one also iron-tier, the netherite one all
+            var hammerForm = Forms.get("hammer");
+            var hammerOf = (java.util.function.Function<String, ItemStack>) id -> new ItemStack(ResourceItems.item(
+                    Materials.all().stream().filter(m -> m.id().equals(id)).findFirst().orElseThrow(), hammerForm).get());
+            var stoneTier = net.samtrion.dotcraft.resources.common.ResourceBlockTags.hammerTier(net.samtrion.dotcraft.resources.tool.ToolTier.STONE);
+            var ironTier = net.samtrion.dotcraft.resources.common.ResourceBlockTags.hammerTier(net.samtrion.dotcraft.resources.tool.ToolTier.IRON);
+            helper.assertTrue(hammerOf.apply("stone").is(stoneTier) && !hammerOf.apply("stone").is(ironTier),
+                    "the stone hammer must count for the stone tier only");
+            helper.assertTrue(hammerOf.apply("steel").is(ironTier) && hammerOf.apply("netherite").is(stoneTier) && hammerOf.apply("netherite").is(ironTier),
+                    "the steel hammer counts as iron and the netherite hammer for every tier");
+        }
         helper.assertTrue(ResourceItems.vanillaTabItems(false).contains(ResourceItems.item(tin(), Forms.get("gear")))
-                && ResourceItems.vanillaTabItems(true).contains(ironHammer) && !ResourceItems.vanillaTabItems(false).contains(ironHammer),
+                && (!hammers || ResourceItems.vanillaTabItems(true).contains(ironHammer) && !ResourceItems.vanillaTabItems(false).contains(ironHammer)),
                 "the material items are not listed in the vanilla tabs");
         helper.assertTrue(recipes.byKey(ResourceKey.create(Registries.RECIPE, id("material/steel/dust_from_alloy"))).isEmpty(),
                 "steel has one recipe per alternative, not a plain one");
         var charcoal = net.samtrion.dotcraft.resources.common.conditions.ConfigCondition.ofRecipe("steel", "charcoal");
-        var charcoalSwitch = CraftResourcesConfig.recipeSwitch("steel", "charcoal");
+        var charcoalSwitch = CommonConfig.recipeSwitch("steel", "charcoal");
         helper.assertTrue(charcoal.test(context), "steel with charcoal must be enabled by default");
         charcoalSwitch.set(false);
         try {

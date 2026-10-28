@@ -1,5 +1,8 @@
 {
   "values": [
-    "#c:tools/hammer/netherite"
+    {
+      "id": "#c:tools/hammer/netherite",
+      "required": false
+    }
   ]
 }

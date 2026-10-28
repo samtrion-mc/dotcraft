@@ -1,5 +1,8 @@
 {
   "values": [
-    "dotcraftresources:netherite_hammer"
+    {
+      "id": "dotcraftresources:netherite_hammer",
+      "required": false
+    }
   ]
 }

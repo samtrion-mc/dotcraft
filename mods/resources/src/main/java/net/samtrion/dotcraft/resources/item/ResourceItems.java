@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import net.minecraft.core.registries.Registries;
@@ -17,8 +18,9 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.registries.DeferredItem;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import net.samtrion.dotcraft.resources.StartupConfig;
 import net.samtrion.dotcraft.resources.CraftResources;
-import net.samtrion.dotcraft.resources.CraftResourcesConfig;
+import net.samtrion.dotcraft.resources.CommonConfig;
 import net.samtrion.dotcraft.resources.block.MaterialBlocks;
 import net.samtrion.dotcraft.resources.common.Material;
 import net.samtrion.dotcraft.resources.common.Form;
@@ -43,6 +45,7 @@ public final class ResourceItems {
         for (Material material : Materials.all()) BY_MATERIAL.put(material, new ArrayList<>());
         for (Form form : Forms.all()) {
             for (Material material : Materials.withForm(form)) {
+                if (!StartupConfig.registered(material.id(), form.id())) continue; // a tool form switched off at startup
                 List<DeferredItem<? extends Item>> items = new ArrayList<>();
                 if (form.hosted()) {
                     for (Material.OreVariant variant : material.oreVariants()) {
@@ -65,7 +68,7 @@ public final class ResourceItems {
                         .map(m -> (Item) item(m, iconForm(m)).get())
                         .orElse(Items.IRON_INGOT)))
                 .displayItems((params, output) -> Forms.all().forEach(f -> Materials.withForm(f).stream()
-                        .filter(m -> CraftResourcesConfig.formEnabled(m.id(), f.id()))
+                        .filter(m -> CommonConfig.formEnabled(m.id(), f.id()))
                         .forEach(m -> items(m, f).forEach(i -> output.accept(i.get())))))
                 .build());
     }
@@ -75,8 +78,8 @@ public final class ResourceItems {
 
     /** The form shown as tab icon: the first {@link Form#icon() icon} form of the material, else its first form. */
     private static Form iconForm(Material material) {
-        return material.forms().stream().filter(f -> f.icon() && !f.hosted()).findFirst()
-                .orElseGet(() -> material.forms().stream().filter(f -> !f.hosted()).findFirst().orElseThrow());
+        return material.forms().stream().filter(f -> f.icon() && !f.hosted() && f.tool().isEmpty()).findFirst()
+                .orElseGet(() -> material.forms().stream().filter(f -> !f.hosted() && f.tool().isEmpty()).findFirst().orElseThrow());
     }
 
     /**
@@ -111,8 +114,9 @@ public final class ResourceItems {
         return Forms.all().stream()
                 .filter(f -> !f.isBlock() && f.tool().isPresent() == tools)
                 .flatMap(f -> Materials.withForm(f).stream()
-                        .filter(m -> CraftResourcesConfig.formEnabled(m.id(), f.id()))
-                        .<DeferredItem<? extends Item>>map(m -> item(m, f)))
+                        .filter(m -> CommonConfig.formEnabled(m.id(), f.id()))
+                        .<DeferredItem<? extends Item>>map(m -> item(m, f))
+                        .filter(Objects::nonNull))
                 .toList();
     }
 
@@ -121,7 +125,7 @@ public final class ResourceItems {
      *
      * @param material the material
      * @param form     the form, which the material must have
-     * @return the item
+     * @return the item, {@code null} for a tool form that is switched off in the startup config (it is not registered)
      */
     public static DeferredItem<? extends Item> item(Material material, Form form) {
         return BY_PATH.get(material.path(form));
@@ -154,14 +158,14 @@ public final class ResourceItems {
      *
      * @param material the material
      * @param form     a form the material has
-     * @return the items of the form
+     * @return the items of the form, none for a tool form that is not registered
      */
     public static Stream<DeferredItem<? extends Item>> items(Material material, Form form) {
         if (form.hosted()) {
             return material.oreVariants().stream()
                     .<DeferredItem<? extends Item>>map(v -> ore(material, v.host(), v.richness()));
         }
-        return Stream.of(item(material, form));
+        return Stream.ofNullable(item(material, form));
     }
 
     /**

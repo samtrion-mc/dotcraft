@@ -1,5 +1,8 @@
 {
   "values": [
-    "dotcraftresources:iron_hammer"
+    {
+      "id": "dotcraftresources:iron_hammer",
+      "required": false
+    }
   ]
 }

@@ -9,7 +9,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.minecraft.util.StringRepresentable;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.samtrion.dotcraft.resources.CraftResourcesConfig;
+import net.samtrion.dotcraft.resources.CommonConfig;
 import net.samtrion.dotcraft.resources.tool.ToolTier;
 
 /**
@@ -195,13 +195,13 @@ public record ConfigCondition(Switch switchId, String material, String form, Str
     @Override
     public boolean test(IContext context) {
         return switch (switchId) {
-            case MATERIALS -> CraftResourcesConfig.materialsEnabled();
-            case WORLDGEN -> CraftResourcesConfig.worldgenEnabled();
-            case MATERIAL -> CraftResourcesConfig.materialEnabled(material);
-            case MATERIAL_FORM -> CraftResourcesConfig.formEnabled(material, form);
-            case MATERIAL_RECIPE -> CraftResourcesConfig.recipeEnabled(material, recipe);
-            case MATERIAL_ORE -> CraftResourcesConfig.oreEnabled(material, ore);
-            case TOOL -> CraftResourcesConfig.toolEnabled(form, ToolTier.byName(tier).orElse(ToolTier.NONE));
+            case MATERIALS -> CommonConfig.materialsEnabled();
+            case WORLDGEN -> CommonConfig.worldgenEnabled();
+            case MATERIAL -> CommonConfig.materialEnabled(material);
+            case MATERIAL_FORM -> CommonConfig.formEnabled(material, form);
+            case MATERIAL_RECIPE -> CommonConfig.recipeEnabled(material, recipe);
+            case MATERIAL_ORE -> CommonConfig.oreEnabled(material, ore);
+            case TOOL -> CommonConfig.toolEnabled(form, ToolTier.byName(tier).orElse(ToolTier.NONE));
         };
     }
 

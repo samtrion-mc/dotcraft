@@ -1,5 +1,8 @@
 {
   "values": [
-    "dotcraftresources:iron_sandpaper"
+    {
+      "id": "dotcraftresources:iron_sandpaper",
+      "required": false
+    }
   ]
 }

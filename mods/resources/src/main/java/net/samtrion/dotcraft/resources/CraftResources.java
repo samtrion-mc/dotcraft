@@ -43,6 +43,8 @@ public class CraftResources {
      * @param modContainer the container of this mod
      */
     public CraftResources(IEventBus modEventBus, ModContainer modContainer) {
+        // first: the startup config decides what the item registers below register, see CommonConfig
+        modContainer.registerConfig(ModConfig.Type.STARTUP, StartupConfig.SPEC, "dotcraft/resources/startup.toml");
         ResourceBlocks.register(modEventBus);
         MaterialBlocks.register(modEventBus);
         ResourceItems.register(modEventBus);
@@ -50,7 +52,7 @@ public class CraftResources {
         CONDITIONS.register("max_tier", () -> MaxTierCondition.CODEC);
         CONDITIONS.register("config", () -> ConfigCondition.CODEC);
         CONDITIONS.register(modEventBus);
-        modContainer.registerConfig(ModConfig.Type.COMMON, CraftResourcesConfig.SPEC, "dotcraft/resources.toml");
+        modContainer.registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC, "dotcraft/resources/common.toml");
         if (ModList.get().isLoaded("jade")) JadeCompat.init();
         if (ModList.get().isLoaded("roughlyenoughitems")) ReiCompat.init();
     }

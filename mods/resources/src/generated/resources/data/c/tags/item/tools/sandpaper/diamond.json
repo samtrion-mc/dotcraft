@@ -1,5 +1,8 @@
 {
   "values": [
-    "dotcraftresources:diamond_sandpaper"
+    {
+      "id": "dotcraftresources:diamond_sandpaper",
+      "required": false
+    }
   ]
 }

@@ -1,9 +1,24 @@
 {
   "values": [
-    "#c:tools/hammer/diamond",
-    "#c:tools/hammer/iron",
-    "#c:tools/hammer/netherite",
-    "#c:tools/hammer/steel",
-    "#c:tools/hammer/stone"
+    {
+      "id": "#c:tools/hammer/diamond",
+      "required": false
+    },
+    {
+      "id": "#c:tools/hammer/iron",
+      "required": false
+    },
+    {
+      "id": "#c:tools/hammer/netherite",
+      "required": false
+    },
+    {
+      "id": "#c:tools/hammer/steel",
+      "required": false
+    },
+    {
+      "id": "#c:tools/hammer/stone",
+      "required": false
+    }
   ]
 }

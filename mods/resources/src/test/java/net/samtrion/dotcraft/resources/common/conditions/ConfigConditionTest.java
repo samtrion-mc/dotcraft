@@ -15,7 +15,8 @@ import com.mojang.serialization.JsonOps;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.samtrion.dotcraft.resources.CraftResourcesConfig;
+import net.samtrion.dotcraft.resources.CommonConfig;
+import net.samtrion.dotcraft.resources.StartupConfig;
 import net.samtrion.dotcraft.resources.common.Form;
 import net.samtrion.dotcraft.resources.common.Forms;
 import net.samtrion.dotcraft.resources.common.Material;
@@ -30,13 +31,14 @@ class ConfigConditionTest {
     void unload() throws ReflectiveOperationException {
         var field = ModConfigSpec.class.getDeclaredField("loadedConfig");
         field.setAccessible(true);
-        field.set(CraftResourcesConfig.SPEC, null);
-        CraftResourcesConfig.MATERIALS_ENABLED.clearCache();
+        field.set(CommonConfig.SPEC, null);
+        field.set(StartupConfig.SPEC, null);
+        CommonConfig.MATERIALS_ENABLED.clearCache();
         for (Material m : Materials.all()) {
-            CraftResourcesConfig.materialSwitch(m.id()).clearCache();
-            for (Form f : m.forms()) CraftResourcesConfig.formSwitch(m.id(), f.id()).clearCache();
-            m.alloy().ifPresent(a -> a.alternatives().forEach(alt -> CraftResourcesConfig.recipeSwitch(m.id(), alt).clearCache()));
-            if (m.hostedForm().isPresent()) m.oreSpecs().forEach(o -> CraftResourcesConfig.oreSwitch(m.id(), o.id()).clearCache());
+            CommonConfig.materialSwitch(m.id()).clearCache();
+            for (Form f : m.forms()) CommonConfig.formSwitch(m.id(), f.id()).clearCache();
+            m.alloy().ifPresent(a -> a.alternatives().forEach(alt -> CommonConfig.recipeSwitch(m.id(), alt).clearCache()));
+            if (m.hostedForm().isPresent()) m.oreSpecs().forEach(o -> CommonConfig.oreSwitch(m.id(), o.id()).clearCache());
         }
     }
 
@@ -47,24 +49,57 @@ class ConfigConditionTest {
         constructor.setAccessible(true);
         var field = ModConfigSpec.class.getDeclaredField("loadedConfig");
         field.setAccessible(true);
-        field.set(CraftResourcesConfig.SPEC, constructor.newInstance(CommentedConfig.inMemory(), null, null));
+        field.set(CommonConfig.SPEC, constructor.newInstance(CommentedConfig.inMemory(), null, null));
+        field.set(StartupConfig.SPEC, constructor.newInstance(CommentedConfig.inMemory(), null, null));
+    }
+
+    /** The tool forms are in the startup spec only: same path as before, and none of them in the common spec. */
+    @Test
+    void toolSwitchesLiveInTheStartupSpec() {
+        for (Material m : Materials.all()) {
+            for (Form f : m.forms()) {
+                boolean tool = f.tool().isPresent();
+                var path = List.of("materials", m.id(), f.configKey(), "enabled");
+                assertEquals(tool, StartupConfig.SPEC.getSpec().contains(path), m.id() + "." + f.id());
+                assertEquals(!tool, CommonConfig.SPEC.getSpec().contains(path), m.id() + "." + f.id());
+            }
+        }
+        assertFalse(StartupConfig.SPEC.getSpec().contains(List.of("materials", "enabled")));
+        assertTrue(StartupConfig.registered("iron", "hammer"));
+        assertTrue(StartupConfig.registered("tin", "gear"));
+    }
+
+    /** A tool form is registered by its startup switch alone; the common master and material switches only disable it. */
+    @Test
+    void toolRegistrationFollowsTheStartupSwitch() throws ReflectiveOperationException {
+        load();
+        CommonConfig.formSwitch("iron", "hammer").set(false);
+        assertFalse(StartupConfig.registered("iron", "hammer"));
+        assertFalse(CommonConfig.formEnabled("iron", "hammer"));
+        assertFalse(ConfigCondition.ofForm("iron", "hammer").test(CONTEXT));
+        assertTrue(StartupConfig.registered("steel", "hammer"));
+        assertTrue(StartupConfig.registered("tin", "gear"));
+        CommonConfig.formSwitch("iron", "hammer").set(true);
+        CommonConfig.MATERIALS_ENABLED.set(false);
+        assertTrue(StartupConfig.registered("iron", "hammer"), "the common master switch cannot unregister");
+        assertFalse(CommonConfig.formEnabled("iron", "hammer"));
     }
 
     /** Every material and every form it has gets a switch at {@code materials.<id>.<configKey>.enabled}, default on. */
     @Test
     void specHasASwitchPerMaterialAndForm() {
         for (Material m : Materials.all()) {
-            var material = CraftResourcesConfig.materialSwitch(m.id());
+            var material = CommonConfig.materialSwitch(m.id());
             assertEquals(List.of("materials", m.id(), "enabled"), material.getPath());
             assertTrue(material.getDefault(), m.id());
             for (Form f : m.forms()) {
-                var form = CraftResourcesConfig.formSwitch(m.id(), f.id());
+                var form = CommonConfig.formSwitch(m.id(), f.id());
                 assertEquals(List.of("materials", m.id(), f.configKey(), "enabled"), form.getPath());
                 assertTrue(form.getDefault(), m.id() + "." + f.id());
             }
         }
-        assertEquals(List.of("materials", "tin", "gears", "enabled"), CraftResourcesConfig.formSwitch("tin", "gear").getPath());
-        assertEquals(List.of("materials", "enabled"), CraftResourcesConfig.MATERIALS_ENABLED.getPath());
+        assertEquals(List.of("materials", "tin", "gears", "enabled"), CommonConfig.formSwitch("tin", "gear").getPath());
+        assertEquals(List.of("materials", "enabled"), CommonConfig.MATERIALS_ENABLED.getPath());
         assertEquals(Forms.all().stream().map(Form::configKey).distinct().count(), Forms.all().size());
     }
 
@@ -82,18 +117,18 @@ class ConfigConditionTest {
     @Test
     void switchesApplyInLevels() throws ReflectiveOperationException {
         load();
-        CraftResourcesConfig.formSwitch("tin", "gear").set(false);
+        CommonConfig.formSwitch("tin", "gear").set(false);
         assertFalse(ConfigCondition.ofForm("tin", "gear").test(CONTEXT));
         assertTrue(ConfigCondition.ofForm("tin", "ingot").test(CONTEXT));
         assertTrue(ConfigCondition.ofForm("copper", "dust").test(CONTEXT));
         assertTrue(ConfigCondition.ofMaterial("tin").test(CONTEXT));
 
-        CraftResourcesConfig.materialSwitch("tin").set(false);
+        CommonConfig.materialSwitch("tin").set(false);
         assertFalse(ConfigCondition.ofMaterial("tin").test(CONTEXT));
         assertFalse(ConfigCondition.ofForm("tin", "ingot").test(CONTEXT));
         assertTrue(ConfigCondition.ofMaterial("copper").test(CONTEXT));
 
-        CraftResourcesConfig.MATERIALS_ENABLED.set(false);
+        CommonConfig.MATERIALS_ENABLED.set(false);
         assertFalse(ConfigCondition.ofMaterial("copper").test(CONTEXT));
         assertFalse(ConfigCondition.ofForm("copper", "dust").test(CONTEXT));
         assertFalse(new ConfigCondition(ConfigCondition.Switch.MATERIALS).test(CONTEXT));
@@ -104,14 +139,14 @@ class ConfigConditionTest {
     void specHasASwitchPerAlloyAlternative() {
         for (Material m : Materials.all()) {
             for (String alternative : m.alloy().map(Material.Alloy::alternatives).orElse(java.util.Set.of())) {
-                var recipe = CraftResourcesConfig.recipeSwitch(m.id(), alternative);
+                var recipe = CommonConfig.recipeSwitch(m.id(), alternative);
                 assertEquals(List.of("materials", m.id(), "recipes", alternative, "enabled"), recipe.getPath());
                 assertTrue(recipe.getDefault(), m.id() + "." + alternative);
             }
         }
-        assertEquals(List.of("materials", "steel", "recipes", "charcoal", "enabled"), CraftResourcesConfig.recipeSwitch("steel", "charcoal").getPath());
-        assertEquals(List.of("materials", "steel", "recipes", "coal", "enabled"), CraftResourcesConfig.recipeSwitch("steel", "coal").getPath());
-        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> CraftResourcesConfig.recipeSwitch("bronze", "tin"));
+        assertEquals(List.of("materials", "steel", "recipes", "charcoal", "enabled"), CommonConfig.recipeSwitch("steel", "charcoal").getPath());
+        assertEquals(List.of("materials", "steel", "recipes", "coal", "enabled"), CommonConfig.recipeSwitch("steel", "coal").getPath());
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> CommonConfig.recipeSwitch("bronze", "tin"));
     }
 
     /** A disabled alternative drops only its recipes; the material and the master switch decide too; an unlisted alternative is off. */
@@ -121,11 +156,11 @@ class ConfigConditionTest {
         assertFalse(ConfigCondition.ofRecipe("steel", "iron").test(CONTEXT));
         assertFalse(ConfigCondition.ofRecipe("nothing", "coal").test(CONTEXT));
         load();
-        CraftResourcesConfig.recipeSwitch("steel", "charcoal").set(false);
+        CommonConfig.recipeSwitch("steel", "charcoal").set(false);
         assertFalse(ConfigCondition.ofRecipe("steel", "charcoal").test(CONTEXT));
         assertTrue(ConfigCondition.ofRecipe("steel", "coal").test(CONTEXT));
-        CraftResourcesConfig.recipeSwitch("steel", "charcoal").set(true);
-        CraftResourcesConfig.materialSwitch("steel").set(false);
+        CommonConfig.recipeSwitch("steel", "charcoal").set(true);
+        CommonConfig.materialSwitch("steel").set(false);
         assertFalse(ConfigCondition.ofRecipe("steel", "coal").test(CONTEXT));
     }
 
@@ -135,16 +170,16 @@ class ConfigConditionTest {
         for (Material m : Materials.all()) {
             if (m.hostedForm().isEmpty()) continue;
             for (Material.OreSpec spec : m.oreSpecs()) {
-                var ore = CraftResourcesConfig.oreSwitch(m.id(), spec.id());
+                var ore = CommonConfig.oreSwitch(m.id(), spec.id());
                 assertEquals(List.of("materials", m.id(), "ores", spec.id(), "enabled"), ore.getPath());
                 assertTrue(ore.getDefault(), m.id() + "." + spec.id());
             }
             // the switch of the ore form is the sibling of the entry tables
-            assertEquals(List.of("materials", m.id(), "ores", "enabled"), CraftResourcesConfig.formSwitch(m.id(), m.hostedForm().get().id()).getPath());
+            assertEquals(List.of("materials", m.id(), "ores", "enabled"), CommonConfig.formSwitch(m.id(), m.hostedForm().get().id()).getPath());
         }
-        assertEquals(List.of("materials", "tin", "ores", "ore_0", "enabled"), CraftResourcesConfig.oreSwitch("tin", "ore_0").getPath());
-        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> CraftResourcesConfig.oreSwitch("tin", "surface"));
-        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> CraftResourcesConfig.oreSwitch("bronze", "ore_0"));
+        assertEquals(List.of("materials", "tin", "ores", "ore_0", "enabled"), CommonConfig.oreSwitch("tin", "ore_0").getPath());
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> CommonConfig.oreSwitch("tin", "surface"));
+        org.junit.jupiter.api.Assertions.assertThrows(IllegalArgumentException.class, () -> CommonConfig.oreSwitch("bronze", "ore_0"));
     }
 
     /** A disabled entry fails only its own condition; the material and the master switch decide too; an unknown entry is off. */
@@ -154,13 +189,13 @@ class ConfigConditionTest {
         assertFalse(ConfigCondition.ofOre("tin", "surface").test(CONTEXT));
         assertFalse(ConfigCondition.ofOre("nothing", "ore_0").test(CONTEXT));
         load();
-        CraftResourcesConfig.oreSwitch("tin", "ore_0").set(false);
+        CommonConfig.oreSwitch("tin", "ore_0").set(false);
         assertFalse(ConfigCondition.ofOre("tin", "ore_0").test(CONTEXT));
         assertTrue(ConfigCondition.ofOre("zinc", "ore_0").test(CONTEXT));
         assertTrue(ConfigCondition.ofForm("tin", "ore").test(CONTEXT));
-        CraftResourcesConfig.oreSwitch("tin", "ore_0").set(true);
+        CommonConfig.oreSwitch("tin", "ore_0").set(true);
         assertTrue(ConfigCondition.ofOre("tin", "ore_0").test(CONTEXT));
-        CraftResourcesConfig.materialSwitch("tin").set(false);
+        CommonConfig.materialSwitch("tin").set(false);
         assertFalse(ConfigCondition.ofOre("tin", "ore_0").test(CONTEXT));
     }
 
@@ -180,23 +215,23 @@ class ConfigConditionTest {
     @Test
     void toolSwitchFollowsTheHammerForms() throws ReflectiveOperationException {
         load();
-        CraftResourcesConfig.formSwitch("netherite", "hammer").set(false);
+        CommonConfig.formSwitch("netherite", "hammer").set(false);
         assertFalse(ConfigCondition.ofTool("hammer", ToolTier.NETHERITE).test(CONTEXT));
         assertTrue(ConfigCondition.ofTool("hammer", ToolTier.DIAMOND).test(CONTEXT));
-        CraftResourcesConfig.formSwitch("diamond", "hammer").set(false);
+        CommonConfig.formSwitch("diamond", "hammer").set(false);
         assertFalse(ConfigCondition.ofTool("hammer", ToolTier.DIAMOND).test(CONTEXT));
         assertTrue(ConfigCondition.ofTool("hammer", ToolTier.IRON).test(CONTEXT));
-        CraftResourcesConfig.formSwitch("iron", "hammer").set(false);
+        CommonConfig.formSwitch("iron", "hammer").set(false);
         assertTrue(ConfigCondition.ofTool("hammer", ToolTier.IRON).test(CONTEXT), "the steel hammer is of the iron tier");
-        CraftResourcesConfig.materialSwitch("steel").set(false);
+        CommonConfig.materialSwitch("steel").set(false);
         assertFalse(ConfigCondition.ofTool("hammer", ToolTier.IRON).test(CONTEXT));
         assertTrue(ConfigCondition.ofTool("hammer", ToolTier.STONE).test(CONTEXT));
         assertTrue(ConfigCondition.ofTool("hammer", ToolTier.NONE).test(CONTEXT));
-        CraftResourcesConfig.formSwitch("stone", "hammer").set(false);
+        CommonConfig.formSwitch("stone", "hammer").set(false);
         assertFalse(ConfigCondition.ofTool("hammer", ToolTier.NONE).test(CONTEXT), "no hammer form is left");
-        CraftResourcesConfig.formSwitch("stone", "hammer").set(true);
+        CommonConfig.formSwitch("stone", "hammer").set(true);
         assertTrue(ConfigCondition.ofTool("hammer", ToolTier.NONE).test(CONTEXT));
-        CraftResourcesConfig.MATERIALS_ENABLED.set(false);
+        CommonConfig.MATERIALS_ENABLED.set(false);
         assertFalse(ConfigCondition.ofTool("hammer", ToolTier.NONE).test(CONTEXT));
     }
 
