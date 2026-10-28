@@ -15,14 +15,23 @@ import net.neoforged.neoforge.common.ModConfigSpec;
  */
 public final class EnergyCommonConfig {
     /** The registry paths of the batteries, which are also their config sections. */
-    static final List<String> NAMES = List.of("potato_battery", "rechargeable_potato_battery");
+    static final List<String> NAMES = List.of("potato_battery", "rechargeable_potato_battery",
+            "battery_tier_2", "battery_tier_3", "battery_tier_4", "battery_tier_5");
 
     private static final ModConfigSpec.Builder BUILDER = new ModConfigSpec.Builder();
 
     /** The single-use potato battery. */
     public static final Battery POTATO_BATTERY = new Battery(NAMES.get(0), 4000, -1, 40);
-    /** The rechargeable potato battery. */
+    /** The rechargeable potato battery, tier 1. */
     public static final Battery RECHARGEABLE_POTATO_BATTERY = new Battery(NAMES.get(1), 20000, 100, 100);
+    /** Tier 2: five times tier 1. */
+    public static final Battery BATTERY_TIER_2 = new Battery(NAMES.get(2), 100_000, 500, 500);
+    /** Tier 3: 7.5 times tier 1. */
+    public static final Battery BATTERY_TIER_3 = new Battery(NAMES.get(3), 750_000, 3_750, 3_750);
+    /** Tier 4: ten times tier 3. */
+    public static final Battery BATTERY_TIER_4 = new Battery(NAMES.get(4), 7_500_000, 37_500, 37_500);
+    /** Tier 5: ten times tier 4. */
+    public static final Battery BATTERY_TIER_5 = new Battery(NAMES.get(5), 75_000_000, 375_000, 375_000);
 
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();

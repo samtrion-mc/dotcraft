@@ -44,6 +44,15 @@ public final class EnergyItems {
     /** The battery that can be charged again and again; {@code null} when switched off in the config. */
     public static final @Nullable DeferredItem<? extends Item> RECHARGEABLE_POTATO_BATTERY = register("rechargeable_potato_battery", EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY);
 
+    /** Tier 2 (lead), {@code null} when switched off in the config. */
+    public static final @Nullable DeferredItem<? extends Item> BATTERY_TIER_2 = register("battery_tier_2", EnergyCommonConfig.BATTERY_TIER_2);
+    /** Tier 3 (nickel), {@code null} when switched off in the config. */
+    public static final @Nullable DeferredItem<? extends Item> BATTERY_TIER_3 = register("battery_tier_3", EnergyCommonConfig.BATTERY_TIER_3);
+    /** Tier 4 (silver), {@code null} when switched off in the config. */
+    public static final @Nullable DeferredItem<? extends Item> BATTERY_TIER_4 = register("battery_tier_4", EnergyCommonConfig.BATTERY_TIER_4);
+    /** Tier 5 (platinum), {@code null} when switched off in the config. */
+    public static final @Nullable DeferredItem<? extends Item> BATTERY_TIER_5 = register("battery_tier_5", EnergyCommonConfig.BATTERY_TIER_5);
+
     /**
      * Registers the item of a battery unless the config switches it off; a stack without the component is full.
      *
@@ -84,12 +93,18 @@ public final class EnergyItems {
                 return new BatteryEnergyHandler(access, ENERGY.get(), config.capacity(), config.maxInput(), config.maxOutput(), Items.BAKED_POTATO);
             }, POTATO_BATTERY.get());
         }
-        if (RECHARGEABLE_POTATO_BATTERY != null) {
-            event.registerItem(Capabilities.Energy.ITEM, (stack, access) -> {
-                var config = EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY;
-                return new BatteryEnergyHandler(access, ENERGY.get(), config.capacity(), config.maxInput(), config.maxOutput(), null);
-            }, RECHARGEABLE_POTATO_BATTERY.get());
-        }
+        rechargeable(event, RECHARGEABLE_POTATO_BATTERY, EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY);
+        rechargeable(event, BATTERY_TIER_2, EnergyCommonConfig.BATTERY_TIER_2);
+        rechargeable(event, BATTERY_TIER_3, EnergyCommonConfig.BATTERY_TIER_3);
+        rechargeable(event, BATTERY_TIER_4, EnergyCommonConfig.BATTERY_TIER_4);
+        rechargeable(event, BATTERY_TIER_5, EnergyCommonConfig.BATTERY_TIER_5);
+    }
+
+    /** Gives a rechargeable battery its FE capability; it stays itself when drained. Does nothing if it is switched off. */
+    private static void rechargeable(RegisterCapabilitiesEvent event, @Nullable DeferredItem<? extends Item> item, EnergyCommonConfig.Battery config) {
+        if (item == null) return;
+        event.registerItem(Capabilities.Energy.ITEM,
+                (stack, access) -> new BatteryEnergyHandler(access, ENERGY.get(), config.capacity(), config.maxInput(), config.maxOutput(), null), item.get());
     }
 
     /**
@@ -100,6 +115,8 @@ public final class EnergyItems {
     private static void addToVanillaTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() != CreativeModeTabs.TOOLS_AND_UTILITIES) return;
         if (POTATO_BATTERY != null) event.accept(POTATO_BATTERY.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-        if (RECHARGEABLE_POTATO_BATTERY != null) event.accept(RECHARGEABLE_POTATO_BATTERY.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+        for (var battery : new DeferredItem<?>[] {RECHARGEABLE_POTATO_BATTERY, BATTERY_TIER_2, BATTERY_TIER_3, BATTERY_TIER_4, BATTERY_TIER_5}) {
+            if (battery != null) event.accept(battery.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
+        }
     }
 }

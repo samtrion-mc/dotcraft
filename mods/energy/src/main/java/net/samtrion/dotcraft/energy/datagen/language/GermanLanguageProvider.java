@@ -21,6 +21,10 @@ public final class GermanLanguageProvider extends LanguageProvider {
     protected void addTranslations() {
         add(EnergyItems.POTATO_BATTERY.get(), "Kartoffelbatterie");
         add(EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), "Wiederaufladbare Kartoffelbatterie");
+        add(EnergyItems.BATTERY_TIER_2.get(), "Batterie (Stufe 2)");
+        add(EnergyItems.BATTERY_TIER_3.get(), "Batterie (Stufe 3)");
+        add(EnergyItems.BATTERY_TIER_4.get(), "Batterie (Stufe 4)");
+        add(EnergyItems.BATTERY_TIER_5.get(), "Batterie (Stufe 5)");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }

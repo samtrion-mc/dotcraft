@@ -24,6 +24,20 @@ class EnergyItemsTest {
         assertEquals(100, rechargeable.maxOutput());
     }
 
+    /** Tiers 2-5 scale tier 1 by 5, 7.5, 10 and 10 times (capacity and rates), and are enabled. */
+    @Test
+    void tierDefaults() {
+        var tiers = new EnergyCommonConfig.Battery[] {EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY, EnergyCommonConfig.BATTERY_TIER_2,
+                EnergyCommonConfig.BATTERY_TIER_3, EnergyCommonConfig.BATTERY_TIER_4, EnergyCommonConfig.BATTERY_TIER_5};
+        double[] factor = {5, 7.5, 10, 10};
+        for (int i = 1; i < tiers.length; i++) {
+            assertEquals((long) (tiers[i - 1].capacity() * factor[i - 1]), tiers[i].capacity(), "capacity tier " + (i + 1));
+            assertEquals((long) (tiers[i - 1].maxInput() * factor[i - 1]), tiers[i].maxInput(), "maxInput tier " + (i + 1));
+            assertEquals((long) (tiers[i - 1].maxOutput() * factor[i - 1]), tiers[i].maxOutput(), "maxOutput tier " + (i + 1));
+        }
+        for (int i = 2; i <= 5; i++) assertTrue(EnergyStartupConfig.enabled("battery_tier_" + i));
+    }
+
     /** The tooltip key lives in the namespace of the mod. */
     @Test
     void tooltipKey() {
