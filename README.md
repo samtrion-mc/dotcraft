@@ -32,15 +32,15 @@ Adds an energy system to the game: power is produced, stored and consumed. Depen
 
 ### Status
 
-Resources: compressed blocks are implemented, the rest is planned. Energy is a scaffold without content. Every mod ships JEI, Jade and REI compat (see below).
+Resources: compressed blocks are implemented, the rest is planned. Energy is a scaffold without content. JEI, Jade and REI support lives in standalone compat mods (see below).
 
 ## Commands
 
 ```
 ./gradlew build                 # build and check everything
-./gradlew :dev:runClient        # all mods + JEI/Jade (REI is disabled for now; -Pdev.mods=dotcraftresources,dotcraftenergy to limit, -Pdev.noCompat to drop JEI/Jade/REI)
+./gradlew :dev:runClient        # all mods incl. JEI + Jade compat; -Pdev.rei swaps JEI for REI; -Pdev.mods=dotcraftresources,dotcraftenergy limits the content mods only, -Pdev.noCompat drops the compat mods (PowerShell splits `-Pdev.x` at the dot: quote it, e.g. `"./gradlew" ":dev:runClient" "-Pdev.rei"`)
 ./gradlew :mods:energy:runClient  # a single mod (same run/)
-./gradlew newMod --id=magic --name="Magic" --depends=resources [--no-compat]
+./gradlew newMod --id=magic --name="Magic" --depends=resources
 ./gradlew generateData  # regenerate src/generated/resources of every mod (or :mods:<mod>:generateData) (models, lang, recipes, loot, tags); CI fails if it is stale
 ./gradlew installGitHooks       # enable the commit-msg hook (also runs on IDE sync)
 ```
@@ -49,7 +49,7 @@ Resources: compressed blocks are implemented, the rest is planned. Energy is a s
 
 `config/dotcraft/resources/common.toml` (applies after a restart or `/reload`):
 
-- `[compressed]` `enabled` (default true): switch for compressing; when off, all compress recipes are disabled and compressed blocks are hidden in JEI.
+- `[compressed]` `enabled` (default true): switch for compressing; when off, all compress recipes are disabled and compressed blocks are hidden in recipe viewers.
 - `[compressed]` `maxCompressLevel` (1-9, default 9): highest craftable compression level. Recipes that output a higher level are disabled; the decompress recipe of the first disabled level stays so existing blocks are not stuck.
 - `[materials]` `enabled` (default true): master switch of all materials and their recipes; it overrides the switches below.
 - `[materials.<material>]` `enabled`: one material. `[materials.<material>.<configKey>]` `enabled`: one form of it (the config key of the form, e.g. `ingots`, `gears`); the tool forms (`hammers`, `sandpapers`) are not here but in the startup config below; when off, its recipes (also alloy recipes that use it) are dropped and it is hidden, and a switched-off ore form stops the ore generation. Items and blocks that already exist stay.
@@ -158,7 +158,9 @@ The blocks that get compressed are data, not code: `mods/resources/src/main/reso
 
 ## JEI / Jade / REI compat
 
-Compat is standard and lives inside each content mod (no separate compat projects), under `net.samtrion.dotcraft.<name>.compat.{jei,jade,rei}`. The external mods are `compileOnly` + `localRuntime` dependencies and optional in `neoforge.mods.toml`. The mod class only touches the compat classes behind `ModList.get().isLoaded("jei" | "jade" | "roughlyenoughitems")`. `newMod` generates this skeleton.
+JEI, Jade and REI support are standalone mods, one per third-party mod, each covering all .Craft mods: `mods/jei` (`dotcraftjei`, `.Craft: JEI`), `mods/jade` (`dotcraftjade`, `.Craft: Jade`), `mods/rei` (`dotcraftrei`, `.Craft: REI`), under `net.samtrion.dotcraft.<jei|jade|rei>`. The content mods (resources, energy, ...) know nothing about them: no code, no Gradle dependency, no `neoforge.mods.toml` entry. The compat mods depend optionally on the content mods and only touch a content mod's classes when it is loaded. Each compat mod hard-requires its third-party mod (`type="required"`: JEI, Jade, REI), so install a compat mod only together with that mod; the content mods work without any of them. The accepted version range of the third-party mod is the `compat_version_range` property in the compat mod's `gradle.properties`.
+
+To hook a new .Craft mod into the compat mods, add a `<mod>` subpackage with a plugin class to each of `mods/jei`, `mods/jade`, `mods/rei` (see the `energy` and `resources` packages), add the new mod as `compileOnly` in their `build.gradle` and as an optional dependency in their `neoforge.mods.toml`, and guard the plugin with `ModList.get().isLoaded(...)`, keeping the access to the mod's classes in a separate method.
 
 ## Commits and versioning
 

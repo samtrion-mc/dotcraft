@@ -14,8 +14,8 @@ import net.samtrion.dotcraft.resources.block.Compressed;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 
 /**
- * Adds the total number of base blocks to the tooltip of compressed blocks, everywhere a tooltip is shown, JEI
- * included.
+ * Adds the total number of base blocks to the tooltip of compressed blocks, everywhere a tooltip is shown, including
+ * recipe viewers.
  */
 @EventBusSubscriber(modid = CraftResources.MODID, value = Dist.CLIENT)
 public final class CompressedTooltips {

@@ -1,0 +1,7 @@
+{
+  "config.jade.plugin_dotcraftresources.ore_richness": "Ore richness",
+  "jade.dotcraftresources.ore_richness": "Richness: %s",
+  "jade.dotcraftresources.ore_richness.normal": "Normal",
+  "jade.dotcraftresources.ore_richness.poor": "Poor",
+  "jade.dotcraftresources.ore_richness.rich": "Rich"
+}

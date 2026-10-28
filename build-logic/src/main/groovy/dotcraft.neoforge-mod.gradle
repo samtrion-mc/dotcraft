@@ -152,11 +152,11 @@ def generateModMetadata = tasks.register('generateModMetadata', ProcessResources
             mod_name               : project.property('mod_name'),
             mod_description        : project.property('mod_description'),
             mod_license            : project.property('mod_license'),
-            jei_version_range      : project.property('jei_version_range'),
-            jade_version_range     : project.property('jade_version_range'),
-            rei_version_range      : project.property('rei_version_range'),
             mod_version            : project.version.toString(),
     ]
+    // only the standalone compat mods (jei/jade/rei) set this in their own gradle.properties: version range of the third-party mod
+    def compatRange = findProperty('compat_version_range')
+    if (compatRange != null) replaceProperties.compat_version_range = compatRange.toString()
     inputs.properties replaceProperties
     expand replaceProperties
     from 'src/main/templates'

@@ -6,15 +6,12 @@ import com.mojang.logging.LogUtils;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
-import net.neoforged.fml.ModList;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.config.ModConfig;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NeoForgeRegistries;
 import net.samtrion.dotcraft.resources.block.MaterialBlocks;
 import net.samtrion.dotcraft.resources.block.ResourceBlocks;
-import net.samtrion.dotcraft.resources.compat.jade.JadeCompat;
-import net.samtrion.dotcraft.resources.compat.rei.ReiCompat;
 import net.samtrion.dotcraft.resources.common.conditions.ConfigCondition;
 import net.samtrion.dotcraft.resources.common.conditions.MaxTierCondition;
 import net.samtrion.dotcraft.resources.item.ResourceItems;
@@ -53,7 +50,5 @@ public class CraftResources {
         CONDITIONS.register("config", () -> ConfigCondition.CODEC);
         CONDITIONS.register(modEventBus);
         modContainer.registerConfig(ModConfig.Type.COMMON, CommonConfig.SPEC, "dotcraft/resources/common.toml");
-        if (ModList.get().isLoaded("jade")) JadeCompat.init();
-        if (ModList.get().isLoaded("roughlyenoughitems")) ReiCompat.init();
     }
 }

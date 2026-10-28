@@ -1,0 +1,11 @@
+plugins {
+    id 'dotcraft.neoforge-mod'
+}
+
+// the dotcraft mods never depend on this mod; it only reads them, so they are compile-time only and stay out of the jar
+dependencies {
+    compileOnly project(':mods:resources')
+    compileOnly project(':mods:energy')
+    compileOnly libs.rei.api
+    // localRuntime libs.rei // REI disabled for now
+}
