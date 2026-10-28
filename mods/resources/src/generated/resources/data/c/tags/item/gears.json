@@ -1,0 +1,26 @@
+{
+  "values": [
+    "#c:gears/aluminum",
+    "#c:gears/brass",
+    "#c:gears/bronze",
+    "#c:gears/copper",
+    "#c:gears/diamond",
+    "#c:gears/electrum",
+    "#c:gears/gold",
+    "#c:gears/invar",
+    "#c:gears/iridium",
+    "#c:gears/iron",
+    "#c:gears/lead",
+    "#c:gears/netherite",
+    "#c:gears/nickel",
+    "#c:gears/osmium",
+    "#c:gears/platinum",
+    "#c:gears/silver",
+    "#c:gears/steel",
+    "#c:gears/stone",
+    "#c:gears/tin",
+    "#c:gears/uranium",
+    "#c:gears/wood",
+    "#c:gears/zinc"
+  ]
+}

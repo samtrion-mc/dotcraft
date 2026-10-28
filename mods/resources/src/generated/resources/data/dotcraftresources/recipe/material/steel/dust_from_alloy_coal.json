@@ -1,0 +1,43 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "steel",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "iron",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "dust",
+      "material": "coal",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "material": "steel",
+      "recipe": "coal",
+      "switch": "material_recipe"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:dusts/iron",
+    "#c:dusts/coal",
+    "#c:dusts/coal",
+    "#c:dusts/coal"
+  ],
+  "result": {
+    "id": "dotcraftresources:steel_dust"
+  }
+}

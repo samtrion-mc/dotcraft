@@ -1,0 +1,10 @@
+{
+  "values": [
+    "dotcraftresources:poor_uranium_ore",
+    "dotcraftresources:uranium_ore",
+    "dotcraftresources:rich_uranium_ore",
+    "dotcraftresources:poor_deepslate_uranium_ore",
+    "dotcraftresources:deepslate_uranium_ore",
+    "dotcraftresources:rich_deepslate_uranium_ore"
+  ]
+}

@@ -9,6 +9,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
 import net.minecraft.util.StringRepresentable;
+import net.minecraft.world.item.ToolMaterial;
 import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.common.Tags;
 import net.samtrion.dotcraft.resources.CraftResources;
@@ -28,21 +29,21 @@ import net.samtrion.dotcraft.resources.CraftResources;
  */
 public enum ToolTier implements StringRepresentable {
     /** No tool needed, the block drops when mined by hand. */
-    NONE(0, null, null),
+    NONE(0, null, null, null),
     /** Wooden tools. */
-    WOOD(1, BlockTags.INCORRECT_FOR_WOODEN_TOOL, Tags.Blocks.NEEDS_WOOD_TOOL),
+    WOOD(1, BlockTags.INCORRECT_FOR_WOODEN_TOOL, Tags.Blocks.NEEDS_WOOD_TOOL, ToolMaterial.WOOD),
     /** Golden tools, as in vanilla they mine like wooden ones. */
-    GOLD(1, BlockTags.INCORRECT_FOR_GOLD_TOOL, Tags.Blocks.NEEDS_GOLD_TOOL),
+    GOLD(1, BlockTags.INCORRECT_FOR_GOLD_TOOL, Tags.Blocks.NEEDS_GOLD_TOOL, ToolMaterial.GOLD),
     /** Stone tools. */
-    STONE(2, BlockTags.INCORRECT_FOR_STONE_TOOL, BlockTags.NEEDS_STONE_TOOL),
+    STONE(2, BlockTags.INCORRECT_FOR_STONE_TOOL, BlockTags.NEEDS_STONE_TOOL, ToolMaterial.STONE),
     /** Copper tools. */
-    COPPER(3, BlockTags.INCORRECT_FOR_COPPER_TOOL, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(CraftResources.MODID, "needs_copper_tool"))),
+    COPPER(3, BlockTags.INCORRECT_FOR_COPPER_TOOL, TagKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(CraftResources.MODID, "needs_copper_tool")), ToolMaterial.COPPER),
     /** Iron tools. */
-    IRON(4, BlockTags.INCORRECT_FOR_IRON_TOOL, BlockTags.NEEDS_IRON_TOOL),
+    IRON(4, BlockTags.INCORRECT_FOR_IRON_TOOL, BlockTags.NEEDS_IRON_TOOL, ToolMaterial.IRON),
     /** Diamond tools. */
-    DIAMOND(5, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, BlockTags.NEEDS_DIAMOND_TOOL),
+    DIAMOND(5, BlockTags.INCORRECT_FOR_DIAMOND_TOOL, BlockTags.NEEDS_DIAMOND_TOOL, ToolMaterial.DIAMOND),
     /** Netherite tools. */
-    NETHERITE(6, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, Tags.Blocks.NEEDS_NETHERITE_TOOL);
+    NETHERITE(6, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, Tags.Blocks.NEEDS_NETHERITE_TOOL, ToolMaterial.NETHERITE);
 
     /** Codec that reads and writes the lower case name, e.g. in the compressed block sources. */
     public static final com.mojang.serialization.Codec<ToolTier> CODEC = StringRepresentable.fromEnum(ToolTier::values);
@@ -50,11 +51,22 @@ public enum ToolTier implements StringRepresentable {
     private final int rank;
     private final @Nullable TagKey<Block> incorrectTag;
     private final @Nullable TagKey<Block> needsTag;
+    private final int durability;
 
-    ToolTier(int rank, @Nullable TagKey<Block> incorrectTag, @Nullable TagKey<Block> needsTag) {
+    ToolTier(int rank, @Nullable TagKey<Block> incorrectTag, @Nullable TagKey<Block> needsTag, @Nullable ToolMaterial vanilla) {
+        this.durability = vanilla == null ? 0 : vanilla.durability();
         this.rank = rank;
         this.incorrectTag = incorrectTag;
         this.needsTag = needsTag;
+    }
+
+    /**
+     * The durability of the vanilla tools of this material, the base of the durability of the crafting tools.
+     *
+     * @return the durability, {@code 0} for {@link #NONE}
+     */
+    public int durability() {
+        return durability;
     }
 
     /**
@@ -157,6 +169,16 @@ public enum ToolTier implements StringRepresentable {
         int at = 0;
         for (int i = 0; i < LADDER.size(); i++) if (LADDER.get(i).rank <= rank) at = i;
         return LADDER.get(Math.min(at + steps, LADDER.size() - 1));
+    }
+
+    /**
+     * Looks a tier up by its serialized name.
+     *
+     * @param name the lower case name, e.g. {@code iron}
+     * @return the tier, empty for an unknown name
+     */
+    public static java.util.Optional<ToolTier> byName(String name) {
+        return Stream.of(values()).filter(t -> t.getSerializedName().equals(name)).findFirst();
     }
 
     @Override

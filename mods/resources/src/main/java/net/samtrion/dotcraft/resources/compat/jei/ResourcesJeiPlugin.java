@@ -9,15 +9,11 @@ import mezz.jei.api.runtime.IJeiRuntime;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.samtrion.dotcraft.resources.CraftResources;
-import net.samtrion.dotcraft.resources.CraftResourcesConfig;
-import net.samtrion.dotcraft.resources.common.CompressedBase;
-import net.samtrion.dotcraft.resources.common.CompressedBases;
-import net.samtrion.dotcraft.resources.block.ResourceBlocks;
-import net.samtrion.dotcraft.resources.common.CompressedTier;
+import net.samtrion.dotcraft.resources.compat.HiddenItems;
 
 /**
- * JEI plugin of the resources mod; hides compressed blocks above the configured maximum level, whose recipes are
- * disabled. Discovered by JEI via {@link JeiPlugin}.
+ * JEI plugin of the resources mod; hides the items the config disables (see {@link HiddenItems}): compressed blocks
+ * above the configured maximum level and the disabled materials and forms, whose recipes are disabled. Discovered by JEI via {@link JeiPlugin}.
  */
 @JeiPlugin
 public class ResourcesJeiPlugin implements IModPlugin {
@@ -32,24 +28,15 @@ public class ResourcesJeiPlugin implements IModPlugin {
     }
 
     /**
-     * Removes the compressed blocks of every level above {@link CraftResourcesConfig#maxCompressLevel()} from the
-     * ingredient list.
+     * Removes the items that the config disables from the ingredient list.
      *
      * @param runtime the JEI runtime
      */
     @Override
     public void onRuntimeAvailable(IJeiRuntime runtime) {
-        int max = CraftResourcesConfig.maxCompressLevel();
-        if (max >= CompressedTier.MAX) return;
-        List<ItemStack> hidden = CompressedBases.enabled()
-                .flatMap(base -> hiddenStacks(base, max))
-                .toList();
-        CraftResources.LOGGER.info("JEI: hiding {} compressed blocks above level {}", hidden.size(), max);
+        List<ItemStack> hidden = HiddenItems.items().stream().map(ItemStack::new).toList();
+        if (hidden.isEmpty()) return;
+        CraftResources.LOGGER.info("JEI: hiding {} items disabled by the config", hidden.size());
         runtime.getIngredientManager().removeIngredientsAtRuntime(VanillaTypes.ITEM_STACK, hidden);
-    }
-
-    private static java.util.stream.Stream<ItemStack> hiddenStacks(CompressedBase base, int max) {
-        return java.util.stream.IntStream.rangeClosed(max + 1, CompressedTier.MAX)
-                .mapToObj(tier -> new ItemStack(ResourceBlocks.item(base, tier).get()));
     }
 }

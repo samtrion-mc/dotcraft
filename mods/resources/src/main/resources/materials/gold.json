@@ -1,0 +1,66 @@
+{
+  "id": "gold",
+  "color": "#FDF55F",
+  "name": {
+    "en_us": "Gold",
+    "de_de": "Gold"
+  },
+  "tier": "wood",
+  "forms": [
+    "dust",
+    "dust_block",
+    "grains",
+    "plate",
+    "gear",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "poor"
+      ],
+      "veinSize": 4,
+      "count": 3,
+      "minY": -48,
+      "maxY": 32
+    },
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "rich"
+      ],
+      "veinSize": 3,
+      "count": 4,
+      "minY": -64,
+      "maxY": -16
+    }
+  ],
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "c:ingots/gold",
+          "item": "minecraft:gold_ingot"
+        },
+        "nugget": {
+          "tag": "c:nuggets/gold",
+          "item": "minecraft:gold_nugget"
+        },
+        "block": {
+          "tag": "c:storage_blocks/gold"
+        },
+        "raw": {
+          "tag": "c:raw_materials/gold",
+          "item": "minecraft:raw_gold"
+        }
+      }
+    }
+  ]
+}

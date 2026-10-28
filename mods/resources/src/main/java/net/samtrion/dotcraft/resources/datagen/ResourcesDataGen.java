@@ -15,9 +15,16 @@ import net.samtrion.dotcraft.resources.datagen.compressed.CompressedModelPlugin;
 import net.samtrion.dotcraft.resources.datagen.compressed.CompressedRecipePlugin;
 import net.samtrion.dotcraft.resources.datagen.language.EnglishUSLanguageProvider;
 import net.samtrion.dotcraft.resources.datagen.language.GermanLanguageProvider;
+import net.samtrion.dotcraft.resources.datagen.material.MaterialBlockLootPlugin;
+import net.samtrion.dotcraft.resources.datagen.material.MaterialBlockTagsPlugin;
+import net.samtrion.dotcraft.resources.datagen.material.MaterialItemTagsPlugin;
+import net.samtrion.dotcraft.resources.datagen.material.MaterialAlloyRecipePlugin;
+import net.samtrion.dotcraft.resources.datagen.material.MaterialModelPlugin;
+import net.samtrion.dotcraft.resources.datagen.material.MaterialRecipePlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModBlockLootPlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModBlockTagsPlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModFuelPlugin;
+import net.samtrion.dotcraft.resources.datagen.mod.ModItemTagsPlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModModelPlugin;
 import net.samtrion.dotcraft.resources.datagen.mod.ModRecipePlugin;
 
@@ -26,10 +33,12 @@ import net.samtrion.dotcraft.resources.datagen.mod.ModRecipePlugin;
  * in {@code src/generated/resources} is committed. There is one provider per kind of data, as a data file can only
  * be written by one provider; the translations are one provider per language. The other providers call plugins
  * in the given order: first the ones of the own blocks of the mod, in {@code mod}, then the ones of the compressed
- * blocks, in {@code compressed}; the plugin interfaces are in {@code api}.
+ * blocks, in {@code compressed}, then the ones of the materials, in {@code material}; the plugin interfaces are in
+ * {@code api}.
  */
 @EventBusSubscriber(modid = CraftResources.MODID)
 public final class ResourcesDataGen {
+    /** Not instantiable. */
     private ResourcesDataGen() {}
 
     /**
@@ -39,7 +48,7 @@ public final class ResourcesDataGen {
      */
     @SubscribeEvent
     static void client(GatherDataEvent.Client event) {
-        event.createProvider(o -> new ResourceModelProvider(o, new ModModelPlugin(), new CompressedModelPlugin()));
+        event.createProvider(o -> new ResourceModelProvider(o, new ModModelPlugin(), new CompressedModelPlugin(), new MaterialModelPlugin()));
         event.createProvider(EnglishUSLanguageProvider::new);
         event.createProvider(GermanLanguageProvider::new);
     }
@@ -51,13 +60,14 @@ public final class ResourcesDataGen {
      */
     @SubscribeEvent
     static void server(GatherDataEvent.Server event) {
-        event.createProvider((o, l) -> new ResourceRecipeProvider(o, l, new ModRecipePlugin(), new CompressedRecipePlugin()));
+        event.createProvider((o, l) -> new ResourceRecipeProvider(o, l, new ModRecipePlugin(), new CompressedRecipePlugin(), new MaterialRecipePlugin(), new MaterialAlloyRecipePlugin()));
         event.createProvider((o, l) -> new LootTableProvider(o, Set.of(),
                 List.of(new LootTableProvider.SubProviderEntry(
-                        r -> new ResourceBlockLootSubProvider(r, new ModBlockLootPlugin(), new CompressedBlockLootPlugin()),
+                        r -> new ResourceBlockLootSubProvider(r, new ModBlockLootPlugin(), new CompressedBlockLootPlugin(), new MaterialBlockLootPlugin()),
                         LootContextParamSets.BLOCK)), l));
-        event.createProvider((o, l) -> new ResourceBlockTagsProvider(o, l, new ModBlockTagsPlugin(), new CompressedBlockTagsPlugin()));
-        event.createProvider(ResourceItemTagsProvider::new);
+        event.createProvider((o, l) -> new ResourceBlockTagsProvider(o, l, new ModBlockTagsPlugin(), new CompressedBlockTagsPlugin(), new MaterialBlockTagsPlugin()));
+        event.createProvider((o, l) -> new ResourceItemTagsProvider(o, l, new ModItemTagsPlugin(), new MaterialItemTagsPlugin()));
         event.createProvider((o, l) -> new ResourceFuelProvider(o, l, new ModFuelPlugin()));
+        event.createProvider(ResourceWorldgenProvider::new);
     }
 }

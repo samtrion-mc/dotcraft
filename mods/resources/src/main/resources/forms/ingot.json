@@ -1,0 +1,17 @@
+{
+  "id": "ingot",
+  "kind": "item",
+  "order": 30,
+  "configKey": "ingots",
+  "tag": { "parent": "ingots" },
+  "name": {
+    "en_us": "%s Ingot",
+    "de_de": "%s-Barren"
+  },
+  "external": "excluded",
+  "icon": true,
+  "conversions": [
+    { "from": "nugget", "kind": "pack", "ratio": 9 },
+    { "from": "dust", "kind": "smelt", "xp": 0.7 }
+  ]
+}

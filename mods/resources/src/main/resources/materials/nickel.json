@@ -1,0 +1,44 @@
+{
+  "id": "nickel",
+  "color": "#B5B9A6",
+  "name": {
+    "en_us": "Nickel",
+    "de_de": "Nickel"
+  },
+  "tier": "stone",
+  "forms": [
+    "raw",
+    "raw_block",
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "veinSize": 5,
+      "count": 5,
+      "minY": -32,
+      "maxY": 64
+    },
+    {
+      "id": "nether",
+      "hosts": [
+        "nether"
+      ],
+      "veinSize": 5,
+      "count": 3,
+      "minY": 8,
+      "maxY": 110
+    }
+  ]
+}

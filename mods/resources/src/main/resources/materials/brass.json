@@ -1,0 +1,21 @@
+{
+  "id": "brass",
+  "color": "#E1B84A",
+  "name": {
+    "en_us": "Brass",
+    "de_de": "Messing"
+  },
+  "tier": "stone",
+  "alloy": {
+    "inputs": [
+      {
+        "material": "copper",
+        "count": 3
+      },
+      {
+        "material": "zinc",
+        "count": 1
+      }
+    ]
+  }
+}

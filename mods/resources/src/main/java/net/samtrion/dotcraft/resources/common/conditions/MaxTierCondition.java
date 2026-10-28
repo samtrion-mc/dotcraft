@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.samtrion.dotcraft.resources.CraftResourcesConfig;
+import net.samtrion.dotcraft.resources.CommonConfig;
 
 /**
  * Data condition that holds while the configured maximum compression level is at least {@code level}; attached
@@ -21,7 +21,7 @@ public record MaxTierCondition(int level) implements ICondition {
 
     @Override
     public boolean test(IContext context) {
-        return level <= CraftResourcesConfig.maxCompressLevel();
+        return level <= CommonConfig.maxCompressLevel();
     }
 
     @Override

@@ -21,6 +21,13 @@ class ToolTierTest {
         for (int i = 0; i < expected.size(); i++) assertEquals(ranks.get(i), expected.get(i).rank());
     }
 
+    /** A tier is found by its serialized name, an unknown name has none. */
+    @Test
+    void byName() {
+        for (ToolTier tier : ToolTier.values()) assertEquals(java.util.Optional.of(tier), ToolTier.byName(tier.getSerializedName()));
+        assertTrue(ToolTier.byName("mithril").isEmpty());
+    }
+
     /** Netherite is told apart from diamond: only netherite mines what needs netherite. */
     @Test
     void netheriteIsDistinctFromDiamond() {

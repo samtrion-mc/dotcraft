@@ -18,7 +18,7 @@ All mods share one version, derived from git tags by git-semver.
 The shared material base of the .Craft mods. Other mods build on it instead of each defining their own raw materials.
 
 - **Ores and raw materials:** new ores with world generation, plus the raw items, ingots and dusts they yield.
-- **Materials and alloys:** processed materials and alloys that serve as crafting ingredients for machines and equipment in the other mods, including intermediate forms such as plates, gears and rods.
+- **Materials and alloys:** processed materials and alloys that serve as crafting ingredients for machines and equipment in the other mods, including intermediate forms such as plates and gears and the crafting tools hammer and sandpaper, which stay in the crafting grid and lose durability per craft.
 - **Charcoal block:** like the coal block (pickaxe, 16000 ticks of fuel, 3x3 / 1 to 9 charcoal, `c:storage_blocks/charcoal`) and itself a base of the compressed blocks.
 - **Compressed blocks:** 9 compression tiers (9 blocks per tier, up to 9^9) for a curated list of bulk blocks (stones, dirt, sand, gravel, metal and gem blocks, glass, terracotta, concrete, concrete powder, wool, planks and all logs and stems). Craft 3x3 up, 1 down to 9. One shared model; the tier shows as a two-tone (white/black, readable on light and dark blocks) riveted frame that grows with the tier. Hardness and the required tool grow with the tier: the base block's requirement for tiers 1-3, one material above for 4-6, two for 7-9 (gold skipped, capped at netherite; e.g. stone needs wood, so tiers 4-6 need stone, 7-9 copper). Blocks that need no tool stay free. Names use one translation key, so no per-block language entries.
 
@@ -47,10 +47,100 @@ Resources: compressed blocks are implemented, the rest is planned. Energy is a s
 
 ## Configuration
 
-`config/dotcraftresources-common.toml` (applies after a restart or `/reload`):
+`config/dotcraft/resources/common.toml` (applies after a restart or `/reload`):
 
 - `[compressed]` `enabled` (default true): switch for compressing; when off, all compress recipes are disabled and compressed blocks are hidden in JEI.
 - `[compressed]` `maxCompressLevel` (1-9, default 9): highest craftable compression level. Recipes that output a higher level are disabled; the decompress recipe of the first disabled level stays so existing blocks are not stuck.
+- `[materials]` `enabled` (default true): master switch of all materials and their recipes; it overrides the switches below.
+- `[materials.<material>]` `enabled`: one material. `[materials.<material>.<configKey>]` `enabled`: one form of it (the config key of the form, e.g. `ingots`, `gears`); the tool forms (`hammers`, `sandpapers`) are not here but in the startup config below; when off, its recipes (also alloy recipes that use it) are dropped and it is hidden, and a switched-off ore form stops the ore generation. Items and blocks that already exist stay.
+- `[materials.<material>.ores.<entry>]` `enabled`: one ore generation entry of a material (`ore_<index>` where the entry has no id). `[materials.<alloy>.recipes.<alternative>]` `enabled`: the recipes of an alloy that use one alternative input.
+- `[worldgen]` `enabled`: generation of material ores in new chunks.
+
+`config/dotcraft/resources/startup.toml` (a startup config, read before anything is registered; needs a restart): `[materials.<material>.<configKey>]` `enabled` for each tool form a material has (`hammers`, `sandpapers`). A tool form that is switched off is not registered at all: no item, so it is not in the game, its tags or recipes. Because the registries then differ, a client and a server with different values may fail to connect; keep the file equal on both. The master switch `[materials] enabled` and `[materials.<material>] enabled` of the common config still drop the recipes and hide the tool items, but cannot unregister them.
+
+## Materials and forms
+
+Materials and forms are data, not code: `mods/resources/src/main/resources/materials/<id>.json` and `forms/<id>.json`. Items, blocks, models, tags, translations, loot, world generation, config switches and recipes are generated from them (`./gradlew generateData`, the output in `mods/resources/src/generated` is committed and must not be edited by hand). A new material is one file; a new form is one file plus a grayscale model and texture template.
+
+### Forms
+
+A form such as `ingot` or `gear` says how every item or block of that form is registered and crafted.
+
+```json
+{
+  "id": "gear",
+  "kind": "item",
+  "order": 100,
+  "configKey": "gears",
+  "tag": { "parent": "gears" },
+  "name": { "en_us": "%s Gear", "de_de": "%s-Zahnrad" },
+  "external": "default",
+  "conversions": [ { "kind": "shaped", "ratio": 1, "pattern": ["NIN", "IPI", "NIN"], "key": { "N": "nugget", "I": "ingot", "P": "minecraft:planks" } } ]
+}
+```
+
+- Required: `id` (lower case, also the file name), `kind` (`item` or `block`), `order` (position in the creative tab and in every list of forms, unique), `configKey` (plural name in the config, unique, not `enabled` or `recipes`), `tag` (`parent` is the folder of the `c:` convention tag, `name` the optional name pattern inside it, e.g. `raw_%s`) and `name` (one pattern per supported locale, the material name is `%s`). A block also needs `block`.
+- Optional: `template` (model and texture template, default the id), `tinted` (default true, the template is colored with the material color), `variants` (default 1; with more the templates are `<template>_<n>` and a material takes the one its id hashes to, so not all nuggets look alike), `path` (registry path pattern, default `%s_<id>`), `mined` (only found in the ground, so alloys lack it), `icon` (the form shown as the creative tab icon, the first one a material has wins), `requires` (forms a material needs to have this one), `tool` and `conversions`.
+- `block` has `mapColor`, `sound`, `requiresTool`, `hardness`, `resistance`, `tool`, `tierGated` (the tool needs the tier of the material), `loot` (`self` or `ore`; `ore` needs `drop`, the form that is dropped as vanilla ores do, and `hosted`) and `hosted`, the name parts by richness and host for a form with one block per host and richness, such as the ore.
+- `external` says what a material of an external metal (see below) does with the form: `excluded` (the external metal provides it, the material must not have it), `default` (the material has it unless it lists its forms) or `optional` (it may list the form). The default is `optional`.
+- `tool` (`{ "durability": 1.0 }`) makes the form a crafting tool such as the hammer: a damageable item that stays in the crafting grid and loses one durability per craft. The durability is a factor of the vanilla tools of the tier of the material unless the material gives its own. A tool form is never a default form: only materials that list it have it, and each needs a `tools` entry.
+- `neoforge:conditions` (standard NeoForge conditions `always`, `never`, `not`, `and`, `or`, `mod_loaded`) keep the form out of the game while a condition fails: it is not registered, not in the config and has no recipes, and so is every form that `requires` it or has it as the `drop` of its block.
+
+### Conversions
+
+A conversion says how a form is made of another form of the same material (`from`); the recipe is made wherever the material has both. Common options: `ratio`, `xp` (of a smelt or blast), `materials` (restrict the conversion to these material ids, all where empty), `external` and `externalRequired`.
+
+| kind | meaning |
+| --- | --- |
+| `pack` | `ratio` (4 or 9) items of `from` make one of this form, and one makes `ratio` back (ingot and block, nugget and ingot). Where the big form is an external item (redstone grains and vanilla redstone) it is made shapeless, in both directions, for a material that has the small form and whose source names a tag and an item for the big form. |
+| `smelt` | one item is smelted and blasted into one of this form. |
+| `blast` | like `smelt`, but only in the blast furnace (blocks of raw material and dust). |
+| `craft` | `ratio` (1 to 9) items of `from` make one, shapeless and one way. |
+| `crush` | one item of `from` plus a hammer make `ratio` items of this form; the hammer stays and wears. |
+| `forge` | a shaped recipe: a hammer over a row of `ratio` (1 to 3) items of `from` makes one item (three ingots make a plate, one ingot makes a dust). |
+| `shaped` | a shaped recipe from `pattern` (rows) and `key` (symbol to a form id, which stands for the tag of that form for the material, or an item tag such as `minecraft:planks`); makes one item, `ratio` must be 1. Has no `from`. |
+| `shapeless` | the same shapeless: `pattern` is one row whose symbols are the ingredients, a repeated symbol is used that often. Has no `from`, `ratio` must be 1. |
+| `alloy` | alloys are mixed in this form: the same form of every input of the alloy makes the alloy form (see `alloy` below). Has no `from`; `external` is the key of the external item of an input that lacks the form. |
+
+In `shaped` and `shapeless`, the symbol `#` is the ingredient of the material for a tool form (its `tools` entry). The recipe is skipped where a form of the key is missing, and where a tool form is used by a material without a `tools` entry. A material that uses an external metal resolves a missing form through the tag its `external` source names for it, so the dust of vanilla iron is crushed from the vanilla raw iron (`c:raw_materials/iron`) and the plate is forged from the vanilla ingot. `"externalRequired": true` on a `smelt` or `blast` means: for an external material that has `from` but not this form, the source must name the external item of this form, and that item is the result (grains smelt to the vanilla nugget).
+
+### Hammers
+
+Crush and forge need a hammer. A hammer has to be at least as good as the material it works, so a recipe takes the tag `dotcraftresources:hammers/<tier>`, generated per tier that has a hammer (stone, iron, diamond, netherite; steel counts as iron). Such a tag holds every hammer of that tier or a better one: a diamond material needs a diamond or netherite hammer, a stone hammer works stone-tier materials. For materials below the lowest hammer tier (`none`, `wood`, `gold`) the tag is `c:tools/hammer`, which holds every hammer. Every crush and forge recipe also carries the config condition `{"type": "dotcraftresources:config", "switch": "tool", "form": "hammer", "tier": "<tier>"}`, which holds while some material of that tier or better has its hammer form switched on, so the recipe is dropped when no usable hammer is left. The tags are static: a hammer that is switched off in the startup config is not registered, its entry in the tags is optional (`required: false`) and is skipped, so the data loads without errors; a hammer that is only hidden by the common master or material switch still counts as an ingredient while another enabled hammer keeps the recipe loaded.
+
+### Materials
+
+```json
+{
+  "id": "tin",
+  "color": "#C9D3D6",
+  "name": { "en_us": "Tin", "de_de": "Zinn" },
+  "tier": "stone",
+  "forms": ["dust", "ore"],
+  "ore": [ { "hosts": ["stone", "deepslate"], "richness": ["poor"], "veinSize": 7, "count": 6, "minY": -16, "maxY": 80 } ]
+}
+```
+
+- Required: `id`, `color` (`#RRGGBB`), `name` for every supported locale and `tier` (`none wood stone copper gold iron diamond netherite`; the lowest tool tier that gets a drop from the metal and ore blocks, `none` for no gating).
+- `forms`: the forms the material has. Without it a material has all forms except tool forms (and, for an alloy, except `mined` forms such as raw and ore).
+- `ore`: the world generation entries, only with a hosted form such as `ore`; without it the one default entry (`ore_0`, veinSize 8, count 12, height -16 to 112, all default hosts) applies. Each entry has an optional `id` (default `ore_<index>`), `hosts` (`stone deepslate nether end blackstone basalt`, default stone, deepslate, nether, end), `richness` (`poor normal rich`, default all; poor ore drops 0 or 1 raw item, normal 1, rich 2), `veinSize` (1-64), `count` (veins per chunk, 1-256), `minY`, `maxY` (-64 to 320, clamped to the dimension), `biomeTag`, `dimensions` (`overworld nether end`, default those of the hosts) and `exposure` (`air lava water`, one value or a list: a block of a vein is only placed if a neighbour is one of them). Poor ore is generated 1.5 times as often over a wider range, rich ore a quarter as often. One block is registered per host and richness; every entry has its own config switch.
+- `alloy`: `{ "inputs": [ { "material": "copper", "count": 3 }, { "material": ["coal", "charcoal"] } ], "result": 4 }`; at least 2 inputs, each `count` 1-9 (default 1), a list of materials is a set of alternatives, `result` (1-9) is the number of items one mix makes, the sum of the counts where absent. One shapeless recipe mixes the same form of every input in each form that has an `alloy` conversion (dust and grains); the mixed dust is smelted to the ingot. An input that lacks the form is resolved through its `external` source (the key named by the `alloy` conversion). No more than nine items in all. An alloy has no `external` and no mined forms.
+- `external`: a list of sources for a material that adds parts to a metal provided from outside, such as iron, copper or gold of vanilla: `[{ "mod": "othermod", "forms": { "ingot": { "tag": "c:ingots/iron", "item": "minecraft:iron_ingot" } } }]`. A source maps a form id to the item tag that stands for the form and, optionally, the concrete item a recipe makes of it. `mod` makes the recipes that use the source load only while that mod is loaded (the item need not exist at generation time); the first source has no `mod`, each mod appears once. Such a material registers none of the forms the external metal provides (`external: excluded`) and has the `default` ones unless it lists its forms. A material with an `external` list may still have `ore`: then only the poor and rich ore blocks are registered (iron, copper, gold, coal, lapis, redstone), their raw drop is the vanilla raw item and normal ore stays vanilla. Netherite has an own `nugget` because the form is `optional` for external materials.
+- `smelt` (default true): `false` turns off all smelt and blast conversions of the material (coal, whose dust is converted by hand-written recipes).
+- `tools`: per tool form the `ingredient` (item tag of the `#` in its recipe, e.g. `c:storage_blocks/iron`), optional `count` (1-9, items a shapeless recipe takes) and `durability` (absolute, for tiers without a fitting vanilla value such as steel).
+- `neoforge:conditions`: as for forms; a material left out has no items, blocks, config switches or recipes, and every file it or its forms generate carries the conditions.
+
+### Recipe ids
+
+All ids are `dotcraftresources:material/<material>/<name>`, where `<name>` is
+
+- `<to>_from_<from>` for a pack (both directions) and a craft;
+- `<to>_from_<from>_smelting` and `<to>_from_<from>_blasting` for a smelt (a blast has only the second);
+- `<to>_from_<from>_crushing` for a crush and `<to>_from_<from>_forging` for a forge;
+- `<to>` for a shaped or shapeless conversion, e.g. `iron/gear`, `iron/hammer`, `iron/sandpaper`;
+- `<to>_from_alloy` for an alloy, followed for each input by `_<material>` where it has alternatives, e.g. `steel/ingot_from_alloy_charcoal`.
+
+A source of another mod appends `_<mod>` at the end of the id (`..._crushing_<mod>`).
 
 ## Compressed block sources
 

@@ -1,0 +1,21 @@
+{
+  "id": "stone",
+  "color": "#8F8F8F",
+  "name": {
+    "en_us": "Stone",
+    "de_de": "Stein"
+  },
+  "tier": "stone",
+  "forms": [
+    "gear",
+    "hammer"
+  ],
+  "tools": {
+    "hammer": {
+      "ingredient": "c:cobblestones"
+    }
+  },
+  "external": [
+    {}
+  ]
+}

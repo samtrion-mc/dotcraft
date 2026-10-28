@@ -1,0 +1,16 @@
+{
+  "id": "dust_block",
+  "kind": "block",
+  "order": 80,
+  "configKey": "dust_blocks",
+  "tag": { "parent": "storage_blocks", "name": "%s_dust" },
+  "name": {
+    "en_us": "Block of %s Dust",
+    "de_de": "%s-Staubblock"
+  },
+  "block": { "mapColor": "sand", "sound": "sand", "hardness": 0.5, "tool": "shovel", "loot": "self" },
+  "conversions": [
+    { "kind": "alloy" },
+    { "from": "dust", "kind": "pack", "ratio": 9 }
+  ]
+}

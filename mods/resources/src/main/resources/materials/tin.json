@@ -1,0 +1,17 @@
+{
+  "id": "tin",
+  "color": "#C9D3D6",
+  "name": {
+    "en_us": "Tin",
+    "de_de": "Zinn"
+  },
+  "tier": "stone",
+  "ore": [
+    {
+      "veinSize": 7,
+      "count": 6,
+      "minY": -16,
+      "maxY": 80
+    }
+  ]
+}

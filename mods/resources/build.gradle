@@ -4,4 +4,9 @@ plugins {
 
 dependencies {
     compileOnly libs.jei.api
+    compileOnly libs.jade
+    compileOnly libs.rei.api
+    localRuntime libs.jei
+    localRuntime libs.jade
+    // localRuntime libs.rei // REI disabled for now
 }

@@ -83,6 +83,14 @@
     {
       "id": "dotcraftresources:compressed/minecraft/raw_gold_block_6",
       "required": false
-    }
+    },
+    "dotcraftresources:iridium_raw_block",
+    "dotcraftresources:iridium_block",
+    "dotcraftresources:poor_deepslate_iridium_ore",
+    "dotcraftresources:deepslate_iridium_ore",
+    "dotcraftresources:rich_deepslate_iridium_ore",
+    "dotcraftresources:poor_end_iridium_ore",
+    "dotcraftresources:end_iridium_ore",
+    "dotcraftresources:rich_end_iridium_ore"
   ]
 }

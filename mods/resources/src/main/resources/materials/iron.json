@@ -1,0 +1,78 @@
+{
+  "id": "iron",
+  "color": "#D8D8D8",
+  "name": {
+    "en_us": "Iron",
+    "de_de": "Eisen"
+  },
+  "tier": "iron",
+  "forms": [
+    "dust",
+    "grains",
+    "dust_block",
+    "plate",
+    "gear",
+    "hammer",
+    "sandpaper",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "poor"
+      ],
+      "veinSize": 6,
+      "count": 6,
+      "minY": 0,
+      "maxY": 96
+    },
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "rich"
+      ],
+      "veinSize": 4,
+      "count": 12,
+      "minY": -56,
+      "maxY": 16
+    }
+  ],
+  "tools": {
+    "hammer": {
+      "ingredient": "c:storage_blocks/iron"
+    },
+    "sandpaper": {
+      "ingredient": "c:small_dusts/iron",
+      "count": 3,
+      "durability": 32
+    }
+  },
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "c:ingots/iron",
+          "item": "minecraft:iron_ingot"
+        },
+        "nugget": {
+          "tag": "c:nuggets/iron",
+          "item": "minecraft:iron_nugget"
+        },
+        "block": {
+          "tag": "c:storage_blocks/iron"
+        },
+        "raw": {
+          "tag": "c:raw_materials/iron",
+          "item": "minecraft:raw_iron"
+        }
+      }
+    }
+  ]
+}

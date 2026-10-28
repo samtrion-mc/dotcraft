@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "worldgen"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ore",
+      "material": "lapis",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "material": "lapis",
+      "ore": "ore_0",
+      "switch": "material_ore"
+    }
+  ],
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_overworld",
+  "features": "dotcraftresources:lapis_ore_0_overworld_poor",
+  "step": "underground_ores"
+}

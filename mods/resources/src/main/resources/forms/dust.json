@@ -1,0 +1,18 @@
+{
+  "id": "dust",
+  "kind": "item",
+  "order": 70,
+  "configKey": "dusts",
+  "tag": { "parent": "dusts" },
+  "name": {
+    "en_us": "%s Dust",
+    "de_de": "%s-Staub"
+  },
+  "external": "default",
+  "conversions": [
+    { "kind": "alloy" },
+    { "from": "grains", "kind": "pack", "ratio": 9 },
+    { "from": "ingot", "kind": "forge", "ratio": 1 },
+    { "from": "raw", "kind": "crush", "ratio": 2 }
+  ]
+}

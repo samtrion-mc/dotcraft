@@ -1,0 +1,15 @@
+{
+  "id": "wood",
+  "color": "#8B6B3E",
+  "name": {
+    "en_us": "Wood",
+    "de_de": "Holz"
+  },
+  "tier": "wood",
+  "forms": [
+    "gear"
+  ],
+  "external": [
+    {}
+  ]
+}

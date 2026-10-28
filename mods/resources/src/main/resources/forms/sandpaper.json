@@ -1,0 +1,23 @@
+{
+  "id": "sandpaper",
+  "kind": "item",
+  "order": 140,
+  "configKey": "sandpapers",
+  "tag": { "parent": "tools/sandpaper" },
+  "name": {
+    "en_us": "%s Sandpaper",
+    "de_de": "%s-Schleifpapier"
+  },
+  "external": "optional",
+  "tool": {
+    "durability": 0.1
+  },
+  "conversions": [
+    {
+      "kind": "shapeless",
+      "ratio": 1,
+      "pattern": ["#PS"],
+      "key": { "P": "c:papers", "S": "c:slime_balls" }
+    }
+  ]
+}

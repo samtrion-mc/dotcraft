@@ -1,0 +1,15 @@
+{
+  "id": "grains",
+  "kind": "item",
+  "order": 50,
+  "configKey": "grains",
+  "tag": { "parent": "small_dusts" },
+  "name": {
+    "en_us": "%s Grains",
+    "de_de": "%s-K\u00f6rner"
+  },
+  "conversions": [
+    { "kind": "alloy", "external": "nugget" },
+    { "from": "nugget", "kind": "forge", "ratio": 1 }
+  ]
+}

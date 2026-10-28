@@ -10,7 +10,7 @@ import com.electronwill.nightconfig.core.CommentedConfig;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
 import net.neoforged.neoforge.common.conditions.ICondition;
-import net.samtrion.dotcraft.resources.CraftResourcesConfig;
+import net.samtrion.dotcraft.resources.CommonConfig;
 import net.samtrion.dotcraft.resources.common.CompressedTier;
 
 /** Unit tests for {@link MaxTierCondition} and its config. */
@@ -19,9 +19,9 @@ class MaxTierConditionTest {
     void unload() throws ReflectiveOperationException {
         var field = ModConfigSpec.class.getDeclaredField("loadedConfig");
         field.setAccessible(true);
-        field.set(CraftResourcesConfig.SPEC, null);
-        CraftResourcesConfig.MAX_COMPRESS_LEVEL.clearCache();
-        CraftResourcesConfig.COMPRESSED_ENABLED.clearCache();
+        field.set(CommonConfig.SPEC, null);
+        CommonConfig.MAX_COMPRESS_LEVEL.clearCache();
+        CommonConfig.COMPRESSED_ENABLED.clearCache();
     }
 
     /** The loaded-config type is sealed and package-private and {@code acceptConfig} would save it, so the field is set reflectively. */
@@ -31,7 +31,7 @@ class MaxTierConditionTest {
         constructor.setAccessible(true);
         var field = ModConfigSpec.class.getDeclaredField("loadedConfig");
         field.setAccessible(true);
-        field.set(CraftResourcesConfig.SPEC, constructor.newInstance(CommentedConfig.inMemory(), null, null));
+        field.set(CommonConfig.SPEC, constructor.newInstance(CommentedConfig.inMemory(), null, null));
     }
 
     /** Without a loaded config (datagen) the default applies: every level enabled. */
@@ -44,7 +44,7 @@ class MaxTierConditionTest {
     @Test
     void enabledUpToConfiguredLevel() throws ReflectiveOperationException {
         load();
-        CraftResourcesConfig.MAX_COMPRESS_LEVEL.set(3);
+        CommonConfig.MAX_COMPRESS_LEVEL.set(3);
         for (int level = 1; level <= CompressedTier.MAX; level++) {
             assertTrue(new MaxTierCondition(level).test(ICondition.IContext.EMPTY) == (level <= 3), "level " + level);
         }
@@ -54,7 +54,7 @@ class MaxTierConditionTest {
     @Test
     void disabledSwitchDisablesAllLevels() throws ReflectiveOperationException {
         load();
-        CraftResourcesConfig.COMPRESSED_ENABLED.set(false);
+        CommonConfig.COMPRESSED_ENABLED.set(false);
         for (int level = 1; level <= CompressedTier.MAX; level++) assertFalse(new MaxTierCondition(level).test(ICondition.IContext.EMPTY), "level " + level);
     }
 }

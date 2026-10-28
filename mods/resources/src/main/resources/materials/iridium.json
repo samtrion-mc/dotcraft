@@ -1,0 +1,43 @@
+{
+  "id": "iridium",
+  "color": "#E6E6F5",
+  "name": {
+    "en_us": "Iridium",
+    "de_de": "Iridium"
+  },
+  "tier": "diamond",
+  "forms": [
+    "raw",
+    "raw_block",
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "deepslate"
+      ],
+      "veinSize": 3,
+      "count": 1,
+      "minY": -64,
+      "maxY": -16
+    },
+    {
+      "id": "end",
+      "hosts": [
+        "end"
+      ],
+      "veinSize": 3,
+      "count": 1,
+      "minY": 0,
+      "maxY": 80
+    }
+  ]
+}

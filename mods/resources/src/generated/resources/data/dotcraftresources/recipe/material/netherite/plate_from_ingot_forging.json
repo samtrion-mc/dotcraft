@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "plate",
+      "material": "netherite",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "netherite"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#dotcraftresources:hammers/netherite",
+    "I": "#c:ingots/netherite"
+  },
+  "pattern": [
+    " H ",
+    "III"
+  ],
+  "result": {
+    "id": "dotcraftresources:netherite_plate"
+  }
+}

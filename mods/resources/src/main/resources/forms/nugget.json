@@ -1,0 +1,16 @@
+{
+  "id": "nugget",
+  "kind": "item",
+  "order": 40,
+  "variants": 4,
+  "configKey": "nuggets",
+  "tag": { "parent": "nuggets" },
+  "name": {
+    "en_us": "%s Nugget",
+    "de_de": "%s-Klumpen"
+  },
+  "external": "optional",
+  "conversions": [
+    { "from": "grains", "kind": "smelt", "xp": 0.1, "externalRequired": true }
+  ]
+}

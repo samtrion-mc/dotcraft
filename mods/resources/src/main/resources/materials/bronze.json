@@ -1,0 +1,21 @@
+{
+  "id": "bronze",
+  "color": "#CD7F32",
+  "name": {
+    "en_us": "Bronze",
+    "de_de": "Bronze"
+  },
+  "tier": "stone",
+  "alloy": {
+    "inputs": [
+      {
+        "material": "copper",
+        "count": 3
+      },
+      {
+        "material": "tin",
+        "count": 1
+      }
+    ]
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "nugget",
+      "material": "uranium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "gear",
+      "material": "uranium",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "#c:ingots/uranium",
+    "N": "#c:nuggets/uranium",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "NIN",
+    "IPI",
+    "NIN"
+  ],
+  "result": {
+    "id": "dotcraftresources:uranium_gear"
+  }
+}

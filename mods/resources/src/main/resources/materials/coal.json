@@ -1,0 +1,42 @@
+{
+  "id": "coal",
+  "color": "#2B2B2B",
+  "name": {
+    "en_us": "Coal",
+    "de_de": "Kohle"
+  },
+  "tier": "none",
+  "forms": [
+    "dust",
+    "ore"
+  ],
+  "ore": [
+    {
+      "hosts": [
+        "stone",
+        "deepslate"
+      ],
+      "richness": [
+        "poor"
+      ],
+      "veinSize": 8,
+      "count": 6,
+      "minY": 32,
+      "maxY": 240
+    }
+  ],
+  "smelt": false,
+  "external": [
+    {
+      "forms": {
+        "ingot": {
+          "tag": "dotcraftresources:coal",
+          "item": "minecraft:coal"
+        },
+        "block": {
+          "tag": "c:storage_blocks/coal"
+        }
+      }
+    }
+  ]
+}

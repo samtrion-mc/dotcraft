@@ -1,0 +1,42 @@
+{
+  "id": "steel",
+  "color": "#8A8F96",
+  "name": {
+    "en_us": "Steel",
+    "de_de": "Stahl"
+  },
+  "tier": "iron",
+  "alloy": {
+    "inputs": [
+      {
+        "material": "iron",
+        "count": 1
+      },
+      {
+        "material": [
+          "coal",
+          "charcoal"
+        ],
+        "count": 3
+      }
+    ],
+    "result": 1
+  },
+  "forms": [
+    "ingot",
+    "nugget",
+    "grains",
+    "block",
+    "dust",
+    "dust_block",
+    "plate",
+    "gear",
+    "hammer"
+  ],
+  "tools": {
+    "hammer": {
+      "ingredient": "c:storage_blocks/steel",
+      "durability": 600
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "worldgen"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ore",
+      "material": "nickel",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "material": "nickel",
+      "ore": "ore_0",
+      "switch": "material_ore"
+    }
+  ],
+  "type": "neoforge:add_features",
+  "biomes": "#c:is_overworld",
+  "features": [
+    "dotcraftresources:nickel_ore_0_overworld_poor",
+    "dotcraftresources:nickel_ore_0_overworld_normal",
+    "dotcraftresources:nickel_ore_0_overworld_rich"
+  ],
+  "step": "underground_ores"
+}

@@ -1,0 +1,21 @@
+{
+  "id": "electrum",
+  "color": "#E8D27A",
+  "name": {
+    "en_us": "Electrum",
+    "de_de": "Elektrum"
+  },
+  "tier": "iron",
+  "alloy": {
+    "inputs": [
+      {
+        "material": "gold",
+        "count": 1
+      },
+      {
+        "material": "silver",
+        "count": 1
+      }
+    ]
+  }
+}
