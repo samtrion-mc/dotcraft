@@ -81,10 +81,10 @@
   "tooltip.dotcraftenergy.vibration.peak": "Spitze %1$s FE/t, im Schnitt höchstens %2$s FE/t",
   "tooltip.dotcraftenergy.vibration.pierce": "Hört durch Wolle",
   "tooltip.dotcraftenergy.wheel.perk.1": "Basisrad.",
-  "tooltip.dotcraftenergy.wheel.perk.2": "Größerer Käfig: mehr Mobs und eine größere Zone.",
+  "tooltip.dotcraftenergy.wheel.perk.2": "Größerer Käfig: mehr Mobs.",
   "tooltip.dotcraftenergy.wheel.perk.3": "Kleine Tiere zählen voll.",
   "tooltip.dotcraftenergy.wheel.perk.4": "Getriebe: weitere Mobs behalten ihr Gewicht.",
   "tooltip.dotcraftenergy.wheel.perk.5": "Schwungrad: dreht nach dem Stillstand der Mobs noch einige Sekunden weiter.",
-  "tooltip.dotcraftenergy.wheel.rules": "Tiere, die in der Zone laufen, treiben es an: keine Babys, keine verletzten Tiere, keine Tiere im Wasser, ein Rad pro Tier. Ein Komparator liest die Last.",
-  "tooltip.dotcraftenergy.wheel.stats": "Bis zu %1$s FE/t, Zonenradius %2$s, bis zu %3$s Mobs"
+  "tooltip.dotcraftenergy.wheel.rules": "Tiere, die oben auf dem Rad stehen und laufen, treiben es an (Tiere in der Nähe nicht), Stehen zählt halb: keine Babys, keine verletzten Tiere, keine Tiere im Wasser, ein Rad pro Tier. Ein Komparator liest die Last.",
+  "tooltip.dotcraftenergy.wheel.stats": "Bis zu %1$s FE/t, bis zu %2$s Mobs auf dem Rad"
 }

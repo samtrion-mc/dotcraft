@@ -12,11 +12,11 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 import net.samtrion.dotcraft.energy.EnergyMod;
 
 /**
- * The item of a mob wheel. It explains the rules in its tooltip, as the wheel has no screen: the peak, the zone, the cap, the
+ * The item of a mob wheel. It explains the rules in its tooltip, as the wheel has no screen: the peak, the plate, the cap, the
  * perk of the tier and what the comparator reads.
  */
 public class WheelItem extends BlockItem {
-    /** The tooltip key of the stats line: peak FE/t, radius and cap are its arguments. */
+    /** The tooltip key of the stats line: peak FE/t and the cap of mobs on the plate are its arguments. */
     public static final String STATS_KEY = "tooltip." + EnergyMod.MODID + ".wheel.stats";
     /** The tooltip key prefix of the perk lines; the tier is appended. */
     public static final String PERK_KEY = "tooltip." + EnergyMod.MODID + ".wheel.perk.";
@@ -49,7 +49,7 @@ public class WheelItem extends BlockItem {
     @SuppressWarnings("deprecation") // the vanilla items add their lines here as well
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
         int tier = wheel.tier();
-        builder.accept(Component.translatable(STATS_KEY, EnergyCommonConfig.MOB_WHEELS.get(tier - 1).peak(), WheelMath.radius(tier), WheelMath.cap(tier))
+        builder.accept(Component.translatable(STATS_KEY, EnergyCommonConfig.MOB_WHEELS.get(tier - 1).peak(), WheelMath.cap(tier))
                 .withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable(PERK_KEY + tier).withStyle(ChatFormatting.AQUA));
         builder.accept(Component.translatable(RULES_KEY).withStyle(ChatFormatting.DARK_GRAY));

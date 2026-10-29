@@ -8,7 +8,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.VoxelShape;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -20,10 +23,14 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 
 /**
- * A mob wheel of one tier: a drum that turns while mobs run in the zone around it. It is a block of its own and no
- * {@code GeneratorBlock}, so it never joins the pool of the solar and lunar panels. A redstone comparator reads the load (0 to 15).
+ * A mob wheel of one tier: a drum that turns while mobs run on top of it, on the plate of {@link WheelPlate}. It is a block of its
+ * own and no {@code GeneratorBlock}, so it never joins the pool of the solar and lunar panels. A redstone comparator reads the load
+ * (0 to 15). Its collision shape ends at the height of the plate, as the model does, so mobs stand exactly on the plate.
  */
 public class WheelBlock extends Block implements EntityBlock {
+    /** The shape of the block and of its collision: a full footprint up to the height of the plate. */
+    private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, WheelPlate.TOP * 16, 16);
+
     /** The side the discs of the wheel face, set by the placing player. */
     public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
 
@@ -51,6 +58,11 @@ public class WheelBlock extends Block implements EntityBlock {
      */
     public int tier() {
         return tier;
+    }
+
+    @Override
+    protected VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return SHAPE;
     }
 
     @Override

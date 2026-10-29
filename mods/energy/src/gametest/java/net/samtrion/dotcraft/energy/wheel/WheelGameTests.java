@@ -16,6 +16,7 @@ import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -30,10 +31,11 @@ import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 
 /**
  * GameTests of the mob wheels, run with {@code ./gradlew :mods:energy:runGameTestServer}. A test structure is tiny and only its
- * chunk ticks, so every test builds in the chunk of its origin, from the chunk's corner on ({@link Area}), at y = 20 above the
- * structure: the zones of the wheels then never reach the blocks and mobs of the other tests, and the test removes what it built
- * (the other tests look at the sky above them). The mobs have no free will, so a test moves them by hand between two calls of
- * {@link WheelBlockEntity#scan} (a scan compares the position with the one before).
+ * chunk ticks, so every test builds in the chunk of its origin, from the chunk's corner on ({@link Area}), high above the
+ * structure: the wheels then never reach the blocks and mobs of the other tests, and the test removes what it built
+ * (the other tests look at the sky above them). The mobs have no free will, so a test puts them on the running plate of a wheel
+ * ({@link WheelPlate}) and moves them by hand between two calls of {@link WheelBlockEntity#scan} (a scan compares the position
+ * with the one before).
  */
 @EventBusSubscriber(modid = EnergyMod.MODID)
 public final class WheelGameTests {
@@ -134,6 +136,16 @@ public final class WheelGameTests {
             return helper.spawnWithNoFreeWill(type, x + dx, FLOOR + 1F, z + dz);
         }
 
+        /** Puts a mob on the running plate of the wheel in the block that contains (x, z), by hand: it keeps its ground flag until its next tick. */
+        void place(Mob mob, double x, double z) {
+            mob.setPos(helper.absoluteVec(new Vec3(x + dx, FLOOR + 1 + WheelPlate.TOP, z + dz)));
+        }
+
+        /** Puts a mob on the stone floor, where no plate is. */
+        void ground(Mob mob, double x, double z) {
+            mob.setPos(helper.absoluteVec(new Vec3(x + dx, FLOOR + 1, z + dz)));
+        }
+
         /** Runs a part of a test after a delay; when it fails, the area is cleaned up before the failure is rethrown. */
         void after(int ticks, Runnable body, Mob... mobs) {
             helper.runAfterDelay(ticks, () -> {
@@ -175,38 +187,57 @@ public final class WheelGameTests {
         mob.setPos(mob.getX() + dx, mob.getY(), mob.getZ());
     }
 
+    /** The left end of the plate in x, as a share of the block: a mob that goes from here to {@link #RIGHT} has run far enough. */
+    private static final double LEFT = 0.2;
+    /** The right end of the plate in x, as a share of the block. */
+    private static final double RIGHT = 0.8;
+
     /**
-     * A wheel makes nothing for mobs that stand, FE for mobs that moved between two scans, and nothing again when they stand
-     * again (tier 2 has no flywheel); the comparator reads the load.
+     * A wheel makes nothing for a pig that walks beside it or three blocks away, half for a pig that stands on its plate, the
+     * full weight for a pig that ran on it, and nothing again when the pig leaves the plate (tier 2 has no flywheel); the
+     * comparator reads the load.
      *
      * @param helper the game test helper
      */
     private static void run(GameTestHelper helper) {
         var area = Area.create(helper);
         var wheel = area.wheel(2, 4, 4);
-        var pig = area.spawn(EntityType.PIG, 2.5F, 4.5F);
+        var pig = area.spawn(EntityType.PIG, 1.5F, 4.5F);
         var level = area.level();
         area.after(20, () -> {
             settled(helper, pig);
             wheel.scan(level);
-            helper.assertTrue(wheel.output() == 0, "standing pigs make FE: " + wheel.output());
-            helper.assertTrue(wheel.signal() == 0, "the comparator reads a standing wheel");
-            step(pig, 1);
+            step(pig, 0.7);
             wheel.scan(level);
+            helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a pig three blocks away makes FE: " + wheel.output());
+            area.ground(pig, 5.5, 4.5);
+            wheel.scan(level);
+            step(pig, 0.7);
+            wheel.scan(level);
+            helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a pig that runs next to the wheel makes FE: " + wheel.output());
+            helper.assertTrue(wheel.signal() == 0, "the comparator reads a wheel nothing stands on");
+            area.place(pig, 4 + LEFT, 4.5);
+            wheel.scan(level);
+            double standing = wheel.output();
             double peak = EnergyCommonConfig.MOB_WHEELS.get(1).peak();
-            helper.assertTrue(wheel.runners() == 1, "one pig is running, wheel counts " + wheel.runners());
-            helper.assertTrue(wheel.output() > 0 && wheel.output() < peak, "a single pig makes a part of the peak: " + wheel.output());
+            helper.assertTrue(wheel.runners() == 1, "one pig stands on the plate, wheel counts " + wheel.runners());
+            helper.assertTrue(standing > 0 && standing < peak, "a standing pig makes a part of the peak: " + standing);
+            area.place(pig, 4 + RIGHT, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.runners() == 1 && wheel.output() > standing, "a running pig makes more than a standing one: " + wheel.output() + " <= " + standing);
             helper.assertTrue(wheel.signal() > 0, "the comparator reads nothing");
             var pos = area.absolute(4, FLOOR + 1, 4);
             helper.assertTrue(level.getBlockState(pos).getAnalogOutputSignal(level, pos, Direction.NORTH) == wheel.signal(), "the block does not report the signal");
+            area.ground(pig, 5.5, 4.5);
             wheel.scan(level);
-            helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a pig that stands again still makes FE: " + wheel.output());
+            helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a pig that left the plate still makes FE: " + wheel.output());
             area.finish(pig);
         }, pig);
     }
 
     /**
-     * A horse makes more than a pig, a horse and a pig reach the peak of tier 1, and a creeper, a baby and a hurt pig count nothing.
+     * A horse makes more than a pig, a horse and a pig that run reach the peak of tier 1, and a creeper, a baby and a hurt pig on the
+     * plate count nothing.
      *
      * @param helper the game test helper
      */
@@ -215,7 +246,7 @@ public final class WheelGameTests {
         var wheel = area.wheel(1, 4, 4);
         var level = area.level();
         var pig = area.spawn(EntityType.PIG, 2.5F, 2.5F);
-        var horse = area.spawn(EntityType.HORSE, 5.5F, 2.5F);
+        var horse = area.spawn(EntityType.HORSE, 6.5F, 2.5F);
         var creeper = area.spawn(EntityType.CREEPER, 2.5F, 6.5F);
         var baby = area.spawn(EntityType.PIG, 4.5F, 6.5F);
         baby.setBaby(true);
@@ -224,19 +255,24 @@ public final class WheelGameTests {
         area.after(20, () -> {
             settled(helper, pig, horse, creeper, baby, hurt);
             double peak = EnergyCommonConfig.MOB_WHEELS.get(0).peak();
+            for (var mob : new Mob[] {creeper, baby, hurt}) area.place(mob, 4.5, 4.5);
             wheel.scan(level);
-            for (var mob : new Mob[] {creeper, baby, hurt}) step(mob, 1);
+            for (var mob : new Mob[] {creeper, baby, hurt}) area.place(mob, 4.5, 4.7);
             wheel.scan(level);
             helper.assertTrue(wheel.output() == 0, "creeper, baby and hurt pig make FE: " + wheel.output());
-            step(pig, 1);
+            for (var mob : new Mob[] {creeper, baby, hurt}) area.ground(mob, 1.5, 1.5);
+            area.place(pig, 4 + LEFT, 4.5);
+            wheel.scan(level);
+            area.place(pig, 4 + RIGHT, 4.5);
             wheel.scan(level);
             double pigOutput = wheel.output();
             helper.assertTrue(pigOutput > 0 && pigOutput < peak, "a pig makes a part of the peak: " + pigOutput);
-            step(horse, 1);
+            area.place(pig, 4 + LEFT, 4.5);
+            area.place(horse, 4 + LEFT, 4.5);
             wheel.scan(level);
             helper.assertTrue(wheel.output() > pigOutput, "a horse does not make more than a pig: " + wheel.output() + " <= " + pigOutput);
-            step(pig, -1);
-            step(horse, -1);
+            area.place(pig, 4 + RIGHT, 4.5);
+            area.place(horse, 4 + RIGHT, 4.5);
             wheel.scan(level);
             helper.assertTrue(wheel.output() == peak && wheel.runners() == 2, "a horse and a pig do not reach the peak: " + wheel.output());
             area.finish(pig, horse, creeper, baby, hurt);
@@ -244,8 +280,8 @@ public final class WheelGameTests {
     }
 
     /**
-     * A mob in the zone of two wheels drives one of them only, more mobs than the cap of the tier do not make more than the peak,
-     * and a tier 1 wheel claims no more than its cap of 2 mobs, so the tier 5 wheel next to it still gets the other three.
+     * A tier 1 wheel counts no more than its cap of 2 of three pigs on its plate (the peak), a mob that moves on to the next wheel
+     * is claimed by the first one for a moment (one mob feeds one wheel) and counts for the next wheel when the claim has lapsed.
      *
      * @param helper the game test helper
      */
@@ -254,26 +290,35 @@ public final class WheelGameTests {
         var first = area.wheel(1, 3, 4);
         var second = area.wheel(5, 5, 4);
         var level = area.level();
-        var pigs = new Mob[5];
-        for (int i = 0; i < pigs.length; i++) pigs[i] = area.spawn(EntityType.PIG, i < 3 ? 3F + i : 3.5F + i - 3, i < 3 ? 2.5F : 6.5F);
+        var pigs = new Mob[3];
+        for (int i = 0; i < pigs.length; i++) pigs[i] = area.spawn(EntityType.PIG, 3.5F, 8.5F + i * 0.2F);
         area.after(20, () -> {
             settled(helper, pigs);
+            for (int i = 0; i < pigs.length; i++) area.place(pigs[i], 3 + LEFT, 4.3 + i * 0.2);
             first.scan(level);
-            second.scan(level);
-            for (var pig : pigs) step(pig, 0.6);
+            for (int i = 0; i < pigs.length; i++) area.place(pigs[i], 3 + RIGHT, 4.3 + i * 0.2);
             first.scan(level);
-            second.scan(level);
             double peak = EnergyCommonConfig.MOB_WHEELS.get(0).peak();
-            helper.assertTrue(first.output() == peak && first.runners() == 2, "five pigs make " + first.output() + " with " + first.runners()
-                    + " runners on the first wheel, not the peak with the cap of 2");
-            helper.assertTrue(second.runners() == 3 && second.output() > 0, "the stronger wheel must get the three pigs the cap of the first leaves: " + second.runners());
-            area.finish(pigs);
+            helper.assertTrue(first.output() == peak && first.runners() == 2, "three pigs make " + first.output() + " with " + first.runners()
+                    + " runners, not the peak with the cap of 2");
+            for (int i = 1; i < pigs.length; i++) area.ground(pigs[i], 1.5, 10.5);
+            area.place(pigs[0], 5 + LEFT, 4.5);
+            second.scan(level);
+            helper.assertTrue(second.runners() == 0, "a pig the first wheel just counted drives the second one as well: " + second.runners());
+            area.after((int) WheelClaims.LAPSE_TICKS + 1, () -> {
+                area.place(pigs[0], 5 + LEFT, 4.5);
+                second.scan(level);
+                helper.assertTrue(second.runners() == 1 && second.output() > 0, "the pig does not drive the second wheel after the claim lapsed: " + second.runners());
+                first.scan(level);
+                helper.assertTrue(first.runners() == 0, "the first wheel still counts a pig that left it: " + first.runners());
+                area.finish(pigs);
+            }, pigs);
         }, pigs);
     }
 
     /**
      * The buffer of a wheel cannot be charged but drained, a wheel pushes into a neighbour that takes FE (the power drain), a solar
-     * panel next to a wheel does not become part of a panel group, and a tier 5 wheel coasts when the mobs stop.
+     * panel next to a wheel does not become part of a panel group, and a tier 5 wheel coasts when the mobs leave the plate.
      *
      * @param helper the game test helper
      */
@@ -288,10 +333,12 @@ public final class WheelGameTests {
         var pigB = area.spawn(EntityType.PIG, 9.5F, 4.5F);
         area.after(20, () -> {
             settled(helper, pigA, pigB);
+            area.place(pigA, 3 + LEFT, 4.5);
+            area.place(pigB, 11 + LEFT, 4.5);
             drained.scan(level);
             lone.scan(level);
-            step(pigA, 1);
-            step(pigB, 1);
+            area.place(pigA, 3 + RIGHT, 4.5);
+            area.place(pigB, 11 + RIGHT, 4.5);
             drained.scan(level);
             lone.scan(level);
             double peak = EnergyCommonConfig.MOB_WHEELS.get(4).peak();
@@ -310,6 +357,7 @@ public final class WheelGameTests {
                     int taken = lone.energy().extract(Integer.MAX_VALUE, tx);
                     helper.assertTrue(taken > 0 && taken <= EnergyCommonConfig.MOB_WHEELS.get(4).maxOutput(), "extraction not limited by the config: " + taken);
                 }
+                area.ground(pigB, 9.5, 4.5);
                 lone.scan(level);
                 double coasting = lone.output();
                 helper.assertTrue(coasting > 0 && coasting < peak, "the flywheel of tier 5 does not coast: " + coasting);

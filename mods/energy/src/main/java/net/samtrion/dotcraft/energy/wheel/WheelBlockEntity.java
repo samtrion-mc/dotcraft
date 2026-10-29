@@ -12,8 +12,10 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Leashable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.TamableAnimal;
+import net.minecraft.world.entity.decoration.LeashFenceKnotEntity;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -29,21 +31,26 @@ import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 
 /**
- * The block entity of a mob wheel. Every {@link WheelMath#SCAN_TICKS} ticks (staggered by position) it scans the zone around the
- * wheel, a box that reaches {@link WheelMath#radius} blocks sideways, one block down and two blocks above the wheel. A mob counts
- * as a runner when
+ * The block entity of a mob wheel. Every {@link WheelMath#SCAN_TICKS} ticks (staggered by position) it looks at the mobs that stand
+ * on the running surface of the wheel, see {@link WheelPlate}; mobs that merely walk nearby make nothing. A mob counts as a
+ * runner when
  * <ul>
+ * <li>its feet are on the plate (the footprint of the tread of the model, at the height of the collision shape),</li>
  * <li>its type is in the tag {@link WheelTags#RUNNERS} (the tags {@link WheelTags#STRONG} and {@link WheelTags#WEAK} set its weight),</li>
- * <li>it is alive and no baby, stands on the ground (not in water, so no current can push it), rides nothing, and is no tamed animal that is told to sit,</li>
+ * <li>it is alive and no baby, stands on the ground (not in water, so no current can push it), rides nothing, is no tamed animal
+ * that is told to sit and is not leashed to anything but a fence knot (a mob a player leads along makes nothing),</li>
  * <li>it has at least half of its health (and counts by its health share), the welfare rule, and</li>
- * <li>it moved at least {@link WheelMath#MIN_MOVE} blocks since the scan before (a mob seen for the first time counts nothing yet) and
- * no other wheel counts it, see {@link WheelClaims}.</li>
+ * <li>no other wheel counts it, see {@link WheelClaims}.</li>
  * </ul>
+ * A mob that moved at least {@link WheelMath#MIN_MOVE} blocks since the scan before runs and counts fully; a mob that stands on the
+ * plate (or was seen there for the first time) counts {@link WheelMath#STANDING_FACTOR} of its weight, see {@link WheelMath#activity}.
  * The weights go through {@link WheelMath#load}: the cap and the diminishing returns of the tier bound the output. The FE are
  * buffered and pushed into the neighbours on every side; the buffer can only be drained.
  * <p>
- * Open decisions, all the simplest robust option: a mob counts by its movement, not by an intention; there is no feed check (the
- * welfare rule is the health); a mob pushed along by a piston counts if it is on the ground when scanned. The scan has a one
+ * Open decisions, all the simplest robust option: nothing drives a mob in place (a mob on the plate wanders off it by itself, a
+ * pen or a lead around the wheel keeps it there), so standing counts at half instead of nothing; there is no feed check (the
+ * welfare rule is the health); a mob pushed along by a piston counts if it is on the plate when scanned. A claim lasts a bit more
+ * than a scan, so a mob that steps from one wheel to the next counts for the next wheel after about a second. The scan has a one
  * second granularity: the output holds between two scans.
  */
 public class WheelBlockEntity extends BlockEntity {
@@ -105,7 +112,7 @@ public class WheelBlockEntity extends BlockEntity {
     }
 
     /**
-     * How many mobs ran in the zone at the last scan and counted.
+     * How many mobs stood on the plate at the last scan and counted.
      *
      * @return the number of runners
      */
@@ -126,10 +133,12 @@ public class WheelBlockEntity extends BlockEntity {
      * Whether a mob may run a wheel at all, apart from its movement.
      *
      * @param mob the mob
-     * @return {@code true} if it is a runner type, alive, grown up, on the ground, out of water and free to move
+     * @return {@code true} if it is a runner type, alive, grown up, on the ground, out of water, free to move and not led by a
+     *         leash (a fence knot is fine: a leash to the fence next to the wheel keeps a mob on it)
      */
     static boolean eligible(LivingEntity mob) {
         return mob.isAlive() && !mob.isBaby() && !mob.isInLiquid() && !mob.isPassenger() && mob.onGround()
+                && !(mob instanceof Leashable leashed && leashed.isLeashed() && !(leashed.getLeashHolder() instanceof LeashFenceKnotEntity))
                 && !(mob instanceof TamableAnimal pet && pet.isOrderedToSit())
                 && WheelTags.strength(mob.getType()) != WheelMath.Strength.NONE;
     }
@@ -157,16 +166,20 @@ public class WheelBlockEntity extends BlockEntity {
         int tier = tier();
         var config = config();
         energy.configure(config.capacity(), config.maxOutput());
-        var zone = new AABB(worldPosition).inflate(WheelMath.radius(tier), 0, WheelMath.radius(tier)).expandTowards(0, 2, 0).expandTowards(0, -1, 0);
+        // the search box only has to reach the bounding box of a mob on the plate; the plate decides
+        var search = new AABB(worldPosition).inflate(1, 0, 1).expandTowards(0, 2, 0);
+        boolean sideways = getBlockState().getValue(WheelBlock.FACING).getAxis() == Direction.Axis.X;
         var now = new HashMap<UUID, Vec3>();
         record Candidate(LivingEntity mob, double weight) {}
         var candidates = new ArrayList<Candidate>();
-        for (var mob : level.getEntitiesOfClass(LivingEntity.class, zone, WheelBlockEntity::eligible)) {
+        for (var mob : level.getEntitiesOfClass(LivingEntity.class, search, WheelBlockEntity::eligible)) {
             var position = mob.position();
+            if (!WheelPlate.carries(sideways, position.x - worldPosition.getX(), position.y - worldPosition.getY(), position.z - worldPosition.getZ())) continue;
             now.put(mob.getUUID(), position);
             var before = seen.get(mob.getUUID());
-            if (before == null || !WheelMath.moved(position.x - before.x, position.z - before.z)) continue;
-            double weight = WheelMath.weight(WheelTags.strength(mob.getType()), tier) * WheelMath.welfare(mob.getHealth(), mob.getMaxHealth());
+            boolean ran = before != null && WheelMath.moved(position.x - before.x, position.z - before.z);
+            double weight = WheelMath.weight(WheelTags.strength(mob.getType()), tier) * WheelMath.welfare(mob.getHealth(), mob.getMaxHealth())
+                    * WheelMath.activity(ran);
             if (weight > 0) candidates.add(new Candidate(mob, weight));
         }
         seen = now;

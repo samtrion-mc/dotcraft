@@ -61,13 +61,13 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelectric Generator (Tier " + b.get().tier() + ")"));
         add(ThermoBlockItem.TOOLTIP_KEY, "Peak %1$s FE/t at a temperature difference of %2$s");
         add(ThermoBlockItem.HINT_KEY, "Needs a hot and a cold neighbour on opposite sides (levels 1-3 each, they add up to the difference)");
-        add(WheelItem.STATS_KEY, "Up to %1$s FE/t, zone radius %2$s, up to %3$s mobs");
+        add(WheelItem.STATS_KEY, "Up to %1$s FE/t, up to %2$s mobs on the wheel");
         add(WheelItem.PERK_KEY + 1, "Base wheel.");
-        add(WheelItem.PERK_KEY + 2, "Bigger cage: more mobs and a wider zone.");
+        add(WheelItem.PERK_KEY + 2, "Bigger cage: more mobs.");
         add(WheelItem.PERK_KEY + 3, "Small animals pull their full weight.");
         add(WheelItem.PERK_KEY + 4, "Gearbox: more mobs keep their weight.");
         add(WheelItem.PERK_KEY + 5, "Flywheel: keeps turning for a few seconds after the mobs stop.");
-        add(WheelItem.RULES_KEY, "Animals that run in the zone drive it: no babies, no hurt animals, no animals in water, one wheel per animal. A comparator reads the load.");
+        add(WheelItem.RULES_KEY, "Animals that stand and run on top of it drive it (animals nearby do not), standing counts half: no babies, no hurt animals, no animals in water, one wheel per animal. A comparator reads the load.");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }
