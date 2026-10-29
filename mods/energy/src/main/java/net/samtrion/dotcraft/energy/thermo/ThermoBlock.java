@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
 /**
- * A thermoelectric generator of one tier: a full block that makes FE from the temperature difference between its neighbours, see
+ * A thermoelectric generator of one tier: a full block that makes FE from the temperature difference between two opposite neighbours, see
  * {@link ThermoMath}. It is deliberately no {@code GeneratorBlock}, so it never joins the pool of the solar and lunar panels. A
  * comparator reads its share of the peak (0..15).
  */

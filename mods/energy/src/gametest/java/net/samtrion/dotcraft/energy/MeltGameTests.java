@@ -46,6 +46,9 @@ public final class MeltGameTests {
     private static final Identifier MELT_LIMITS = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "melt_limits");
     private static final ResourceKey<Consumer<GameTestHelper>> MELT_LIMITS_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, MELT_LIMITS);
 
+    private static final Identifier MELT_RECOVERY = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "melt_recovery");
+    private static final ResourceKey<Consumer<GameTestHelper>> MELT_RECOVERY_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, MELT_RECOVERY);
+
     /** The height the generators stand at, clear of the floor of the structure. */
     private static final int Y = 2;
     /** Ticks to wait: the first pulse of any tier comes within 20 ticks. */
@@ -81,6 +84,7 @@ public final class MeltGameTests {
             registry.register(MELT_TIERS, TestSupport.ticking(clean(MeltGameTests::tiers)));
             registry.register(MELT_ALONE, TestSupport.ticking(clean(MeltGameTests::alone)));
             registry.register(MELT_LIMITS, TestSupport.ticking(clean(MeltGameTests::limits)));
+            registry.register(MELT_RECOVERY, TestSupport.ticking(clean(MeltGameTests::recovery)));
         });
     }
 
@@ -99,6 +103,8 @@ public final class MeltGameTests {
         event.registerTest(MELT_ALONE, new FunctionGameTestInstance(MELT_ALONE_FUNCTION, new TestData<>(alone, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
         var limits = event.registerEnvironment(MELT_LIMITS, new TestEnvironmentDefinition.AllOf());
         event.registerTest(MELT_LIMITS, new FunctionGameTestInstance(MELT_LIMITS_FUNCTION, new TestData<>(limits, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
+        var recovery = event.registerEnvironment(MELT_RECOVERY, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(MELT_RECOVERY, new FunctionGameTestInstance(MELT_RECOVERY_FUNCTION, new TestData<>(recovery, Identifier.withDefaultNamespace("empty"), 70, 0, true)));
     }
 
     /**
@@ -190,6 +196,43 @@ public final class MeltGameTests {
             helper.assertTrue(helper.getBlockState(air.east()).isAir(), "tier 1 left something but air");
             helper.succeed();
         });
+    }
+
+    /**
+     * Water recovery of a packed ice block: tier 4 leaves one water source (unchanged), tier 5 recovers all the water the block is
+     * worth, nine sources (the ice it is made of), and none of them is lost.
+     *
+     * @param helper the game test helper
+     */
+    private static void recovery(GameTestHelper helper) {
+        var four = new BlockPos(6, Y, 2);
+        var five = new BlockPos(6, Y, 10);
+        helper.setBlock(four, MeltBlocks.block(4).get());
+        helper.setBlock(five, MeltBlocks.block(5).get());
+        for (var gen : new BlockPos[] {four, five}) {
+            helper.setBlock(gen.west(), Blocks.MAGMA_BLOCK);
+            helper.setBlock(gen.east(), Blocks.PACKED_ICE);
+        }
+        helper.runAfterDelay(WAIT, () -> {
+            int expected = MeltIce.PACKED_ICE.yield() / MeltIce.ICE.yield();
+            helper.assertTrue(sources(helper, 0, 5) == 1, "tier 4 left " + sources(helper, 0, 5) + " water sources for packed ice, expected 1");
+            helper.assertTrue(sources(helper, 6, 14) >= expected, "tier 5 left " + sources(helper, 6, 14) + " water sources for packed ice, expected " + expected);
+            helper.assertTrue(helper.getBlockState(five.east()).is(Blocks.WATER), "tier 5 left no water where the ice was");
+            helper.succeed();
+        });
+    }
+
+    /** Counts the water source blocks of the test between two z values (relative). */
+    private static int sources(GameTestHelper helper, int fromZ, int toZ) {
+        int count = 0;
+        for (int x = 0; x <= 13; x++) {
+            for (int y = Y - 4; y <= Y + 6; y++) {
+                for (int z = fromZ; z <= toZ; z++) {
+                    if (helper.getBlockState(new BlockPos(x, y, z)).getFluidState().isSource()) count++;
+                }
+            }
+        }
+        return count;
     }
 
     /**

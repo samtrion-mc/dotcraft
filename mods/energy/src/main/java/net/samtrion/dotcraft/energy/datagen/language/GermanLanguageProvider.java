@@ -48,7 +48,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         net.samtrion.dotcraft.energy.kite.datagen.KiteLanguage.german(this);
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         MeltBlocks.blocks().forEach(b -> add(b.get(), "Schmelzgenerator (Stufe " + b.get().tier() + ")"));
-        add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energie");
+        add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(CurrentGeneratorItem.FORMULA_KEY, "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)");
         add(CurrentGeneratorItem.PERK_KEY + 1, "Basis: braucht einen fast vollen Wasserwürfel");
         add(CurrentGeneratorItem.PERK_KEY + 2, "Weites Netz: Tiere zählen im Umkreis von 6 Blöcken");
@@ -57,7 +57,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(CurrentGeneratorItem.PERK_KEY + 5, "Abyssal: unabhängig vom Biom");
         ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelektrischer Generator (Stufe " + b.get().tier() + ")"));
         add(ThermoBlockItem.TOOLTIP_KEY, "Spitze %1$s FE/t bei einem Temperaturunterschied von %2$s");
-        add(ThermoBlockItem.HINT_KEY, "Braucht einen heissen und einen kalten Nachbarn (je Stufe 1-3, sie ergeben zusammen den Unterschied)");
+        add(ThermoBlockItem.HINT_KEY, "Braucht einen heissen und einen kalten Nachbarn auf gegenüberliegenden Seiten (je Stufe 1-3, sie ergeben zusammen den Unterschied)");
         add(WheelItem.STATS_KEY, "Bis zu %1$s FE/t, Zonenradius %2$s, bis zu %3$s Mobs");
         add(WheelItem.PERK_KEY + 1, "Basisrad.");
         add(WheelItem.PERK_KEY + 2, "Größerer Käfig: mehr Mobs und eine größere Zone.");

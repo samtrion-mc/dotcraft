@@ -30,7 +30,7 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 /**
  * The block entity of a melt generator. Every {@link MeltMath.Tier#interval()} ticks (staggered by position) it checks whether a
  * block of the {@link MeltTags#HEAT} tag touches it; if one does, it melts up to {@link MeltMath.Tier#slots()} blocks of ice that touch
- * it on the other sides (see {@link MeltIce}): they turn to air, or to water on tiers 4 and 5, and their FE goes into the heat reservoir.
+ * it on the other sides (see {@link MeltIce}): they turn to air, to a water source on tier 4, and on tier 5 to all the water they are worth (see {@link MeltMath#waterBlocks}); their FE goes into the heat reservoir.
  * Every tick the reservoir releases at most the peak into the buffer (see {@link MeltMath}), and the buffer is pushed into the
  * neighbours that take FE. When the block is removed, the FE of the reservoir and the buffer is handed to the neighbours that take FE; what they do not
  * take is lost. A neighbour in a chunk that is not loaded is never touched, so a generator never loads chunks.
@@ -138,8 +138,14 @@ public class MeltBlockEntity extends BlockEntity {
             if (!level.isLoaded(at)) continue;
             var ice = MeltIce.of(level.getBlockState(at));
             if (ice == null || !MeltMath.mayMelt(pending, ice.yield(), peak)) continue;
-            boolean water = MeltMath.leavesWater(tier, level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, at));
-            level.setBlockAndUpdate(at, (water ? Blocks.WATER : Blocks.AIR).defaultBlockState());
+            int water = MeltMath.waterBlocks(tier, level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, at),
+                    ice.yield(), MeltIce.ICE.yield());
+            level.setBlockAndUpdate(at, (water > 0 ? Blocks.WATER : Blocks.AIR).defaultBlockState());
+            if (water > 1) {
+                for (var extra : MeltWater.spill(at, water - 1, p -> level.getBlockState(p).isAir() && level.isLoaded(p))) {
+                    level.setBlockAndUpdate(extra, Blocks.WATER.defaultBlockState());
+                }
+            }
             level.playSound(null, at, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 1.4F);
             level.sendParticles(ParticleTypes.CLOUD, at.getX() + 0.5, at.getY() + 0.5, at.getZ() + 0.5, 4, 0.25, 0.25, 0.25, 0.01);
             pending += ice.yield();

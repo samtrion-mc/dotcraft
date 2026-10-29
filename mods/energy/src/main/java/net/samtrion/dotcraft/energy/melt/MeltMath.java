@@ -17,7 +17,8 @@ package net.samtrion.dotcraft.energy.melt;
  * <p>
  * Tiers 4 and 5 are burst tiers: running them at their peak for a whole day would take thousands of blue ice, so in practice they
  * empty the reservoir (600 ticks of peak) into a battery now and then. Water recovery leaves a renewable water source behind; it can
- * freeze again in a cold biome, but only slowly (random ticks of surface water), so it is a slow loop, not a free one.
+ * freeze again in a cold biome, but only slowly (random ticks of surface water), so it is a slow loop, not a free one. Tier 4 leaves
+ * one source per melted block, tier 5 recovers all the water (see {@link #waterBlocks}).
  */
 public final class MeltMath {
     /** Ticks of full output the reservoir holds, the same as the buffer. */
@@ -33,15 +34,17 @@ public final class MeltMath {
      * @param slots    how many ice blocks it melts at most per pulse; more than one means more of the six sides can feed it at once
      * @param interval ticks between two pulses
      * @param water    whether a melted block leaves a water source (not where water evaporates, as in the Nether)
+     * @param complete whether the water recovery is complete: the melted block leaves as many water sources as it is worth plain ice
+     *                 (1 for ice, 9 for packed ice, 81 for blue ice with the default yields), not just one; implies {@code water}
      */
-    public record Tier(int slots, int interval, boolean water) {}
+    public record Tier(int slots, int interval, boolean water, boolean complete) {}
 
     private static final Tier[] TIERS = {
-            new Tier(1, 20, false), // 1: one block per second
-            new Tier(2, 20, false), // 2: two blocks at once
-            new Tier(3, 10, false), // 3: three blocks, twice a second
-            new Tier(4, 10, true), // 4: water recovery
-            new Tier(5, 5, true) // 5: five blocks, four times a second: all five ice sides at full speed
+            new Tier(1, 20, false, false), // 1: one block per second
+            new Tier(2, 20, false, false), // 2: two blocks at once
+            new Tier(3, 10, false, false), // 3: three blocks, twice a second
+            new Tier(4, 10, true, false), // 4: water recovery (one source per block)
+            new Tier(5, 5, true, true) // 5: five blocks, four times a second, and the water comes back in full
     };
 
     /** Not instantiable. */
@@ -113,6 +116,22 @@ public final class MeltMath {
      */
     public static boolean leavesWater(Tier tier, boolean evaporates) {
         return tier.water() && !evaporates;
+    }
+
+    /**
+     * How many water sources a melted block leaves. Tier 4 leaves one source for every ice type; the complete recovery of tier 5
+     * leaves as many as the block is worth plain ice, so packed and blue ice give back the water of the ice they are made of.
+     *
+     * @param tier       the perks of the tier
+     * @param evaporates whether water evaporates at the position (the Nether)
+     * @param yield      the FE of the melted block
+     * @param iceYield   the FE of one plain ice block
+     * @return 0 for air, else the number of sources, at least 1
+     */
+    public static int waterBlocks(Tier tier, boolean evaporates, int yield, int iceYield) {
+        if (!leavesWater(tier, evaporates)) return 0;
+        if (!tier.complete() || iceYield <= 0) return 1;
+        return Math.max(1, yield / iceYield);
     }
 
     /**

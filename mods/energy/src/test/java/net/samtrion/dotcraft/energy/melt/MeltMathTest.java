@@ -8,6 +8,8 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
+import net.minecraft.core.BlockPos;
+
 import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
@@ -143,6 +145,41 @@ class MeltMathTest {
             long reservoirTicks = MeltMath.reserve(peak(tier)) / peak(tier);
             assertEquals(MeltMath.RESERVE_TICKS, reservoirTicks);
         }
+    }
+
+    /** Tier 4 leaves one source per block, tier 5 the water of the ice a block is made of, and nothing where water evaporates. */
+    @Test
+    void completeRecoveryOnlyAtTierFive() {
+        int ice = 1_000;
+        for (int yield : new int[] {ice, 9 * ice, 81 * ice}) {
+            assertEquals(0, MeltMath.waterBlocks(MeltMath.tier(1), false, yield, ice));
+            assertEquals(0, MeltMath.waterBlocks(MeltMath.tier(3), false, yield, ice));
+            assertEquals(1, MeltMath.waterBlocks(MeltMath.tier(4), false, yield, ice));
+            assertEquals(0, MeltMath.waterBlocks(MeltMath.tier(4), true, yield, ice));
+            assertEquals(0, MeltMath.waterBlocks(MeltMath.tier(5), true, yield, ice));
+        }
+        assertEquals(1, MeltMath.waterBlocks(MeltMath.tier(5), false, ice, ice));
+        assertEquals(9, MeltMath.waterBlocks(MeltMath.tier(5), false, 9 * ice, ice));
+        assertEquals(81, MeltMath.waterBlocks(MeltMath.tier(5), false, 81 * ice, ice));
+        assertEquals(1, MeltMath.waterBlocks(MeltMath.tier(5), false, 10, ice), "never less than one source");
+        assertTrue(MeltMath.tier(5).complete() && !MeltMath.tier(4).complete());
+    }
+
+    /** The spill fills the free blocks nearest first, never the blocked ones, never the origin, and stops when the room is full. */
+    @Test
+    void spillFillsFreeRoomNearestFirst() {
+        var origin = new BlockPos(0, 0, 0);
+        var open = MeltWater.spill(origin, 8, p -> true);
+        assertEquals(8, open.size());
+        assertEquals(8, new java.util.HashSet<>(open).size(), "distinct");
+        assertFalse(open.contains(origin));
+        assertTrue(open.stream().allMatch(p -> p.distManhattan(origin) <= 2), "nearest first");
+        assertEquals(6, open.stream().filter(p -> p.distManhattan(origin) == 1).count());
+        // a pocket of three free blocks in a row holds three sources, however many are asked
+        var pocket = java.util.Set.of(new BlockPos(1, 0, 0), new BlockPos(2, 0, 0), new BlockPos(3, 0, 0));
+        assertEquals(3, MeltWater.spill(origin, 80, pocket::contains).size());
+        assertTrue(MeltWater.spill(origin, 5, p -> false).isEmpty());
+        assertTrue(MeltWater.spill(origin, 0, p -> true).isEmpty());
     }
 
     /** Water is left by the tiers with the perk, never where water evaporates. */

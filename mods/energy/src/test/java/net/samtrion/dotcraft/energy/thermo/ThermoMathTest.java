@@ -25,6 +25,34 @@ class ThermoMathTest {
         }
     }
 
+    /** An axis needs heat on one face and cold on the opposite one; either way round, and the better way counts. */
+    @Test
+    void axisNeedsHeatAndColdOnOppositeFaces() {
+        assertEquals(ThermoMath.NONE, ThermoMath.axis(3, 0, 0, 0));
+        assertEquals(ThermoMath.NONE, ThermoMath.axis(0, 3, 0, 3));
+        // heat and cold on the same face do not pair up
+        assertEquals(0, ThermoMath.axis(3, 3, 0, 0).delta());
+        assertEquals(new ThermoMath.Pair(3, 3), ThermoMath.axis(3, 0, 0, 3));
+        assertEquals(new ThermoMath.Pair(3, 3), ThermoMath.axis(0, 3, 3, 0));
+        // both ways round exist: the better one wins
+        assertEquals(new ThermoMath.Pair(3, 2), ThermoMath.axis(3, 1, 1, 2));
+        assertEquals(5, ThermoMath.axis(3, 1, 1, 2).delta());
+    }
+
+    /** The axes never stack and heat of one axis never pairs with cold of another: the best single pair counts. */
+    @Test
+    void bestAxisCountsAndAxesDoNotStack() {
+        var weak = ThermoMath.axis(1, 0, 0, 1);
+        var strong = ThermoMath.axis(3, 0, 0, 3);
+        assertEquals(2, weak.delta());
+        assertEquals(strong, ThermoMath.best(weak, strong));
+        assertEquals(strong, ThermoMath.best(strong, weak));
+        assertEquals(6, ThermoMath.best(ThermoMath.best(strong, strong), strong).delta());
+        // lava on one axis and ice on another (touching at an edge) make nothing
+        assertEquals(ThermoMath.NONE, ThermoMath.best(ThermoMath.axis(3, 0, 0, 0), ThermoMath.axis(0, 3, 0, 0)));
+        assertEquals(0F, ThermoMath.share(5, ThermoMath.NONE.heat(), ThermoMath.NONE.cold()));
+    }
+
     /** The difference is the sum of the levels, from the weakest pair (2) to the strongest (6); higher levels count as the highest. */
     @Test
     void deltaIsTheSumOfTheLevels() {
