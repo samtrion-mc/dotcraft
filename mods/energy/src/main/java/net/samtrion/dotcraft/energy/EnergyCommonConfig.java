@@ -76,8 +76,17 @@ public final class EnergyCommonConfig {
     public static final List<Generator> MOB_WHEELS = generators(WHEEL_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
     /** The registry paths of the kite wind generators, tiers 1-5, which are also their config sections. */
     public static final List<String> KITE_NAMES = tierNames("kite_generator");
-    /** The kite wind generators: the peak FE/t with the tether fully out, a free sky and clear weather. */
-    public static final List<Generator> KITE_GENERATORS = generators(KITE_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /**
+     * The kite wind generators. The configured {@code base} FE/t is only the base of the tier: the output is the base times the length
+     * factor of the tether (tether / 32 at the most: 1 / 2 / 4 / 8 / 16 for tier 1-5), so the buffer and the push rate default to the
+     * real best case, base x factor.
+     */
+    public static final List<Generator> KITE_GENERATORS = kiteGenerators(new int[] {15, 75, 560, 5_600, 56_000}, new int[] {1, 2, 4, 8, 16});
+    /** The default FE one lightning bolt on a kite gives (named constant, see {@link #kiteLightningEnergy()}). */
+    public static final int KITE_LIGHTNING_ENERGY_DEFAULT = 1_000_000;
+    private static final ModConfigSpec.IntValue KITE_LIGHTNING_ENERGY = BUILDER
+            .comment("FE a kite wind generator gets from one lightning bolt (only tiers that stay up in a thunderstorm are struck).")
+            .defineInRange("kite_lightning_energy", KITE_LIGHTNING_ENERGY_DEFAULT, 0, Integer.MAX_VALUE);
 
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
@@ -87,6 +96,21 @@ public final class EnergyCommonConfig {
 
     private static List<String> tierNames(String prefix) {
         return List.of(prefix + "_tier_1", prefix + "_tier_2", prefix + "_tier_3", prefix + "_tier_4", prefix + "_tier_5");
+    }
+
+    private static List<Generator> kiteGenerators(int[] bases, int[] factors) {
+        var list = new java.util.ArrayList<Generator>();
+        for (int i = 0; i < KITE_NAMES.size(); i++) list.add(new Generator(KITE_NAMES.get(i), bases[i], factors[i], "base"));
+        return List.copyOf(list);
+    }
+
+    /**
+     * The FE one lightning bolt gives a kite generator.
+     *
+     * @return the FE per bolt, 1 000 000 by default
+     */
+    public static int kiteLightningEnergy() {
+        return SPEC.isLoaded() ? KITE_LIGHTNING_ENERGY.get() : KITE_LIGHTNING_ENERGY_DEFAULT;
     }
 
     private static List<Generator> generators(List<String> names, int[] peaks) {
@@ -166,6 +190,8 @@ public final class EnergyCommonConfig {
         private final ModConfigSpec.IntValue capacity;
         private final ModConfigSpec.IntValue maxOutput;
         private final int defaultPeak;
+        private final int defaultCapacity;
+        private final int defaultMaxOutput;
 
         /**
          * Defines the entries of a generator.
@@ -174,19 +200,34 @@ public final class EnergyCommonConfig {
          * @param defaultPeak the default peak output in FE/t
          */
         private Generator(String name, int defaultPeak) {
+            this(name, defaultPeak, 1, "peak");
+        }
+
+        /**
+         * Defines the entries of a generator whose real best case is a multiple of its configured value.
+         *
+         * @param name        the registry path of the generator, also its config section
+         * @param defaultPeak the default value in FE/t (the peak, or the base for a generator that multiplies it)
+         * @param factor      the best-case multiple of that value; the buffer and the push rate default to it
+         * @param key         the config key of the value, {@code peak} or {@code base}
+         */
+        private Generator(String name, int defaultPeak, int factor, String key) {
             this.defaultPeak = defaultPeak;
+            defaultCapacity = defaultPeak * factor * BUFFER_TICKS;
+            defaultMaxOutput = defaultPeak * factor * OUTPUT_FACTOR;
             BUILDER.push("generators").push(name);
-            peak = BUILDER.comment("Peak FE per tick of the " + name + " under ideal conditions.")
-                    .defineInRange("peak", defaultPeak, 0, Integer.MAX_VALUE / BUFFER_TICKS);
+            peak = BUILDER.comment((factor == 1 ? "Peak" : "Base") + " FE per tick of the " + name
+                    + (factor == 1 ? " under ideal conditions." : "; the real output is this base times the length factor of the tether."))
+                    .defineInRange(key, defaultPeak, 0, Integer.MAX_VALUE / (BUFFER_TICKS * factor));
             capacity = BUILDER.comment("How much FE the " + name + " buffers.")
-                    .defineInRange("capacity", defaultPeak * BUFFER_TICKS, 1, Integer.MAX_VALUE);
+                    .defineInRange("capacity", defaultCapacity, 1, Integer.MAX_VALUE);
             maxOutput = BUILDER.comment("Most FE the " + name + " gives to a neighbour per tick.")
-                    .defineInRange("maxOutput", defaultPeak * OUTPUT_FACTOR, 0, Integer.MAX_VALUE);
+                    .defineInRange("maxOutput", defaultMaxOutput, 0, Integer.MAX_VALUE);
             BUILDER.pop(2);
         }
 
         /**
-         * The peak output.
+         * The peak output (for the kite generators the base, see {@link #KITE_GENERATORS}).
          *
          * @return the most FE per tick the generator makes
          */
@@ -200,7 +241,7 @@ public final class EnergyCommonConfig {
          * @return the FE the generator buffers
          */
         public int capacity() {
-            return SPEC.isLoaded() ? capacity.get() : defaultPeak * BUFFER_TICKS;
+            return SPEC.isLoaded() ? capacity.get() : defaultCapacity;
         }
 
         /**
@@ -209,7 +250,7 @@ public final class EnergyCommonConfig {
          * @return the most FE per tick given to a neighbour
          */
         public int maxOutput() {
-            return SPEC.isLoaded() ? maxOutput.get() : defaultPeak * OUTPUT_FACTOR;
+            return SPEC.isLoaded() ? maxOutput.get() : defaultMaxOutput;
         }
     }
 

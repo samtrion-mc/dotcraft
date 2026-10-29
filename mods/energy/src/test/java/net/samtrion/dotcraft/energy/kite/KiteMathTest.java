@@ -22,16 +22,33 @@ class KiteMathTest {
         assertTrue(KiteMath.tether(5) > 384, "tier 5 must reach beyond the world height from any block");
     }
 
-    /** The output is the peak only with the tether fully out, a free sky and clear weather. */
+    /** The length factor is length / reference, 1 at the reference length (tether of tier 1), not capped at 1, capped by the tether. */
+    @Test
+    void lengthFactorIsLengthOverReference() {
+        assertEquals(32, KiteMath.REFERENCE_LENGTH);
+        assertEquals(1, KiteMath.lengthFactor(1, 32), 1e-9);
+        assertEquals(0.5, KiteMath.lengthFactor(1, 16), 1e-9);
+        assertEquals(1, KiteMath.lengthFactor(5, 32), 1e-9);
+        assertEquals(0, KiteMath.lengthFactor(5, -4));
+        double[] best = {1, 2, 4, 8, 16};
+        double[] maxFe = {15, 150, 2_240, 44_800, 896_000};
+        for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
+            assertEquals(best[tier - 1], KiteMath.lengthFactor(tier, 10_000), 1e-9, "tier " + tier);
+            assertEquals(maxFe[tier - 1], KiteMath.peak(EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak(), tier), 1e-9, "tier " + tier);
+        }
+    }
+
+    /** The output is the best case only with the tether fully out, a free sky and clear weather. */
     @Test
     void peakOnlyAtFullTetherFreeSkyAndClearWeather() {
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
-            double peak = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
-            assertEquals(peak, KiteMath.output(peak, tier, KiteMath.tether(tier), 1, Weather.CLEAR, true, 1), 1e-9);
-            assertTrue(KiteMath.output(peak, tier, KiteMath.tether(tier) / 2.0, 1, Weather.CLEAR, true, 1) < peak);
-            assertTrue(KiteMath.output(peak, tier, KiteMath.tether(tier), 1, Weather.CLEAR, true, 0.5) < peak);
-            assertTrue(KiteMath.output(peak, tier, KiteMath.tether(tier), 1, Weather.RAIN, true, 1) <= peak);
-            if (tier != 3 && tier < 5) assertTrue(KiteMath.output(peak, tier, KiteMath.tether(tier), 0.5, Weather.CLEAR, true, 1) < peak);
+            double base = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
+            double peak = KiteMath.peak(base, tier);
+            assertEquals(peak, KiteMath.output(base, tier, KiteMath.tether(tier), 1, Weather.CLEAR, true, 1), 1e-9);
+            assertTrue(KiteMath.output(base, tier, KiteMath.tether(tier) / 2.0, 1, Weather.CLEAR, true, 1) < peak);
+            assertTrue(KiteMath.output(base, tier, KiteMath.tether(tier), 1, Weather.CLEAR, true, 0.5) < peak);
+            assertTrue(KiteMath.output(base, tier, KiteMath.tether(tier), 1, Weather.RAIN, true, 1) <= peak);
+            if (tier != 3 && tier < 5) assertTrue(KiteMath.output(base, tier, KiteMath.tether(tier), 0.5, Weather.CLEAR, true, 1) < peak);
         }
     }
 
@@ -45,6 +62,7 @@ class KiteMathTest {
             last = now;
         }
         assertEquals(KiteMath.output(100, 5, 512, 1, Weather.CLEAR, true, 1), KiteMath.output(100, 5, 5000, 1, Weather.CLEAR, true, 1));
+        assertEquals(100 * 16, KiteMath.output(100, 5, 512, 1, Weather.CLEAR, true, 1), 1e-9);
         assertEquals(0, KiteMath.output(100, 5, 0, 1, Weather.CLEAR, true, 1));
         assertEquals(0, KiteMath.output(100, 5, -3, 1, Weather.CLEAR, true, 1));
     }
@@ -85,7 +103,7 @@ class KiteMathTest {
         assertEquals(KiteMath.tether(3), KiteMath.reach(3, h -> h >= 2));
         assertEquals(1, KiteMath.opennessFactor(3, 0));
         double peak = EnergyCommonConfig.KITE_GENERATORS.get(2).peak();
-        assertEquals(peak, KiteMath.output(peak, 3, KiteMath.tether(3), 0, Weather.CLEAR, true, 1), 1e-9);
+        assertEquals(KiteMath.peak(peak, 3), KiteMath.output(peak, 3, KiteMath.tether(3), 0, Weather.CLEAR, true, 1), 1e-9);
         assertEquals(KiteMath.Limit.NONE, KiteMath.limit(3, true, Weather.CLEAR, KiteMath.reach(3, h -> true), 0));
         assertTrue(KiteMath.output(peak, 2, KiteMath.tether(2), 0, Weather.CLEAR, true, 1) == 0);
     }
@@ -103,12 +121,13 @@ class KiteMathTest {
         }
         assertTrue(KiteMath.slotShare(4, 0) > KiteMath.slotShare(4, 1) && KiteMath.slotShare(4, 1) > 0, "diminishing");
         for (int tier = 4; tier <= 5; tier++) {
-            double peak = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
+            double base = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
+            double peak = KiteMath.peak(base, tier);
             int t = tier;
             double both = 0;
             double one = 0;
             for (int slot = 0; slot < 2; slot++) {
-                double part = KiteMath.slotOutput(peak, t, slot, KiteMath.tether(t), 1, Weather.CLEAR, true, 1);
+                double part = KiteMath.slotOutput(base, t, slot, KiteMath.tether(t), 1, Weather.CLEAR, true, 1);
                 both += part;
                 if (slot == 0) one = part;
             }
@@ -201,30 +220,62 @@ class KiteMathTest {
     }
 
     /**
-     * Economy anchor on the real model (tether out, free sky, the real gust and weather mix): the peaks follow the battery ladder, start
-     * at 15 FE/t and every tier fills its battery in well under a day but not in a moment; the yield per day is held between 2 and 15
-     * batteries, the range of the panels.
+     * Economy anchor on the real model (tether out, free sky, the real gust and weather mix): the bases follow the battery ladder and
+     * the tether is the yield factor (1 / 2 / 4 / 8 / 16). Per unit of length factor the yield is held between 2 and 15 batteries per
+     * day, the range of the panels, so a tier with a factor f yields between 2 f and 15 f batteries (about 10 f).
      */
     @Test
     void dailyYieldFillsTheBatteryOfTheTierWellUnderADay() {
         int[] ladder = {15, 75, 560, 5_600, 56_000};
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
-            double peak = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
-            assertEquals(ladder[tier - 1], peak);
-            double perDay = KiteMath.typicalDailyYield(peak, tier);
+            double base = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
+            assertEquals(ladder[tier - 1], base);
+            double factor = KiteMath.lengthFactor(tier, KiteMath.tether(tier));
+            double perDay = KiteMath.typicalDailyYield(base, tier);
             double batteries = perDay / BATTERY_CAPACITY[tier - 1];
-            assertTrue(batteries >= 2 && batteries <= 15, "tier " + tier + " yields " + batteries + " batteries per day");
-            assertTrue(perDay <= peak * KiteMath.DAY_TICKS * KiteMath.WIND_MEAN * 1.01, "tier " + tier + " yields more than the mean wind allows");
+            assertTrue(batteries / factor >= 2 && batteries / factor <= 15, "tier " + tier + " yields " + batteries + " batteries per day");
+            assertTrue(perDay <= KiteMath.peak(base, tier) * KiteMath.DAY_TICKS * KiteMath.WIND_MEAN * 1.01,
+                    "tier " + tier + " yields more than the mean wind allows");
+            // the battery is filled in well over a tick and well under a day at the very best
+            double bestTicks = (double) BATTERY_CAPACITY[tier - 1] / KiteMath.peak(base, tier);
+            assertTrue(bestTicks >= 50 && bestTicks <= 2_500, "tier " + tier + " fills its battery in " + bestTicks + " ticks at best");
         }
-        assertTrue(EnergyCommonConfig.KITE_GENERATORS.get(0).peak() >= 15);
     }
 
-    /** The buffer holds 600 ticks of peak and a neighbour can take five times the peak per tick. */
+    /** Only the kites that stay up in a thunderstorm (tier 4 and 5) are struck, only in a thunderstorm, after the cooldown and on a low roll. */
+    @Test
+    void lightningChanceAndCooldown() {
+        double hit = KiteMath.LIGHTNING_CHANCE_PER_SECOND / 2;
+        for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
+            assertEquals(tier >= 4, KiteMath.struck(tier, Weather.THUNDER, 0, hit), "tier " + tier);
+            assertTrue(!KiteMath.struck(tier, Weather.RAIN, 0, 0) && !KiteMath.struck(tier, Weather.CLEAR, 0, 0), "tier " + tier + " struck without thunder");
+        }
+        assertTrue(!KiteMath.struck(5, Weather.THUNDER, 1, 0), "struck during the cooldown");
+        assertTrue(KiteMath.struck(5, Weather.THUNDER, 0, 0) && KiteMath.struck(5, Weather.THUNDER, -50, 0));
+        assertTrue(!KiteMath.struck(5, Weather.THUNDER, 0, KiteMath.LIGHTNING_CHANCE_PER_SECOND), "the chance is a strict bound");
+        assertTrue(KiteMath.LIGHTNING_CHANCE_PER_SECOND <= 0.05 && KiteMath.LIGHTNING_COOLDOWN_TICKS >= 1_200, "a strike must stay rare");
+        assertEquals(1_000_000, EnergyCommonConfig.kiteLightningEnergy());
+    }
+
+    /** A bolt fills the buffer first, then the neighbours take a burst, and what neither takes is lost. */
+    @Test
+    void lightningCreditSplitsIntoBufferNeighboursAndLoss() {
+        assertEquals(new KiteMath.Credit(1_000_000, 0, 0), KiteMath.credit(1_000_000, 5_000_000, 0));
+        assertEquals(new KiteMath.Credit(300_000, 700_000, 0), KiteMath.credit(1_000_000, 300_000, 5_000_000));
+        assertEquals(new KiteMath.Credit(300_000, 200_000, 500_000), KiteMath.credit(1_000_000, 300_000, 200_000));
+        assertEquals(new KiteMath.Credit(0, 0, 1_000_000), KiteMath.credit(1_000_000, 0, 0));
+        assertEquals(new KiteMath.Credit(0, 0, 0), KiteMath.credit(0, 10, 10));
+        assertEquals(new KiteMath.Credit(0, 0, 100), KiteMath.credit(100, -5, -5));
+    }
+
+    /** The buffer holds 600 ticks of the best case (base x length factor) and a neighbour can take five times that per tick. */
     @Test
     void bufferAndPushRateFollowThePeak() {
         for (var config : EnergyCommonConfig.KITE_GENERATORS) {
-            assertEquals(config.peak() * 600, config.capacity());
-            assertEquals(config.peak() * 5, config.maxOutput());
+            int tier = EnergyCommonConfig.KITE_GENERATORS.indexOf(config) + 1;
+            int best = (int) KiteMath.peak(config.peak(), tier);
+            assertEquals(best * 600, config.capacity());
+            assertEquals(best * 5, config.maxOutput());
         }
     }
 }

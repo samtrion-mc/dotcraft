@@ -8,6 +8,9 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.EntitySpawnReason;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -20,6 +23,8 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
+import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 import net.samtrion.dotcraft.energy.generator.GeneratorEnergy;
 
 /**
@@ -56,6 +61,8 @@ public class KiteBlockEntity extends BlockEntity {
     private boolean sky = true;
     /** What keeps the output from the peak, at the last read of the world. */
     private KiteMath.Limit limit = KiteMath.Limit.NONE;
+    /** The game time until which a kite of a slot is safe from lightning. */
+    private final long[] strikeCooldownUntil = new long[KiteMath.MAX_KITES];
     /** The redstone signal that the neighbours last saw. */
     private int signal;
 
@@ -211,13 +218,13 @@ public class KiteBlockEntity extends BlockEntity {
         return true;
     }
 
-    /** The FE per tick of all kites of the tier together; the shares of the slots add up to the peak (see {@link KiteMath#slotShare}). */
-    private double totalOutput(double peak, int tier, long time) {
+    /** The FE per tick of all kites of the tier together; the shares of the slots add up to the base (see {@link KiteMath#slotShare}). */
+    private double totalOutput(double base, int tier, long time) {
         double sum = 0;
         for (int slot = 0; slot < KiteMath.kites(tier); slot++) {
             var k = kites[slot];
             if (k != null && !k.isRemoved())
-                sum += KiteMath.slotOutput(peak, tier, slot, k.altitude(), openness, weather, sky, KiteMath.wind(time));
+                sum += KiteMath.slotOutput(base, tier, slot, k.altitude(), openness, weather, sky, KiteMath.wind(time));
         }
         return sum;
     }
@@ -243,8 +250,9 @@ public class KiteBlockEntity extends BlockEntity {
         long time = level.getGameTime() + worldPosition.hashCode();
         if (Math.floorMod(time, RECOMPUTE_TICKS) == 0) recompute(level);
         var config = block().config();
-        output = hasKite ? totalOutput(config.peak(), block().tier(), time) : 0;
-        updateSignal(level, config.peak());
+        int tier = block().tier();
+        output = hasKite ? totalOutput(config.peak(), tier, time) : 0;
+        updateSignal(level, KiteMath.peak(config.peak(), tier));
         carry += output;
         int whole = (int) carry;
         carry -= whole;
@@ -285,6 +293,66 @@ public class KiteBlockEntity extends BlockEntity {
             if (k != null) k.setTarget(reeledIn ? 0 : reach);
         }
         limit = KiteMath.limit(tier, sky, weather, reach, openness);
+        rollLightning(level, tier);
+    }
+
+    /** One roll per second and kite: a kite that stays up in a thunderstorm may be struck (see {@link KiteMath#struck}). */
+    private void rollLightning(ServerLevel level, int tier) {
+        if (!sky || weather != KiteMath.Weather.THUNDER) return;
+        long now = level.getGameTime();
+        for (int slot = 0; slot < KiteMath.kites(tier); slot++) {
+            var k = kites[slot];
+            if (k == null || k.isRemoved()) continue;
+            if (KiteMath.struck(tier, weather, strikeCooldownUntil[slot] - now, level.getRandom().nextDouble())) strike(level, slot);
+        }
+    }
+
+    /**
+     * Lets lightning strike the kite of a slot: a real but purely visual bolt (no fire, no damage) at the kite, which then credits the
+     * energy to this block; the kite is safe from the next bolt for a while.
+     *
+     * @param level the level
+     * @param slot  the slot of the kite
+     * @return the share of the bolt, or {@code null} if the slot has no kite
+     */
+    KiteMath.@Nullable Credit strike(ServerLevel level, int slot) {
+        var k = kite(slot);
+        if (k == null || k.isRemoved()) return null;
+        strikeCooldownUntil[slot] = level.getGameTime() + KiteMath.LIGHTNING_COOLDOWN_TICKS;
+        var bolt = EntityType.LIGHTNING_BOLT.create(level, EntitySpawnReason.TRIGGERED);
+        if (bolt != null) {
+            bolt.setPos(k.getX(), k.getY(), k.getZ());
+            bolt.setVisualOnly(true);
+            level.addFreshEntity(bolt);
+        }
+        return creditLightning(level, EnergyCommonConfig.kiteLightningEnergy());
+    }
+
+    /**
+     * Credits the FE of a bolt: into the buffer first, the rest as a one-off burst into the neighbours (which ignores the push limit
+     * per tick); what neither takes is lost.
+     *
+     * @param level  the level
+     * @param energy the FE of the bolt
+     * @return how the FE was shared out
+     */
+    KiteMath.Credit creditLightning(ServerLevel level, int amount) {
+        int free = (int) Math.min(Integer.MAX_VALUE, energy.getCapacityAsLong() - energy.getAmountAsLong());
+        int stored = energy.produce(Math.clamp(free, 0, amount));
+        int rest = amount - stored;
+        int pushed = 0;
+        for (Direction d : Direction.values()) {
+            if (rest <= pushed || d == Direction.UP) continue;
+            var cache = neighbours.computeIfAbsent(d,
+                    dir -> BlockCapabilityCache.create(Capabilities.Energy.BLOCK, level, worldPosition.relative(dir), dir.getOpposite()));
+            var target = cache.getCapability();
+            if (target == null) continue;
+            try (var tx = Transaction.openRoot()) {
+                pushed += target.insert(rest - pushed, tx);
+                tx.commit();
+            }
+        }
+        return KiteMath.credit(amount, free, pushed);
     }
 
     /**
