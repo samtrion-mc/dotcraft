@@ -72,7 +72,7 @@
   "tooltip.dotcraftenergy.kite.perk.5": "Insulated tether: ignores thunder and a crowded sky.",
   "tooltip.dotcraftenergy.kite.tether": "Tether: %s m",
   "tooltip.dotcraftenergy.thermo": "Peak %1$s FE/t at a temperature difference of %2$s",
-  "tooltip.dotcraftenergy.thermo.hint": "Needs a hot and a cold neighbour (levels 1-3 each, they add up to the difference)",
+  "tooltip.dotcraftenergy.thermo.hint": "Needs a hot and a cold neighbour on opposite sides (levels 1-3 each, they add up to the difference)",
   "tooltip.dotcraftenergy.vibration.hearing": "Hears shocks within %1$s blocks, from vibration frequency %2$s",
   "tooltip.dotcraftenergy.vibration.needs": "Powered by shocks nearby: blocks broken, fights, explosions",
   "tooltip.dotcraftenergy.vibration.peak": "Peak %1$s FE/t, on average at most %2$s FE/t",

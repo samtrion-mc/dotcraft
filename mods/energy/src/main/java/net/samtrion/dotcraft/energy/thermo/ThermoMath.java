@@ -4,8 +4,10 @@ package net.samtrion.dotcraft.energy.thermo;
  * The pure math of the thermoelectric generators, free of any Minecraft types so unit tests can carry the balance.
  * <p>
  * A hot neighbour has a heat level and a cold neighbour a cold level, both {@code 1..}{@link #MAX_LEVEL} (data tags, see
- * {@link ThermoTags}). The temperature difference is the best heat level plus the best cold level of the six neighbours, and only
- * exists when there is both a hot and a cold neighbour: with {@link #MAX_LEVEL} 3 it is {@code 2..6}. A tier reaches its peak at
+ * {@link ThermoTags}). The temperature difference needs two <em>opposite</em> faces of the generator, one with a heat source and
+ * the other with a cold source: heat and cold on faces that merely touch at an edge make nothing. For each of the three axes the
+ * difference is the heat level of one face plus the cold level of the other (the better of the two ways round), and the best axis
+ * counts; the axes do not stack. With {@link #MAX_LEVEL} 3 the difference is {@code 2..6}. A tier reaches its peak at
  * its {@linkplain #ceiling ceiling}: the higher the tier, the smaller the difference it needs for the same share of its peak (the
  * tier perk). The ceilings stay high on purpose, as the sources are free and never used up: the weakest pair (campfire and a
  * puddle) gives a tier 1 a third of its peak and a tier 5 only half of it, and full power needs real sources (tier 5: a
@@ -39,6 +41,52 @@ public final class ThermoMath {
     public static int delta(int heat, int cold) {
         if (heat <= 0 || cold <= 0) return 0;
         return Math.min(heat, MAX_LEVEL) + Math.min(cold, MAX_LEVEL);
+    }
+
+    /**
+     * The heat and the cold level of one pair of opposite faces.
+     *
+     * @param heat the heat level on one face, 0 if none
+     * @param cold the cold level on the other face, 0 if none
+     */
+    public record Pair(int heat, int cold) {
+        /**
+         * The temperature difference of this pair.
+         *
+         * @return see {@link ThermoMath#delta}
+         */
+        public int delta() {
+            return ThermoMath.delta(heat, cold);
+        }
+    }
+
+    /** No pair: nothing is made. */
+    public static final Pair NONE = new Pair(0, 0);
+
+    /**
+     * The better way round of one axis: the heat on one face and the cold on the opposite one, or the other way.
+     *
+     * @param heatA the heat level of the first face, 0 if none
+     * @param coldA the cold level of the first face, 0 if none
+     * @param heatB the heat level of the opposite face, 0 if none
+     * @param coldB the cold level of the opposite face, 0 if none
+     * @return the pair with the larger difference, {@link #NONE} if neither way round has both heat and cold
+     */
+    public static Pair axis(int heatA, int coldA, int heatB, int coldB) {
+        var one = new Pair(heatA, coldB);
+        var other = new Pair(heatB, coldA);
+        return other.delta() > one.delta() ? other : one.delta() > 0 ? one : NONE;
+    }
+
+    /**
+     * The better of two axes; the axes never stack.
+     *
+     * @param a the pair of one axis
+     * @param b the pair of another axis
+     * @return the pair with the larger difference ({@code a} on a tie)
+     */
+    public static Pair best(Pair a, Pair b) {
+        return b.delta() > a.delta() ? b : a;
     }
 
     /**

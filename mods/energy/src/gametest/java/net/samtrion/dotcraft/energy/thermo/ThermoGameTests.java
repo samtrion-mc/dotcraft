@@ -51,6 +51,8 @@ public final class ThermoGameTests {
     private static final Identifier NO_POOL = id("thermo_no_pool");
     /** The test that checks the heat and cold tags. */
     private static final Identifier TAGS = id("thermo_tags");
+    /** The test that checks that only opposite faces pair up and the best axis counts. */
+    private static final Identifier AXES = id("thermo_axes");
 
     /** Not instantiable. */
     private ThermoGameTests() {}
@@ -77,6 +79,7 @@ public final class ThermoGameTests {
             registry.register(ENERGY, TestSupport.ticking(ThermoGameTests::energy));
             registry.register(NO_POOL, TestSupport.ticking(ThermoGameTests::noPool));
             registry.register(TAGS, TestSupport.ticking(ThermoGameTests::tags));
+            registry.register(AXES, TestSupport.ticking(ThermoGameTests::axes));
         });
     }
 
@@ -87,7 +90,7 @@ public final class ThermoGameTests {
      */
     @SubscribeEvent
     static void registerTests(RegisterGameTestsEvent event) {
-        for (var test : List.of(OUTPUT, ENERGY, NO_POOL, TAGS)) {
+        for (var test : List.of(OUTPUT, ENERGY, NO_POOL, TAGS, AXES)) {
             var environment = event.registerEnvironment(test, new TestEnvironmentDefinition.AllOf());
             event.registerTest(test, new FunctionGameTestInstance(function(test),
                     new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 80, 0, true)));
@@ -131,9 +134,9 @@ public final class ThermoGameTests {
                 new Scenario(1, Blocks.CAMPFIRE.defaultBlockState(), Blocks.WATER.defaultBlockState(), 1, 1),
                 new Scenario(3, Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.PACKED_ICE.defaultBlockState(), 2, 3),
                 new Scenario(5, Blocks.MAGMA_BLOCK.defaultBlockState(), Blocks.WATER.defaultBlockState(), 2, 1),
-                new Scenario(2, Blocks.LAVA.defaultBlockState(), null, 3, 0),
-                new Scenario(2, null, Blocks.BLUE_ICE.defaultBlockState(), 0, 3),
-                new Scenario(4, Blocks.CAMPFIRE.defaultBlockState().setValue(BlockStateProperties.LIT, false), Blocks.BLUE_ICE.defaultBlockState(), 0, 3));
+                new Scenario(2, Blocks.LAVA.defaultBlockState(), null, 0, 0),
+                new Scenario(2, null, Blocks.BLUE_ICE.defaultBlockState(), 0, 0),
+                new Scenario(4, Blocks.CAMPFIRE.defaultBlockState().setValue(BlockStateProperties.LIT, false), Blocks.BLUE_ICE.defaultBlockState(), 0, 0));
         var level = helper.getLevel();
         var generators = new BlockPos[scenarios.size()];
         for (int i = 0; i < scenarios.size(); i++) {
@@ -161,6 +164,65 @@ public final class ThermoGameTests {
             helper.assertTrue(ThermoMath.share(5, 2, 1) > ThermoMath.share(1, 2, 1), "tier 5 does not get more out of magma and water");
             helper.succeed();
         });
+    }
+
+    /**
+     * Only opposite faces pair up: heat west and cold east or the other way round, or heat below and cold above, make power. Heat and
+     * cold on faces that touch at an edge make nothing, and the best axis counts without stacking with the others.
+     *
+     * @param helper the game test helper
+     */
+    private static void axes(GameTestHelper helper) {
+        var lava = Blocks.LAVA.defaultBlockState();
+        var ice = Blocks.BLUE_ICE.defaultBlockState();
+        var campfire = Blocks.CAMPFIRE.defaultBlockState();
+        var water = Blocks.WATER.defaultBlockState();
+        // cold west, heat east
+        var reversed = cellAt(helper, 0);
+        walled(helper, reversed.west(), ice, Direction.EAST);
+        walled(helper, reversed.east(), lava, Direction.WEST);
+        // heat below, cold above
+        var vertical = cellAt(helper, 1);
+        walled(helper, vertical.below(), lava, Direction.UP);
+        walled(helper, vertical.above(), ice, Direction.DOWN);
+        // a weak pair on x and a strong pair on z: only the strong one counts, they do not add up
+        var best = cellAt(helper, 2);
+        walled(helper, best.west(), campfire, Direction.EAST);
+        walled(helper, best.east(), water, Direction.WEST);
+        walled(helper, best.north(), lava, Direction.SOUTH);
+        walled(helper, best.south(), ice, Direction.NORTH);
+        // heat north and cold east only touch at an edge: nothing
+        var edge = cellAt(helper, 3);
+        walled(helper, edge.north(), lava, Direction.SOUTH);
+        walled(helper, edge.east(), ice, Direction.WEST);
+        // the weak pair on x is a pair, the lava north and the ice above are not: only the weak pair counts
+        var cross = cellAt(helper, 4);
+        walled(helper, cross.west(), campfire, Direction.EAST);
+        walled(helper, cross.east(), water, Direction.WEST);
+        walled(helper, cross.north(), lava, Direction.SOUTH);
+        walled(helper, cross.above(), ice, Direction.DOWN);
+        helper.runAfterDelay(30, () -> {
+            levels(helper, reversed, 3, 3);
+            levels(helper, vertical, 3, 3);
+            levels(helper, best, 3, 3);
+            levels(helper, edge, 0, 0);
+            levels(helper, cross, 1, 1);
+            helper.succeed();
+        });
+    }
+
+    /** Puts a tier 1 generator in the cell of an index and returns its position. */
+    private static BlockPos cellAt(GameTestHelper helper, int index) {
+        var gen = new BlockPos(2, Y + index * SPACING, 1);
+        helper.setBlock(gen, ThermoBlocks.block(1).get());
+        return gen;
+    }
+
+    /** Asserts the levels the generator at a relative position settled on. */
+    private static void levels(GameTestHelper helper, BlockPos pos, int heat, int cold) {
+        var be = (ThermoBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(pos));
+        helper.assertTrue(be != null && be.heatLevel() == heat && be.coldLevel() == cold,
+                "at " + pos + ": heat " + (be == null ? -1 : be.heatLevel()) + ", cold " + (be == null ? -1 : be.coldLevel()) + ", expected " + heat + ", " + cold);
     }
 
     /**

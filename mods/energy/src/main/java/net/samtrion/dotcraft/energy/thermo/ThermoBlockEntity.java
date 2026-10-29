@@ -26,8 +26,8 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 
 /**
  * The block entity of every thermoelectric generator: it reads its six neighbours every {@link #RECOMPUTE_TICKS} ticks (staggered
- * by position), takes the best heat and the best cold level among them, derives its output from the temperature difference (see
- * {@link ThermoMath}), buffers what it makes and pushes FE into every neighbour with an FE capability. The sources are only read,
+ * by position), looks at the three pairs of opposite faces (a heat source on one face and a cold source on the other), takes the
+ * pair with the best temperature difference and derives its output from it (see {@link ThermoMath}), buffers what it makes and pushes FE into every neighbour with an FE capability. The sources are only read,
  * never consumed. The buffer can only be drained from outside.
  */
 public class ThermoBlockEntity extends BlockEntity {
@@ -38,9 +38,9 @@ public class ThermoBlockEntity extends BlockEntity {
     private final ThermoEnergy energy;
     /** The FE capabilities of the neighbours, created on demand. */
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
-    /** The best heat level at the last read, 0 if none. */
+    /** The heat level of the best pair of opposite faces at the last read, 0 if none. */
     private int heat;
-    /** The best cold level at the last read, 0 if none. */
+    /** The cold level of the best pair of opposite faces at the last read, 0 if none. */
     private int cold;
     /** The FE per tick made at the last read. */
     private double output;
@@ -109,7 +109,7 @@ public class ThermoBlockEntity extends BlockEntity {
     }
 
     /**
-     * The best heat level of the neighbours at the last read.
+     * The heat level of the best pair of opposite faces at the last read.
      *
      * @return 0 if there is no heat source, else 1..{@link ThermoMath#MAX_LEVEL}
      */
@@ -118,7 +118,7 @@ public class ThermoBlockEntity extends BlockEntity {
     }
 
     /**
-     * The best cold level of the neighbours at the last read.
+     * The cold level of the best pair of opposite faces at the last read.
      *
      * @return 0 if there is no cold source, else 1..{@link ThermoMath#MAX_LEVEL}
      */
@@ -162,19 +162,22 @@ public class ThermoBlockEntity extends BlockEntity {
         }
     }
 
-    /** Reads the six neighbours and the config; tells the comparators and the client when the output changed. */
+    /** Reads the three pairs of opposite neighbours and the config; tells the comparators and the client when the output changed. */
     private void recompute(ServerLevel level) {
         var config = config();
         energy.configure(config.capacity(), config.maxOutput());
-        int bestHeat = 0;
-        int bestCold = 0;
-        for (Direction d : Direction.values()) {
-            var np = worldPosition.relative(d);
-            if (!level.isLoaded(np)) continue; // never force-load a chunk at a border
-            var state = level.getBlockState(np);
-            bestHeat = Math.max(bestHeat, ThermoTags.heat(state));
-            bestCold = Math.max(bestCold, ThermoTags.cold(state));
+        var best = ThermoMath.NONE;
+        for (var axis : Direction.Axis.values()) {
+            var face = Direction.get(Direction.AxisDirection.POSITIVE, axis);
+            var a = worldPosition.relative(face);
+            var b = worldPosition.relative(face.getOpposite());
+            if (!level.isLoaded(a) || !level.isLoaded(b)) continue; // never force-load a chunk at a border
+            var stateA = level.getBlockState(a);
+            var stateB = level.getBlockState(b);
+            best = ThermoMath.best(best, ThermoMath.axis(ThermoTags.heat(stateA), ThermoTags.cold(stateA), ThermoTags.heat(stateB), ThermoTags.cold(stateB)));
         }
+        int bestHeat = best.heat();
+        int bestCold = best.cold();
         double now = config.peak() * (double) ThermoMath.share(tier(), bestHeat, bestCold);
         boolean changed = now != output || bestHeat != heat || bestCold != cold;
         heat = bestHeat;

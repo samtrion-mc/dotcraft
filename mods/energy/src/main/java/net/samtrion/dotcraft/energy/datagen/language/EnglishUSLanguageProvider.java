@@ -57,7 +57,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(CurrentGeneratorItem.PERK_KEY + 5, "Abyssal: independent of the biome");
         ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelectric Generator (Tier " + b.get().tier() + ")"));
         add(ThermoBlockItem.TOOLTIP_KEY, "Peak %1$s FE/t at a temperature difference of %2$s");
-        add(ThermoBlockItem.HINT_KEY, "Needs a hot and a cold neighbour (levels 1-3 each, they add up to the difference)");
+        add(ThermoBlockItem.HINT_KEY, "Needs a hot and a cold neighbour on opposite sides (levels 1-3 each, they add up to the difference)");
         add(WheelItem.STATS_KEY, "Up to %1$s FE/t, zone radius %2$s, up to %3$s mobs");
         add(WheelItem.PERK_KEY + 1, "Base wheel.");
         add(WheelItem.PERK_KEY + 2, "Bigger cage: more mobs and a wider zone.");
