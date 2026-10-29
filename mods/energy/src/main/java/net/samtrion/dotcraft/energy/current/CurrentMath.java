@@ -134,6 +134,19 @@ public final class CurrentMath {
     }
 
     /**
+     * Whether a block on the flow axis (in front of or behind the generator) stops the water: a block with a full collision box that is
+     * neither water nor replaceable (air, grass, snow layers and the like let the water through). Such a block makes the output 0.
+     *
+     * @param fullCollision whether the block's collision shape is a full block
+     * @param water         whether the block's fluid is water (a waterlogged block counts)
+     * @param replaceable   whether the block is replaceable
+     * @return {@code true} if the block blocks the flow
+     */
+    public static boolean blocksFlow(boolean fullCollision, boolean water, boolean replaceable) {
+        return fullCollision && !water && !replaceable;
+    }
+
+    /**
      * The comparator signal: how much of the best possible output is made.
      *
      * @param output the FE per tick now

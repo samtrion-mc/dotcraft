@@ -34,6 +34,16 @@ class CurrentMathTest {
         }
     }
 
+    /** Only a full-collision block that is neither water nor replaceable blocks the flow axis. */
+    @Test
+    void flowAxis() {
+        assertTrue(CurrentMath.blocksFlow(true, false, false), "stone");
+        assertTrue(!CurrentMath.blocksFlow(false, false, false), "a slab or a fence lets the water pass");
+        assertTrue(!CurrentMath.blocksFlow(true, true, false), "a waterlogged block counts as water");
+        assertTrue(!CurrentMath.blocksFlow(true, false, true), "a replaceable block gives way");
+        assertTrue(!CurrentMath.blocksFlow(false, true, true), "water or air");
+    }
+
     /** Outside of water nothing is made, whatever surrounds the block. */
     @Test
     void noWaterNoOutput() {

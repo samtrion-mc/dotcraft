@@ -50,6 +50,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         MeltBlocks.blocks().forEach(b -> add(b.get(), "Schmelzgenerator (Stufe " + b.get().tier() + ")"));
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(CurrentGeneratorItem.FORMULA_KEY, "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)");
+        add(CurrentGeneratorItem.AXIS_KEY, "Vorder- und Rückseite müssen für das Wasser frei bleiben (ein fester Block dort: 0 FE); gibt FE an die anderen Seiten");
         add(CurrentGeneratorItem.PERK_KEY + 1, "Basis: braucht einen fast vollen Wasserwürfel");
         add(CurrentGeneratorItem.PERK_KEY + 2, "Weites Netz: Tiere zählen im Umkreis von 6 Blöcken");
         add(CurrentGeneratorItem.PERK_KEY + 3, "Anpassung: behält 75% außerhalb von Ozean und Fluss");

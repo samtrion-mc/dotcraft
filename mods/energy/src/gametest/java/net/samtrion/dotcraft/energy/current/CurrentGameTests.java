@@ -12,14 +12,22 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Bucketable;
 import net.minecraft.world.entity.animal.axolotl.Axolotl;
 import net.minecraft.world.entity.animal.fish.Cod;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -47,6 +55,8 @@ public final class CurrentGameTests {
     private static final Identifier PUSH = id("current_push");
     private static final Identifier SEALED = id("current_sealed");
     private static final Identifier DRAIN = id("current_drain");
+    private static final Identifier FACING = id("current_facing");
+    private static final Identifier AXIS = id("current_axis");
 
     private CurrentGameTests() {}
 
@@ -76,6 +86,8 @@ public final class CurrentGameTests {
             registry.register(PUSH, TestSupport.ticking(CurrentGameTests::push));
             registry.register(SEALED, TestSupport.ticking(CurrentGameTests::sealed));
             registry.register(DRAIN, TestSupport.ticking(CurrentGameTests::drain));
+            registry.register(FACING, TestSupport.ticking(CurrentGameTests::facing));
+            registry.register(AXIS, TestSupport.ticking(CurrentGameTests::axis));
         });
     }
 
@@ -94,6 +106,8 @@ public final class CurrentGameTests {
         register(event, PUSH, 60);
         register(event, SEALED, 60);
         register(event, DRAIN, 40);
+        register(event, FACING, 20);
+        register(event, AXIS, 80);
     }
 
     /** Registers one test with an own environment and the empty template. */
@@ -148,7 +162,7 @@ public final class CurrentGameTests {
     }
 
     /**
-     * Every tier is a block with a block entity and an FE capability on every side that cannot be charged and has the configured
+     * Every tier is a block with a block entity and an FE capability on every side but front and back (the flow axis) that cannot be charged and has the configured
      * capacity, a waterlogged state holds water, and a current generator next to a solar panel does not join its pool.
      *
      * @param helper the game test helper
@@ -169,6 +183,10 @@ public final class CurrentGameTests {
             var config = EnergyCommonConfig.CURRENT_GENERATORS.get(block.get().tier() - 1);
             for (Direction side : Direction.values()) {
                 EnergyHandler handler = level.getCapability(Capabilities.Energy.BLOCK, abs, side);
+                if (side.getAxis() == level.getBlockState(abs).getValue(CurrentGeneratorBlock.FACING).getAxis()) {
+                    helper.assertTrue(handler == null, block.getId() + " has a capability on the flow axis (" + side + ")");
+                    continue;
+                }
                 helper.assertTrue(handler != null, block.getId() + " has no capability on " + side);
                 try (var tx = Transaction.openRoot()) {
                     helper.assertTrue(handler.insert(1000, tx) == 0, block.getId() + " accepted energy");
@@ -259,6 +277,11 @@ public final class CurrentGameTests {
         var wide = new BlockPos(1, y0 + 3, 5);
         helper.setBlock(near, wet(1));
         helper.setBlock(wide, wet(2));
+        // the glass wall in front of or behind a generator would block its flow axis: swap it for water held back by a glass pane further out
+        helper.setBlock(new BlockPos(1, y0 + 3, 0), Blocks.WATER);
+        helper.setBlock(new BlockPos(1, y0 + 3, -1), Blocks.GLASS);
+        helper.setBlock(new BlockPos(1, y0 + 3, 6), Blocks.WATER);
+        helper.setBlock(new BlockPos(1, y0 + 3, 7), Blocks.GLASS);
         // the cod are 1-2 blocks from tier 1, the salmon and the squid 4 blocks: out of its reach, in reach of tier 2
         helper.spawnWithNoFreeWill(EntityType.COD, 2.5F, y0 + 3.5F, 1.5F);
         var bucketed = helper.spawnWithNoFreeWill(EntityType.COD, 2.5F, y0 + 4.5F, 2.5F);
@@ -382,6 +405,90 @@ public final class CurrentGameTests {
             be.recompute(level);
             helper.assertTrue(be.output() == 0, "a pod in dry air makes " + be.output());
             helper.succeed();
+        });
+    }
+
+    /**
+     * A generator is placed facing the look direction of the player (the flow direction), and rotate and mirror turn that facing.
+     *
+     * @param helper the game test helper
+     */
+    private static void facing(GameTestHelper helper) {
+        var block = CurrentBlocks.block(1).get();
+        var player = helper.makeMockPlayer(GameType.CREATIVE);
+        var pos = helper.absolutePos(new BlockPos(1, 70, 1));
+        for (var look : new Direction[] {Direction.NORTH, Direction.EAST, Direction.SOUTH, Direction.WEST}) {
+            player.setYRot(look.toYRot());
+            var hit = new BlockHitResult(Vec3.atCenterOf(pos), Direction.UP, pos.below(), false);
+            var context = new BlockPlaceContext(player, InteractionHand.MAIN_HAND, new ItemStack(block), hit);
+            var state = block.getStateForPlacement(context);
+            helper.assertTrue(state != null && state.getValue(CurrentGeneratorBlock.FACING) == look, "placed looking " + look + " but got " + state);
+        }
+        var north = block.defaultBlockState().setValue(CurrentGeneratorBlock.FACING, Direction.NORTH);
+        helper.assertTrue(north.rotate(Rotation.CLOCKWISE_90).getValue(CurrentGeneratorBlock.FACING) == Direction.EAST, "rotate did not turn the facing");
+        helper.assertTrue(north.mirror(Mirror.LEFT_RIGHT).getValue(CurrentGeneratorBlock.FACING) == Direction.SOUTH, "mirror did not turn the facing");
+        helper.assertTrue(north.mirror(Mirror.FRONT_BACK).getValue(CurrentGeneratorBlock.FACING) == Direction.NORTH, "the other mirror changed an axis-symmetric facing");
+        helper.succeed();
+    }
+
+    /**
+     * The flow axis: a wet generator facing east pushes FE only to the neighbours at up, down, north and south, never to front or
+     * back (east and west), and has a capability only on those four sides; a solid block at the front or at the back makes the output
+     * and the comparator 0, while water, air and a replaceable block do not.
+     *
+     * @param helper the game test helper
+     */
+    private static void axis(GameTestHelper helper) {
+        var level = helper.getLevel();
+        int y0 = 130;
+        pool(helper, y0);
+        var center = new BlockPos(3, y0 + 3, 3);
+        var east = new BlockPos(4, y0 + 3, 3);
+        var west = new BlockPos(2, y0 + 3, 3);
+        var abs = helper.absolutePos(center);
+        helper.setBlock(center, wet(1).setValue(CurrentGeneratorBlock.FACING, Direction.EAST));
+        // drains (full blocks) at the front and the back: the output is 0, but the buffered FE must still not leave through them
+        helper.setBlock(east, EnergyBlocks.POWER_DRAIN.get());
+        helper.setBlock(west, EnergyBlocks.POWER_DRAIN.get());
+        for (var side : Direction.values()) {
+            boolean flow = side.getAxis() == Direction.Axis.X;
+            helper.assertTrue((level.getCapability(Capabilities.Energy.BLOCK, abs, side) == null) == flow, "wrong capability on " + side);
+        }
+        helper.assertTrue(level.getCapability(Capabilities.Energy.BLOCK, abs, null) == null, "a capability without a side");
+        entity(helper, center).fill(100);
+        helper.runAfterDelay(10, () -> {
+            var be = entity(helper, center);
+            helper.assertTrue(be.output() == 0, "a drain in front and behind must block the axis");
+            helper.assertTrue(be.energy().getAmountAsLong() == 100, "FE was pushed to the front or back: " + be.energy().getAmountAsLong());
+            // a drain at the side takes it
+            helper.setBlock(new BlockPos(3, y0 + 3, 4), EnergyBlocks.POWER_DRAIN.get());
+            helper.runAfterDelay(5, () -> {
+                helper.assertTrue(be.energy().getAmountAsLong() == 0, "FE was not pushed to the side: " + be.energy().getAmountAsLong());
+                helper.setBlock(new BlockPos(3, y0 + 3, 4), Blocks.WATER);
+                // blocked in front: output 0; then freed with each kind of passable block
+                helper.setBlock(east, Blocks.STONE);
+                be.recompute(level);
+                helper.assertTrue(be.output() == 0, "stone in front still gives " + be.output());
+                helper.assertTrue(level.getBlockState(abs).getAnalogOutputSignal(level, abs, Direction.NORTH) == 0, "comparator is not 0 when blocked");
+                helper.setBlock(east, Blocks.WATER);
+                helper.setBlock(west, Blocks.WATER);
+                be.recompute(level);
+                helper.assertTrue(be.output() > 0, "water in front blocks");
+                helper.setBlock(west, Blocks.STONE);
+                be.recompute(level);
+                helper.assertTrue(be.output() == 0, "stone behind still gives " + be.output());
+                helper.setBlock(west, Blocks.SHORT_GRASS);
+                be.recompute(level);
+                helper.assertTrue(be.output() > 0, "a replaceable block behind blocks");
+                helper.setBlock(west, Blocks.AIR);
+                be.recompute(level);
+                helper.assertTrue(be.output() > 0, "air behind blocks");
+                // the same stone at the side (up, down, left, right) does not block
+                helper.setBlock(new BlockPos(3, y0 + 3, 2), Blocks.STONE);
+                be.recompute(level);
+                helper.assertTrue(be.output() > 0, "a solid block at the side blocks");
+                helper.succeed();
+            });
         });
     }
 

@@ -115,9 +115,9 @@ public final class CurrentBlocks {
         bus.addListener(CurrentBlocks::fillTab);
     }
 
-    /** Exposes the buffer; it can only be drained. */
+    /** Exposes the buffer on the four sides across the flow axis (not front or back); it can only be drained. */
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
-        event.registerBlockEntity(Capabilities.Energy.BLOCK, TYPE.get(), (be, side) -> be.energy());
+        event.registerBlockEntity(Capabilities.Energy.BLOCK, TYPE.get(), (be, side) -> CurrentGeneratorBlock.connects(be.getBlockState(), side) ? be.energy() : null);
     }
 
     /** Appends the generators to the creative tab of the energy mod. */
