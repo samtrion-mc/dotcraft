@@ -18,7 +18,7 @@ All mods share one version, derived from git tags by git-semver.
 The shared material base of the .Craft mods. Other mods build on it instead of each defining their own raw materials.
 
 - **Ores and raw materials:** new ores with world generation, plus the raw items, ingots and dusts they yield.
-- **Materials and alloys:** processed materials and alloys that serve as crafting ingredients for machines and equipment in the other mods, including intermediate forms such as plates and gears and the crafting tools hammer and sandpaper, which stay in the crafting grid and lose durability per craft.
+- **Materials and alloys:** processed materials and alloys that serve as crafting ingredients for machines and equipment in the other mods, including intermediate forms such as plates, gears, rods and wires and the crafting tools hammer and sandpaper, which stay in the crafting grid and lose durability per craft.
 - **Charcoal block:** like the coal block (pickaxe, 16000 ticks of fuel, 3x3 / 1 to 9 charcoal, `c:storage_blocks/charcoal`) and itself a base of the compressed blocks.
 - **Compressed blocks:** 9 compression tiers (9 blocks per tier, up to 9^9) for a curated list of bulk blocks (stones, dirt, sand, gravel, metal and gem blocks, glass, terracotta, concrete, concrete powder, wool, planks and all logs and stems). Craft 3x3 up, 1 down to 9. One shared model; the tier shows as a two-tone (white/black, readable on light and dark blocks) riveted frame that grows with the tier. Hardness and the required tool grow with the tier: the base block's requirement for tiers 1-3, one material above for 4-6, two for 7-9 (gold skipped, capped at netherite; e.g. stone needs wood, so tiers 4-6 need stone, 7-9 copper). Blocks that need no tool stay free. Names use one translation key, so no per-block language entries.
 
@@ -98,11 +98,13 @@ A conversion says how a form is made of another form of the same material (`from
 | `craft` | `ratio` (1 to 9) items of `from` make one, shapeless and one way. |
 | `crush` | one item of `from` plus a hammer make `ratio` items of this form; the hammer stays and wears. |
 | `forge` | a shaped recipe: a hammer over a row of `ratio` (1 to 3) items of `from` makes one item (three ingots make a plate, one ingot makes a dust). |
-| `shaped` | a shaped recipe from `pattern` (rows) and `key` (symbol to a form id, which stands for the tag of that form for the material, or an item tag such as `minecraft:planks`); makes one item, `ratio` must be 1. Has no `from`. |
-| `shapeless` | the same shapeless: `pattern` is one row whose symbols are the ingredients, a repeated symbol is used that often. Has no `from`, `ratio` must be 1. |
+| `shaped` | a shaped recipe from `pattern` (rows) and `key` (symbol to a form id, which stands for the tag of that form for the material, or an item tag such as `minecraft:planks`); makes `ratio` (1 to 9) items. A key value `@hammer` is the hammer tag of the tier of the material (the hammer stays and wears, the recipe is dropped where no hammer of that tier is enabled). Has no `from`. |
+| `shapeless` | the same shapeless: `pattern` is one row whose symbols are the ingredients, a repeated symbol is used that often; makes `ratio` (1 to 9) items. Has no `from`. |
 | `alloy` | alloys are mixed in this form: the same form of every input of the alloy makes the alloy form (see `alloy` below). Has no `from`; `external` is the key of the external item of an input that lacks the form. |
 
 In `shaped` and `shapeless`, the symbol `#` is the ingredient of the material for a tool form (its `tools` entry). The recipe is skipped where a form of the key is missing, and where a tool form is used by a material without a `tools` entry. A material that uses an external metal resolves a missing form through the tag its `external` source names for it, so the dust of vanilla iron is crushed from the vanilla raw iron (`c:raw_materials/iron`) and the plate is forged from the vanilla ingot. `"externalRequired": true` on a `smelt` or `blast` means: for an external material that has `from` but not this form, the source must name the external item of this form, and that item is the result (grains smelt to the vanilla nugget).
+
+**Rods and wires:** every metal material (all with an ingot, also the external metals and the alloys) has the forms `rod` (item `<material>_rod`, tag `c:rods/<material>`) and `wire` (`<material>_wire`, `c:wires/<material>`; both are also in `c:rods` and `c:wires`, switches `rods` and `wires`). A hammer of the tier of the material over two ingots (a column, hammer on top) makes 1 rod, and a hammer, a sandpaper (`c:tools/sandpaper`) and a rod make 1 wire; hammer and sandpaper stay in the grid and wear. The wooden rod (`c:rods/wooden`) is untouched.
 
 ### Hammers
 
@@ -137,7 +139,7 @@ All ids are `dotcraftresources:material/<material>/<name>`, where `<name>` is
 - `<to>_from_<from>` for a pack (both directions) and a craft;
 - `<to>_from_<from>_smelting` and `<to>_from_<from>_blasting` for a smelt (a blast has only the second);
 - `<to>_from_<from>_crushing` for a crush and `<to>_from_<from>_forging` for a forge;
-- `<to>` for a shaped or shapeless conversion, e.g. `iron/gear`, `iron/hammer`, `iron/sandpaper`;
+- `<to>` for a shaped or shapeless conversion, e.g. `iron/gear`, `iron/rod`, `iron/wire`, `iron/hammer`, `iron/sandpaper`;
 - `<to>_from_alloy` for an alloy, followed for each input by `_<material>` where it has alternatives, e.g. `steel/ingot_from_alloy_charcoal`.
 
 A source of another mod appends `_<mod>` at the end of the id (`..._crushing_<mod>`).

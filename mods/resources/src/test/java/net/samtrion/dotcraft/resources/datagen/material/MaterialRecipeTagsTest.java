@@ -221,7 +221,7 @@ class MaterialRecipeTagsTest {
                 assertTrue(name.contains(type.equals("minecraft:crafting_shaped") ? "_forging" : "_crushing"), entry.getKey());
             }
         }
-        for (String id : List.of("iron/hammer", "iron/sandpaper", "tin/gear")) {
+        for (String id : List.of("iron/hammer", "iron/sandpaper", "tin/gear", "iron/rod", "iron/wire")) {
             assertTrue(recipes().containsKey(id), "missing " + id);
         }
     }
@@ -237,5 +237,21 @@ class MaterialRecipeTagsTest {
             collect(recipe, new HashSet<>());
         }
         assertFalse(Files.exists(root.resolve("tin/hammer.json")));
+    }
+
+    /** Rod and wire of iron: the hammer tag over 2 ingots makes 1 rod, hammer, sandpaper and rod make 1 wire, tags only. */
+    @Test
+    void rodAndWireRecipes() throws Exception {
+        Path root = GENERATED.resolve("dotcraftresources/recipe/material/iron");
+        String rod = Files.readString(root.resolve("rod.json"));
+        assertTrue(rod.contains("minecraft:crafting_shaped") && rod.contains("\"#c:ingots/iron\"") && rod.contains("#dotcraftresources:hammers/iron")
+                && !rod.contains("\"count\"") && rod.contains("dotcraftresources:iron_rod"), rod);
+        String wire = Files.readString(root.resolve("wire.json"));
+        assertTrue(wire.contains("minecraft:crafting_shapeless") && wire.contains("#c:rods/iron") && wire.contains("#c:tools/sandpaper")
+                && wire.contains("#dotcraftresources:hammers/iron") && !wire.contains("\"count\"") && wire.contains("dotcraftresources:iron_wire"), wire);
+        for (String m : List.of("copper", "gold", "netherite", "steel", "tin", "brass", "zinc")) {
+            assertTrue(Files.exists(GENERATED.resolve("dotcraftresources/recipe/material/" + m + "/rod.json")), m);
+            assertTrue(Files.exists(GENERATED.resolve("dotcraftresources/recipe/material/" + m + "/wire.json")), m);
+        }
     }
 }

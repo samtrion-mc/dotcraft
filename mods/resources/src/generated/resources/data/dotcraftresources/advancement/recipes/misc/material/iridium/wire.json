@@ -1,0 +1,56 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "rod",
+      "material": "iridium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "wire",
+      "material": "iridium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "diamond"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_hammers_diamond": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#dotcraftresources:hammers/diamond"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:material/iridium/wire"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_hammers_diamond"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:material/iridium/wire"
+    ]
+  }
+}

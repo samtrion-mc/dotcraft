@@ -154,7 +154,7 @@ public final class Forms {
             for (String other : form.requires()) require(ids, form, other);
             for (Form.Conversion c : form.conversions()) {
                 if (c.kind() == Form.Conversion.Kind.SHAPED || c.kind() == Form.Conversion.Kind.SHAPELESS) {
-                    c.key().values().stream().filter(v -> !v.contains(":")).forEach(v -> require(ids, form, v));
+                    c.key().values().stream().filter(v -> !v.contains(":") && !v.equals(Form.Conversion.HAMMER)).forEach(v -> require(ids, form, v));
                 }
                 if (c.kind() == Form.Conversion.Kind.ALLOY || c.kind() == Form.Conversion.Kind.SHAPED || c.kind() == Form.Conversion.Kind.SHAPELESS) continue;
                 require(ids, form, c.from());

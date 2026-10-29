@@ -17,6 +17,8 @@
     "dust_block",
     "plate",
     "gear",
+    "rod",
+    "wire",
     "ore"
   ],
   "ore": [

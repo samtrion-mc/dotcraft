@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:item/material/wire",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -4867674
+      }
+    ]
+  }
+}

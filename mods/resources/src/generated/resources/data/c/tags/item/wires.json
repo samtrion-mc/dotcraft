@@ -1,0 +1,23 @@
+{
+  "values": [
+    "#c:wires/aluminum",
+    "#c:wires/brass",
+    "#c:wires/bronze",
+    "#c:wires/copper",
+    "#c:wires/electrum",
+    "#c:wires/gold",
+    "#c:wires/invar",
+    "#c:wires/iridium",
+    "#c:wires/iron",
+    "#c:wires/lead",
+    "#c:wires/netherite",
+    "#c:wires/nickel",
+    "#c:wires/osmium",
+    "#c:wires/platinum",
+    "#c:wires/silver",
+    "#c:wires/steel",
+    "#c:wires/tin",
+    "#c:wires/uranium",
+    "#c:wires/zinc"
+  ]
+}
