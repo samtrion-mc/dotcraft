@@ -3,6 +3,7 @@ package net.samtrion.dotcraft.energy.datagen.language;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.current.CurrentBlocks;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.resources.common.Locales;
@@ -29,6 +30,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(EnergyItems.PHOTOVOLTAIC_CELL.get(), "Photovoltaikzelle");
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solarpanel (Stufe " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Mondpanel (Stufe " + b.get().tier() + ")"));
+        CurrentBlocks.blocks().forEach(b -> add(b.get(), "Strömungsgenerator (Stufe " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energie");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");

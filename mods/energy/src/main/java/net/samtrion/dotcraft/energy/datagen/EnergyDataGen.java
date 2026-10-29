@@ -9,6 +9,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.current.CurrentLootPlugin;
 import net.samtrion.dotcraft.energy.datagen.language.EnglishUSLanguageProvider;
 import net.samtrion.dotcraft.energy.datagen.language.GermanLanguageProvider;
 import net.samtrion.dotcraft.resources.datagen.ResourceBlockLootSubProvider;
@@ -44,7 +45,7 @@ public final class EnergyDataGen {
     static void server(GatherDataEvent.Server event) {
         event.createProvider(EnergyRecipeProvider::new);
         event.createProvider((o, l) -> new LootTableProvider(o, Set.of(),
-                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin()),
+                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin(), new CurrentLootPlugin()),
                         LootContextParamSets.BLOCK)), l));
         event.createProvider(EnergyBlockTagsProvider::new);
     }

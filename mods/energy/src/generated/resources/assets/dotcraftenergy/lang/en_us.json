@@ -1,4 +1,9 @@
 {
+  "block.dotcraftenergy.current_generator_tier_1": "Current Generator (Tier 1)",
+  "block.dotcraftenergy.current_generator_tier_2": "Current Generator (Tier 2)",
+  "block.dotcraftenergy.current_generator_tier_3": "Current Generator (Tier 3)",
+  "block.dotcraftenergy.current_generator_tier_4": "Current Generator (Tier 4)",
+  "block.dotcraftenergy.current_generator_tier_5": "Current Generator (Tier 5)",
   "block.dotcraftenergy.lunar_panel_tier_1": "Lunar Panel (Tier 1)",
   "block.dotcraftenergy.lunar_panel_tier_2": "Lunar Panel (Tier 2)",
   "block.dotcraftenergy.lunar_panel_tier_3": "Lunar Panel (Tier 3)",

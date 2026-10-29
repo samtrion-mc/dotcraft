@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "dotcraftenergy:block/current_generator_tier_5"
+    }
+  }
+}

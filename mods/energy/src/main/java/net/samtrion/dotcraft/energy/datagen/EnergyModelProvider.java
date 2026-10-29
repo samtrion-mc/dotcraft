@@ -12,6 +12,7 @@ import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
 import net.minecraft.client.renderer.block.dispatch.VariantMutator;
 import net.minecraft.core.Direction;
 import com.mojang.math.Quadrant;
+import net.samtrion.dotcraft.energy.current.CurrentModels;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
@@ -43,6 +44,7 @@ public final class EnergyModelProvider extends ModelProvider {
         var drainModel = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "block/power_drain");
         blocks.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(EnergyBlocks.POWER_DRAIN.get(), BlockModelGenerators.plainVariant(drainModel)));
         blocks.itemModelOutput.accept(EnergyBlocks.POWER_DRAIN_ITEM.get(), ItemModelUtils.plainModel(drainModel));
+        CurrentModels.register(blocks);
         EnergyBlocks.blocks().forEach(b -> {
             var name = b.getId().getPath();
             var block = b.get();

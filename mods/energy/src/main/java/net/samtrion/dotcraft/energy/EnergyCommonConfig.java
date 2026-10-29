@@ -43,6 +43,12 @@ public final class EnergyCommonConfig {
     /** The lunar panels: the peak FE/t at full moon in a clear night. */
     public static final List<Generator> LUNAR_PANELS = generators(LUNAR_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
 
+    /** The registry paths of the current generators, tiers 1-5, which are also their config sections. */
+    static final List<String> CURRENT_NAMES = tierNames("current_generator");
+
+    /** The current generators: the peak FE/t in the best case (full water share in an ocean or river), at least 15 FE/t; the fauna bonus (up to 30 %) comes on top. */
+    public static final List<Generator> CURRENT_GENERATORS = generators(CURRENT_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
 
