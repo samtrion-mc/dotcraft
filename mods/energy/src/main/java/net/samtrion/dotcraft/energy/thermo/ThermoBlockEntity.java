@@ -46,6 +46,8 @@ public class ThermoBlockEntity extends BlockEntity {
     private double output;
     /** The fraction of an FE that is not yet made. */
     private double carry;
+    /** Whether the stored FE changed since the chunk was last marked unsaved. */
+    private boolean dirty;
 
     /**
      * Creates the block entity.
@@ -57,15 +59,23 @@ public class ThermoBlockEntity extends BlockEntity {
     public ThermoBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         var config = config();
-        energy = new ThermoEnergy(config.capacity(), config.maxOutput(), this::setChanged);
+        energy = new ThermoEnergy(config.capacity(), config.maxOutput(), () -> dirty = true);
     }
 
-    /** The config of this generator's tier. */
+    /**
+     * The config of this generator's tier.
+     *
+     * @return the FE values
+     */
     private EnergyCommonConfig.Generator config() {
         return EnergyCommonConfig.THERMO_GENERATORS.get(tier() - 1);
     }
 
-    /** The tier of this generator's block. */
+    /**
+     * The tier of this generator's block.
+     *
+     * @return 1..5
+     */
     private int tier() {
         return ((ThermoBlock) getBlockState().getBlock()).tier();
     }
@@ -146,6 +156,10 @@ public class ThermoBlockEntity extends BlockEntity {
         carry -= whole;
         energy.produce(whole);
         push(level);
+        if (dirty && level.getGameTime() % RECOMPUTE_TICKS == 0) {
+            dirty = false;
+            level.blockEntityChanged(worldPosition); // saves the chunk without a comparator update
+        }
     }
 
     /** Reads the six neighbours and the config; tells the comparators and the client when the output changed. */
@@ -155,7 +169,9 @@ public class ThermoBlockEntity extends BlockEntity {
         int bestHeat = 0;
         int bestCold = 0;
         for (Direction d : Direction.values()) {
-            var state = level.getBlockState(worldPosition.relative(d));
+            var np = worldPosition.relative(d);
+            if (!level.isLoaded(np)) continue; // never force-load a chunk at a border
+            var state = level.getBlockState(np);
             bestHeat = Math.max(bestHeat, ThermoTags.heat(state));
             bestCold = Math.max(bestCold, ThermoTags.cold(state));
         }
@@ -171,14 +187,15 @@ public class ThermoBlockEntity extends BlockEntity {
         }
     }
 
-    /** Offers the buffer to the neighbours on every side. */
+    /** Offers the buffer to the neighbours on every side; all sides together get at most the max output per tick. */
     private void push(ServerLevel level) {
         if (energy.getAmountAsLong() <= 0) return;
+        int budget = config().maxOutput();
         for (Direction d : Direction.values()) {
             var cache = neighbours.computeIfAbsent(d,
                     dir -> BlockCapabilityCache.create(Capabilities.Energy.BLOCK, level, worldPosition.relative(dir), dir.getOpposite()));
-            EnergyHandlerUtil.move(energy, cache.getCapability(), Integer.MAX_VALUE, null);
-            if (energy.getAmountAsLong() <= 0) return;
+            budget -= EnergyHandlerUtil.move(energy, cache.getCapability(), budget, null);
+            if (budget <= 0 || energy.getAmountAsLong() <= 0) return;
         }
     }
 

@@ -5,6 +5,8 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.thermo.ThermoBlockItem;
+import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The German translations. Every key added here needs the same key in {@link EnglishUSLanguageProvider}. */
@@ -29,9 +31,11 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(EnergyItems.PHOTOVOLTAIC_CELL.get(), "Photovoltaikzelle");
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solarpanel (Stufe " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Mondpanel (Stufe " + b.get().tier() + ")"));
-        net.samtrion.dotcraft.energy.thermo.ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelektrischer Generator (Stufe " + b.get().tier() + ")"));
+        ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelektrischer Generator (Stufe " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energie");
+        add(ThermoBlockItem.TOOLTIP_KEY, "Spitze %1$s FE/t bei einem Temperaturunterschied von %2$s");
+        add(ThermoBlockItem.HINT_KEY, "Braucht einen heissen und einen kalten Nachbarn (je Stufe 1-3, sie ergeben zusammen den Unterschied)");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }

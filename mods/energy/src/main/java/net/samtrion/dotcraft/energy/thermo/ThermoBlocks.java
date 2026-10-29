@@ -60,7 +60,7 @@ public final class ThermoBlocks {
             var block = BLOCKS.<ThermoBlock>registerBlock(name, p -> new ThermoBlock(p, t, TYPE),
                     () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).requiresCorrectToolForDrops());
             BLOCK_LIST.add(block);
-            ITEM_LIST.add(ITEMS.registerSimpleBlockItem(block));
+            ITEM_LIST.add(ITEMS.<BlockItem>registerItem(name, p -> new ThermoBlockItem(block.get(), t, p.useBlockDescriptionPrefix())));
         }
     }
 

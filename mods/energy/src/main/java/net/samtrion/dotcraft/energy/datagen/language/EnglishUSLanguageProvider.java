@@ -5,6 +5,8 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.thermo.ThermoBlockItem;
+import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The English translations. Every key added here needs the same key in {@link GermanLanguageProvider}. */
@@ -29,9 +31,11 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(EnergyItems.PHOTOVOLTAIC_CELL.get(), "Photovoltaic Cell");
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solar Panel (Tier " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Lunar Panel (Tier " + b.get().tier() + ")"));
-        net.samtrion.dotcraft.energy.thermo.ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelectric Generator (Tier " + b.get().tier() + ")"));
+        ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelectric Generator (Tier " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
+        add(ThermoBlockItem.TOOLTIP_KEY, "Peak %1$s FE/t at a temperature difference of %2$s");
+        add(ThermoBlockItem.HINT_KEY, "Needs a hot and a cold neighbour (levels 1-3 each, they add up to the difference)");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }

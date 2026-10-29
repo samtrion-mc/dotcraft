@@ -23,5 +23,7 @@
   "item.dotcraftenergy.potato_battery": "Potato Battery",
   "item.dotcraftenergy.rechargeable_potato_battery": "Rechargeable Potato Battery",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energy",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.thermo": "Peak %1$s FE/t at a temperature difference of %2$s",
+  "tooltip.dotcraftenergy.thermo.hint": "Needs a hot and a cold neighbour (levels 1-3 each, they add up to the difference)"
 }

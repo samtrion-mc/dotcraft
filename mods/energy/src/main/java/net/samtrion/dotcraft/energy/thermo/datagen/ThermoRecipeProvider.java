@@ -96,6 +96,7 @@ public final class ThermoRecipeProvider extends RecipeProvider.Runner {
             }
         }
 
+        // The two helpers below deliberately mirror those of EnergyRecipeProvider (private there) so the shared file stays untouched.
         /** The condition that an item is registered, for a recipe that uses or makes it. */
         private static RegisteredCondition<Item> registered(Item item) {
             return new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, BuiltInRegistries.ITEM.getKey(item)));

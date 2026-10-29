@@ -7,8 +7,9 @@ package net.samtrion.dotcraft.energy.thermo;
  * {@link ThermoTags}). The temperature difference is the best heat level plus the best cold level of the six neighbours, and only
  * exists when there is both a hot and a cold neighbour: with {@link #MAX_LEVEL} 3 it is {@code 2..6}. A tier reaches its peak at
  * its {@linkplain #ceiling ceiling}: the higher the tier, the smaller the difference it needs for the same share of its peak (the
- * tier perk), so a tier 5 generator runs at full power on a campfire and a puddle while a tier 1 needs lava and blue ice for its
- * (much smaller) peak. More sources of the same kind do not add up, so the output of one block is bounded by its peak.
+ * tier perk). The ceilings stay high on purpose, as the sources are free and never used up: the weakest pair (campfire and a
+ * puddle) gives a tier 1 a third of its peak and a tier 5 only half of it, and full power needs real sources (tier 5: a
+ * difference of 4, e.g. magma and ice; tier 1: lava and blue ice). More sources of the same kind do not add up, so the output of one block is bounded by its peak.
  */
 public final class ThermoMath {
     /** The highest tier. */
@@ -22,8 +23,8 @@ public final class ThermoMath {
     /** The highest comparator signal. */
     public static final int MAX_SIGNAL = 15;
 
-    /** Per tier: the temperature difference that gives the full peak; it falls with the tier (efficiency perk). */
-    private static final int[] CEILING = {6, 5, 4, 3, 2};
+    /** Per tier: the temperature difference that gives the full peak; it never rises with the tier (efficiency perk). */
+    private static final int[] CEILING = {6, 6, 5, 5, 4};
 
     /** Not instantiable. */
     private ThermoMath() {}
@@ -44,7 +45,7 @@ public final class ThermoMath {
      * The difference at which a tier makes its full peak.
      *
      * @param tier the tier, 1..5
-     * @return the ceiling, 6 for tier 1 down to 2 for tier 5
+     * @return the ceiling, 6 for tier 1 down to 4 for tier 5
      */
     public static int ceiling(int tier) {
         return CEILING[tier - 1];

@@ -6,6 +6,7 @@ import net.minecraft.client.data.models.ModelProvider;
 import net.minecraft.client.data.models.model.ItemModelUtils;
 import net.minecraft.data.PackOutput;
 import net.minecraft.resources.Identifier;
+import net.samtrion.dotcraft.energy.thermo.datagen.ThermoModels;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.minecraft.client.data.models.blockstates.ConditionBuilder;
 import net.minecraft.client.data.models.blockstates.MultiPartGenerator;
@@ -65,7 +66,7 @@ public final class EnergyModelProvider extends ModelProvider {
             blocks.blockStateOutput.accept(generator);
             blocks.itemModelOutput.accept(block.asItem(), ItemModelUtils.plainModel(model(name)));
         });
-        net.samtrion.dotcraft.energy.thermo.datagen.ThermoModels.register(blocks);
+        ThermoModels.register(blocks);
     }
 
     private static Identifier blockModel(String name) {

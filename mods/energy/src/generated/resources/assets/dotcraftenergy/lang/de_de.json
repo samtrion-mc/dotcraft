@@ -23,5 +23,7 @@
   "item.dotcraftenergy.potato_battery": "Kartoffelbatterie",
   "item.dotcraftenergy.rechargeable_potato_battery": "Wiederaufladbare Kartoffelbatterie",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energie",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.thermo": "Spitze %1$s FE/t bei einem Temperaturunterschied von %2$s",
+  "tooltip.dotcraftenergy.thermo.hint": "Braucht einen heissen und einen kalten Nachbarn (je Stufe 1-3, sie ergeben zusammen den Unterschied)"
 }

@@ -39,8 +39,8 @@ class ThermoMathTest {
     @Test
     void higherTiersNeedLessDelta() {
         for (int tier = 1; tier < ThermoMath.MAX_TIER; tier++) {
-            assertTrue(ThermoMath.ceiling(tier) > ThermoMath.ceiling(tier + 1), "ceiling falls at tier " + tier);
-            assertTrue(ThermoMath.share(tier, 1, 1) < ThermoMath.share(tier + 1, 1, 1), "weak sources at tier " + tier);
+            assertTrue(ThermoMath.ceiling(tier) >= ThermoMath.ceiling(tier + 1), "ceiling never rises at tier " + tier);
+            assertTrue(ThermoMath.share(tier, 1, 1) <= ThermoMath.share(tier + 1, 1, 1), "weak sources at tier " + tier);
         }
         for (int tier = 1; tier <= ThermoMath.MAX_TIER; tier++) {
             float last = 0;
@@ -52,7 +52,24 @@ class ThermoMathTest {
         }
         assertEquals(1F, ThermoMath.share(1, 3, 3));
         assertEquals(1F / 3, ThermoMath.share(1, 1, 1), 1e-6);
-        assertEquals(1F, ThermoMath.share(5, 1, 1));
+        assertTrue(ThermoMath.ceiling(1) > ThermoMath.ceiling(ThermoMath.MAX_TIER));
+    }
+
+    /**
+     * The weakest pair (a campfire and a puddle) must not give the top tiers free power: it yields exactly these shares, and
+     * the full peak needs a real difference, so retuning the ceilings fails here.
+     */
+    @Test
+    void weakSourcesGiveOnlyAPartOfThePeak() {
+        float[] weak = {1F / 3, 1F / 3, 0.4F, 0.4F, 0.5F};
+        int[] fullAt = {6, 6, 5, 5, 4};
+        for (int tier = 1; tier <= ThermoMath.MAX_TIER; tier++) {
+            assertEquals(weak[tier - 1], ThermoMath.share(tier, 1, 1), 1e-6, "weakest share of tier " + tier);
+            assertEquals(fullAt[tier - 1], ThermoMath.ceiling(tier));
+            assertTrue(ThermoMath.share(tier, 1, 1) <= 0.5F, "the weakest sources give at most half the peak at tier " + tier);
+            assertTrue(ThermoMath.share(tier, 2, 1) < 1F, "a mid pair is not full at tier " + tier);
+            assertEquals(1F, ThermoMath.share(tier, 3, 3));
+        }
     }
 
     /** More than the best source adds nothing: the arguments are levels, not counts, so a block is bounded by its peak at any ceiling. */
@@ -101,7 +118,7 @@ class ThermoMathTest {
             assertTrue(ThermoMath.dailyYield(peak, weakest) > BATTERY[tier - 1] * 4.0, "daily yield of tier " + tier + " with the weakest sources");
             assertTrue(ThermoMath.ticksToFill(BATTERY[tier - 1], peak, weakest) <= ThermoMath.TICKS_PER_DAY / 4.0,
                     "tier " + tier + " fills its battery in a quarter day with the weakest sources");
-            assertTrue(ThermoMath.ticksToFill(BATTERY[tier - 1], peak, best) <= 2_000, "tier " + tier + " with the best sources");
+            assertEquals(1336, ThermoMath.ticksToFill(BATTERY[tier - 1], peak, best), 4, "tier " + tier + " fills its battery in about 1,340 ticks with the best sources");
         }
         assertEquals(15 * 24_000.0, ThermoMath.dailyYield(15, 1F), 1e-9);
         assertFalse(Double.isFinite(ThermoMath.ticksToFill(1, 15, 0F)));
