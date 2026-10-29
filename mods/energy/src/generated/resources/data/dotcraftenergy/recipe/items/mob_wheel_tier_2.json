@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:mob_wheel_tier_2"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_2"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:mob_wheel_tier_1"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:battery_tier_2",
+    "G": "#c:gears/nickel",
+    "P": "#c:plates/nickel",
+    "X": "dotcraftenergy:mob_wheel_tier_1"
+  },
+  "pattern": [
+    "PGP",
+    "GXG",
+    "PBP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:mob_wheel_tier_2"
+  }
+}

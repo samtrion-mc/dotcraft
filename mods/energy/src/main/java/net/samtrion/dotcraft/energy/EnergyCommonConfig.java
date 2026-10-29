@@ -10,7 +10,8 @@ import net.neoforged.neoforge.common.ModConfigSpec;
  * The common config of the energy mod ({@code config/dotcraft/energy/common.toml}): per battery the FE values
  * {@code batteries.<name>.capacity}, {@code maxInput} (not for the single-use battery, which can never be charged) and {@code maxOutput}. They are read whenever they are needed, so a change
  * counts for every battery already in the world; a stack that holds more than the new capacity is capped on its next transfer. The
- * batteries are switched on and off in the {@link EnergyStartupConfig}. Client and server read their own file: for a correct bar and
+ * generators (panels, mob wheels) have {@code generators.<name>.peak}, {@code capacity} and {@code maxOutput}. The
+ * batteries and generators are switched on and off in the {@link EnergyStartupConfig}. Client and server read their own file: for a correct bar and
  * tooltip on a client of a dedicated server keep the values equal.
  */
 public final class EnergyCommonConfig {
@@ -69,6 +70,10 @@ public final class EnergyCommonConfig {
     public static final List<Generator> MELT_GENERATORS = generators(MELT_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
     /** The FE a melted block of ice, packed ice and blue ice gives, section {@code melt}. */
     public static final MeltYield MELT_YIELD = new MeltYield(1_000, 9_000, 81_000);
+    /** The registry paths of the mob wheels, tiers 1-5, which are also their config sections. */
+    static final List<String> WHEEL_NAMES = tierNames("mob_wheel");
+    /** The mob wheels: the peak FE/t with a full cage of running mobs, anchored by a duty cycle of a quarter (see {@code WheelMath}). */
+    public static final List<Generator> MOB_WHEELS = generators(WHEEL_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
 
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
