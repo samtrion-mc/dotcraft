@@ -28,6 +28,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(EnergyItems.BATTERY_TIER_5.get(), "Batterie (Stufe 5)");
         add(EnergyItems.PHOTOVOLTAIC_CELL.get(), "Photovoltaikzelle");
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solarpanel (Stufe " + b.get().tier() + ")"));
+        EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Mondpanel (Stufe " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");

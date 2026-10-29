@@ -36,9 +36,13 @@ public final class EnergyCommonConfig {
 
     /** The registry paths of the solar panels, tiers 1-5, which are also their config sections. */
     static final List<String> SOLAR_NAMES = tierNames("solar_panel");
+    /** The registry paths of the lunar panels, tiers 1-5, which are also their config sections. */
+    static final List<String> LUNAR_NAMES = tierNames("lunar_panel");
 
     /** The solar panels: the peak FE/t at noon under a clear sky, at least 15 FE/t; a panel fills the battery of its tier in well under one MC day. */
     public static final List<Generator> SOLAR_PANELS = generators(SOLAR_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The lunar panels: the peak FE/t at full moon in a clear night. */
+    public static final List<Generator> LUNAR_PANELS = generators(LUNAR_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
 
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();

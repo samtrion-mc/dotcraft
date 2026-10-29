@@ -40,6 +40,8 @@ public final class EnergyBlocks {
 
     /** The solar panels. */
     public static final Family SOLAR = family(SolarKind.INSTANCE);
+    /** The lunar panels. */
+    public static final Family LUNAR = family(LunarKind.INSTANCE);
 
     /**
      * Creative-only test block: takes any FE from any side, up to {@link Integer#MAX_VALUE} per operation, pulls FE out of its neighbours on every side, and destroys it all. Not

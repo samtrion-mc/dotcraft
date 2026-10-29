@@ -76,6 +76,7 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
             Item[] batteries = {EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), EnergyItems.BATTERY_TIER_2.get(), EnergyItems.BATTERY_TIER_3.get(),
                     EnergyItems.BATTERY_TIER_4.get(), EnergyItems.BATTERY_TIER_5.get()};
             panels(EnergyBlocks.SOLAR, batteries, Tags.Items.GLASS_PANES, "aluminum", "bronze", "steel", "electrum", "osmium");
+            panels(EnergyBlocks.LUNAR, batteries, Tags.Items.GEMS_LAPIS, "lead", "brass", "invar", "silver", "platinum");
         }
 
         /** Two photovoltaic cells: two quartz, a glass pane and redstone grains; unlocked by the quartz. */

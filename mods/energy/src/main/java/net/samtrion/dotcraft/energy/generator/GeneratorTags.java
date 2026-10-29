@@ -12,6 +12,10 @@ public final class GeneratorTags {
     public static final TagKey<Biome> SOLAR_BOOST = biome("solar_boost");
     /** Biomes where solar panels make less. */
     public static final TagKey<Biome> SOLAR_MALUS = biome("solar_malus");
+    /** Biomes where lunar panels make more. */
+    public static final TagKey<Biome> LUNAR_BOOST = biome("lunar_boost");
+    /** Biomes where lunar panels make less. */
+    public static final TagKey<Biome> LUNAR_MALUS = biome("lunar_malus");
 
     /** Not instantiable. */
     private GeneratorTags() {}

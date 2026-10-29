@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:lunar_panel_tier_1"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:rechargeable_potato_battery"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:gems/lapis",
+    "B": "dotcraftenergy:rechargeable_potato_battery",
+    "C": "dotcraftenergy:photovoltaic_cell",
+    "P": "#c:plates/lead",
+    "X": "#c:small_dusts/redstone"
+  },
+  "pattern": [
+    "CAC",
+    "PBP",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:lunar_panel_tier_1"
+  }
+}
