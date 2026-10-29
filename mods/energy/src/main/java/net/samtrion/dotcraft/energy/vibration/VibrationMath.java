@@ -6,10 +6,15 @@ package net.samtrion.dotcraft.energy.vibration;
  * <p>
  * The economy: a game event of frequency {@code f} is worth {@code f / 15} of {@link #EVENT_TICKS} ticks of the peak, so the loudest
  * event gives {@link #EVENT_TICKS} ticks of peak and a faint one a fraction. What is made is limited by a {@link VibrationBucket} that
- * refills with the peak per tick and holds {@link #BURST_TICKS} ticks of peak, so a generator can never make more than its peak per
- * tick on average, however many events there are, see {@link #maxYield}. With a player who is busy near the generator (mining,
- * fighting, building) the bucket is {@link #DUTY} of the time used up, which is the anchor of the peak ladder: the daily yield is a few
- * times the battery of the tier.
+ * refills with {@link #refill} (a {@link #DUTY} share of the peak) per tick and holds {@link #BURST_TICKS} ticks of peak. That is a
+ * hard ceiling, see {@link #maxYield}: no amount of events, from a player or from a machine that loops an event, makes more than
+ * {@link #DUTY} of the peak on average, about {@code 4.8} batteries of the tier per MC day, the order of a panel. A player who mines
+ * or fights all day (an event every 10 ticks) is bucket-limited and reaches this ceiling, a light player (an event every 100 ticks)
+ * makes about 1.4 batteries per day; a machine can reach the ceiling too, but never pass it.
+ * <p>
+ * What a tier hears, with the vanilla frequencies of the events in the tag (step 1, hit_ground 2, entity_damage 7, block_destroy 12,
+ * block_place 13, lightning_strike 14, entity_die 15, explode 15): tier 1 the loud shocks (block broken or placed, deaths,
+ * explosions, lightning), tier 2 also damage, tier 3 also landings, tier 4 the same through wool, tier 5 also steps.
  */
 public final class VibrationMath {
     /** The highest tier. */
@@ -20,15 +25,17 @@ public final class VibrationMath {
     public static final int MAX_FREQUENCY = 15;
     /** Ticks of peak the bucket holds: the burst a generator may make at once. It holds more than one loudest event. */
     public static final int BURST_TICKS = 20;
-    /** The share of the ticks of a day a busy player keeps the generator at its peak; the economy of the defaults is anchored to it. */
-    public static final double DUTY = 0.25;
+    /** The refill of the bucket is the peak divided by this, so the average output can never pass {@code 1 / REFILL_DIVISOR} of the peak. */
+    public static final int REFILL_DIVISOR = 4;
+    /** The share of the ticks of a day a generator can be at its peak at most (the ceiling the economy of the defaults is anchored to). */
+    public static final double DUTY = 1.0 / REFILL_DIVISOR;
     /** Ticks of one MC day. */
     public static final int DAY_TICKS = 24000;
 
     /** Per tier: the radius in blocks in which the generator hears game events (perk: the range grows). A game event reaches 16 blocks at most, so no tier hears further. */
     private static final int[] RADIUS = {5, 7, 9, 12, 16};
-    /** Per tier: the lowest frequency it hears (perk: fainter shocks count). */
-    private static final int[] MIN_FREQUENCY = {7, 5, 3, 2, 1};
+    /** Per tier: the lowest frequency it hears (perk: fainter shocks count: damage from tier 2, landings from tier 3, steps at tier 5). */
+    private static final int[] MIN_FREQUENCY = {8, 7, 2, 2, 1};
     /** The first tier whose vibrations are not stopped by wool (perk: hears through insulation). */
     private static final int PIERCING_TIER = 4;
 
@@ -99,6 +106,16 @@ public final class VibrationMath {
     }
 
     /**
+     * The refill of the bucket per tick, the average output the generator can reach at most.
+     *
+     * @param peak the peak of the generator in FE/t
+     * @return the FE per tick, at least 1 for a positive peak
+     */
+    public static long refill(int peak) {
+        return Math.ceilDiv((long) peak, REFILL_DIVISOR);
+    }
+
+    /**
      * The provable ceiling: whatever the world does, a generator makes no more than this over a span of ticks.
      *
      * @param peak  the peak of the generator in FE/t
@@ -106,16 +123,16 @@ public final class VibrationMath {
      * @return the most FE made over the span
      */
     public static long maxYield(int peak, long ticks) {
-        return burst(peak) + (long) peak * ticks;
+        return burst(peak) + refill(peak) * ticks;
     }
 
     /**
-     * The FE of one MC day with a busy player near the generator.
+     * The FE of one MC day at the ceiling, which a player busy all day or a machine reaches but cannot pass.
      *
      * @param peak the peak of the generator in FE/t
-     * @return the FE per day at the {@linkplain #DUTY duty}
+     * @return the FE per day
      */
-    public static double busyDailyYield(int peak) {
-        return peak * DUTY * DAY_TICKS;
+    public static double dailyCeiling(int peak) {
+        return (double) refill(peak) * DAY_TICKS;
     }
 }

@@ -33,11 +33,16 @@ public final class VibrationBlocks {
     /** The registry path prefix of the blocks, which are named {@code vibration_generator_tier_<n>}. */
     public static final String PREFIX = "vibration_generator";
 
+    /** The register of the blocks. */
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(EnergyMod.MODID);
+    /** The register of the items. */
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(EnergyMod.MODID);
+    /** The register of the block entity type. */
     private static final DeferredRegister<BlockEntityType<?>> TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, EnergyMod.MODID);
 
+    /** The generator blocks of the tiers that are switched on, ordered by tier. */
     private static final List<DeferredBlock<VibrationBlock>> GENERATORS = new ArrayList<>();
+    /** The items of those blocks, in the same order. */
     private static final List<DeferredItem<BlockItem>> GENERATOR_ITEMS = new ArrayList<>();
 
     /** The block entity type of all tiers; the blocks are listed when the registry event runs, after the loop below has filled the list. */
@@ -53,7 +58,7 @@ public final class VibrationBlocks {
             var block = BLOCKS.<VibrationBlock>registerBlock(name, p -> new VibrationBlock(p, t, TYPE),
                     () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).requiresCorrectToolForDrops().sound(SoundType.METAL));
             GENERATORS.add(block);
-            GENERATOR_ITEMS.add(ITEMS.registerSimpleBlockItem(block));
+            GENERATOR_ITEMS.add(ITEMS.<BlockItem>registerItem(name, props -> new VibrationBlockItem(block.get(), props), props -> props.useBlockDescriptionPrefix()));
         }
     }
 

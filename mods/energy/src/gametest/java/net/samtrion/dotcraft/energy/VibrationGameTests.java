@@ -14,6 +14,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -39,6 +40,9 @@ public final class VibrationGameTests {
     private static final Identifier LISTEN = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "vibration_listen");
     private static final ResourceKey<Consumer<GameTestHelper>> LISTEN_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, LISTEN);
 
+    private static final Identifier PUSH = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "vibration_push");
+    private static final ResourceKey<Consumer<GameTestHelper>> PUSH_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, PUSH);
+
     private static final Identifier BLOCKS = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "vibration_blocks");
     private static final ResourceKey<Consumer<GameTestHelper>> BLOCKS_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, BLOCKS);
 
@@ -54,6 +58,7 @@ public final class VibrationGameTests {
         event.register(Registries.TEST_FUNCTION, registry -> {
             registry.register(LISTEN, (Consumer<GameTestHelper>) VibrationGameTests::listen);
             registry.register(BLOCKS, (Consumer<GameTestHelper>) VibrationGameTests::blocks);
+            registry.register(PUSH, (Consumer<GameTestHelper>) VibrationGameTests::push);
         });
     }
 
@@ -67,6 +72,9 @@ public final class VibrationGameTests {
         var listenEnvironment = event.registerEnvironment(LISTEN, new TestEnvironmentDefinition.AllOf());
         event.registerTest(LISTEN, new FunctionGameTestInstance(LISTEN_FUNCTION,
                 new TestData<>(listenEnvironment, Identifier.withDefaultNamespace("empty"), 140, 0, true)));
+        var pushEnvironment = event.registerEnvironment(PUSH, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(PUSH, new FunctionGameTestInstance(PUSH_FUNCTION,
+                new TestData<>(pushEnvironment, Identifier.withDefaultNamespace("empty"), 40, 0, true)));
         var blocksEnvironment = event.registerEnvironment(BLOCKS, new TestEnvironmentDefinition.AllOf());
         event.registerTest(BLOCKS, new FunctionGameTestInstance(BLOCKS_FUNCTION,
                 new TestData<>(blocksEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
@@ -84,7 +92,7 @@ public final class VibrationGameTests {
     }
 
     /**
-     * One generator after the other (tier 1, 4, 5) at the same spot, each with an empty bucket that fills for 25 ticks first. Tier 1: no
+     * One generator after the other (tier 1, 4, 5) at the same spot, each with a bucket that has refilled for 25 ticks (60 for the first). Tier 1: no
      * FE for events that are not in the tag, too faint, outside the radius or on wool (also stopped by wool in between); then five
      * loud events in one tick give exactly the burst of the bucket, and the buffer can be drained but not filled. Tier 4 hears
      * through wool and has the larger radius; tier 5 ignores a sneaking entity for the events the sneaking tag lists.
@@ -98,9 +106,9 @@ public final class VibrationGameTests {
         var none = GameEvent.Context.of((net.minecraft.world.entity.Entity) null);
         helper.setBlock(rel, VibrationBlocks.block(1).get());
         helper.assertTrue(helper.getLevel().getBlockEntity(gen) instanceof VibrationBlockEntity, "no vibration block entity");
-        // an event before the bucket has run for a while gives nothing, it only starts the clock
-        helper.assertTrue(emit(helper, gen, destroy, gen.east(2), none) == 0, "a fresh generator made FE");
-        helper.runAfterDelay(25, () -> {
+        // a new generator starts with a full bucket and answers its first event; 60 ticks refill what it took (120 of 300 FE at 4 FE/t)
+        helper.assertTrue(emit(helper, gen, destroy, gen.east(2), none) > 0, "a fresh generator did not answer");
+        helper.runAfterDelay(60, () -> {
             helper.assertTrue(emit(helper, gen, GameEvent.CONTAINER_OPEN, gen.east(2), none) == 0, "container_open is no source");
             helper.assertTrue(emit(helper, gen, GameEvent.HIT_GROUND, gen.east(2), none) == 0, "hit_ground is too faint for tier 1");
             helper.assertTrue(emit(helper, gen, destroy, gen.east(8), none) == 0, "an event outside the radius counted");
@@ -159,6 +167,39 @@ public final class VibrationGameTests {
     }
 
     /**
+     * The FE of a generator reaches a neighbour, and the block entity survives a save and a load: after a loud event the generator holds
+     * FE and keeps it with nothing next to it; its saved data restores the FE, the tokens of the bucket and its clock; a power drain
+     * placed next to it then takes all of it within a few ticks. Built high above the other tests.
+     *
+     * @param helper the game test helper
+     */
+    private static void push(GameTestHelper helper) {
+        var rel = new BlockPos(1, 22, 1);
+        var gen = helper.absolutePos(rel);
+        helper.setBlock(rel, VibrationBlocks.block(1).get());
+        helper.assertTrue(emit(helper, gen, GameEvent.BLOCK_DESTROY, gen.east(2), GameEvent.Context.of((net.minecraft.world.entity.Entity) null)) > 0,
+                "the generator made no FE");
+        var level = helper.getLevel();
+        var be = (VibrationBlockEntity) level.getBlockEntity(gen);
+        helper.assertTrue(be.bucket().tokens() < VibrationMath.burst(EnergyCommonConfig.VIBRATION_GENERATORS.get(0).peak()), "the bucket was not used");
+        var tag = be.saveWithFullMetadata(level.registryAccess());
+        var copy = (VibrationBlockEntity) BlockEntity.loadStatic(gen, be.getBlockState(), tag, level.registryAccess());
+        helper.assertTrue(copy != null, "the saved block entity did not load");
+        helper.assertTrue(copy.energy().getAmountAsLong() == be.energy().getAmountAsLong() && copy.energy().getAmountAsLong() > 0,
+                "the FE did not survive: " + copy.energy().getAmountAsLong());
+        helper.assertTrue(copy.bucket().tokens() == be.bucket().tokens(), "the tokens did not survive: " + copy.bucket().tokens());
+        helper.assertTrue(copy.bucket().lastTick() == be.bucket().lastTick() && copy.bucket().lastTick() >= 0, "the clock did not survive: " + copy.bucket().lastTick());
+        helper.runAfterDelay(5, () -> {
+            helper.assertTrue(stored(helper, gen) > 0, "the FE went away with no neighbour");
+            helper.setBlock(rel.east(), EnergyBlocks.POWER_DRAIN.get());
+            helper.runAfterDelay(5, () -> {
+                helper.assertTrue(stored(helper, gen) == 0, "the FE did not reach the neighbour: " + stored(helper, gen));
+                helper.succeed();
+            });
+        });
+    }
+
+    /**
      * Every enabled tier has a block entity of the vibration type with the radius of the tier and an energy capability on every side
      * that cannot be filled; it is no panel, so it neither joins the pool of the panels nor shows as a neighbour of one.
      *
@@ -179,6 +220,8 @@ public final class VibrationGameTests {
             var pos = helper.absolutePos(new BlockPos(2 * x++, 12, 0));
             var be = level.getBlockEntity(pos);
             helper.assertTrue(be instanceof VibrationBlockEntity, block.getId() + " has the wrong block entity");
+            helper.assertTrue(!((Object) block.get() instanceof GeneratorBlock), block.getId() + " is a panel block");
+            helper.assertTrue(level.getBlockState(pos).hasAnalogOutputSignal(), block.getId() + " has no comparator output");
             var listener = ((VibrationBlockEntity) be).getListener();
             helper.assertTrue(listener.getListenerRadius() == VibrationMath.radius(block.get().tier()), block.getId() + " has the wrong radius");
             for (Direction side : Direction.values()) {

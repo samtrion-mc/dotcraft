@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -16,10 +17,12 @@ import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * A vibration generator of one tier: a full block with a {@link VibrationBlockEntity}. It is deliberately not a
- * {@code GeneratorBlock}, so it never joins the pool of the solar and lunar panels.
+ * {@code GeneratorBlock}, so it never joins the pool of the solar and lunar panels. A comparator reads how full its buffer is.
  */
 public class VibrationBlock extends Block implements EntityBlock {
+    /** The tier, 1..5. */
     private final int tier;
+    /** The block entity type, shared by all tiers. */
     private final Supplier<? extends BlockEntityType<VibrationBlockEntity>> type;
 
     /**
@@ -42,6 +45,16 @@ public class VibrationBlock extends Block implements EntityBlock {
      */
     public int tier() {
         return tier;
+    }
+
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
+        return level.getBlockEntity(pos) instanceof VibrationBlockEntity be ? be.signal() : 0;
     }
 
     @Override

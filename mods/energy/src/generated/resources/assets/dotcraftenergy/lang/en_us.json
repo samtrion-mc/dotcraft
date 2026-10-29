@@ -23,5 +23,9 @@
   "item.dotcraftenergy.potato_battery": "Potato Battery",
   "item.dotcraftenergy.rechargeable_potato_battery": "Rechargeable Potato Battery",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energy",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.vibration.hearing": "Hears shocks within %1$s blocks, from vibration frequency %2$s",
+  "tooltip.dotcraftenergy.vibration.needs": "Powered by shocks nearby: blocks broken, fights, explosions",
+  "tooltip.dotcraftenergy.vibration.peak": "Peak %1$s FE/t, on average at most %2$s FE/t",
+  "tooltip.dotcraftenergy.vibration.pierce": "Hears through wool"
 }

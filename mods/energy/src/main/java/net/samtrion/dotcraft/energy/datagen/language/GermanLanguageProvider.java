@@ -5,6 +5,7 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.vibration.VibrationBlockItem;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
@@ -31,6 +32,10 @@ public final class GermanLanguageProvider extends LanguageProvider {
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solarpanel (Stufe " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Mondpanel (Stufe " + b.get().tier() + ")"));
         VibrationBlocks.blocks().forEach(b -> add(b.get(), "Vibrationsgenerator (Stufe " + b.get().tier() + ")"));
+        add(VibrationBlockItem.NEEDS_KEY, "Wird von Erschütterungen in der Nähe angetrieben: Blöcke abbauen, Kämpfe, Explosionen");
+        add(VibrationBlockItem.PEAK_KEY, "Spitze %1$s FE/t, im Schnitt höchstens %2$s FE/t");
+        add(VibrationBlockItem.HEARING_KEY, "Hört Erschütterungen im Umkreis von %1$s Blöcken, ab Vibrationsfrequenz %2$s");
+        add(VibrationBlockItem.PIERCE_KEY, "Hört durch Wolle");
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energie");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");

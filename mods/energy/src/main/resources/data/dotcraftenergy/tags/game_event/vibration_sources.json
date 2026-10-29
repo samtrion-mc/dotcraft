@@ -7,7 +7,6 @@
     "minecraft:explode",
     "minecraft:hit_ground",
     "minecraft:lightning_strike",
-    "minecraft:projectile_land",
     "minecraft:step"
   ]
 }

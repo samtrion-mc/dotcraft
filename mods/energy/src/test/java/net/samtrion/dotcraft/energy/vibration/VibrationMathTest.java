@@ -39,7 +39,7 @@ class VibrationMathTest {
     void perksGrowWithTier() {
         for (int tier = 2; tier <= 5; tier++) {
             assertTrue(VibrationMath.radius(tier) > VibrationMath.radius(tier - 1));
-            assertTrue(VibrationMath.minFrequency(tier) < VibrationMath.minFrequency(tier - 1));
+            assertTrue(VibrationMath.minFrequency(tier) <= VibrationMath.minFrequency(tier - 1));
         }
         assertFalse(VibrationMath.pierces(3));
         assertTrue(VibrationMath.pierces(4));
@@ -49,8 +49,8 @@ class VibrationMathTest {
     /** What a tier hears: only the loud events at tier 1, everything with a frequency at tier 5, never frequency 0. */
     @Test
     void hearing() {
-        assertFalse(VibrationMath.hears(1, 6));
-        assertTrue(VibrationMath.hears(1, 7));
+        assertFalse(VibrationMath.hears(1, 7));
+        assertTrue(VibrationMath.hears(1, 8));
         assertTrue(VibrationMath.hears(1, 15));
         assertFalse(VibrationMath.hears(4, 1));
         assertTrue(VibrationMath.hears(5, 1));
@@ -61,30 +61,66 @@ class VibrationMathTest {
         }
     }
 
-    /** The ceiling is the peak per tick plus one burst. */
+    /**
+     * How many events of the tag each tier hears, with the vanilla frequencies (step 1, hit_ground 2, entity_damage 7, block_destroy 12,
+     * block_place 13, lightning_strike 14, entity_die 15, explode 15): tier 2 unlocks damage, tier 3 landings, tier 5 steps, and tier 4
+     * adds the wool instead, as the class Javadoc says.
+     */
+    @Test
+    void eventsPerTier() {
+        int[] frequencies = {1, 2, 7, 12, 13, 14, 15, 15};
+        int[] heard = {5, 6, 7, 7, 8};
+        for (int tier = 1; tier <= 5; tier++) {
+            int t = tier;
+            assertEquals(heard[tier - 1], java.util.Arrays.stream(frequencies).filter(f -> VibrationMath.hears(t, f)).count(), "tier " + tier);
+        }
+    }
+
+    /** The ceiling is the refill per tick plus one burst. */
     @Test
     void ceiling() {
         assertEquals(300, VibrationMath.burst(15));
-        assertEquals(300 + 15 * 24000L, VibrationMath.maxYield(15, 24000));
+        assertEquals(4, VibrationMath.refill(15));
+        assertEquals(1, VibrationMath.refill(1));
+        assertEquals(0, VibrationMath.refill(0));
+        assertEquals(300 + 4 * 24000L, VibrationMath.maxYield(15, 24000));
         assertEquals(VibrationMath.burst(75), VibrationMath.maxYield(75, 0));
     }
 
+    /** The FE a stream of one event every {@code interval} ticks makes over one MC day through the bucket of a peak. */
+    private static long dayOf(int peak, int frequency, int interval) {
+        var bucket = new VibrationBucket();
+        long made = 0;
+        for (int tick = 0; tick < VibrationMath.DAY_TICKS; tick += interval) {
+            made += bucket.take(tick, VibrationMath.eventEnergy(peak, frequency), VibrationMath.refill(peak), VibrationMath.burst(peak));
+        }
+        return made;
+    }
+
     /**
-     * The economy anchor: the peaks follow the battery ladder 15 / 75 / 560 / 5600 / 56000 FE/t, none below 15; with a busy player
-     * (a quarter of the day at peak) a generator fills the battery of its tier 2..15 times a day, and at full duty the ceiling is below
-     * 25 batteries a day, so even a farm cannot fill more: the cap is the real limit.
+     * The economy anchor: the peaks follow the battery ladder 15 / 75 / 560 / 5600 / 56000 FE/t, none below 15. The ceiling (a player
+     * busy all day, or a machine looping an event) is below 6 batteries a day, the order of a panel (2..15 with the peak of its day
+     * curve). Real event streams through the bucket: a block broken every 10 ticks or damage dealt every 8 ticks sits at the ceiling,
+     * an event every 100 ticks makes less than half of it, and a machine that fires every tick cannot pass it.
      */
     @Test
     void dailyYieldMatchesBattery() {
         for (int tier = 1; tier <= 5; tier++) {
             int peak = EnergyCommonConfig.VIBRATION_GENERATORS.get(tier - 1).peak();
             double capacity = BATTERIES[tier - 1].capacity();
-            double busy = VibrationMath.busyDailyYield(peak) / capacity;
-            assertTrue(busy > 2 && busy < 15, "tier " + tier + ": " + busy);
-            double ceiling = VibrationMath.maxYield(peak, VibrationMath.DAY_TICKS) / capacity;
-            assertTrue(ceiling < 25, "tier " + tier + ": " + ceiling);
-            double ticksToFill = capacity / peak;
-            assertTrue(ticksToFill >= VibrationMath.DAY_TICKS / 25.0, "tier " + tier + ": " + ticksToFill);
+            double ceiling = VibrationMath.dailyCeiling(peak) / capacity;
+            assertTrue(ceiling > 4 && ceiling < 6, "tier " + tier + ": " + ceiling);
+            assertTrue(VibrationMath.maxYield(peak, VibrationMath.DAY_TICKS) / capacity < 6, "tier " + tier);
+            double mining = dayOf(peak, 12, 10) / capacity;
+            double fighting = dayOf(peak, 7, 8) / capacity;
+            double light = dayOf(peak, 12, 100) / capacity;
+            double machine = dayOf(peak, 15, 1) / capacity;
+            assertEquals(ceiling, mining, 0.3, "mining, tier " + tier);
+            assertEquals(ceiling, fighting, 0.3, "fighting, tier " + tier);
+            assertTrue(light > 1 && light < ceiling / 2, "light play, tier " + tier + ": " + light);
+            assertEquals(ceiling, machine, 0.3, "machine, tier " + tier);
+            assertTrue(machine * capacity <= VibrationMath.maxYield(peak, VibrationMath.DAY_TICKS), "machine, tier " + tier);
+            assertTrue(capacity / peak >= VibrationMath.DAY_TICKS / 25.0, "tier " + tier);
             assertTrue(peak >= 15);
         }
         assertEquals(15, EnergyCommonConfig.VIBRATION_GENERATORS.get(0).peak());

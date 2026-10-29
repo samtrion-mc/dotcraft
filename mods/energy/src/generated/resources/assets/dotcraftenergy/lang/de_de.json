@@ -23,5 +23,9 @@
   "item.dotcraftenergy.potato_battery": "Kartoffelbatterie",
   "item.dotcraftenergy.rechargeable_potato_battery": "Wiederaufladbare Kartoffelbatterie",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energie",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.vibration.hearing": "Hört Erschütterungen im Umkreis von %1$s Blöcken, ab Vibrationsfrequenz %2$s",
+  "tooltip.dotcraftenergy.vibration.needs": "Wird von Erschütterungen in der Nähe angetrieben: Blöcke abbauen, Kämpfe, Explosionen",
+  "tooltip.dotcraftenergy.vibration.peak": "Spitze %1$s FE/t, im Schnitt höchstens %2$s FE/t",
+  "tooltip.dotcraftenergy.vibration.pierce": "Hört durch Wolle"
 }

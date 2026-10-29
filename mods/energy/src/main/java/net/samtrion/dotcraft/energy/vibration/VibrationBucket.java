@@ -3,16 +3,20 @@ package net.samtrion.dotcraft.energy.vibration;
 /**
  * The hard cap of a vibration generator: a token bucket of FE. It refills a fixed amount per tick up to a capacity and every grant
  * takes from it, so over any span of {@code t} ticks no more than {@code capacity + perTick * t} can be granted, whatever the events
- * do. It starts empty (the first call only starts the clock), so placing a generator and hammering at it gives nothing, and it keeps
+ * do. It starts full (the first call only starts the clock), so a new generator answers its first events, and it keeps
  * no record of who or what made a vibration. The rate and the capacity are arguments of every call, so a changed config counts at
  * once.
  */
 public final class VibrationBucket {
+    /** The FE in the bucket; a value above the capacity is cut to it by the next call. */
     private long tokens;
-    private long lastTick = -1;
+    /** The game time of the last refill, negative until the clock is started. */
+    private long lastTick;
 
-    /** Creates an empty bucket whose clock starts with the first call. */
-    public VibrationBucket() {}
+    /** Creates a full bucket whose clock starts with the first call. */
+    public VibrationBucket() {
+        this(Long.MAX_VALUE, -1);
+    }
 
     /**
      * Restores a saved bucket.

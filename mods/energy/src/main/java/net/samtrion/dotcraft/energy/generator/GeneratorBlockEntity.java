@@ -23,10 +23,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
-import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.TransferPreconditions;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
-import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
 /**
@@ -191,14 +189,7 @@ public class GeneratorBlockEntity extends BlockEntity {
     }
 
     private void push(ServerLevel level) {
-        if (pool.getAmountAsLong() <= 0) return;
-        for (Direction d : Direction.values()) {
-            if (d == Direction.UP) continue;
-            var cache = neighbours.computeIfAbsent(d,
-                    dir -> BlockCapabilityCache.create(Capabilities.Energy.BLOCK, level, worldPosition.relative(dir), dir.getOpposite()));
-            EnergyHandlerUtil.move(pool, cache.getCapability(), Integer.MAX_VALUE, null);
-            if (pool.getAmountAsLong() <= 0) return;
-        }
+        GeneratorEnergy.push(neighbours, level, worldPosition, pool, Direction.UP);
     }
 
     @Override

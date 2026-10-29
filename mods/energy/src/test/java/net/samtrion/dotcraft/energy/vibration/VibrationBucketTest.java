@@ -12,18 +12,20 @@ class VibrationBucketTest {
     private static final long PER_TICK = 15;
     private static final long CAPACITY = 300;
 
-    /** A new bucket is empty: the first call only starts the clock, so placing a generator and hammering at it gives nothing. */
+    /** A new bucket is full, so the first events of a new generator are answered; it never holds more than the capacity. */
     @Test
-    void startsEmpty() {
+    void startsFull() {
         var bucket = new VibrationBucket();
-        assertEquals(0, bucket.take(1000, 120, PER_TICK, CAPACITY));
+        assertEquals(120, bucket.take(1000, 120, PER_TICK, CAPACITY));
+        assertEquals(120, bucket.take(1000, 120, PER_TICK, CAPACITY));
+        assertEquals(60, bucket.take(1000, 120, PER_TICK, CAPACITY));
         assertEquals(0, bucket.take(1000, 120, PER_TICK, CAPACITY));
     }
 
     /** The bucket refills with the rate per tick, up to its capacity, and grants no more than it holds. */
     @Test
     void refillsAndGrantsPartly() {
-        var bucket = new VibrationBucket();
+        var bucket = new VibrationBucket(0, -1);
         bucket.take(0, 0, PER_TICK, CAPACITY);
         assertEquals(60, bucket.take(4, 100, PER_TICK, CAPACITY));
         assertEquals(0, bucket.take(4, 100, PER_TICK, CAPACITY));
@@ -80,24 +82,25 @@ class VibrationBucketTest {
     void ceilingOverADay() {
         for (int tier = 1; tier <= 5; tier++) {
             int peak = net.samtrion.dotcraft.energy.EnergyCommonConfig.VIBRATION_GENERATORS.get(tier - 1).peak();
+            long refill = VibrationMath.refill(peak);
             var hammer = new VibrationBucket();
             var random = new VibrationBucket();
             var rnd = new Random(tier);
-            hammer.take(0, 0, peak, VibrationMath.burst(peak));
-            random.take(0, 0, peak, VibrationMath.burst(peak));
+            hammer.take(0, 0, refill, VibrationMath.burst(peak));
+            random.take(0, 0, refill, VibrationMath.burst(peak));
             long hammered = 0;
             long randomly = 0;
             for (int tick = 1; tick <= VibrationMath.DAY_TICKS; tick++) {
-                for (int i = 0; i < 20; i++) hammered += hammer.take(tick, VibrationMath.eventEnergy(peak, 15), peak, VibrationMath.burst(peak));
+                for (int i = 0; i < 20; i++) hammered += hammer.take(tick, VibrationMath.eventEnergy(peak, 15), refill, VibrationMath.burst(peak));
                 if (rnd.nextInt(3) == 0) {
-                    for (int i = rnd.nextInt(30); i > 0; i--) randomly += random.take(tick, VibrationMath.eventEnergy(peak, 1 + rnd.nextInt(15)), peak, VibrationMath.burst(peak));
+                    for (int i = rnd.nextInt(30); i > 0; i--) randomly += random.take(tick, VibrationMath.eventEnergy(peak, 1 + rnd.nextInt(15)), refill, VibrationMath.burst(peak));
                 }
             }
             long max = VibrationMath.maxYield(peak, VibrationMath.DAY_TICKS);
             assertTrue(hammered <= max, "tier " + tier + ": " + hammered + " > " + max);
             assertTrue(randomly <= max, "tier " + tier + ": " + randomly + " > " + max);
             // the hammer reaches the ceiling (within one loudest event per tick), so the cap is the real limit
-            assertTrue(hammered >= (long) peak * VibrationMath.DAY_TICKS - VibrationMath.eventEnergy(peak, 15), "tier " + tier + ": " + hammered);
+            assertTrue(hammered >= refill * VibrationMath.DAY_TICKS - VibrationMath.eventEnergy(peak, 15), "tier " + tier + ": " + hammered);
         }
     }
 }

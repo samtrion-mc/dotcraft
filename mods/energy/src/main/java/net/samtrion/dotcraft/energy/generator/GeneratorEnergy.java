@@ -1,5 +1,16 @@
 package net.samtrion.dotcraft.energy.generator;
 
+import java.util.Map;
+
+import org.jspecify.annotations.Nullable;
+
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.server.level.ServerLevel;
+import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
+import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
+import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
 import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.TransactionContext;
 
@@ -45,6 +56,27 @@ public final class GeneratorEnergy extends SimpleEnergyHandler {
         int before = energy;
         set((int) Math.min(capacity, (long) energy + amount));
         return energy - before;
+    }
+
+    /**
+     * Pushes FE of a source into the neighbours of a block, one side after the other, until the source is empty. The capability
+     * caches are created on the first push and kept in the given map.
+     *
+     * @param caches the capability caches of the block, by side
+     * @param level  the level
+     * @param pos    the position of the block
+     * @param source the FE to push
+     * @param skip   a side that gets nothing, or {@code null} for all six
+     */
+    public static void push(Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> caches, ServerLevel level, BlockPos pos,
+            EnergyHandler source, @Nullable Direction skip) {
+        if (source.getAmountAsLong() <= 0) return;
+        for (Direction d : Direction.values()) {
+            if (d == skip) continue;
+            var cache = caches.computeIfAbsent(d, dir -> BlockCapabilityCache.create(Capabilities.Energy.BLOCK, level, pos.relative(dir), dir.getOpposite()));
+            EnergyHandlerUtil.move(source, cache.getCapability(), Integer.MAX_VALUE, null);
+            if (source.getAmountAsLong() <= 0) return;
+        }
     }
 
     /**
