@@ -73,12 +73,11 @@ class WheelMathTest {
         assertEquals(0, WheelMath.weight(WheelMath.Strength.NONE, 5));
     }
 
-    /** The perk ladder: more mobs and a wider zone per tier, softer returns from tier 4 on. */
+    /** The perk ladder: more mobs per tier, softer returns from tier 4 on. */
     @Test
     void tiersGrow() {
         for (int tier = 2; tier <= WheelMath.MAX_TIER; tier++) {
             assertTrue(WheelMath.cap(tier) > WheelMath.cap(tier - 1));
-            assertTrue(WheelMath.radius(tier) >= WheelMath.radius(tier - 1));
             assertTrue(WheelMath.decay(tier) >= WheelMath.decay(tier - 1));
         }
         assertTrue(WheelMath.decay(4) > WheelMath.decay(3));

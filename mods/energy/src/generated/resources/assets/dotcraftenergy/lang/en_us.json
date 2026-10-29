@@ -82,10 +82,10 @@
   "tooltip.dotcraftenergy.vibration.peak": "Peak %1$s FE/t, on average at most %2$s FE/t",
   "tooltip.dotcraftenergy.vibration.pierce": "Hears through wool",
   "tooltip.dotcraftenergy.wheel.perk.1": "Base wheel.",
-  "tooltip.dotcraftenergy.wheel.perk.2": "Bigger cage: more mobs and a wider zone.",
+  "tooltip.dotcraftenergy.wheel.perk.2": "Bigger cage: more mobs.",
   "tooltip.dotcraftenergy.wheel.perk.3": "Small animals pull their full weight.",
   "tooltip.dotcraftenergy.wheel.perk.4": "Gearbox: more mobs keep their weight.",
   "tooltip.dotcraftenergy.wheel.perk.5": "Flywheel: keeps turning for a few seconds after the mobs stop.",
-  "tooltip.dotcraftenergy.wheel.rules": "Animals that run in the zone drive it: no babies, no hurt animals, no animals in water, one wheel per animal. A comparator reads the load.",
-  "tooltip.dotcraftenergy.wheel.stats": "Up to %1$s FE/t, zone radius %2$s, up to %3$s mobs"
+  "tooltip.dotcraftenergy.wheel.rules": "Animals that stand and run on top of it drive it (animals nearby do not), standing counts half: no babies, no hurt animals, no animals in water, one wheel per animal. A comparator reads the load.",
+  "tooltip.dotcraftenergy.wheel.stats": "Up to %1$s FE/t, up to %2$s mobs on the wheel"
 }
