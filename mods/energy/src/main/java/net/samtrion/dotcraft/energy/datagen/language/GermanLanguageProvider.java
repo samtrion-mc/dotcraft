@@ -9,6 +9,8 @@ import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlockItem;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
+import net.samtrion.dotcraft.energy.thermo.ThermoBlockItem;
+import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The German translations. Every key added here needs the same key in {@link EnglishUSLanguageProvider}. */
@@ -47,6 +49,9 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(CurrentGeneratorItem.PERK_KEY + 3, "Anpassung: behält 75% außerhalb von Ozean und Fluss");
         add(CurrentGeneratorItem.PERK_KEY + 4, "Schlankes Wasser: ein kleiner Teich genügt schon");
         add(CurrentGeneratorItem.PERK_KEY + 5, "Abyssal: unabhängig vom Biom");
+        ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelektrischer Generator (Stufe " + b.get().tier() + ")"));
+        add(ThermoBlockItem.TOOLTIP_KEY, "Spitze %1$s FE/t bei einem Temperaturunterschied von %2$s");
+        add(ThermoBlockItem.HINT_KEY, "Braucht einen heissen und einen kalten Nachbarn (je Stufe 1-3, sie ergeben zusammen den Unterschied)");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }
