@@ -39,8 +39,8 @@ public final class CurrentScan {
     }
 
     /**
-     * Reads the surroundings. Every block of the cube whose fluid is water counts (also a waterlogged block or kelp): a source as
-     * a source, the rest as flowing; that is at most 124 fluid look-ups, which is why the block entity does it only every few
+     * Reads the surroundings. Every block of the cube whose fluid is water counts (also a waterlogged block or kelp, but not another current generator): a source as
+     * a source, the rest as flowing; that is at most 124 look-ups, which is why the block entity does it only every few
      * ticks. The animals count by <em>distinct type</em>: a tank full of cod is one type. Wild and bucketed animals count alike, as
      * long as they are alive and the block at the middle of their body is water (a look-up in the world, not the flag of the
      * entity, which is only updated when the entity ticks).
@@ -58,7 +58,10 @@ public final class CurrentScan {
             for (int dy = -CurrentMath.SCAN_RADIUS; dy <= CurrentMath.SCAN_RADIUS; dy++) {
                 for (int dz = -CurrentMath.SCAN_RADIUS; dz <= CurrentMath.SCAN_RADIUS; dz++) {
                     if (dx == 0 && dy == 0 && dz == 0) continue;
-                    var fluid = level.getFluidState(cursor.set(pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz));
+                    var state = level.getBlockState(cursor.set(pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz));
+                    // another generator holds its own water: a packed array of pods is no body of water
+                    if (state.getBlock() instanceof CurrentGeneratorBlock) continue;
+                    var fluid = state.getFluidState();
                     if (!fluid.is(FluidTags.WATER)) continue;
                     if (fluid.isSource()) sources++;
                     else flowing++;

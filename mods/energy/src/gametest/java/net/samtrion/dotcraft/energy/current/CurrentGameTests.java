@@ -19,6 +19,7 @@ import net.minecraft.world.entity.animal.fish.Cod;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluids;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -43,13 +44,16 @@ public final class CurrentGameTests {
     private static final Identifier AQUARIUM = id("current_aquarium");
     private static final Identifier BUCKETED = id("current_bucketed");
     private static final Identifier PUSH = id("current_push");
+    private static final Identifier SEALED = id("current_sealed");
 
     private CurrentGameTests() {}
 
+    /** The id of a test in this mod's namespace. */
     private static Identifier id(String path) {
         return Identifier.fromNamespaceAndPath(EnergyMod.MODID, path);
     }
 
+    /** The registry key of the function of a test. */
     private static ResourceKey<Consumer<GameTestHelper>> function(Identifier id) {
         return ResourceKey.create(Registries.TEST_FUNCTION, id);
     }
@@ -68,6 +72,7 @@ public final class CurrentGameTests {
             registry.register(AQUARIUM, (Consumer<GameTestHelper>) CurrentGameTests::aquarium);
             registry.register(BUCKETED, (Consumer<GameTestHelper>) CurrentGameTests::bucketed);
             registry.register(PUSH, (Consumer<GameTestHelper>) CurrentGameTests::push);
+            registry.register(SEALED, (Consumer<GameTestHelper>) CurrentGameTests::sealed);
         });
     }
 
@@ -84,8 +89,10 @@ public final class CurrentGameTests {
         register(event, AQUARIUM, 80);
         register(event, BUCKETED, 20);
         register(event, PUSH, 60);
+        register(event, SEALED, 60);
     }
 
+    /** Registers one test with an own environment and the empty template. */
     private static void register(RegisterGameTestsEvent event, Identifier id, int maxTicks) {
         var environment = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf());
         event.registerTest(id, new FunctionGameTestInstance(function(id),
@@ -108,10 +115,12 @@ public final class CurrentGameTests {
         }
     }
 
+    /** The state of a generator that is waterlogged, as if it stood in water. */
     private static BlockState wet(int tier) {
         return CurrentBlocks.block(tier).get().defaultBlockState().setValue(CurrentGeneratorBlock.WATERLOGGED, true);
     }
 
+    /** The block entity of a generator at a relative position; fails the test if there is none. */
     private static CurrentGeneratorBlockEntity entity(GameTestHelper helper, BlockPos relative) {
         var be = helper.getLevel().getBlockEntity(helper.absolutePos(relative));
         helper.assertTrue(be instanceof CurrentGeneratorBlockEntity, "no current generator at " + relative);
@@ -119,15 +128,17 @@ public final class CurrentGameTests {
     }
 
     /** The FE per tick a generator of the tier must make for a reading, from the math. */
-    private static double expected(GameTestHelper helper, BlockPos relative, int tier, CurrentScan.Reading reading) {
+    private static double expected(int tier, CurrentScan.Reading reading) {
         return reading.output(tier, true) * EnergyCommonConfig.CURRENT_GENERATORS.get(tier - 1).peak();
     }
 
+    /** Lists the living entities near a position with their position and state, for the message of a failed assertion. */
     private static String dump(GameTestHelper helper, BlockPos relative) {
         return helper.getLevel().getEntitiesOfClass(net.minecraft.world.entity.LivingEntity.class, new net.minecraft.world.phys.AABB(helper.absolutePos(relative)).inflate(12), e -> true)
                 .stream().map(e -> e.getType() + "@" + e.position() + " water=" + e.isInWater() + " alive=" + e.isAlive()).toList().toString();
     }
 
+    /** The scan of the surroundings of a generator at a relative position. */
     private static CurrentScan.Reading scan(GameTestHelper helper, BlockPos relative, int tier) {
         return CurrentScan.scan(helper.getLevel(), helper.absolutePos(relative), tier);
     }
@@ -145,7 +156,7 @@ public final class CurrentGameTests {
         int y = 70;
         int x = 0;
         for (var block : blocks) {
-            var pos = new BlockPos(2 * x++, y, 0);
+            var pos = new BlockPos(x++, y, 0);
             helper.setBlock(pos, block.get());
             helper.assertTrue(!((Object) block.get() instanceof GeneratorBlock), block.getId() + " is a panel");
             var abs = helper.absolutePos(pos);
@@ -164,9 +175,9 @@ public final class CurrentGameTests {
         }
         // next to a solar panel: no group, so the panel's pool is its own buffer only
         var solar = EnergyBlocks.SOLAR.block(1).get();
-        helper.setBlock(new BlockPos(20, y, 0), solar);
-        helper.setBlock(new BlockPos(21, y, 0), blocks.get(0).get());
-        var panel = helper.absolutePos(new BlockPos(20, y, 0));
+        helper.setBlock(new BlockPos(0, y, 3), solar);
+        helper.setBlock(new BlockPos(1, y, 3), blocks.get(0).get());
+        var panel = helper.absolutePos(new BlockPos(0, y, 3));
         helper.assertTrue(!level.getBlockState(panel).getValue(GeneratorBlock.EAST), "the panel joined the current generator");
         EnergyHandler panelPool = level.getCapability(Capabilities.Energy.BLOCK, panel, Direction.DOWN);
         helper.assertTrue(panelPool != null && panelPool.getCapacityAsInt() == EnergyCommonConfig.SOLAR_PANELS.get(0).capacity(),
@@ -194,7 +205,7 @@ public final class CurrentGameTests {
             helper.assertTrue(reading.sources() == CurrentMath.CUBE_BLOCKS && reading.flowing() == 0,
                     "a full pool must read 124 sources: " + reading);
             helper.assertTrue(reading.faunaTypes() == 0, "no animals yet: " + reading);
-            double output = expected(helper, center, 1, reading);
+            double output = expected(1, reading);
             helper.assertTrue(output > 0 && Math.abs(be.output() - output) < 1e-9, "wet output " + be.output() + ", expected " + output);
             helper.assertTrue(be.energy().getAmountAsLong() > 0, "a wet generator buffered no FE");
             var abs = helper.absolutePos(center);
@@ -205,12 +216,18 @@ public final class CurrentGameTests {
             dry.recompute(level);
             helper.assertTrue(dry.output() == 0 && dry.energy().getAmountAsLong() == 0, "a dry generator makes " + dry.output());
 
+            // another generator next to it is no water, so a packed array of pods is no body of water either
+            var neighbour = new BlockPos(4, y0 + 3, 3);
+            helper.setBlock(neighbour, wet(1));
+            helper.assertTrue(scan(helper, center, 1).sources() == CurrentMath.CUBE_BLOCKS - 1, "a neighbouring generator counted as water");
+            helper.setBlock(neighbour, Blocks.WATER);
+
             // two layers less water: less output
             for (int x = 1; x <= 5; x++) for (int z = 1; z <= 5; z++) for (int y = 1; y <= 2; y++) helper.setBlock(new BlockPos(x, y0 + y, z), Blocks.GLASS);
             be.recompute(level);
             var less = scan(helper, center, 1);
             helper.assertTrue(less.sources() == CurrentMath.CUBE_BLOCKS - 50, "wrong water count " + less);
-            helper.assertTrue(be.output() < output && Math.abs(be.output() - expected(helper, center, 1, less)) < 1e-9,
+            helper.assertTrue(be.output() < output && Math.abs(be.output() - expected(1, less)) < 1e-9,
                     "less water must make less: " + be.output() + " vs " + output);
 
             // a cube of flowing water counts as flowing (read in the same tick, before the water settles)
@@ -255,9 +272,9 @@ public final class CurrentGameTests {
             helper.assertTrue(wideReading.faunaTypes() == 3, "tier 2 reaches cod, salmon and squid: " + wideReading + dump(helper, wide));
             double noFauna = CurrentMath.output(1, true, nearReading.sources(), nearReading.flowing(), nearReading.primeBiome(), 0)
                     * EnergyCommonConfig.CURRENT_GENERATORS.get(0).peak();
-            helper.assertTrue(Math.abs(nearBe.output() - expected(helper, near, 1, nearReading)) < 1e-9, "tier 1 output " + nearBe.output());
+            helper.assertTrue(Math.abs(nearBe.output() - expected(1, nearReading)) < 1e-9, "tier 1 output " + nearBe.output());
             helper.assertTrue(Math.abs(nearBe.output() - noFauna * (1 + CurrentMath.FAUNA_STEP)) < 1e-3, "one type must add one step: " + nearBe.output() + " vs " + noFauna);
-            helper.assertTrue(Math.abs(wideBe.output() - expected(helper, wide, 2, wideReading)) < 1e-9, "tier 2 output " + wideBe.output());
+            helper.assertTrue(Math.abs(wideBe.output() - expected(2, wideReading)) < 1e-9, "tier 2 output " + wideBe.output());
             salmon.kill(level);
             helper.assertTrue(scan(helper, wide, 2).faunaTypes() == 2, "a dead salmon still counts");
             helper.succeed();
@@ -331,6 +348,35 @@ public final class CurrentGameTests {
             be.recompute(level);
             helper.assertTrue(be.output() > 0, "the generator makes nothing");
             helper.assertTrue(be.energy().getAmountAsLong() <= Math.ceil(be.output()), "the FE was not pushed away: " + be.energy().getAmountAsLong());
+            helper.succeed();
+        });
+    }
+
+    /**
+     * A generator is a sealed pod: one bucket of water in dry air, and a change of a neighbour, make no current around it, so
+     * even a tier 5 that is independent of the biome reads no water and makes nothing.
+     *
+     * @param helper the game test helper
+     */
+    private static void sealed(GameTestHelper helper) {
+        var level = helper.getLevel();
+        int y0 = 90;
+        for (int x = 0; x <= 6; x++) for (int z = 0; z <= 6; z++) helper.setBlock(new BlockPos(x, y0, z), Blocks.GLASS);
+        var center = new BlockPos(3, y0 + 1, 3);
+        var block = CurrentBlocks.block(5).get();
+        helper.setBlock(center, block);
+        var abs = helper.absolutePos(center);
+        helper.assertTrue(block.placeLiquid(level, abs, level.getBlockState(abs), Fluids.WATER.getSource(false)), "the bucket was not accepted");
+        helper.assertTrue(level.getBlockState(abs).getValue(CurrentGeneratorBlock.WATERLOGGED), "the pod is not waterlogged");
+        helper.setBlock(new BlockPos(4, y0 + 1, 3), Blocks.STONE);
+        helper.setBlock(new BlockPos(4, y0 + 1, 3), Blocks.AIR);
+        helper.runAfterDelay(40, () -> {
+            var reading = scan(helper, center, 5);
+            helper.assertTrue(reading.sources() == 0 && reading.flowing() == 0, "a bucket in a pod made a current: " + reading);
+            helper.assertTrue(level.getBlockState(abs.east()).isAir() && level.getBlockState(abs.north()).isAir(), "the pod spilled water");
+            var be = entity(helper, center);
+            be.recompute(level);
+            helper.assertTrue(be.output() == 0, "a pod in dry air makes " + be.output());
             helper.succeed();
         });
     }

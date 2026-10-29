@@ -7,12 +7,10 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.LevelReader;
-import net.minecraft.world.level.ScheduledTickAccess;
+import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
@@ -30,8 +28,9 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 
 /**
  * A current generator of one tier: a turbine pod in a frame, a full block that only runs while it is waterlogged. It is deliberately not a
- * {@code GeneratorBlock}, so it never joins the pool of the solar and lunar panels. It has a comparator signal (how much of the
- * best output it makes).
+ * {@code GeneratorBlock}, so it never joins the pool of the solar and lunar panels. It is a sealed pod: it holds water but does not
+ * spread it (it schedules no fluid tick, neither when placed in water nor when a neighbour changes), so one bucket on dry ground does not make a current around it. It has a
+ * comparator signal (how much of the best output it makes).
  */
 public class CurrentGeneratorBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
     /** The pod stands in water; without it the generator makes nothing. */
@@ -84,11 +83,15 @@ public class CurrentGeneratorBlock extends Block implements EntityBlock, SimpleW
         return defaultBlockState().setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).is(Fluids.WATER));
     }
 
+    /**
+     * Fills the pod with water (a bucket) without scheduling a fluid tick, so the water stays inside: a waterlogged vanilla block
+     * spreads its water to the neighbours, and a generator in dry air must not make a current of its own from one bucket.
+     */
     @Override
-    protected BlockState updateShape(BlockState state, LevelReader level, ScheduledTickAccess ticks, BlockPos pos, Direction direction,
-            BlockPos neighbourPos, BlockState neighbourState, RandomSource random) {
-        if (state.getValue(WATERLOGGED)) ticks.scheduleTick(pos, Fluids.WATER, Fluids.WATER.getTickDelay(level));
-        return super.updateShape(state, level, ticks, pos, direction, neighbourPos, neighbourState, random);
+    public boolean placeLiquid(LevelAccessor level, BlockPos pos, BlockState state, FluidState fluidState) {
+        if (state.getValue(WATERLOGGED) || !fluidState.is(Fluids.WATER)) return false;
+        if (!level.isClientSide()) level.setBlock(pos, state.setValue(WATERLOGGED, true), 3);
+        return true;
     }
 
     @Override
