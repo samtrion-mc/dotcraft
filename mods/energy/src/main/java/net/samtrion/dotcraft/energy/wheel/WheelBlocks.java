@@ -12,6 +12,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
@@ -56,7 +57,7 @@ public final class WheelBlocks {
                     () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).requiresCorrectToolForDrops().noOcclusion()
                             .isValidSpawn((state, level, pos, entityType) -> false));
             WHEELS.add(block);
-            WHEEL_ITEMS.add(ITEMS.registerSimpleBlockItem(block));
+            WHEEL_ITEMS.add(ITEMS.<BlockItem>registerItem(name, p -> new WheelItem(block.get(), p), () -> new Item.Properties().useBlockDescriptionPrefix()));
         }
     }
 

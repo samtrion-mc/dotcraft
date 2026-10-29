@@ -10,7 +10,8 @@ import net.neoforged.neoforge.common.ModConfigSpec;
  * The common config of the energy mod ({@code config/dotcraft/energy/common.toml}): per battery the FE values
  * {@code batteries.<name>.capacity}, {@code maxInput} (not for the single-use battery, which can never be charged) and {@code maxOutput}. They are read whenever they are needed, so a change
  * counts for every battery already in the world; a stack that holds more than the new capacity is capped on its next transfer. The
- * batteries are switched on and off in the {@link EnergyStartupConfig}. Client and server read their own file: for a correct bar and
+ * generators (panels, mob wheels) have {@code generators.<name>.peak}, {@code capacity} and {@code maxOutput}. The
+ * batteries and generators are switched on and off in the {@link EnergyStartupConfig}. Client and server read their own file: for a correct bar and
  * tooltip on a client of a dedicated server keep the values equal.
  */
 public final class EnergyCommonConfig {

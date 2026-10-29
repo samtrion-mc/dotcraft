@@ -133,8 +133,26 @@ public final class WheelGameTests {
             return helper.spawnWithNoFreeWill(type, x + dx, FLOOR + 1F, z + dz);
         }
 
-        /** Removes what the test built and its mobs, so the other tests are not disturbed, and ends the test. */
+        /** Runs a part of a test after a delay; when it fails, the area is cleaned up before the failure is rethrown. */
+        void after(int ticks, Runnable body, Mob... mobs) {
+            helper.runAfterDelay(ticks, () -> {
+                try {
+                    body.run();
+                } catch (RuntimeException | Error e) {
+                    cleanup(mobs);
+                    throw e;
+                }
+            });
+        }
+
+        /** Cleans up and ends the test successfully. */
         void finish(Mob... mobs) {
+            cleanup(mobs);
+            helper.succeed();
+        }
+
+        /** Removes what the test built and its mobs, so the other tests are not disturbed. */
+        void cleanup(Mob... mobs) {
             for (var mob : mobs) mob.discard();
             for (int x = 0; x < SIZE; x++) {
                 for (int z = 0; z < SIZE; z++) {
@@ -143,7 +161,6 @@ public final class WheelGameTests {
             }
             var corner = absolute(0, 0, 0);
             level().setChunkForced(corner.getX() >> 4, corner.getZ() >> 4, false);
-            helper.succeed();
         }
     }
 
@@ -168,7 +185,7 @@ public final class WheelGameTests {
         var wheel = area.wheel(2, 4, 4);
         var pig = area.spawn(EntityType.PIG, 2.5F, 4.5F);
         var level = area.level();
-        helper.runAfterDelay(20, () -> {
+        area.after(20, () -> {
             settled(helper, pig);
             wheel.scan(level);
             helper.assertTrue(wheel.output() == 0, "standing pigs make FE: " + wheel.output());
@@ -184,7 +201,7 @@ public final class WheelGameTests {
             wheel.scan(level);
             helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a pig that stands again still makes FE: " + wheel.output());
             area.finish(pig);
-        });
+        }, pig);
     }
 
     /**
@@ -203,7 +220,7 @@ public final class WheelGameTests {
         baby.setBaby(true);
         var hurt = area.spawn(EntityType.PIG, 2.5F, 4.5F);
         hurt.setHealth(1F);
-        helper.runAfterDelay(20, () -> {
+        area.after(20, () -> {
             settled(helper, pig, horse, creeper, baby, hurt);
             double peak = EnergyCommonConfig.MOB_WHEELS.get(0).peak();
             wheel.scan(level);
@@ -222,23 +239,23 @@ public final class WheelGameTests {
             wheel.scan(level);
             helper.assertTrue(wheel.output() == peak && wheel.runners() == 2, "a horse and a pig do not reach the peak: " + wheel.output());
             area.finish(pig, horse, creeper, baby, hurt);
-        });
+        }, pig, horse, creeper, baby, hurt);
     }
 
     /**
-     * A mob in the zone of two wheels drives one of them only, and more mobs than the cap of the tier do not make more than the
-     * peak.
+     * A mob in the zone of two wheels drives one of them only, more mobs than the cap of the tier do not make more than the peak,
+     * and a tier 1 wheel claims no more than its cap of 2 mobs, so the tier 5 wheel next to it still gets the other three.
      *
      * @param helper the game test helper
      */
     private static void claims(GameTestHelper helper) {
         var area = Area.create(helper);
         var first = area.wheel(1, 3, 4);
-        var second = area.wheel(1, 5, 4);
+        var second = area.wheel(5, 5, 4);
         var level = area.level();
         var pigs = new Mob[5];
         for (int i = 0; i < pigs.length; i++) pigs[i] = area.spawn(EntityType.PIG, i < 3 ? 3F + i : 3.5F + i - 3, i < 3 ? 2.5F : 6.5F);
-        helper.runAfterDelay(20, () -> {
+        area.after(20, () -> {
             settled(helper, pigs);
             first.scan(level);
             second.scan(level);
@@ -248,9 +265,9 @@ public final class WheelGameTests {
             double peak = EnergyCommonConfig.MOB_WHEELS.get(0).peak();
             helper.assertTrue(first.output() == peak && first.runners() == 2, "five pigs make " + first.output() + " with " + first.runners()
                     + " runners on the first wheel, not the peak with the cap of 2");
-            helper.assertTrue(second.output() == 0 && second.runners() == 0, "the second wheel counts the pigs of the first: " + second.output());
+            helper.assertTrue(second.runners() == 3 && second.output() > 0, "the stronger wheel must get the three pigs the cap of the first leaves: " + second.runners());
             area.finish(pigs);
-        });
+        }, pigs);
     }
 
     /**
@@ -268,7 +285,7 @@ public final class WheelGameTests {
         var level = area.level();
         var pigA = area.spawn(EntityType.PIG, 1.5F, 4.5F);
         var pigB = area.spawn(EntityType.PIG, 9.5F, 4.5F);
-        helper.runAfterDelay(20, () -> {
+        area.after(20, () -> {
             settled(helper, pigA, pigB);
             drained.scan(level);
             lone.scan(level);
@@ -285,7 +302,7 @@ public final class WheelGameTests {
             }
             var panel = level.getBlockState(area.absolute(12, FLOOR + 1, 4));
             helper.assertTrue(!panel.getValue(GeneratorBlock.WEST), "a solar panel next to a wheel joins a panel group");
-            helper.runAfterDelay(8, () -> {
+            area.after(8, () -> {
                 helper.assertTrue(drained.energy().getAmountAsLong() == 0, "the wheel next to the drain keeps FE: " + drained.energy().getAmountAsLong());
                 helper.assertTrue(lone.energy().getAmountAsLong() > 0, "the lone wheel made no FE");
                 try (var tx = Transaction.openRoot()) {
@@ -296,7 +313,7 @@ public final class WheelGameTests {
                 double coasting = lone.output();
                 helper.assertTrue(coasting > 0 && coasting < peak, "the flywheel of tier 5 does not coast: " + coasting);
                 area.finish(pigA, pigB);
-            });
-        });
+            }, pigA, pigB);
+        }, pigA, pigB);
     }
 }

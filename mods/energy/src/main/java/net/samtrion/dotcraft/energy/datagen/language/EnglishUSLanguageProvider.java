@@ -6,6 +6,7 @@ import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.energy.wheel.WheelBlocks;
+import net.samtrion.dotcraft.energy.wheel.WheelItem;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The English translations. Every key added here needs the same key in {@link GermanLanguageProvider}. */
@@ -33,6 +34,13 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         WheelBlocks.blocks().forEach(b -> add(b.get(), "Mob Wheel (Tier " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
+        add(WheelItem.STATS_KEY, "Up to %1$s FE/t, zone radius %2$s, up to %3$s mobs");
+        add(WheelItem.PERK_KEY + 1, "Base wheel.");
+        add(WheelItem.PERK_KEY + 2, "Bigger cage: more mobs and a wider zone.");
+        add(WheelItem.PERK_KEY + 3, "Small animals pull their full weight.");
+        add(WheelItem.PERK_KEY + 4, "Gearbox: more mobs keep their weight.");
+        add(WheelItem.PERK_KEY + 5, "Flywheel: keeps turning for a few seconds after the mobs stop.");
+        add(WheelItem.RULES_KEY, "Animals that run in the zone drive it: no babies, no hurt animals, no animals in water, one wheel per animal. A comparator reads the load.");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }

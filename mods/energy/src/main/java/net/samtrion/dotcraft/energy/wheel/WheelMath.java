@@ -17,6 +17,11 @@ import java.util.Arrays;
  * Perks per tier: tier 1 is the base wheel, tier 2 has a bigger cage (more mobs, wider zone), tier 3 lets small animals pull their
  * full weight, tier 4 has a gearbox that softens the diminishing returns and tier 5 has a flywheel that keeps turning for a few
  * seconds after the mobs stopped ({@link #coast}).
+ * <p>
+ * The duty is an assumption, not a measurement: mobs stroll and idle, so a real cage may well stay below it. The only ways to
+ * beat it are pushing mobs around (a piston, a lure; a mob in water does not count), and even then the output is bounded by the
+ * peak. The flywheel adds the coast on top: after one scan at peak it makes about {@link #coastYield one more scan} of FE, which
+ * matters for burst-driven farms only.
  */
 public final class WheelMath {
     /** The highest tier. */
@@ -206,5 +211,18 @@ public final class WheelMath {
      */
     public static double fillTicks(double capacity, double peak, double duty) {
         return capacity / (peak * duty);
+    }
+
+    /**
+     * The FE per tick a flywheel adds after a burst: the sum of the coasting outputs over the scans that follow one scan at the peak.
+     *
+     * @param peak the peak in FE/t
+     * @param tier the tier
+     * @return the extra FE of the coast ({@code 0} below tier 5)
+     */
+    public static double coastYield(double peak, int tier) {
+        double extra = 0;
+        for (double out = coast(0, peak, tier); out > 0; out = coast(0, out, tier)) extra += out * SCAN_TICKS;
+        return extra;
     }
 }

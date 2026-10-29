@@ -97,10 +97,8 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
             Item previous = null;
             for (int tier = 1; tier <= metals.length; tier++) {
                 var block = family.block(tier);
-                if (block == null) {
-                    previous = null;
-                    continue;
-                }
+                // a missing tier ends the ladder: the tiers above stay out instead of falling back to the base ingredient
+                if (block == null) break;
                 var item = block.get().asItem();
                 var battery = batteries[tier - 1];
                 var builder = shaped(RecipeCategory.MISC, item)

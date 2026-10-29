@@ -20,6 +20,15 @@ final class WheelClaims<E, W> {
     private final Map<E, Claim<W>> claims = new WeakHashMap<>();
 
     /**
+     * Drops every claim of a wheel, as it was removed or unloaded: its mobs are free at once.
+     *
+     * @param wheel the wheel
+     */
+    void release(W wheel) {
+        claims.values().removeIf(c -> c.wheel().equals(wheel));
+    }
+
+    /**
      * Claims a mob for a wheel.
      *
      * @param mob   the mob

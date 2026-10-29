@@ -27,4 +27,13 @@ class WheelClaimsTest {
         assertTrue(claims.claim("pig", "b", 101 + WheelClaims.LAPSE_TICKS));
         assertFalse(claims.claim("pig", "a", 102 + WheelClaims.LAPSE_TICKS), "the new owner holds it now");
     }
+
+    /** A released wheel frees its mobs at once. */
+    @Test
+    void releaseFreesTheMobs() {
+        var claims = new WheelClaims<String, String>();
+        assertTrue(claims.claim("pig", "a", 100));
+        claims.release("a");
+        assertTrue(claims.claim("pig", "b", 101));
+    }
 }

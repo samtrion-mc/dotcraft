@@ -23,5 +23,12 @@
   "item.dotcraftenergy.potato_battery": "Kartoffelbatterie",
   "item.dotcraftenergy.rechargeable_potato_battery": "Wiederaufladbare Kartoffelbatterie",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energie",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.wheel.perk.1": "Basisrad.",
+  "tooltip.dotcraftenergy.wheel.perk.2": "Größerer Käfig: mehr Mobs und eine größere Zone.",
+  "tooltip.dotcraftenergy.wheel.perk.3": "Kleine Tiere zählen voll.",
+  "tooltip.dotcraftenergy.wheel.perk.4": "Getriebe: weitere Mobs behalten ihr Gewicht.",
+  "tooltip.dotcraftenergy.wheel.perk.5": "Schwungrad: dreht nach dem Stillstand der Mobs noch einige Sekunden weiter.",
+  "tooltip.dotcraftenergy.wheel.rules": "Tiere, die in der Zone laufen, treiben es an: keine Babys, keine verletzten Tiere, keine Tiere im Wasser, ein Rad pro Tier. Ein Komparator liest die Last.",
+  "tooltip.dotcraftenergy.wheel.stats": "Bis zu %1$s FE/t, Zonenradius %2$s, bis zu %3$s Mobs"
 }

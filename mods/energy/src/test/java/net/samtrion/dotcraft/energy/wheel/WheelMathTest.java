@@ -140,4 +140,14 @@ class WheelMathTest {
         }
         assertEquals(15 * 24_000 / 4.0, WheelMath.dailyYield(15, WheelMath.REFERENCE_DUTY));
     }
+
+    /** The coast of the flywheel adds about one more scan of the peak after a burst, and nothing below tier 5. */
+    @Test
+    void coastAddsAboutOneScanOfYield() {
+        double peak = 56_000;
+        double scan = peak * WheelMath.SCAN_TICKS;
+        double extra = WheelMath.coastYield(peak, 5);
+        assertTrue(extra > 0.9 * scan && extra <= scan, "the coast makes " + extra + " FE for a scan of " + scan);
+        assertEquals(0, WheelMath.coastYield(peak, 4));
+    }
 }

@@ -1,6 +1,7 @@
 package net.samtrion.dotcraft.energy.wheel;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.Map;
@@ -33,7 +34,7 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
  * as a runner when
  * <ul>
  * <li>its type is in the tag {@link WheelTags#RUNNERS} (the tags {@link WheelTags#STRONG} and {@link WheelTags#WEAK} set its weight),</li>
- * <li>it is alive and no baby, stands on the ground, rides nothing, and is no tamed animal that is told to sit,</li>
+ * <li>it is alive and no baby, stands on the ground (not in water, so no current can push it), rides nothing, and is no tamed animal that is told to sit,</li>
  * <li>it has at least half of its health (and counts by its health share), the welfare rule, and</li>
  * <li>it moved at least {@link WheelMath#MIN_MOVE} blocks since the scan before (a mob seen for the first time counts nothing yet) and
  * no other wheel counts it, see {@link WheelClaims}.</li>
@@ -42,18 +43,26 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
  * buffered and pushed into the neighbours on every side; the buffer can only be drained.
  * <p>
  * Open decisions, all the simplest robust option: a mob counts by its movement, not by an intention; there is no feed check (the
- * welfare rule is the health); a mob pushed along by water or a piston counts if it is on the ground when scanned.
+ * welfare rule is the health); a mob pushed along by a piston counts if it is on the ground when scanned. The scan has a one
+ * second granularity: the output holds between two scans.
  */
 public class WheelBlockEntity extends BlockEntity {
     /** One claim ledger for all wheels: a mob drives one wheel only. */
-    private static final WheelClaims<LivingEntity, BlockPos> CLAIMS = new WheelClaims<>();
+    private static final WheelClaims<LivingEntity, WheelBlockEntity> CLAIMS = new WheelClaims<>();
 
+    /** The buffer; only the block entity fills it, neighbours can drain it. */
     private final Energy energy;
+    /** The capability caches of the six neighbours, created when the wheel first pushes. */
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
+    /** The positions of the eligible mobs at the last scan, by UUID. */
     private Map<UUID, Vec3> seen = new HashMap<>();
+    /** The FE per tick made since the last scan. */
     private double output;
+    /** The share of the peak, 0..1, which the comparator shows. */
     private double load;
+    /** The fraction of an FE that did not fit into this tick's whole FE. */
     private double carry;
+    /** The number of counted runners at the last scan. */
     private int runners;
 
     /**
@@ -117,10 +126,10 @@ public class WheelBlockEntity extends BlockEntity {
      * Whether a mob may run a wheel at all, apart from its movement.
      *
      * @param mob the mob
-     * @return {@code true} if it is a runner type, alive, grown up, on the ground and free to move
+     * @return {@code true} if it is a runner type, alive, grown up, on the ground, out of water and free to move
      */
     static boolean eligible(LivingEntity mob) {
-        return mob.isAlive() && !mob.isBaby() && !mob.isPassenger() && mob.onGround()
+        return mob.isAlive() && !mob.isBaby() && !mob.isInLiquid() && !mob.isPassenger() && mob.onGround()
                 && !(mob instanceof TamableAnimal pet && pet.isOrderedToSit())
                 && WheelTags.strength(mob.getType()) != WheelMath.Strength.NONE;
     }
@@ -150,17 +159,24 @@ public class WheelBlockEntity extends BlockEntity {
         energy.configure(config.capacity(), config.maxOutput());
         var zone = new AABB(worldPosition).inflate(WheelMath.radius(tier), 0, WheelMath.radius(tier)).expandTowards(0, 2, 0).expandTowards(0, -1, 0);
         var now = new HashMap<UUID, Vec3>();
-        var weights = new ArrayList<Double>();
+        record Candidate(LivingEntity mob, double weight) {}
+        var candidates = new ArrayList<Candidate>();
         for (var mob : level.getEntitiesOfClass(LivingEntity.class, zone, WheelBlockEntity::eligible)) {
             var position = mob.position();
             now.put(mob.getUUID(), position);
             var before = seen.get(mob.getUUID());
             if (before == null || !WheelMath.moved(position.x - before.x, position.z - before.z)) continue;
             double weight = WheelMath.weight(WheelTags.strength(mob.getType()), tier) * WheelMath.welfare(mob.getHealth(), mob.getMaxHealth());
-            if (weight <= 0 || !CLAIMS.claim(mob, worldPosition.immutable(), level.getGameTime())) continue;
-            weights.add(weight);
+            if (weight > 0) candidates.add(new Candidate(mob, weight));
         }
         seen = now;
+        // the strongest first; only the mobs within the cap are claimed, so a cheap wheel never starves a stronger one with the rest
+        candidates.sort(Comparator.comparingDouble(Candidate::weight).reversed());
+        var weights = new ArrayList<Double>();
+        for (var c : candidates) {
+            if (weights.size() >= WheelMath.cap(tier)) break;
+            if (CLAIMS.claim(c.mob(), this, level.getGameTime())) weights.add(c.weight());
+        }
         double peak = config.peak();
         double target = peak * WheelMath.load(weights.stream().mapToDouble(Double::doubleValue).toArray(), tier);
         double next = WheelMath.coast(target, output, tier);
@@ -183,11 +199,19 @@ public class WheelBlockEntity extends BlockEntity {
     }
 
     @Override
+    public void setRemoved() {
+        CLAIMS.release(this);
+        super.setRemoved();
+    }
+
+    @Override
     protected void saveAdditional(ValueOutput out) {
         super.saveAdditional(out);
         energy.serialize(out);
         out.putDouble("output", output);
         out.putDouble("carry", carry);
+        out.putDouble("load", load);
+        out.putInt("runners", runners);
     }
 
     @Override
@@ -196,6 +220,8 @@ public class WheelBlockEntity extends BlockEntity {
         energy.deserialize(in);
         output = in.getDoubleOr("output", 0);
         carry = in.getDoubleOr("carry", 0);
+        load = in.getDoubleOr("load", 0);
+        runners = in.getIntOr("runners", 0);
     }
 
     /** The buffer of a wheel: nothing can be inserted from outside, the block entity fills it; extraction is limited by the config. */
