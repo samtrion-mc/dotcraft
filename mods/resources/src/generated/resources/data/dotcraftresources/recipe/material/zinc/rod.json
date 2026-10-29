@@ -30,12 +30,11 @@
     "I": "#c:ingots/zinc"
   },
   "pattern": [
+    "H",
     "I",
-    "I",
-    "H"
+    "I"
   ],
   "result": {
-    "count": 3,
     "id": "dotcraftresources:zinc_rod"
   }
 }

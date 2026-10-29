@@ -24,12 +24,11 @@
     "I": "#c:ingots/netherite"
   },
   "pattern": [
+    "H",
     "I",
-    "I",
-    "H"
+    "I"
   ],
   "result": {
-    "count": 3,
     "id": "dotcraftresources:netherite_rod"
   }
 }

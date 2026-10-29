@@ -24,12 +24,11 @@
     "I": "#c:ingots/copper"
   },
   "pattern": [
+    "H",
     "I",
-    "I",
-    "H"
+    "I"
   ],
   "result": {
-    "count": 3,
     "id": "dotcraftresources:copper_rod"
   }
 }

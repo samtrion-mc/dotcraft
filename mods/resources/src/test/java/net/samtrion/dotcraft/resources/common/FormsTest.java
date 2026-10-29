@@ -60,18 +60,18 @@ class FormsTest {
         assertEquals("Tin-Barren", Forms.find(forms, "ingot").displayName("de_de", "Tin"));
     }
 
-    /** Rod and wire: a shaped column of two ingots over a hammer makes 3 rods, a hammer, sandpaper and a rod make 2 wires. */
+    /** Rod and wire: a shaped column of a hammer over two ingots makes 1 rod, a hammer, sandpaper and a rod make 1 wire. */
     @Test
     void rodAndWire() throws Exception {
         Form rod = Forms.find(shipped(), "rod");
         Form.Conversion cr = rod.conversions().get(0);
-        assertEquals(List.of("I", "I", "H"), cr.pattern());
-        assertEquals(3, cr.ratio());
+        assertEquals(List.of("H", "I", "I"), cr.pattern());
+        assertEquals(1, cr.ratio());
         assertEquals(Form.Conversion.HAMMER, cr.key().get("H"));
         Form wire = Forms.find(shipped(), "wire");
         Form.Conversion cw = wire.conversions().get(0);
         assertEquals(Form.Conversion.Kind.SHAPELESS, cw.kind());
-        assertEquals(2, cw.ratio());
+        assertEquals(1, cw.ratio());
         assertEquals(List.of("rod"), wire.requires());
         assertEquals("rods", rod.tag().parent());
         assertEquals("wires", wire.tag().parent());

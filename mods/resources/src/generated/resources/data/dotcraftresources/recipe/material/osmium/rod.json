@@ -30,12 +30,11 @@
     "I": "#c:ingots/osmium"
   },
   "pattern": [
+    "H",
     "I",
-    "I",
-    "H"
+    "I"
   ],
   "result": {
-    "count": 3,
     "id": "dotcraftresources:osmium_rod"
   }
 }

@@ -30,12 +30,11 @@
     "I": "#c:ingots/platinum"
   },
   "pattern": [
+    "H",
     "I",
-    "I",
-    "H"
+    "I"
   ],
   "result": {
-    "count": 3,
     "id": "dotcraftresources:platinum_rod"
   }
 }
