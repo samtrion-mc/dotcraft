@@ -22,13 +22,16 @@ import net.minecraft.world.level.storage.ValueOutput;
  * It is the block entity that owns the kite: the entity type is not saved ({@code noSave}), so there is never a stray kite after a
  * restart or a chunk reload; the block entity remembers that it has a kite and spawns a new one (which climbs again from the block)
  * when its chunk is ticking and none is there. A kite whose block is gone or that is not the block's current kite discards itself.
- * Only the anchor and the tier are synchronized, the client draws the tether and the sway from them.
+ * A tier 4 or 5 block has two kites (slot 0 and 1) that hang above the same block and are told apart by their slot; a kite that is not in
+ * a slot of its block (a duplicate) discards itself. Only the anchor, the tier and the slot are synchronized, the client draws the tether and the sway from them.
  */
 public class KiteEntity extends Entity {
     /** The synchronized position of the generator block. */
     private static final EntityDataAccessor<BlockPos> ANCHOR = SynchedEntityData.defineId(KiteEntity.class, EntityDataSerializers.BLOCK_POS);
     /** The synchronized tier of the generator block. */
     private static final EntityDataAccessor<Integer> TIER = SynchedEntityData.defineId(KiteEntity.class, EntityDataSerializers.INT);
+    /** The synchronized slot of the kite at its block: 0, or 1 for the second kite of tier 4 and 5. */
+    private static final EntityDataAccessor<Integer> SLOT = SynchedEntityData.defineId(KiteEntity.class, EntityDataSerializers.INT);
     /** Ticks between two checks that the block still has this kite. */
     private static final int CHECK_TICKS = 20;
     /** Distance in blocks from which the kite and its tether are drawn. */
@@ -56,10 +59,12 @@ public class KiteEntity extends Entity {
      *
      * @param anchor the position of the generator block
      * @param tier   the tier of the block, 1..5
+     * @param slot   0 for the first kite, 1 for the second
      */
-    void attach(BlockPos anchor, int tier) {
+    void attach(BlockPos anchor, int tier, int slot) {
         entityData.set(ANCHOR, anchor);
         entityData.set(TIER, tier);
+        entityData.set(SLOT, slot);
         setAltitude(0);
     }
 
@@ -79,6 +84,15 @@ public class KiteEntity extends Entity {
      */
     public int tier() {
         return entityData.get(TIER);
+    }
+
+    /**
+     * The slot of the kite at its block.
+     *
+     * @return 0 for the first kite, 1 for the second kite of tier 4 and 5
+     */
+    public int slot() {
+        return entityData.get(SLOT);
     }
 
     /**
@@ -114,6 +128,7 @@ public class KiteEntity extends Entity {
     protected void defineSynchedData(SynchedEntityData.Builder builder) {
         builder.define(ANCHOR, BlockPos.ZERO);
         builder.define(TIER, 1);
+        builder.define(SLOT, 0);
     }
 
     @Override
@@ -121,7 +136,7 @@ public class KiteEntity extends Entity {
         super.tick();
         if (!(level() instanceof ServerLevel server)) return;
         if (tickCount % CHECK_TICKS == 0 && server.hasChunkAt(anchor())
-                && !(server.getBlockEntity(anchor()) instanceof KiteBlockEntity be && be.kite() == this)) {
+                && !(server.getBlockEntity(anchor()) instanceof KiteBlockEntity be && be.owns(this))) {
             discard();
             return;
         }

@@ -31,7 +31,7 @@ class KiteMathTest {
             assertTrue(KiteMath.output(peak, tier, KiteMath.tether(tier) / 2.0, 1, Weather.CLEAR, true, 1) < peak);
             assertTrue(KiteMath.output(peak, tier, KiteMath.tether(tier), 1, Weather.CLEAR, true, 0.5) < peak);
             assertTrue(KiteMath.output(peak, tier, KiteMath.tether(tier), 1, Weather.RAIN, true, 1) <= peak);
-            if (tier < 5) assertTrue(KiteMath.output(peak, tier, KiteMath.tether(tier), 0.5, Weather.CLEAR, true, 1) < peak);
+            if (tier != 3 && tier < 5) assertTrue(KiteMath.output(peak, tier, KiteMath.tether(tier), 0.5, Weather.CLEAR, true, 1) < peak);
         }
     }
 
@@ -72,9 +72,49 @@ class KiteMathTest {
     void reachStopsBeforeTheObstacle() {
         assertEquals(32, KiteMath.reach(1, h -> false));
         assertEquals(512, KiteMath.reach(5, h -> false));
-        assertEquals(0, KiteMath.reach(3, h -> true));
-        assertEquals(3, KiteMath.reach(3, h -> h >= 4));
-        assertEquals(20, KiteMath.reach(3, h -> h >= 21));
+        assertEquals(0, KiteMath.reach(2, h -> true));
+        assertEquals(3, KiteMath.reach(2, h -> h >= 4));
+        assertEquals(20, KiteMath.reach(4, h -> h >= 21));
+    }
+
+    /** Only the tier 3 kite ignores obstructions: nothing on the way stops it, a crowded sky costs nothing, and no limit is named. */
+    @Test
+    void tier3IgnoresObstructions() {
+        for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) assertEquals(tier == 3, KiteMath.ignoresObstructions(tier), "tier " + tier);
+        assertEquals(KiteMath.tether(3), KiteMath.reach(3, h -> true));
+        assertEquals(KiteMath.tether(3), KiteMath.reach(3, h -> h >= 2));
+        assertEquals(1, KiteMath.opennessFactor(3, 0));
+        double peak = EnergyCommonConfig.KITE_GENERATORS.get(2).peak();
+        assertEquals(peak, KiteMath.output(peak, 3, KiteMath.tether(3), 0, Weather.CLEAR, true, 1), 1e-9);
+        assertEquals(KiteMath.Limit.NONE, KiteMath.limit(3, true, Weather.CLEAR, KiteMath.reach(3, h -> true), 0));
+        assertTrue(KiteMath.output(peak, 2, KiteMath.tether(2), 0, Weather.CLEAR, true, 1) == 0);
+    }
+
+    /** Tier 4 and 5 fly two kites, the others one; the shares diminish and add up to 1, so the pair never exceeds the peak. */
+    @Test
+    void twoKitesFromTier4SplitThePeak() {
+        for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
+            assertEquals(tier >= 4 ? 2 : 1, KiteMath.kites(tier), "tier " + tier);
+            double sum = 0;
+            for (int slot = 0; slot < KiteMath.MAX_KITES; slot++) sum += KiteMath.slotShare(tier, slot);
+            assertEquals(1, sum, 1e-9, "tier " + tier);
+            assertEquals(0, KiteMath.slotShare(tier, KiteMath.kites(tier)), "no slot beyond the kites of tier " + tier);
+            assertEquals(0, KiteMath.slotShare(tier, -1));
+        }
+        assertTrue(KiteMath.slotShare(4, 0) > KiteMath.slotShare(4, 1) && KiteMath.slotShare(4, 1) > 0, "diminishing");
+        for (int tier = 4; tier <= 5; tier++) {
+            double peak = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
+            int t = tier;
+            double both = 0;
+            double one = 0;
+            for (int slot = 0; slot < 2; slot++) {
+                double part = KiteMath.slotOutput(peak, t, slot, KiteMath.tether(t), 1, Weather.CLEAR, true, 1);
+                both += part;
+                if (slot == 0) one = part;
+            }
+            assertEquals(peak, both, 1e-6, "the pair makes exactly the peak at best");
+            assertTrue(one < peak, "one kite alone stays under the peak");
+        }
     }
 
     /** No block of the way is skipped: a plate of one block is found at any height. */
@@ -103,10 +143,11 @@ class KiteMathTest {
         for (int tier = 3; tier <= 5; tier++) assertTrue(!KiteMath.wide(tier));
     }
 
-    /** A crowded sky costs tier 1-3 all of it, tier 4 half of it and tier 5 nothing. */
+    /** A crowded sky costs tier 1 and 2 all of it, tier 4 half of it, tier 3 (it ignores obstructions) and tier 5 nothing. */
     @Test
     void opennessPerkFromTier4() {
-        for (int tier = 1; tier <= 3; tier++) assertEquals(0.4, KiteMath.opennessFactor(tier, 0.4), 1e-9);
+        for (int tier = 1; tier <= 2; tier++) assertEquals(0.4, KiteMath.opennessFactor(tier, 0.4), 1e-9);
+        assertEquals(1, KiteMath.opennessFactor(3, 0.4));
         assertEquals(0.7, KiteMath.opennessFactor(4, 0.4), 1e-9);
         assertEquals(1, KiteMath.opennessFactor(5, 0.4));
         for (int tier = 1; tier <= 5; tier++) assertEquals(1, KiteMath.opennessFactor(tier, 1));

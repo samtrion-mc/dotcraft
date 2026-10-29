@@ -20,12 +20,17 @@ import java.util.function.IntPredicate;
  * <li>tier 1: the plain kite. It needs a free cross of three blocks on the way up, rain halves the output and a thunderstorm tears the
  * tether, so the kite is reeled in (output 0);</li>
  * <li>tier 2: a waxed line, rain costs only a quarter;</li>
- * <li>tier 3: a rain-proof sail (rain costs nothing) and a slim line that threads a one block wide shaft (see {@link #wide(int)});
- * a thunderstorm still means reeling in;</li>
- * <li>tier 4: a storm line, the kite stays up in a thunderstorm at half the output, and a crowded sky costs only half as much
- * (see {@link #opennessFactor(int, double)});</li>
- * <li>tier 5: an insulated tether and storm sail, thunder costs nothing, and the kite does not care how crowded the sky is.</li>
+ * <li>tier 3: a rain-proof sail (rain costs nothing) and a kite that ignores obstructions (see {@link #ignoresObstructions(int)}):
+ * blocks on the way up do not stop it and a crowded sky costs nothing; a thunderstorm still means reeling in. The altitude is
+ * measured above the top of the generator block, so the tether never runs through the generator itself;</li>
+ * <li>tier 4: a storm line, the kite stays up in a thunderstorm at half the output, a crowded sky costs only half as much
+ * (see {@link #opennessFactor(int, double)}), and it flies <b>two kites</b> (see {@link #kites(int)});</li>
+ * <li>tier 5: an insulated tether and storm sail, thunder costs nothing, the kites do not care how crowded the sky is, and it flies two
+ * kites as well.</li>
  * </ul>
+ * <b>Two kites.</b> The peak of tier 4 and 5 is the maximum of the <i>pair</i>: the first kite makes {@link #SLOT_SHARES}[0] = 60 % of
+ * it, the second one, which flies in the wind shadow of the first, 40 % (see {@link #slotShare(int, int)}), so one kite alone never
+ * reaches the peak and both together at full tether, clear weather and a free sky make exactly the peak, never more.
  * A thunderstorm never attracts lightning to a kite (no lightning is ever spawned): a kite that has to give way is simply reeled in.
  * <p>
  * <b>Economy.</b> The peaks follow the battery ladder 15 / 75 / 560 / 5600 / 56000 FE/t. A kite is up around the clock and on open
@@ -55,6 +60,10 @@ final class KiteMath {
     private static final long GUST_TICKS = 611;
 
     private static final int[] TETHER = {32, 64, 128, 256, 512};
+    /** The most kites a block flies (tier 4 and 5). */
+    static final int MAX_KITES = 2;
+    /** The share of the peak that the kite of a slot makes; diminishing (the second one sits in the wind shadow) and adds up to 1. */
+    private static final double[] SLOT_SHARES = {0.6, 0.4};
 
     /** Not instantiable. */
     private KiteMath() {}
@@ -77,6 +86,38 @@ final class KiteMath {
      */
     static int tether(int tier) {
         return TETHER[tier - 1];
+    }
+
+    /**
+     * How many kites a block of a tier flies.
+     *
+     * @param tier the tier, 1..5
+     * @return 2 for tier 4 and 5, else 1
+     */
+    static int kites(int tier) {
+        return tier >= 4 ? MAX_KITES : 1;
+    }
+
+    /**
+     * The share of the peak that the kite of a slot makes: the shares of all kites of a tier add up to 1, so the peak is never exceeded.
+     *
+     * @param tier the tier, 1..5
+     * @param slot the slot, 0 for the first kite
+     * @return 1 for a block with one kite, else 0.6 for the first and 0.4 for the second; 0 for a slot the tier does not have
+     */
+    static double slotShare(int tier, int slot) {
+        if (slot < 0 || slot >= kites(tier)) return 0;
+        return kites(tier) == 1 ? 1 : SLOT_SHARES[slot];
+    }
+
+    /**
+     * Whether the kite ignores obstructions: blocks on the way up do not stop it and the crowded air around it costs nothing.
+     *
+     * @param tier the tier, 1..5
+     * @return {@code true} for tier 3
+     */
+    static boolean ignoresObstructions(int tier) {
+        return tier == 3;
     }
 
     /**
@@ -109,8 +150,8 @@ final class KiteMath {
     }
 
     /**
-     * Whether the way up needs a free cross of five cells (the column and its four neighbours); tiers 3 and up fly through a shaft of
-     * one block.
+     * Whether the way up needs a free cross of five cells (the column and its four neighbours); tiers 3 and up need no more than the
+     * column (tier 3 not even that, see {@link #ignoresObstructions(int)}).
      *
      * @param tier the tier, 1..5
      * @return {@code true} for tier 1 and 2
@@ -138,10 +179,12 @@ final class KiteMath {
      *
      * @param tier      the tier, 1..5
      * @param blockedAt whether the air {@code h} blocks above the top of the block is blocked
-     * @return the altitude in blocks, 0 if the air directly above the block is blocked
+     * @return the altitude in blocks, 0 if the air directly above the block is blocked; the whole tether for a kite that ignores
+     *         obstructions
      */
     static int reach(int tier, IntPredicate blockedAt) {
         int max = tether(tier);
+        if (ignoresObstructions(tier)) return max;
         for (int h = 1; h <= max; h++) {
             if (blockedAt.test(h)) return h - 1;
         }
@@ -171,7 +214,7 @@ final class KiteMath {
     }
 
     /**
-     * What a crowded sky costs: tier 1-3 pay the full share of blocked air around the kite, tier 4 half of it, tier 5 nothing.
+     * What a crowded sky costs: tier 1-2 pay the full share of blocked air around the kite, tier 4 half of it, tier 3 and 5 nothing.
      *
      * @param tier     the tier, 1..5
      * @param openness the free share of the air around the kite, 0..1
@@ -179,7 +222,7 @@ final class KiteMath {
      */
     static double opennessFactor(int tier, double openness) {
         double o = Math.clamp(openness, 0, 1);
-        return tier >= 5 ? 1 : tier == 4 ? (1 + o) / 2 : o;
+        return tier == 3 || tier >= 5 ? 1 : tier == 4 ? (1 + o) / 2 : o;
     }
 
     /**
@@ -200,12 +243,29 @@ final class KiteMath {
     }
 
     /**
+     * What the kite of a slot makes right now: its {@link #slotShare share} of what {@link #output} gives for the whole peak.
+     *
+     * @param peak     the peak of the tier in FE/t (of all kites together)
+     * @param tier     the tier, 1..5
+     * @param slot     the slot of the kite
+     * @param altitude the altitude of the kite above the block in blocks
+     * @param openness the free share of the air around the kite, 0..1
+     * @param weather  the weather at the kite
+     * @param sky      whether the dimension has a sky
+     * @param wind     the gust, see {@link #wind(long)}
+     * @return the FE per tick, may be fractional
+     */
+    static double slotOutput(double peak, int tier, int slot, double altitude, double openness, Weather weather, boolean sky, double wind) {
+        return slotShare(tier, slot) * output(peak, tier, altitude, openness, weather, sky, wind);
+    }
+
+    /**
      * The FE a kite makes on a typical day: the tether fully out and a free sky (what a winch gets on open ground), the real gust
      * curve over one MC day and the typical weather mix.
      *
      * @param peak the peak of the tier in FE/t
      * @param tier the tier, 1..5
-     * @return the FE per MC day
+     * @return the FE per MC day, of all kites of the tier flying at the same height together (their shares add up to 1)
      */
     static double typicalDailyYield(double peak, int tier) {
         double total = 0;

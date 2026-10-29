@@ -24,10 +24,10 @@ import net.samtrion.dotcraft.energy.generator.GeneratorEnergy;
 
 /**
  * The block entity of a kite wind generator. It remembers whether a kite has been put in (this is what is saved, with the FE), owns
- * the {@link KiteEntity} (which is not saved, see there) and respawns it when its chunk ticks and none is there, reads the air every
+ * the {@link KiteEntity kites} (one, or two from tier 4; not saved, see there) and respawns a missing one when its chunk ticks, reads the air every
  * {@link #RECOMPUTE_TICKS} ticks (staggered by position): the free altitude on the way up, the weather at the kite and the free
- * air around it. It sets the kite's target altitude from that and makes FE from the kite's <i>actual</i> altitude (see
- * {@link KiteMath}). The FE is buffered and pushed into the neighbours on every side but the top; the capability can only be drained.
+ * air around it. It sets the kite's target altitude from that and makes FE from the kites' <i>actual</i> altitudes (see
+ * {@link KiteMath}; the kites of a pair share the peak). The FE is buffered and pushed into the neighbours on every side but the top; the capability can only be drained.
  * Nothing is read from a chunk that is not loaded, so the block never loads chunks.
  */
 public class KiteBlockEntity extends BlockEntity {
@@ -42,8 +42,8 @@ public class KiteBlockEntity extends BlockEntity {
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
     /** Whether a kite has been put in (saved). */
     private boolean hasKite;
-    /** The kite that flies now; not saved, spawned again when it is missing. */
-    private @Nullable KiteEntity kite;
+    /** The kites that fly now, one per slot (see {@link KiteMath#kites(int)}); not saved, a missing one is spawned again. */
+    private final @Nullable KiteEntity[] kites = new KiteEntity[KiteMath.MAX_KITES];
     /** The FE per tick made in the last tick. */
     private double output;
     /** The fraction of an FE that is not yet produced (saved), so a fractional output is not lost. */
@@ -96,12 +96,35 @@ public class KiteBlockEntity extends BlockEntity {
     }
 
     /**
-     * The kite that flies now.
+     * The first kite that flies now (the one that makes most of the output).
      *
      * @return the entity, {@code null} if there is none (no kite, or it is not spawned yet)
      */
     public @Nullable KiteEntity kite() {
-        return kite;
+        return kites[0];
+    }
+
+    /**
+     * The kite of a slot.
+     *
+     * @param slot 0 for the first kite, 1 for the second kite of tier 4 and 5
+     * @return the entity, {@code null} if the slot is empty (no kite, not spawned yet, or the tier has no such slot)
+     */
+    public @Nullable KiteEntity kite(int slot) {
+        return slot >= 0 && slot < kites.length ? kites[slot] : null;
+    }
+
+    /**
+     * Whether an entity is one of the kites this block has; a kite that is not discards itself, so there is never a duplicate.
+     *
+     * @param entity the entity
+     * @return {@code true} if it is in a slot
+     */
+    boolean owns(KiteEntity entity) {
+        for (var k : kites) {
+            if (k == entity) return true;
+        }
+        return false;
     }
 
     /**
@@ -140,7 +163,7 @@ public class KiteBlockEntity extends BlockEntity {
     boolean insertKite(ServerLevel level) {
         if (hasKite) return false;
         hasKite = true;
-        spawnKite(level);
+        spawnMissing(level);
         setChanged();
         return true;
     }
@@ -159,18 +182,44 @@ public class KiteBlockEntity extends BlockEntity {
         return true;
     }
 
-    /** Spawns a kite at the block; it starts on the ground. */
-    private void spawnKite(ServerLevel level) {
-        var entity = new KiteEntity(KiteBlocks.KITE_ENTITY.get(), level);
-        entity.attach(worldPosition, block().tier());
-        kite = entity;
-        if (!level.addFreshEntity(entity)) kite = null;
+    /** Spawns a kite in every slot of the tier that has none (or whose kite is gone); a kite starts on the ground. */
+    private void spawnMissing(ServerLevel level) {
+        int tier = block().tier();
+        for (int slot = 0; slot < KiteMath.kites(tier); slot++) {
+            var old = kites[slot];
+            if (old != null && !old.isRemoved()) continue;
+            var entity = new KiteEntity(KiteBlocks.KITE_ENTITY.get(), level);
+            entity.attach(worldPosition, tier, slot);
+            kites[slot] = entity;
+            if (!level.addFreshEntity(entity)) kites[slot] = null;
+        }
     }
 
-    /** Removes the kite entity, if there is one. */
+    /** Removes the kite entities, if there are any. */
     private void discardKite() {
-        if (kite != null) kite.discard();
-        kite = null;
+        for (int slot = 0; slot < kites.length; slot++) {
+            if (kites[slot] != null) kites[slot].discard();
+            kites[slot] = null;
+        }
+    }
+
+    /** Whether every kite of the tier flies (is spawned and not removed). */
+    private boolean allFly() {
+        for (int slot = 0; slot < KiteMath.kites(block().tier()); slot++) {
+            if (kites[slot] == null || kites[slot].isRemoved()) return false;
+        }
+        return true;
+    }
+
+    /** The FE per tick of all kites of the tier together; the shares of the slots add up to the peak (see {@link KiteMath#slotShare}). */
+    private double totalOutput(double peak, int tier, long time) {
+        double sum = 0;
+        for (int slot = 0; slot < KiteMath.kites(tier); slot++) {
+            var k = kites[slot];
+            if (k != null && !k.isRemoved())
+                sum += KiteMath.slotOutput(peak, tier, slot, k.altitude(), openness, weather, sky, KiteMath.wind(time));
+        }
+        return sum;
     }
 
     /** Gives the kite back as an item when the block is removed, removes the entity and hands the buffered FE to the neighbours. */
@@ -194,8 +243,7 @@ public class KiteBlockEntity extends BlockEntity {
         long time = level.getGameTime() + worldPosition.hashCode();
         if (Math.floorMod(time, RECOMPUTE_TICKS) == 0) recompute(level);
         var config = block().config();
-        output = hasKite && kite != null
-                ? KiteMath.output(config.peak(), block().tier(), kite.altitude(), openness, weather, sky, KiteMath.wind(time)) : 0;
+        output = hasKite ? totalOutput(config.peak(), block().tier(), time) : 0;
         updateSignal(level, config.peak());
         carry += output;
         int whole = (int) carry;
@@ -220,19 +268,22 @@ public class KiteBlockEntity extends BlockEntity {
         var block = block();
         var config = block.config();
         energy.configure(config.capacity(), config.maxOutput());
-        if (hasKite && (kite == null || kite.isRemoved()) && level.isPositionEntityTicking(worldPosition)) spawnKite(level);
-        if (!hasKite || kite == null) {
+        if (hasKite && !allFly() && level.isPositionEntityTicking(worldPosition)) spawnMissing(level);
+        var first = kites[0];
+        if (!hasKite || first == null) {
             limit = KiteMath.Limit.NONE;
             return;
         }
         int tier = block.tier();
         sky = level.dimensionType().hasSkyLight();
-        var cell = BlockPos.containing(kite.position());
+        var cell = BlockPos.containing(first.position());
         weather = weather(level, cell);
         openness = openness(level, cell);
         int reach = KiteMath.reach(tier, h -> blockedAround(level, tier, h));
         boolean reeledIn = !sky || KiteMath.weatherFactor(tier, weather) == 0;
-        kite.setTarget(reeledIn ? 0 : reach);
+        for (var k : kites) {
+            if (k != null) k.setTarget(reeledIn ? 0 : reach);
+        }
         limit = KiteMath.limit(tier, sky, weather, reach, openness);
     }
 
