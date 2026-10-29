@@ -12,6 +12,8 @@ import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlockItem;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
 import net.samtrion.dotcraft.energy.melt.MeltBlocks;
+import net.samtrion.dotcraft.energy.wheel.WheelBlocks;
+import net.samtrion.dotcraft.energy.wheel.WheelItem;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The English translations. Every key added here needs the same key in {@link GermanLanguageProvider}. */
@@ -43,6 +45,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(VibrationBlockItem.HEARING_KEY, "Hears shocks within %1$s blocks, from vibration frequency %2$s");
         add(VibrationBlockItem.BOSS_KEY, "Boss fights count x%s");
         add(VibrationBlockItem.PIERCE_KEY, "Hears through wool");
+        WheelBlocks.blocks().forEach(b -> add(b.get(), "Mob Wheel (Tier " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
         MeltBlocks.blocks().forEach(b -> add(b.get(), "Melt Generator (Tier " + b.get().tier() + ")"));
         add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.TANK_KEY, "Water goes into a tank of %s buckets that can only be drained");
@@ -58,6 +61,13 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelectric Generator (Tier " + b.get().tier() + ")"));
         add(ThermoBlockItem.TOOLTIP_KEY, "Peak %1$s FE/t at a temperature difference of %2$s");
         add(ThermoBlockItem.HINT_KEY, "Needs a hot and a cold neighbour on opposite sides (levels 1-3 each, they add up to the difference)");
+        add(WheelItem.STATS_KEY, "Up to %s FE/t from one mob on the wheel");
+        add(WheelItem.PERK_KEY + 1, "Base wheel.");
+        add(WheelItem.PERK_KEY + 2, "Higher peak and bigger buffer.");
+        add(WheelItem.PERK_KEY + 3, "Small mobs pull their full weight.");
+        add(WheelItem.PERK_KEY + 4, "Higher peak and bigger buffer.");
+        add(WheelItem.PERK_KEY + 5, "Flywheel: keeps turning for a few seconds after the mob stops.");
+        add(WheelItem.RULES_KEY, "Captures the first mob that stands on top of it (one at a time, any mob, hostile too) and holds it there: it cannot leave but can still be hurt and killed, and never despawns. Mobs nearby do not count. Health and speed set the weight, a mob that tries to walk counts fully, a standing one half. No babies, no mobs in water, one wheel per mob. A comparator reads the load.");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }

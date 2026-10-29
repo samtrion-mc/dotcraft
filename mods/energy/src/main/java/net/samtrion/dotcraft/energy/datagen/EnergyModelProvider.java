@@ -19,6 +19,7 @@ import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.melt.datagen.MeltModels;
+import net.samtrion.dotcraft.energy.wheel.datagen.WheelModels;
 
 /**
  * The item definitions of the batteries, the solar cell and the generator blocks. The models are source files ({@code models/item/<name>.json}): the vanilla
@@ -78,6 +79,7 @@ public final class EnergyModelProvider extends ModelProvider {
             blocks.itemModelOutput.accept(block.asItem(), ItemModelUtils.plainModel(model(name)));
         });
         ThermoModels.register(blocks);
+        WheelModels.register(blocks);
     }
 
     private static Identifier blockModel(String name) {

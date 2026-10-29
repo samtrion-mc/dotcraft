@@ -1,0 +1,8 @@
+{
+  "parent": "dotcraftenergy:block/mob_wheel",
+  "textures": {
+    "metal": "dotcraftenergy:block/generator_side_tier_3",
+    "face": "dotcraftenergy:block/mob_wheel_face_tier_3",
+    "tread": "dotcraftenergy:block/mob_wheel_tread_tier_3"
+  }
+}

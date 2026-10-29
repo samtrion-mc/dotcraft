@@ -14,6 +14,7 @@ import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.energy.melt.MeltTags;
+import net.samtrion.dotcraft.energy.wheel.WheelBlocks;
 
 /** The block tags of the energy mod: the generators are mined with a pickaxe. */
 public final class EnergyBlockTagsProvider extends BlockTagsProvider {
@@ -41,5 +42,6 @@ public final class EnergyBlockTagsProvider extends BlockTagsProvider {
         tag(MeltTags.ICE).add(Blocks.ICE);
         tag(MeltTags.PACKED_ICE).add(Blocks.PACKED_ICE);
         tag(MeltTags.BLUE_ICE).add(Blocks.BLUE_ICE);
+        WheelBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
     }
 }
