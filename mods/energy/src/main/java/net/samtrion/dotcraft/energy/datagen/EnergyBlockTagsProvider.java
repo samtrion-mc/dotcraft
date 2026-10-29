@@ -9,6 +9,7 @@ import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.flow.FlowBlocks;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
+import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 
 /** The block tags of the energy mod: the generators are mined with a pickaxe. */
 public final class EnergyBlockTagsProvider extends BlockTagsProvider {
@@ -27,5 +28,6 @@ public final class EnergyBlockTagsProvider extends BlockTagsProvider {
         var pickaxe = tag(BlockTags.MINEABLE_WITH_PICKAXE);
         EnergyBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
         FlowBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
+        VibrationBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
     }
 }

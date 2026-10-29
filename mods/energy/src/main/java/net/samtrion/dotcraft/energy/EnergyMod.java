@@ -7,12 +7,13 @@ import net.neoforged.fml.config.ModConfig;
 import net.samtrion.dotcraft.energy.flow.FlowBlocks;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.resources.CraftResources;
 
 /**
  * Entry point of the {@code .Craft: Energy} mod.
  * <p>
- * Registers the potato batteries, the solar and lunar panels and the flow generators.
+ * Registers the potato batteries, the solar and lunar panels and the flow and vibration generators.
  */
 @Mod(EnergyMod.MODID)
 public class EnergyMod {
@@ -33,5 +34,6 @@ public class EnergyMod {
         EnergyItems.register(modEventBus);
         EnergyBlocks.register(modEventBus);
         FlowBlocks.register(modEventBus);
+        VibrationBlocks.register(modEventBus);
     }
 }

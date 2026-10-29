@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:vibration_generator_tier_2"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_2"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:vibration_generator_tier_1"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:battery_tier_2",
+    "G": "#c:gears/copper",
+    "P": "#c:plates/copper",
+    "Q": "#c:gems/quartz",
+    "X": "dotcraftenergy:vibration_generator_tier_1"
+  },
+  "pattern": [
+    "PQP",
+    "GXG",
+    "PBP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:vibration_generator_tier_2"
+  }
+}
