@@ -58,7 +58,9 @@ public final class CurrentScan {
             for (int dy = -CurrentMath.SCAN_RADIUS; dy <= CurrentMath.SCAN_RADIUS; dy++) {
                 for (int dz = -CurrentMath.SCAN_RADIUS; dz <= CurrentMath.SCAN_RADIUS; dz++) {
                     if (dx == 0 && dy == 0 && dz == 0) continue;
-                    var state = level.getBlockState(cursor.set(pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz));
+                    cursor.set(pos.getX() + dx, pos.getY() + dy, pos.getZ() + dz);
+                    if (!level.isLoaded(cursor)) continue; // never force-load a chunk
+                    var state = level.getBlockState(cursor);
                     // another generator holds its own water: a packed array of pods is no body of water
                     if (state.getBlock() instanceof CurrentGeneratorBlock) continue;
                     var fluid = state.getFluidState();

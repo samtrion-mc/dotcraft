@@ -37,6 +37,7 @@ public class CurrentGeneratorBlockEntity extends BlockEntity {
     private final GeneratorEnergy energy;
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
     private boolean scanned;
+    private boolean wet;
     private double output;
     private double carry;
 
@@ -91,7 +92,8 @@ public class CurrentGeneratorBlockEntity extends BlockEntity {
      * @param level the level
      */
     void serverTick(ServerLevel level) {
-        if (!scanned || Math.floorMod(level.getGameTime() + worldPosition.hashCode(), RECOMPUTE_TICKS) == 0) recompute(level);
+        // a bucket that fills or drains the pod shows at once, not at the next scan
+        if (!scanned || wet != getBlockState().getValue(CurrentGeneratorBlock.WATERLOGGED) || Math.floorMod(level.getGameTime() + worldPosition.hashCode(), RECOMPUTE_TICKS) == 0) recompute(level);
         carry += output;
         int whole = (int) carry;
         carry -= whole;
@@ -111,6 +113,7 @@ public class CurrentGeneratorBlockEntity extends BlockEntity {
         var config = CurrentBlocks.CONFIGS.get(tier - 1);
         energy.configure(config.capacity(), config.maxOutput());
         boolean submerged = getBlockState().getValue(CurrentGeneratorBlock.WATERLOGGED);
+        wet = submerged;
         double now = submerged ? CurrentScan.scan(level, worldPosition, tier).output(tier, true) * config.peak() : 0;
         if (now != output) {
             output = now;

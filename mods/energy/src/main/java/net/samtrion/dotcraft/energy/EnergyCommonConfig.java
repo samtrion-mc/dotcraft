@@ -46,7 +46,7 @@ public final class EnergyCommonConfig {
     /** The registry paths of the current generators, tiers 1-5, which are also their config sections. */
     static final List<String> CURRENT_NAMES = tierNames("current_generator");
 
-    /** The current generators: the peak FE/t in the best case (full water share in an ocean or river), at least 15 FE/t; the fauna bonus (up to 30 %) comes on top. */
+    /** The current generators: the peak FE/t in the best case without animals (full water share in an ocean or river), at least 15 FE/t; animals add up to 30 % on top, so the real maximum is 1.3 times the peak. */
     public static final List<Generator> CURRENT_GENERATORS = generators(CURRENT_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
 
     /** The built spec, registered as COMMON config. */

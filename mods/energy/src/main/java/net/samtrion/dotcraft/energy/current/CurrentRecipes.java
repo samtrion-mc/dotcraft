@@ -42,7 +42,7 @@ public final class CurrentRecipes extends RecipeProvider {
 
     /**
      * The five tiers, shaped: plates in the corners and top middle, gears left and right of the battery of the tier, and below
-     * the generator of the tier below (tier 1: redstone grains). The metal of plates and gears is the tier's; the ingredients are
+     * the last enabled generator of a tier below (the first enabled tier: redstone grains). The metal of plates and gears is the tier's; the ingredients are
      * tags except the batteries and the lower generator, which are items of this mod. Unlocked by the battery; dropped when a used
      * item is switched off in the startup config.
      */
@@ -53,10 +53,7 @@ public final class CurrentRecipes extends RecipeProvider {
         Item previous = null;
         for (int tier = 1; tier <= CurrentMath.MAX_TIER; tier++) {
             var block = CurrentBlocks.block(tier);
-            if (block == null) {
-                previous = null;
-                continue;
-            }
+            if (block == null) continue; // a switched-off tier is skipped, the next one is built from the last one that exists
             var item = block.get().asItem();
             var battery = batteries[tier - 1];
             var builder = shaped(RecipeCategory.MISC, item)

@@ -10,7 +10,6 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -42,7 +41,7 @@ public final class CurrentBlocks {
     private static final DeferredRegister<BlockEntityType<?>> TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, EnergyMod.MODID);
 
     private static final List<DeferredBlock<CurrentGeneratorBlock>> GENERATORS = new ArrayList<>();
-    private static final List<DeferredItem<BlockItem>> GENERATOR_ITEMS = new ArrayList<>();
+    private static final List<DeferredItem<CurrentGeneratorItem>> GENERATOR_ITEMS = new ArrayList<>();
 
     /** The block entity type of every current generator. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<CurrentGeneratorBlockEntity>> TYPE = TYPES.register("current_generator",
@@ -57,7 +56,7 @@ public final class CurrentBlocks {
             var block = BLOCKS.<CurrentGeneratorBlock>registerBlock(name, p -> new CurrentGeneratorBlock(p, t, TYPE),
                     () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).requiresCorrectToolForDrops().noOcclusion());
             GENERATORS.add(block);
-            GENERATOR_ITEMS.add(ITEMS.registerSimpleBlockItem(block));
+            GENERATOR_ITEMS.add(ITEMS.registerItem(name, p -> new CurrentGeneratorItem(block.get(), p.useBlockDescriptionPrefix())));
         }
     }
 
@@ -88,7 +87,7 @@ public final class CurrentBlocks {
      *
      * @return the items of the tiers that are switched on
      */
-    public static Stream<DeferredItem<BlockItem>> items() {
+    public static Stream<DeferredItem<CurrentGeneratorItem>> items() {
         return GENERATOR_ITEMS.stream();
     }
 

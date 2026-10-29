@@ -44,21 +44,40 @@ class CurrentMathTest {
     /** More water than the full weight does not help (no source block spam), and the share grows linearly below it. */
     @Test
     void waterShareIsCapped() {
-        assertEquals(1D, CurrentMath.waterShare(CurrentMath.FULL_WEIGHT, 0, 1), 1e-9);
+        assertEquals(1D, CurrentMath.waterShare(CurrentMath.FULL_WEIGHT_TIER_1, 0, 1), 1e-9);
+        assertEquals(1D, CurrentMath.waterShare(CurrentMath.FULL_WEIGHT, 0, 2), 1e-9);
         assertEquals(1D, CurrentMath.waterShare(CurrentMath.CUBE_BLOCKS, 0, 1), 1e-9);
         assertEquals(1D, CurrentMath.waterShare(Integer.MAX_VALUE, Integer.MAX_VALUE, 5), 1e-9);
-        assertEquals(0.5D, CurrentMath.waterShare(CurrentMath.FULL_WEIGHT / 2, 0, 1), 0.02);
+        assertEquals(0.5D, CurrentMath.waterShare(CurrentMath.FULL_WEIGHT_TIER_1 / 2, 0, 1), 0.02);
         assertTrue(CurrentMath.waterShare(10, 0, 1) < CurrentMath.waterShare(20, 0, 1));
         assertEquals(0D, CurrentMath.waterShare(-5, -5, 1));
     }
 
-    /** Flowing water counts double, from tier 4 on triple: a stream is worth more than a pond. */
+    /** Flowing water counts double, in every tier: a stream is worth more than a pond. */
     @Test
     void flowingWaterCountsMore() {
-        assertEquals(CurrentMath.waterShare(20, 0, 1) * 2, CurrentMath.waterShare(0, 20, 1), 1e-9);
-        assertEquals(CurrentMath.waterShare(0, 20, 1) * 1.5, CurrentMath.waterShare(0, 20, 4), 1e-9, "tier 4 streamlining");
-        assertEquals(CurrentMath.waterShare(0, 20, 4), CurrentMath.waterShare(0, 20, 5), 1e-9, "tier 5 keeps it");
-        assertEquals(CurrentMath.waterShare(0, 20, 1), CurrentMath.waterShare(0, 20, 3), 1e-9, "tier 3 does not have it yet");
+        for (int tier = 1; tier <= 5; tier++) {
+            assertEquals(CurrentMath.waterShare(10, 0, tier) * 2, CurrentMath.waterShare(0, 10, tier), 1e-9, "tier " + tier);
+        }
+    }
+
+    /**
+     * The water perk: tier 1 needs a nearly full cube, tiers 2-3 three layers, from tier 4 two layers. A plain 5x5x3 pond (74 sources
+     * around the pod) is practically full for tier 2 but not for tier 1, and a 5x5x2 pond (49) is full only for tier 4 and 5.
+     */
+    @Test
+    void leanWaterPerk() {
+        assertEquals(CurrentMath.FULL_WEIGHT_TIER_1, CurrentMath.fullWeight(1));
+        assertEquals(CurrentMath.FULL_WEIGHT, CurrentMath.fullWeight(2));
+        assertEquals(CurrentMath.FULL_WEIGHT, CurrentMath.fullWeight(3));
+        assertEquals(CurrentMath.FULL_WEIGHT_LEAN, CurrentMath.fullWeight(4));
+        assertEquals(CurrentMath.FULL_WEIGHT_LEAN, CurrentMath.fullWeight(5));
+        assertTrue(CurrentMath.waterShare(74, 0, 1) < 1D);
+        assertEquals(0.99D, CurrentMath.waterShare(74, 0, 2), 0.01, "a 5x5x3 pond minus the pod is practically full");
+        assertEquals(1D, CurrentMath.waterShare(75, 0, 2), 1e-9);
+        assertTrue(CurrentMath.waterShare(49, 0, 3) < 1D);
+        assertEquals(1D, CurrentMath.waterShare(50, 0, 4), 1e-9);
+        assertTrue(CurrentMath.waterShare(49, 0, 3) < CurrentMath.waterShare(49, 0, 4));
     }
 
     /** Ocean and river give 1; elsewhere tiers 1-2 keep half, tiers 3-4 three quarters, tier 5 is independent of the biome. */
@@ -112,12 +131,42 @@ class CurrentMathTest {
     void fillsTheBatteryOfItsTierWellUnderOneDay() {
         for (int tier = 1; tier <= 5; tier++) {
             double best = ocean(tier) * peak(tier);
-            double poor = CurrentMath.output(tier, true, CurrentMath.FULL_WEIGHT / 2, 0, false, 0) * peak(tier);
+            double poor = CurrentMath.output(tier, true, CurrentMath.fullWeight(tier) / 2, 0, false, 0) * peak(tier);
             double ticksBest = BATTERIES[tier - 1] / best;
             double ticksPoor = BATTERIES[tier - 1] / poor;
             assertTrue(ticksBest <= DAY / 10D, "best case of tier " + tier + " needs " + ticksBest + " ticks");
             assertTrue(ticksPoor <= DAY / 4D, "poor case of tier " + tier + " needs " + ticksPoor + " ticks");
             assertTrue(best * DAY >= BATTERIES[tier - 1] * 10D, "daily yield of tier " + tier + " is " + best * DAY);
+        }
+    }
+
+    /** The animals lift the output to at most 1.3 times the peak, and that is still no more than the 1.3 case of the anchor allows. */
+    @Test
+    void faunaCeilingIsOnePointThreeTimesThePeak() {
+        for (int tier = 1; tier <= 5; tier++) {
+            double most = CurrentMath.output(tier, true, CurrentMath.CUBE_BLOCKS, 0, true, 99);
+            assertEquals(1D + CurrentMath.FAUNA_MAX, most, 1e-9, "tier " + tier);
+            assertTrue(BATTERIES[tier - 1] / (most * peak(tier)) <= DAY / 10D, "tier " + tier);
+        }
+    }
+
+    /**
+     * The 24/7 anchor against the panels: the current generator makes power around the clock, so the daily yield of the same tier
+     * in the best place is a multiple of the clear-sky solar panel, roughly three times. Anyone changing the ladder sees here what it does to
+     * the balance between the families.
+     */
+    @Test
+    void dailyYieldAgainstSolar() {
+        for (int tier = 1; tier <= 5; tier++) {
+            double sun = 0;
+            for (int t = 0; t < DAY; t += 10) {
+                sun += net.samtrion.dotcraft.energy.generator.GeneratorMath.solar(tier, (t - 6000) * 360F / DAY,
+                        true, net.samtrion.dotcraft.energy.generator.GeneratorMath.Weather.CLEAR, 1F) * 10;
+            }
+            double solar = sun * EnergyCommonConfig.SOLAR_PANELS.get(tier - 1).peak();
+            double current = ocean(tier) * peak(tier) * DAY;
+            double ratio = current / solar;
+            assertTrue(ratio > 2 && ratio < 6, "tier " + tier + ": current makes " + ratio + " times the daily yield of a solar panel");
         }
     }
 

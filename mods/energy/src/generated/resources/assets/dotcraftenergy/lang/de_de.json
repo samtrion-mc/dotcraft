@@ -23,5 +23,11 @@
   "item.dotcraftenergy.potato_battery": "Kartoffelbatterie",
   "item.dotcraftenergy.rechargeable_potato_battery": "Wiederaufladbare Kartoffelbatterie",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energie",
+  "tooltip.dotcraftenergy.current.formula": "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)",
+  "tooltip.dotcraftenergy.current.perk_1": "Basis: braucht einen fast vollen Wasserwürfel",
+  "tooltip.dotcraftenergy.current.perk_2": "Weites Netz: Tiere zählen im Umkreis von 6 Blöcken",
+  "tooltip.dotcraftenergy.current.perk_3": "Anpassung: behält 75% außerhalb von Ozean und Fluss",
+  "tooltip.dotcraftenergy.current.perk_4": "Schlankes Wasser: ein kleiner Teich genügt schon",
+  "tooltip.dotcraftenergy.current.perk_5": "Abyssal: unabhängig vom Biom",
   "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
 }

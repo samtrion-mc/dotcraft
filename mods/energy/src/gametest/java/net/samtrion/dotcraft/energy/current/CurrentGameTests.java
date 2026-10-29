@@ -45,6 +45,7 @@ public final class CurrentGameTests {
     private static final Identifier BUCKETED = id("current_bucketed");
     private static final Identifier PUSH = id("current_push");
     private static final Identifier SEALED = id("current_sealed");
+    private static final Identifier DRAIN = id("current_drain");
 
     private CurrentGameTests() {}
 
@@ -73,6 +74,7 @@ public final class CurrentGameTests {
             registry.register(BUCKETED, (Consumer<GameTestHelper>) CurrentGameTests::bucketed);
             registry.register(PUSH, (Consumer<GameTestHelper>) CurrentGameTests::push);
             registry.register(SEALED, (Consumer<GameTestHelper>) CurrentGameTests::sealed);
+            registry.register(DRAIN, (Consumer<GameTestHelper>) CurrentGameTests::drain);
         });
     }
 
@@ -90,6 +92,7 @@ public final class CurrentGameTests {
         register(event, BUCKETED, 20);
         register(event, PUSH, 60);
         register(event, SEALED, 60);
+        register(event, DRAIN, 40);
     }
 
     /** Registers one test with an own environment and the empty template. */
@@ -378,6 +381,34 @@ public final class CurrentGameTests {
             be.recompute(level);
             helper.assertTrue(be.output() == 0, "a pod in dry air makes " + be.output());
             helper.succeed();
+        });
+    }
+
+    /**
+     * Draining the pod (a bucket) stops the output and the comparator at once, not at the next scan, and filling it starts them again.
+     *
+     * @param helper the game test helper
+     */
+    private static void drain(GameTestHelper helper) {
+        var level = helper.getLevel();
+        int y0 = 120;
+        pool(helper, y0);
+        var center = new BlockPos(3, y0 + 3, 3);
+        helper.setBlock(center, wet(2));
+        var abs = helper.absolutePos(center);
+        helper.runAfterDelay(5, () -> {
+            var be = entity(helper, center);
+            helper.assertTrue(be.output() > 0, "a wet pod makes nothing");
+            helper.setBlock(center, CurrentBlocks.block(2).get());
+            helper.runAfterDelay(2, () -> {
+                helper.assertTrue(be.output() == 0, "a drained pod still makes " + be.output());
+                helper.assertTrue(level.getBlockState(abs).getAnalogOutputSignal(level, abs, Direction.NORTH) == 0, "the comparator is stale");
+                helper.setBlock(center, wet(2));
+                helper.runAfterDelay(2, () -> {
+                    helper.assertTrue(be.output() > 0, "a refilled pod makes nothing");
+                    helper.succeed();
+                });
+            });
         });
     }
 }

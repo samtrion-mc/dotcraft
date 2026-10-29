@@ -4,6 +4,7 @@ import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.current.CurrentBlocks;
+import net.samtrion.dotcraft.energy.current.CurrentGeneratorItem;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.resources.common.Locales;
@@ -33,6 +34,12 @@ public final class GermanLanguageProvider extends LanguageProvider {
         CurrentBlocks.blocks().forEach(b -> add(b.get(), "Strömungsgenerator (Stufe " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energie");
+        add(CurrentGeneratorItem.FORMULA_KEY, "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)");
+        add(CurrentGeneratorItem.PERK_KEY + 1, "Basis: braucht einen fast vollen Wasserwürfel");
+        add(CurrentGeneratorItem.PERK_KEY + 2, "Weites Netz: Tiere zählen im Umkreis von 6 Blöcken");
+        add(CurrentGeneratorItem.PERK_KEY + 3, "Anpassung: behält 75% außerhalb von Ozean und Fluss");
+        add(CurrentGeneratorItem.PERK_KEY + 4, "Schlankes Wasser: ein kleiner Teich genügt schon");
+        add(CurrentGeneratorItem.PERK_KEY + 5, "Abyssal: unabhängig vom Biom");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }

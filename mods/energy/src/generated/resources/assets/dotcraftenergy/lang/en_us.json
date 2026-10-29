@@ -23,5 +23,11 @@
   "item.dotcraftenergy.potato_battery": "Potato Battery",
   "item.dotcraftenergy.rechargeable_potato_battery": "Rechargeable Potato Battery",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energy",
+  "tooltip.dotcraftenergy.current.formula": "Needs water: peak x water share x biome x (1 + animals)",
+  "tooltip.dotcraftenergy.current.perk_1": "Baseline: needs a nearly full cube of water",
+  "tooltip.dotcraftenergy.current.perk_2": "Wide net: animals count within 6 blocks",
+  "tooltip.dotcraftenergy.current.perk_3": "Adaptation: keeps 75% outside ocean and river",
+  "tooltip.dotcraftenergy.current.perk_4": "Lean water: a small pond is already enough",
+  "tooltip.dotcraftenergy.current.perk_5": "Abyssal: independent of the biome",
   "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
 }
