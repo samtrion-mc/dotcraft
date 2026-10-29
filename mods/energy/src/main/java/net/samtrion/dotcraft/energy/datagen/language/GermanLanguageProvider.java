@@ -48,6 +48,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         WheelBlocks.blocks().forEach(b -> add(b.get(), "Mob-Laufrad (Stufe " + b.get().tier() + ")"));
         add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.TANK_KEY, "Das Wasser landet in einem Tank mit %s Eimern, der sich nur entleeren lässt");
         add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.FULL_KEY, "Ein voller Tank lässt %s%% der FE pro Eis übrig, bis Wasser entnommen wird");
+        net.samtrion.dotcraft.energy.kite.datagen.KiteLanguage.german(this);
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         MeltBlocks.blocks().forEach(b -> add(b.get(), "Schmelzgenerator (Stufe " + b.get().tier() + ")"));
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
