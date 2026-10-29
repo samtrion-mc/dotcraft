@@ -36,6 +36,9 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * family.
  */
 public class GeneratorBlockEntity extends BlockEntity {
+    /** The most generators one group (one shared pool of FE) holds. */
+    public static final int MAX_GROUP = GeneratorGroup.MAX_SIZE;
+
     /** Ticks between two reads of the world. */
     static final int RECOMPUTE_TICKS = 20;
 
@@ -91,6 +94,15 @@ public class GeneratorBlockEntity extends BlockEntity {
      */
     public double output() {
         return output;
+    }
+
+    /**
+     * How many generators share this block's pool of FE, this block included.
+     *
+     * @return the size of the group, 1 for a block that touches no other generator
+     */
+    public int groupSize() {
+        return members().size();
     }
 
     /**

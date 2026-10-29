@@ -57,7 +57,7 @@ import java.util.function.IntPredicate;
  * fills the battery of the same tier about 10 / 19 / 24 / 24 / 25 times for tier 1-5 (the maxima 16 / 150 / 1300 / 13000 / 128000 FE/t are chosen so that FE/t scales
  * with the battery, which grows faster than the tether). The tier mostly buys perks (weather, obstruction, two kites) and a longer tether.
  */
-final class KiteMath {
+public final class KiteMath {
     /** The highest tier. */
     static final int MAX_TIER = 5;
     /** The ticks of one MC day. */
@@ -66,7 +66,7 @@ final class KiteMath {
      * The reference tether length in blocks: a kite that reaches this far has a {@link #lengthFactor length factor} of exactly 1. It is
      * the longest tether (tier 5), so the factor is 0.25 / 0.375 / 0.5 / 0.75 / 1 for a fully extended tether of tier 1-5.
      */
-    static final int REFERENCE_LENGTH = 64;
+    public static final int REFERENCE_LENGTH = 64;
     /** The weakest gust: the wind never drops below this share of the peak. */
     static final double WIND_MIN = 0.2;
     /** The mean of {@link #wind(long)} over time. */
@@ -87,17 +87,17 @@ final class KiteMath {
     private static final long GUST_TICKS = 611;
 
     /** The minimum horizontal distance in blocks between the block positions of two kite generators with a tether; closer ones block each other. */
-    static final int MIN_DISTANCE = 16;
+    public static final int MIN_DISTANCE = 16;
     /** The horizontal play in blocks of a kite of tier 4 and 5 around the vertical axis of its block, per axis. */
-    static final double SPREAD = 4;
+    public static final double SPREAD = 4;
     /** The least distance in blocks between the two kites of one block (their play is arranged so that it always holds). */
     static final double MIN_KITE_GAP = 3;
     /** In a thunderstorm the horizontal distance of a kite from the axis of its block is at most this many blocks; lightning within it is attracted. */
-    static final double THUNDER_RADIUS = 6;
+    public static final double THUNDER_RADIUS = 6;
 
     private static final int[] TETHER = {16, 24, 32, 48, 64};
     /** The most kites a block flies (tier 4 and 5). */
-    static final int MAX_KITES = 2;
+    public static final int MAX_KITES = 2;
     /** The share of the peak that the kite of a slot makes; diminishing (the second one sits in the wind shadow) and adds up to 1. */
     private static final double[] SLOT_SHARES = {0.6, 0.4};
 
@@ -120,7 +120,7 @@ final class KiteMath {
      * @param tier the tier, 1..5
      * @return the length in blocks
      */
-    static int tether(int tier) {
+    public static int tether(int tier) {
         return TETHER[tier - 1];
     }
 
@@ -130,7 +130,7 @@ final class KiteMath {
      * @param tier the tier, 1..5
      * @return 2 for tier 4 and 5, else 1
      */
-    static int kites(int tier) {
+    public static int kites(int tier) {
         return tier >= 4 ? MAX_KITES : 1;
     }
 
