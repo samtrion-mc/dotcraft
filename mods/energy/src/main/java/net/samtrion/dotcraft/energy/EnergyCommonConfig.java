@@ -33,11 +33,31 @@ public final class EnergyCommonConfig {
     /** Tier 5: ten times tier 4. */
     public static final Battery BATTERY_TIER_5 = new Battery(NAMES.get(5), 75_000_000, 375_000, 375_000);
 
+    /** The registry paths of the solar panels, tiers 1-5, which are also their config sections. */
+    static final List<String> SOLAR_NAMES = tierNames("solar_panel");
+    /** The registry paths of the lunar panels, tiers 1-5, which are also their config sections. */
+    static final List<String> LUNAR_NAMES = tierNames("lunar_panel");
+
+    /** The solar panels: the peak FE/t at noon under a clear sky, at least 15 FE/t; a panel fills the battery of its tier in well under one MC day. */
+    public static final List<Generator> SOLAR_PANELS = generators(SOLAR_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The lunar panels: the peak FE/t at full moon in a clear night. */
+    public static final List<Generator> LUNAR_PANELS = generators(LUNAR_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     /** Not instantiable. */
     private EnergyCommonConfig() {}
+
+    private static List<String> tierNames(String prefix) {
+        return List.of(prefix + "_tier_1", prefix + "_tier_2", prefix + "_tier_3", prefix + "_tier_4", prefix + "_tier_5");
+    }
+
+    private static List<Generator> generators(List<String> names, int[] peaks) {
+        var list = new java.util.ArrayList<Generator>();
+        for (int i = 0; i < names.size(); i++) list.add(new Generator(names.get(i), peaks[i]));
+        return List.copyOf(list);
+    }
 
     /** The FE values of one battery; while the config is not loaded (e.g. in datagen and unit tests) the defaults count. */
     public static final class Battery {
@@ -96,6 +116,64 @@ public final class EnergyCommonConfig {
          */
         public int maxOutput() {
             return SPEC.isLoaded() ? maxOutput.get() : defaultMaxOutput;
+        }
+    }
+
+    /** The FE values of one generator; while the config is not loaded (e.g. in datagen and unit tests) the defaults count. */
+    public static final class Generator {
+        /** Ticks of full output the buffer holds. */
+        private static final int BUFFER_TICKS = 600;
+        /** Multiple of the peak that can be given per operation. */
+        private static final int OUTPUT_FACTOR = 5;
+
+        private final ModConfigSpec.IntValue peak;
+        private final ModConfigSpec.IntValue capacity;
+        private final ModConfigSpec.IntValue maxOutput;
+        private final int defaultPeak;
+
+        /**
+         * Defines the entries of a generator.
+         *
+         * @param name        the registry path of the generator, also its config section
+         * @param defaultPeak the default peak output in FE/t
+         */
+        private Generator(String name, int defaultPeak) {
+            this.defaultPeak = defaultPeak;
+            BUILDER.push("generators").push(name);
+            peak = BUILDER.comment("Peak FE per tick of the " + name + " under ideal conditions.")
+                    .defineInRange("peak", defaultPeak, 0, Integer.MAX_VALUE / BUFFER_TICKS);
+            capacity = BUILDER.comment("How much FE the " + name + " buffers.")
+                    .defineInRange("capacity", defaultPeak * BUFFER_TICKS, 1, Integer.MAX_VALUE);
+            maxOutput = BUILDER.comment("Most FE the " + name + " gives to a neighbour per tick.")
+                    .defineInRange("maxOutput", defaultPeak * OUTPUT_FACTOR, 0, Integer.MAX_VALUE);
+            BUILDER.pop(2);
+        }
+
+        /**
+         * The peak output.
+         *
+         * @return the most FE per tick the generator makes
+         */
+        public int peak() {
+            return SPEC.isLoaded() ? peak.get() : defaultPeak;
+        }
+
+        /**
+         * The buffer size.
+         *
+         * @return the FE the generator buffers
+         */
+        public int capacity() {
+            return SPEC.isLoaded() ? capacity.get() : defaultPeak * BUFFER_TICKS;
+        }
+
+        /**
+         * The push rate.
+         *
+         * @return the most FE per tick given to a neighbour
+         */
+        public int maxOutput() {
+            return SPEC.isLoaded() ? maxOutput.get() : defaultPeak * OUTPUT_FACTOR;
         }
     }
 }

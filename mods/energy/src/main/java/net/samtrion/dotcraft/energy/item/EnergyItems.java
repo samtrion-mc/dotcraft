@@ -38,6 +38,9 @@ public final class EnergyItems {
                     .persistent(ExtraCodecs.NON_NEGATIVE_INT)
                     .networkSynchronized(ByteBufCodecs.VAR_INT));
 
+    /** The photovoltaic cell the solar and lunar panels are made of (named Photovoltaic Cell). */
+    public static final DeferredItem<Item> PHOTOVOLTAIC_CELL = ITEMS.registerSimpleItem("photovoltaic_cell");
+
     /** The single-use battery: gives its FE once and then becomes a baked potato; {@code null} when switched off in the config. */
     public static final @Nullable DeferredItem<? extends Item> POTATO_BATTERY = register("potato_battery", EnergyCommonConfig.POTATO_BATTERY);
 

@@ -1,0 +1,88 @@
+{
+  "multipart": [
+    {
+      "apply": [
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v0"
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v0",
+          "y": 90
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v0",
+          "y": 180
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v0",
+          "y": 270
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v1"
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v1",
+          "y": 90
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v1",
+          "y": 180
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v1",
+          "y": 270
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v2"
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v2",
+          "y": 90
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v2",
+          "y": 180
+        },
+        {
+          "model": "dotcraftenergy:block/lunar_panel_tier_3_v2",
+          "y": 270
+        }
+      ]
+    },
+    {
+      "apply": {
+        "model": "dotcraftenergy:block/panel_edge_tier_3"
+      },
+      "when": {
+        "north": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "dotcraftenergy:block/panel_edge_tier_3",
+        "y": 90
+      },
+      "when": {
+        "east": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "dotcraftenergy:block/panel_edge_tier_3",
+        "y": 180
+      },
+      "when": {
+        "south": "false"
+      }
+    },
+    {
+      "apply": {
+        "model": "dotcraftenergy:block/panel_edge_tier_3",
+        "y": 270
+      },
+      "when": {
+        "west": "false"
+      }
+    }
+  ]
+}

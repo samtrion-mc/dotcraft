@@ -1,0 +1,31 @@
+{
+  "textures": {
+    "particle": "dotcraftenergy:block/generator_side_tier_2",
+    "edge": "dotcraftenergy:block/panel_edge_tier_2"
+  },
+  "elements": [
+    {
+      "from": [
+        0,
+        2.01,
+        0
+      ],
+      "to": [
+        16,
+        2.01,
+        16
+      ],
+      "faces": {
+        "up": {
+          "texture": "#edge",
+          "uv": [
+            0,
+            0,
+            16,
+            16
+          ]
+        }
+      }
+    }
+  ]
+}

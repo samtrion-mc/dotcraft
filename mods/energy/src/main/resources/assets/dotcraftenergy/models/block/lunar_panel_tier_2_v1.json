@@ -1,0 +1,8 @@
+{
+  "parent": "dotcraftenergy:block/panel",
+  "textures": {
+    "top": "dotcraftenergy:block/lunar_panel_inner_1",
+    "bottom": "dotcraftenergy:block/generator_side_tier_2",
+    "side": "dotcraftenergy:block/generator_side_tier_2"
+  }
+}

@@ -1,9 +1,22 @@
 {
+  "block.dotcraftenergy.lunar_panel_tier_1": "Mondpanel (Stufe 1)",
+  "block.dotcraftenergy.lunar_panel_tier_2": "Mondpanel (Stufe 2)",
+  "block.dotcraftenergy.lunar_panel_tier_3": "Mondpanel (Stufe 3)",
+  "block.dotcraftenergy.lunar_panel_tier_4": "Mondpanel (Stufe 4)",
+  "block.dotcraftenergy.lunar_panel_tier_5": "Mondpanel (Stufe 5)",
+  "block.dotcraftenergy.power_drain": "Energie-Senke",
+  "block.dotcraftenergy.solar_panel_tier_1": "Solarpanel (Stufe 1)",
+  "block.dotcraftenergy.solar_panel_tier_2": "Solarpanel (Stufe 2)",
+  "block.dotcraftenergy.solar_panel_tier_3": "Solarpanel (Stufe 3)",
+  "block.dotcraftenergy.solar_panel_tier_4": "Solarpanel (Stufe 4)",
+  "block.dotcraftenergy.solar_panel_tier_5": "Solarpanel (Stufe 5)",
   "item.dotcraftenergy.battery_tier_2": "Batterie (Stufe 2)",
   "item.dotcraftenergy.battery_tier_3": "Batterie (Stufe 3)",
   "item.dotcraftenergy.battery_tier_4": "Batterie (Stufe 4)",
   "item.dotcraftenergy.battery_tier_5": "Batterie (Stufe 5)",
+  "item.dotcraftenergy.photovoltaic_cell": "Photovoltaikzelle",
   "item.dotcraftenergy.potato_battery": "Kartoffelbatterie",
   "item.dotcraftenergy.rechargeable_potato_battery": "Wiederaufladbare Kartoffelbatterie",
+  "itemGroup.dotcraftenergy.energy": ".Craft: Energie",
   "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
 }

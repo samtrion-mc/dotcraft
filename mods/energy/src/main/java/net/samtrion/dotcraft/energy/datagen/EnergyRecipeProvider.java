@@ -22,13 +22,14 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.RegisteredCondition;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.resources.common.Forms;
 import net.samtrion.dotcraft.resources.common.MaterialTags;
 import net.samtrion.dotcraft.resources.common.Materials;
 
 /**
- * The recipes of the batteries: the first two shapeless from a potato, redstone grains and copper and zinc nuggets, tiers 2-5 shaped from
+ * The recipes of the batteries, the solar cell and the panels: the first two shapeless from a potato, redstone grains and copper and zinc nuggets, tiers 2-5 shaped from
  * two batteries of the tier below, redstone grains and ingots; the ingredients are tags.
  */
 public final class EnergyRecipeProvider extends RecipeProvider.Runner {
@@ -71,6 +72,57 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
             tier("battery_tier_3", EnergyItems.BATTERY_TIER_3.get(), EnergyItems.BATTERY_TIER_2.get(), "nickel", "zinc");
             tier("battery_tier_4", EnergyItems.BATTERY_TIER_4.get(), EnergyItems.BATTERY_TIER_3.get(), "silver", "zinc");
             tier("battery_tier_5", EnergyItems.BATTERY_TIER_5.get(), EnergyItems.BATTERY_TIER_4.get(), "iridium", "platinum");
+            photovoltaicCell();
+            Item[] batteries = {EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), EnergyItems.BATTERY_TIER_2.get(), EnergyItems.BATTERY_TIER_3.get(),
+                    EnergyItems.BATTERY_TIER_4.get(), EnergyItems.BATTERY_TIER_5.get()};
+            panels(EnergyBlocks.SOLAR, batteries, Tags.Items.GLASS_PANES, "aluminum", "bronze", "steel", "electrum", "osmium");
+            panels(EnergyBlocks.LUNAR, batteries, Tags.Items.GEMS_LAPIS, "lead", "brass", "invar", "silver", "platinum");
+        }
+
+        /** Two photovoltaic cells: two quartz, a glass pane and redstone grains; unlocked by the quartz. */
+        private void photovoltaicCell() {
+            var cell = EnergyItems.PHOTOVOLTAIC_CELL.get();
+            var recipe = shapeless(RecipeCategory.MISC, cell, 2).requires(Tags.Items.GEMS_QUARTZ).requires(Tags.Items.GEMS_QUARTZ)
+                    .requires(Tags.Items.GLASS_PANES).requires(tag("redstone", "grains"));
+            recipe.unlockedBy(hasName(Tags.Items.GEMS_QUARTZ), has(Tags.Items.GEMS_QUARTZ)).save(output,
+                    ResourceKey.<Recipe<?>>create(Registries.RECIPE, Identifier.fromNamespaceAndPath(EnergyMod.MODID, "items/photovoltaic_cell")));
+        }
+
+        /**
+         * The five tiers of a panel family, shaped: solar cell, the family's accent (glass pane / lapis) and solar cell on top, the
+         * tier's battery between two plates of the tier's metal, and below another plate, the panel of the tier below (tier 1: redstone
+         * grains) and a plate. Unlocked by the battery; dropped when a used item is switched off in the startup config.
+         */
+        private void panels(EnergyBlocks.Family family, Item[] batteries, TagKey<Item> accent, String... metals) {
+            Item previous = null;
+            for (int tier = 1; tier <= metals.length; tier++) {
+                var block = family.block(tier);
+                if (block == null) {
+                    previous = null;
+                    continue;
+                }
+                var item = block.get().asItem();
+                var battery = batteries[tier - 1];
+                var builder = shaped(RecipeCategory.MISC, item)
+                        .define('C', EnergyItems.PHOTOVOLTAIC_CELL.get())
+                        .define('A', accent)
+                        .define('P', tag(metals[tier - 1], "plate"))
+                        .define('B', battery)
+                        .pattern("CAC").pattern("PBP");
+                if (previous == null) builder.define('X', tag("redstone", "grains"));
+                else builder.define('X', previous);
+                builder.pattern("PXP");
+                var conditions = previous == null
+                        ? new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery)}
+                        : new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery), registered(previous)};
+                builder.unlockedBy(getHasName(battery), has(battery)).save(output.withConditions(conditions),
+                        ResourceKey.<Recipe<?>>create(Registries.RECIPE, Identifier.fromNamespaceAndPath(EnergyMod.MODID, "items/" + block.getId().getPath())));
+                previous = item;
+            }
+        }
+
+        private static RegisteredCondition<Item> registered(Item item) {
+            return new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item)));
         }
 
         /** A rechargeable battery as a recipe result: always uncharged (0 FE), a stack without the component would be full. */
