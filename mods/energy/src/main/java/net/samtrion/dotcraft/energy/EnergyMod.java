@@ -9,12 +9,13 @@ import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
+import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.resources.CraftResources;
 
 /**
  * Entry point of the {@code .Craft: Energy} mod.
  * <p>
- * Registers the potato batteries, the solar and lunar panels and the flow, vibration and thermoelectric generators.
+ * Registers the potato batteries, the solar and lunar panels and the flow, vibration, thermoelectric and melt generators.
  */
 @Mod(EnergyMod.MODID)
 public class EnergyMod {
@@ -37,5 +38,6 @@ public class EnergyMod {
         FlowBlocks.register(modEventBus);
         VibrationBlocks.register(modEventBus);
         ThermoBlocks.register(modEventBus);
+        MeltBlocks.register(modEventBus);
     }
 }

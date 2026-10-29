@@ -11,6 +11,7 @@ import net.samtrion.dotcraft.energy.vibration.VibrationBlockItem;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlockItem;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
+import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The German translations. Every key added here needs the same key in {@link EnglishUSLanguageProvider}. */
@@ -42,7 +43,10 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(VibrationBlockItem.HEARING_KEY, "Hört Erschütterungen im Umkreis von %1$s Blöcken, ab Vibrationsfrequenz %2$s");
         add(VibrationBlockItem.BOSS_KEY, "Bosskämpfe zählen x%s");
         add(VibrationBlockItem.PIERCE_KEY, "Hört durch Wolle");
+        add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.TANK_KEY, "Das Wasser landet in einem Tank mit %s Eimern, der sich nur entleeren lässt");
+        add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.FULL_KEY, "Ein voller Tank lässt %s%% der FE pro Eis übrig, bis Wasser entnommen wird");
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
+        MeltBlocks.blocks().forEach(b -> add(b.get(), "Schmelzgenerator (Stufe " + b.get().tier() + ")"));
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(FlowGeneratorItem.FORMULA_KEY, "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)");
         add(FlowGeneratorItem.AXIS_KEY, "Vorder- und Rückseite müssen für das Wasser frei bleiben (ein fester Block dort: 0 FE); gibt FE an die anderen Seiten");
