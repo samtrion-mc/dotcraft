@@ -78,10 +78,10 @@ public final class EnergyCommonConfig {
     public static final List<String> KITE_NAMES = tierNames("kite_generator");
     /**
      * The kite wind generators. The configured {@code base} FE/t is only the base of the tier: the output is the base times the length
-     * factor of the tether (tether / 32 at the most: 1 / 2 / 4 / 8 / 16 for tier 1-5), so the buffer and the push rate default to the
+     * factor of the tether (tether / 16 at the most: 1 / 1.5 / 2 / 3 / 4 for tier 1-5), so the buffer and the push rate default to the
      * real best case, base x factor.
      */
-    public static final List<Generator> KITE_GENERATORS = kiteGenerators(new int[] {15, 75, 560, 5_600, 56_000}, new int[] {1, 2, 4, 8, 16});
+    public static final List<Generator> KITE_GENERATORS = kiteGenerators(new int[] {15, 75, 560, 5_600, 56_000}, new double[] {1, 1.5, 2, 3, 4});
     /** The default FE one lightning bolt on a kite gives (named constant, see {@link #kiteLightningEnergy()}). */
     public static final int KITE_LIGHTNING_ENERGY_DEFAULT = 1_000_000;
     private static final ModConfigSpec.IntValue KITE_LIGHTNING_ENERGY = BUILDER
@@ -98,7 +98,7 @@ public final class EnergyCommonConfig {
         return List.of(prefix + "_tier_1", prefix + "_tier_2", prefix + "_tier_3", prefix + "_tier_4", prefix + "_tier_5");
     }
 
-    private static List<Generator> kiteGenerators(int[] bases, int[] factors) {
+    private static List<Generator> kiteGenerators(int[] bases, double[] factors) {
         var list = new java.util.ArrayList<Generator>();
         for (int i = 0; i < KITE_NAMES.size(); i++) list.add(new Generator(KITE_NAMES.get(i), bases[i], factors[i], "base"));
         return List.copyOf(list);
@@ -211,14 +211,14 @@ public final class EnergyCommonConfig {
          * @param factor      the best-case multiple of that value; the buffer and the push rate default to it
          * @param key         the config key of the value, {@code peak} or {@code base}
          */
-        private Generator(String name, int defaultPeak, int factor, String key) {
+        private Generator(String name, int defaultPeak, double factor, String key) {
             this.defaultPeak = defaultPeak;
-            defaultCapacity = defaultPeak * factor * BUFFER_TICKS;
-            defaultMaxOutput = defaultPeak * factor * OUTPUT_FACTOR;
+            defaultCapacity = (int) Math.round(defaultPeak * factor * BUFFER_TICKS);
+            defaultMaxOutput = (int) Math.round(defaultPeak * factor * OUTPUT_FACTOR);
             BUILDER.push("generators").push(name);
             peak = BUILDER.comment((factor == 1 ? "Peak" : "Base") + " FE per tick of the " + name
                     + (factor == 1 ? " under ideal conditions." : "; the real output is this base times the length factor of the tether."))
-                    .defineInRange(key, defaultPeak, 0, Integer.MAX_VALUE / (BUFFER_TICKS * factor));
+                    .defineInRange(key, defaultPeak, 0, (int) (Integer.MAX_VALUE / (BUFFER_TICKS * factor)));
             capacity = BUILDER.comment("How much FE the " + name + " buffers.")
                     .defineInRange("capacity", defaultCapacity, 1, Integer.MAX_VALUE);
             maxOutput = BUILDER.comment("Most FE the " + name + " gives to a neighbour per tick.")

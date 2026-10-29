@@ -35,7 +35,7 @@ public class KiteEntity extends Entity {
     /** Ticks between two checks that the block still has this kite. */
     private static final int CHECK_TICKS = 20;
     /** Distance in blocks from which the kite and its tether are drawn. */
-    private static final double RENDER_DISTANCE = 256;
+    private static final double RENDER_DISTANCE = 128;
 
     /** The altitude above the top of the block; the server's truth (not synchronized, the position carries it to the client). */
     private double altitude;

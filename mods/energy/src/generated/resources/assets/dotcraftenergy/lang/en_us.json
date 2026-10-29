@@ -71,7 +71,7 @@
   "tooltip.dotcraftenergy.kite.perk.3": "Rain-proof sail; ignores obstructions: blocks above and a crowded sky cost nothing.",
   "tooltip.dotcraftenergy.kite.perk.4": "Storm line: flies in a thunderstorm at half output; a crowded sky costs half as much. Two kites share the base. Lightning on the kite: 1,000,000 FE, rarely.",
   "tooltip.dotcraftenergy.kite.perk.5": "Insulated tether: ignores thunder and a crowded sky. Two kites share the base. Lightning on the kite: 1,000,000 FE, rarely.",
-  "tooltip.dotcraftenergy.kite.tether": "Tether: %s m (the longer, the more FE: output = base x tether / 32)",
+  "tooltip.dotcraftenergy.kite.tether": "Tether: %s m (the longer, the more FE: output = base x tether / 16)",
   "tooltip.dotcraftenergy.melt.tank": "Water goes into a tank of %s buckets that can only be drained",
   "tooltip.dotcraftenergy.melt.tank_full": "A full tank leaves %s%% of the FE per ice until water is drained",
   "tooltip.dotcraftenergy.thermo": "Peak %1$s FE/t at a temperature difference of %2$s",

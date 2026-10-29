@@ -202,20 +202,20 @@ public final class KiteGameTests {
     }
 
     /**
-     * The kite is not bound to the build height: a tier 5 kite that is put above the top of the world lives, keeps ticking, climbs on
+     * The kite is not bound to the build height: a tier 5 kite on a block just below the top of the world, put above it, lives, keeps ticking, climbs on
      * and the block makes FE from that altitude.
      *
      * @param helper the game test helper
      */
     private static void aboveBuildHeight(GameTestHelper helper) {
         var level = helper.getLevel();
-        var pos = new BlockPos(1, 1, 1);
+        var pos = new BlockPos(1, level.getMaxY() - 10 - helper.absolutePos(BlockPos.ZERO).getY(), 1);
         helper.setBlock(pos, KiteBlocks.block(5).get());
         helper.useBlock(pos, player(helper, true));
         var be = entity(helper, pos);
         var kite = be.kite();
         helper.assertTrue(kite != null, "no kite");
-        double needed = level.getMaxY() + 50 - helper.absolutePos(pos).getY();
+        double needed = level.getMaxY() + 30 - helper.absolutePos(pos).getY();
         helper.assertTrue(needed > 0 && needed < KiteMath.tether(5), "the tether does not reach above the build height: " + needed);
         kite.setAltitude(needed);
         helper.assertTrue(kite.getY() > level.getMaxY(), "the kite is not above the build height");
@@ -223,7 +223,7 @@ public final class KiteGameTests {
         helper.succeedWhen(() -> {
             helper.assertTrue(!kite.isRemoved() && level.getEntity(kite.getUUID()) == kite, "the kite above the build height was removed");
             helper.assertTrue(kite.tickCount > age + 40, "the kite above the build height does not tick");
-            helper.assertTrue(kite.getY() > level.getMaxY() + 50, "the kite does not climb on above the build height: " + kite.getY());
+            helper.assertTrue(kite.getY() > level.getMaxY() + 30, "the kite does not climb on above the build height: " + kite.getY());
             double expectedMin = EnergyCommonConfig.KITE_GENERATORS.get(4).peak() * KiteMath.lengthFactor(5, needed) * 0.4;
             helper.assertTrue(be.output() > expectedMin, "output " + be.output() + " below " + expectedMin);
         });

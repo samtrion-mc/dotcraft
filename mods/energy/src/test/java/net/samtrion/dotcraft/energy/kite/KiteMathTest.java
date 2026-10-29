@@ -14,24 +14,24 @@ class KiteMathTest {
             EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY.capacity(), EnergyCommonConfig.BATTERY_TIER_2.capacity(),
             EnergyCommonConfig.BATTERY_TIER_3.capacity(), EnergyCommonConfig.BATTERY_TIER_4.capacity(), EnergyCommonConfig.BATTERY_TIER_5.capacity()};
 
-    /** The tether doubles per tier and is larger than the build height at tier 5, so the kite is not bound to it. */
+    /** The tether ladder is 16 / 24 / 32 / 48 / 64 and ends at 64 blocks. */
     @Test
     void tetherGrowsPerTier() {
-        for (int tier = 2; tier <= KiteMath.MAX_TIER; tier++) assertEquals(2 * KiteMath.tether(tier - 1), KiteMath.tether(tier));
-        assertEquals(32, KiteMath.tether(1));
-        assertTrue(KiteMath.tether(5) > 384, "tier 5 must reach beyond the world height from any block");
+        int[] ladder = {16, 24, 32, 48, 64};
+        for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) assertEquals(ladder[tier - 1], KiteMath.tether(tier));
+        assertEquals(64, KiteMath.tether(5), "the longest tether is 64 blocks");
     }
 
     /** The length factor is length / reference, 1 at the reference length (tether of tier 1), not capped at 1, capped by the tether. */
     @Test
     void lengthFactorIsLengthOverReference() {
-        assertEquals(32, KiteMath.REFERENCE_LENGTH);
-        assertEquals(1, KiteMath.lengthFactor(1, 32), 1e-9);
-        assertEquals(0.5, KiteMath.lengthFactor(1, 16), 1e-9);
-        assertEquals(1, KiteMath.lengthFactor(5, 32), 1e-9);
+        assertEquals(16, KiteMath.REFERENCE_LENGTH);
+        assertEquals(1, KiteMath.lengthFactor(1, 16), 1e-9);
+        assertEquals(0.5, KiteMath.lengthFactor(1, 8), 1e-9);
+        assertEquals(1, KiteMath.lengthFactor(5, 16), 1e-9);
         assertEquals(0, KiteMath.lengthFactor(5, -4));
-        double[] best = {1, 2, 4, 8, 16};
-        double[] maxFe = {15, 150, 2_240, 44_800, 896_000};
+        double[] best = {1, 1.5, 2, 3, 4};
+        double[] maxFe = {15, 112.5, 1_120, 16_800, 224_000};
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
             assertEquals(best[tier - 1], KiteMath.lengthFactor(tier, 10_000), 1e-9, "tier " + tier);
             assertEquals(maxFe[tier - 1], KiteMath.peak(EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak(), tier), 1e-9, "tier " + tier);
@@ -56,13 +56,13 @@ class KiteMathTest {
     @Test
     void outputGrowsWithAltitudeUpToTheTether() {
         double last = -1;
-        for (int altitude = 0; altitude <= 512; altitude += 16) {
+        for (int altitude = 0; altitude <= 64; altitude += 4) {
             double now = KiteMath.output(100, 5, altitude, 1, Weather.CLEAR, true, 1);
             assertTrue(now > last, "altitude " + altitude);
             last = now;
         }
-        assertEquals(KiteMath.output(100, 5, 512, 1, Weather.CLEAR, true, 1), KiteMath.output(100, 5, 5000, 1, Weather.CLEAR, true, 1));
-        assertEquals(100 * 16, KiteMath.output(100, 5, 512, 1, Weather.CLEAR, true, 1), 1e-9);
+        assertEquals(KiteMath.output(100, 5, 64, 1, Weather.CLEAR, true, 1), KiteMath.output(100, 5, 5000, 1, Weather.CLEAR, true, 1));
+        assertEquals(100 * 4, KiteMath.output(100, 5, 64, 1, Weather.CLEAR, true, 1), 1e-9);
         assertEquals(0, KiteMath.output(100, 5, 0, 1, Weather.CLEAR, true, 1));
         assertEquals(0, KiteMath.output(100, 5, -3, 1, Weather.CLEAR, true, 1));
     }
@@ -70,7 +70,7 @@ class KiteMathTest {
     /** Without a sky nothing is made. */
     @Test
     void noSkyNoOutput() {
-        assertEquals(0, KiteMath.output(100, 5, 512, 1, Weather.CLEAR, false, 1));
+        assertEquals(0, KiteMath.output(100, 5, 64, 1, Weather.CLEAR, false, 1));
     }
 
     /** The weather perks: rain hurts less per tier, thunder tears the tether up to tier 3, tier 4 flies at half, tier 5 at full output. */
@@ -88,8 +88,8 @@ class KiteMathTest {
     /** The kite climbs to the last free block before an obstacle, nothing in the way gives the whole tether. */
     @Test
     void reachStopsBeforeTheObstacle() {
-        assertEquals(32, KiteMath.reach(1, h -> false));
-        assertEquals(512, KiteMath.reach(5, h -> false));
+        assertEquals(16, KiteMath.reach(1, h -> false));
+        assertEquals(64, KiteMath.reach(5, h -> false));
         assertEquals(0, KiteMath.reach(2, h -> true));
         assertEquals(3, KiteMath.reach(2, h -> h >= 4));
         assertEquals(20, KiteMath.reach(4, h -> h >= 21));
@@ -139,7 +139,7 @@ class KiteMathTest {
     /** No block of the way is skipped: a plate of one block is found at any height. */
     @Test
     void reachSeesAThinPlateAtAnyHeight() {
-        for (int plate = 1; plate <= 32; plate++) {
+        for (int plate = 1; plate <= 16; plate++) {
             int at = plate;
             assertEquals(plate - 1, KiteMath.reach(1, h -> h == at), "plate at " + plate);
         }
@@ -193,12 +193,12 @@ class KiteMathTest {
     /** The limit names the first reason: no sky, a storm, an obstacle, weather, a crowded sky. */
     @Test
     void limitNamesTheFirstReason() {
-        assertEquals(KiteMath.Limit.NO_SKY, KiteMath.limit(1, false, Weather.CLEAR, 32, 1));
-        assertEquals(KiteMath.Limit.STORM, KiteMath.limit(1, true, Weather.THUNDER, 32, 1));
+        assertEquals(KiteMath.Limit.NO_SKY, KiteMath.limit(1, false, Weather.CLEAR, 16, 1));
+        assertEquals(KiteMath.Limit.STORM, KiteMath.limit(1, true, Weather.THUNDER, 16, 1));
         assertEquals(KiteMath.Limit.BLOCKED, KiteMath.limit(1, true, Weather.CLEAR, 10, 1));
-        assertEquals(KiteMath.Limit.WEATHER, KiteMath.limit(1, true, Weather.RAIN, 32, 1));
-        assertEquals(KiteMath.Limit.CROWDED, KiteMath.limit(1, true, Weather.CLEAR, 32, 0.5));
-        assertEquals(KiteMath.Limit.NONE, KiteMath.limit(5, true, Weather.THUNDER, 512, 0.1));
+        assertEquals(KiteMath.Limit.WEATHER, KiteMath.limit(1, true, Weather.RAIN, 16, 1));
+        assertEquals(KiteMath.Limit.CROWDED, KiteMath.limit(1, true, Weather.CLEAR, 16, 0.5));
+        assertEquals(KiteMath.Limit.NONE, KiteMath.limit(5, true, Weather.THUNDER, 64, 0.1));
     }
 
     /** The comparator signal is 0 for no output and 1..15 up to the peak. */
@@ -221,7 +221,7 @@ class KiteMathTest {
 
     /**
      * Economy anchor on the real model (tether out, free sky, the real gust and weather mix): the bases follow the battery ladder and
-     * the tether is the yield factor (1 / 2 / 4 / 8 / 16). Per unit of length factor the yield is held between 2 and 15 batteries per
+     * the tether is the yield factor (1 / 1.5 / 2 / 3 / 4). Per unit of length factor the yield is held between 2 and 15 batteries per
      * day, the range of the panels, so a tier with a factor f yields between 2 f and 15 f batteries (about 10 f).
      */
     @Test
@@ -273,9 +273,9 @@ class KiteMathTest {
     void bufferAndPushRateFollowThePeak() {
         for (var config : EnergyCommonConfig.KITE_GENERATORS) {
             int tier = EnergyCommonConfig.KITE_GENERATORS.indexOf(config) + 1;
-            int best = (int) KiteMath.peak(config.peak(), tier);
-            assertEquals(best * 600, config.capacity());
-            assertEquals(best * 5, config.maxOutput());
+            double best = KiteMath.peak(config.peak(), tier);
+            assertEquals(Math.round(best * 600), config.capacity());
+            assertEquals(Math.round(best * 5), config.maxOutput());
         }
     }
 }

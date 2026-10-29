@@ -25,7 +25,7 @@ public final class KiteLanguage {
         lang.add("message." + KiteBlocks.MODID + ".kite.limit.blocked", "blocked by something above");
         lang.add("message." + KiteBlocks.MODID + ".kite.limit.weather", "weather costs output");
         lang.add("message." + KiteBlocks.MODID + ".kite.limit.crowded", "crowded sky costs output");
-        lang.add("tooltip." + KiteBlocks.MODID + ".kite.tether", "Tether: %s m (the longer, the more FE: output = base x tether / 32)");
+        lang.add("tooltip." + KiteBlocks.MODID + ".kite.tether", "Tether: %s m (the longer, the more FE: output = base x tether / 16)");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.1", "Plain kite: needs a free 3x3 way up, rain halves the output, a storm reels it in.");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.2", "Waxed line: rain costs only a quarter.");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.3", "Rain-proof sail; ignores obstructions: blocks above and a crowded sky cost nothing.");
@@ -50,7 +50,7 @@ public final class KiteLanguage {
         lang.add("message." + KiteBlocks.MODID + ".kite.limit.blocked", "oben blockiert");
         lang.add("message." + KiteBlocks.MODID + ".kite.limit.weather", "Wetter kostet Leistung");
         lang.add("message." + KiteBlocks.MODID + ".kite.limit.crowded", "zugebauter Himmel kostet Leistung");
-        lang.add("tooltip." + KiteBlocks.MODID + ".kite.tether", "Leine: %s m (je länger, desto mehr FE: Ertrag = Basis x Leine / 32)");
+        lang.add("tooltip." + KiteBlocks.MODID + ".kite.tether", "Leine: %s m (je länger, desto mehr FE: Ertrag = Basis x Leine / 16)");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.1", "Einfacher Lenkdrachen: braucht einen freien 3x3-Weg nach oben, Regen halbiert die Leistung, ein Sturm holt ihn ein.");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.2", "Gewachste Leine: Regen kostet nur ein Viertel.");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.3", "Regenfestes Segel; ignoriert Hindernisse: Blöcke darüber und ein zugebauter Himmel kosten nichts.");

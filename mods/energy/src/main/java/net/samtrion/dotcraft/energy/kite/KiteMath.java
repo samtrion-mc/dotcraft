@@ -5,7 +5,7 @@ import java.util.function.IntPredicate;
 /**
  * The math of the kite wind generator, free of Minecraft types so a unit test can run it.
  * <p>
- * <b>Altitude.</b> The kite flies straight up from the block on a tether of {@link #tether(int)} blocks (32 / 64 / 128 / 256 / 512 for
+ * <b>Altitude.</b> The kite flies straight up from the block on a tether of {@link #tether(int)} blocks (16 / 24 / 32 / 48 / 64 for
  * tier 1-5). The altitude is measured above the top of the block and is <i>not</i> clamped to the build height: a kite on a tower or on a
  * mountain flies on above the top of the world. Every block of the way is checked (see {@link #reach(int, IntPredicate)}), so no roof,
  * however thin, is flown through.
@@ -13,9 +13,9 @@ import java.util.function.IntPredicate;
  * <b>Output</b> = base x lengthFactor x openness x weather x wind. The tier of the block fixes only the <i>base</i> (15 / 75 / 560 /
  * 5600 / 56000 FE/t, see the common config); the length of the tether is the yield factor: {@link #lengthFactor(int, double)} =
  * effective length / {@link #REFERENCE_LENGTH}, where the effective length is what the kite actually reaches (its altitude, at most
- * the tether of the tier). The factor may exceed 1: the tether of tier 1 (32 blocks) is the reference and gives exactly 1, a longer
- * tether gives more. The best case, {@link #peak(double, int)} = base x tether / reference, is therefore 15 / 150 / 2240 / 44800 /
- * 896000 FE/t for tier 1-5 (tether 32 / 64 / 128 / 256 / 512), reached with the tether fully out, a free sky, clear weather and a
+ * the tether of the tier). The factor may exceed 1: the tether of tier 1 (16 blocks) is the reference and gives exactly 1, a longer
+ * tether gives more. The best case, {@link #peak(double, int)} = base x tether / reference, is therefore 15 / 112.5 / 1120 / 16800 /
+ * 224000 FE/t for tier 1-5 (tether 16 / 24 / 32 / 48 / 64), reached with the tether fully out, a free sky, clear weather and a
  * gust at its best; {@code openness} is the free share of the air around the kite and {@link #wind(long)} is the gust: the wind is
  * never steady and swings between {@link #WIND_MIN} and 1 with a mean of {@link #WIND_MEAN}, so even a kite in the open makes only
  * about 60 % of that peak over a day.
@@ -38,13 +38,13 @@ import java.util.function.IntPredicate;
  * never reaches the peak and both together at full tether, clear weather and a free sky make exactly the peak, never more.
  * A thunderstorm never attracts lightning to a kite (no lightning is ever spawned): a kite that has to give way is simply reeled in.
  * <p>
- * <b>Economy.</b> The bases follow the battery ladder 15 / 75 / 560 / 5600 / 56000 FE/t and the tether doubles per tier, so the peak
- * grows by the ladder times the length factor (1 / 2 / 4 / 8 / 16). A kite is up around the clock and on open ground it climbs to the
+ * <b>Economy.</b> The bases follow the battery ladder 15 / 75 / 560 / 5600 / 56000 FE/t and the tether grows from 16 to 64 blocks, so the
+ * peak grows by the ladder times the length factor (1 / 1.5 / 2 / 3 / 4). A kite is up around the clock and on open ground it climbs to the
  * full tether, so the daily yield is anchored on the real model: the tether fully out, a free sky, the real gust curve and a weather
  * mix of {@link #TYPICAL_CLEAR} / {@link #TYPICAL_RAIN} / {@link #TYPICAL_THUNDER} (see {@link #typicalDailyYield(double, int)}).
  * Per unit of length factor that is about 9 to 11 times the battery of every tier per MC day (a tenth of a day per battery); with
- * the factor it is about 10 / 20 / 40 / 80 / 160 batteries per day for tier 1-5, so a long tether is deliberately a strong generator
- * (tier 5 peaks at 896000 FE/t and fills its 75 000 000 FE battery in about 84 ticks at the very best).
+ * the factor it is about 10 / 15 / 20 / 30 / 40 batteries per day for tier 1-5, so a long tether is deliberately a strong generator
+ * (tier 5 peaks at 224000 FE/t and fills its 75 000 000 FE battery in about 335 ticks at the very best).
  */
 final class KiteMath {
     /** The highest tier. */
@@ -55,7 +55,7 @@ final class KiteMath {
      * The reference tether length in blocks: a kite that reaches this far has a {@link #lengthFactor length factor} of exactly 1. It is
      * the tether of tier 1, so the weakest kite at its full length makes its base output and every longer tether gives more.
      */
-    static final int REFERENCE_LENGTH = 32;
+    static final int REFERENCE_LENGTH = 16;
     /** The weakest gust: the wind never drops below this share of the peak. */
     static final double WIND_MIN = 0.2;
     /** The mean of {@link #wind(long)} over time. */
@@ -75,7 +75,7 @@ final class KiteMath {
     /** The period in ticks of the quick gusts on top of the swell. */
     private static final long GUST_TICKS = 611;
 
-    private static final int[] TETHER = {32, 64, 128, 256, 512};
+    private static final int[] TETHER = {16, 24, 32, 48, 64};
     /** The most kites a block flies (tier 4 and 5). */
     static final int MAX_KITES = 2;
     /** The share of the peak that the kite of a slot makes; diminishing (the second one sits in the wind shadow) and adds up to 1. */
@@ -224,7 +224,7 @@ final class KiteMath {
      *
      * @param tier     the tier, 1..5
      * @param altitude the altitude of the kite above the block in blocks, not limited by the build height
-     * @return 0 for no length, 1 at the reference length, {@code tether / reference} at the most (1 / 2 / 4 / 8 / 16)
+     * @return 0 for no length, 1 at the reference length, {@code tether / reference} at the most (1 / 1.5 / 2 / 3 / 4)
      */
     static double lengthFactor(int tier, double altitude) {
         return Math.clamp(altitude, 0, tether(tier)) / REFERENCE_LENGTH;
