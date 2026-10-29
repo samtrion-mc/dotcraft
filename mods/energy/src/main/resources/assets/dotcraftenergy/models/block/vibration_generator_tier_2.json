@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "dotcraftenergy:block/vibration_generator_tier_2_top",
+    "side": "dotcraftenergy:block/vibration_generator_tier_2_side",
+    "bottom": "dotcraftenergy:block/vibration_generator_bottom"
+  }
+}

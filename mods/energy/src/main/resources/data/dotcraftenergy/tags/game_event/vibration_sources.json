@@ -1,0 +1,13 @@
+{
+  "values": [
+    "minecraft:block_destroy",
+    "minecraft:block_place",
+    "minecraft:entity_damage",
+    "minecraft:entity_die",
+    "minecraft:explode",
+    "minecraft:hit_ground",
+    "minecraft:lightning_strike",
+    "minecraft:projectile_land",
+    "minecraft:step"
+  ]
+}

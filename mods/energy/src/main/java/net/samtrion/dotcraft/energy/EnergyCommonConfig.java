@@ -43,6 +43,15 @@ public final class EnergyCommonConfig {
     /** The lunar panels: the peak FE/t at full moon in a clear night. */
     public static final List<Generator> LUNAR_PANELS = generators(LUNAR_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
 
+    /** The registry paths of the vibration generators, tiers 1-5, which are also their config sections. */
+    static final List<String> VIBRATION_NAMES = tierNames("vibration_generator");
+
+    /**
+     * The vibration generators: the hard ceiling in FE/t, which a token bucket enforces no matter how many game events there are (see
+     * {@code VibrationBucket}); a generator next to a busy player makes about a quarter of it.
+     */
+    public static final List<Generator> VIBRATION_GENERATORS = generators(VIBRATION_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
 

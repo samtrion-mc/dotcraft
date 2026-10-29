@@ -24,6 +24,7 @@ import net.neoforged.neoforge.common.conditions.RegisteredCondition;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.resources.common.Forms;
 import net.samtrion.dotcraft.resources.common.MaterialTags;
 import net.samtrion.dotcraft.resources.common.Materials;
@@ -77,6 +78,7 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
                     EnergyItems.BATTERY_TIER_4.get(), EnergyItems.BATTERY_TIER_5.get()};
             panels(EnergyBlocks.SOLAR, batteries, Tags.Items.GLASS_PANES, "aluminum", "bronze", "steel", "electrum", "osmium");
             panels(EnergyBlocks.LUNAR, batteries, Tags.Items.GEMS_LAPIS, "lead", "brass", "invar", "silver", "platinum");
+            vibrationGenerators(batteries, "iron", "copper", "nickel", "gold", "iridium");
         }
 
         /** Two photovoltaic cells: two quartz, a glass pane and redstone grains; unlocked by the quartz. */
@@ -112,6 +114,38 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
                 if (previous == null) builder.define('X', tag("redstone", "grains"));
                 else builder.define('X', previous);
                 builder.pattern("PXP");
+                var conditions = previous == null
+                        ? new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery)}
+                        : new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery), registered(previous)};
+                builder.unlockedBy(getHasName(battery), has(battery)).save(output.withConditions(conditions),
+                        ResourceKey.<Recipe<?>>create(Registries.RECIPE, Identifier.fromNamespaceAndPath(EnergyMod.MODID, "items/" + block.getId().getPath())));
+                previous = item;
+            }
+        }
+
+        /**
+         * The five tiers of the vibration generator, shaped: plates of the tier's metal around a quartz (the piezo crystal) on top,
+         * gears left and right of the centre, which is the generator of the tier below (tier 1: redstone grains), and the tier's
+         * battery below between two plates. Unlocked by the battery; dropped when a used item is switched off in the startup config.
+         */
+        private void vibrationGenerators(Item[] batteries, String... metals) {
+            Item previous = null;
+            for (int tier = 1; tier <= metals.length; tier++) {
+                var block = VibrationBlocks.block(tier);
+                if (block == null) {
+                    previous = null;
+                    continue;
+                }
+                var item = block.get().asItem();
+                var battery = batteries[tier - 1];
+                var builder = shaped(RecipeCategory.MISC, item)
+                        .define('P', tag(metals[tier - 1], "plate"))
+                        .define('Q', Tags.Items.GEMS_QUARTZ)
+                        .define('G', tag(metals[tier - 1], "gear"))
+                        .define('B', battery)
+                        .pattern("PQP").pattern("GXG").pattern("PBP");
+                if (previous == null) builder.define('X', tag("redstone", "grains"));
+                else builder.define('X', previous);
                 var conditions = previous == null
                         ? new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery)}
                         : new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery), registered(previous)};
