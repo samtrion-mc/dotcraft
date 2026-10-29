@@ -12,8 +12,8 @@
   "conversions": [
     {
       "kind": "shaped",
-      "ratio": 3,
-      "pattern": ["I", "I", "H"],
+      "ratio": 1,
+      "pattern": ["H", "I", "I"],
       "key": { "I": "ingot", "H": "@hammer" }
     }
   ]

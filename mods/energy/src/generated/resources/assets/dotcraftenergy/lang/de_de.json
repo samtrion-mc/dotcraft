@@ -87,10 +87,10 @@
   "tooltip.dotcraftenergy.vibration.peak": "Spitze %1$s FE/t, im Schnitt höchstens %2$s FE/t",
   "tooltip.dotcraftenergy.vibration.pierce": "Hört durch Wolle",
   "tooltip.dotcraftenergy.wheel.perk.1": "Basisrad.",
-  "tooltip.dotcraftenergy.wheel.perk.2": "Größerer Käfig: mehr Mobs.",
-  "tooltip.dotcraftenergy.wheel.perk.3": "Kleine Tiere zählen voll.",
-  "tooltip.dotcraftenergy.wheel.perk.4": "Getriebe: weitere Mobs behalten ihr Gewicht.",
-  "tooltip.dotcraftenergy.wheel.perk.5": "Schwungrad: dreht nach dem Stillstand der Mobs noch einige Sekunden weiter.",
-  "tooltip.dotcraftenergy.wheel.rules": "Tiere, die oben auf dem Rad stehen und laufen, treiben es an (Tiere in der Nähe nicht), Stehen zählt halb: keine Babys, keine verletzten Tiere, keine Tiere im Wasser, ein Rad pro Tier. Ein Komparator liest die Last.",
-  "tooltip.dotcraftenergy.wheel.stats": "Bis zu %1$s FE/t, bis zu %2$s Mobs auf dem Rad"
+  "tooltip.dotcraftenergy.wheel.perk.2": "Höhere Spitze und größerer Puffer.",
+  "tooltip.dotcraftenergy.wheel.perk.3": "Kleine Mobs zählen voll.",
+  "tooltip.dotcraftenergy.wheel.perk.4": "Höhere Spitze und größerer Puffer.",
+  "tooltip.dotcraftenergy.wheel.perk.5": "Schwungrad: dreht nach dem Stillstand des Mobs noch einige Sekunden weiter.",
+  "tooltip.dotcraftenergy.wheel.rules": "Fängt das erste Mob, das oben darauf steht (immer nur eins, jedes Mob, auch feindliche), und hält es dort fest: es kann nicht weg, aber verletzt und getötet werden, und es despawnt nie. Mobs in der Nähe zählen nicht. Gesundheit und Tempo bestimmen das Gewicht, ein Mob, das laufen will, zählt voll, ein stehendes halb. Keine Babys, keine Mobs im Wasser, ein Rad pro Mob. Ein Komparator liest die Last.",
+  "tooltip.dotcraftenergy.wheel.stats": "Bis zu %s FE/t durch ein Mob auf dem Rad"
 }

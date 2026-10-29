@@ -37,7 +37,7 @@ import net.samtrion.dotcraft.energy.generator.GeneratorEnergy;
  * {@link GameEventListener} of its block, see {@link Listener}), turns the ones of the {@link VibrationTags#SOURCES} tag it can hear
  * into FE (see {@link VibrationMath}) and pushes the FE into the neighbours on every side. The hard cap is the {@link VibrationBucket}: no
  * event, however many, makes more than the duty of the tier ({@link VibrationMath#duty}) of the peak per tick on average. Events caused by
- * a boss ({@link VibrationTags#BOSSES}) are worth {@link VibrationMath#BOSS_FACTOR} times as much; what the bucket cannot pay for them comes
+ * a boss (config list {@code vibration.bosses}) are worth {@link VibrationMath#BOSS_FACTOR} times as much; what the bucket cannot pay for them comes
  * from a second, bonus bucket, so a boss fight may exceed the duty cap but both buckets together never pass the peak per tick on average.
  * <p>
  * Which events count, as the sculk sensor sees it: spectators are not heard, nor are entities that dampen vibrations (wearing wool),
@@ -154,7 +154,7 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
         int frequency = VibrationSystem.getGameEventFrequency(event);
         if (!VibrationMath.hears(tier, frequency)) return 0;
         var entity = context.sourceEntity();
-        boolean boss = entity != null && entity.typeHolder().is(VibrationTags.BOSSES);
+        boolean boss = entity != null && EnergyCommonConfig.VIBRATION_BOSSES.filter().matches(entity.getType());
         if (entity != null && (entity.isSpectator() || entity.dampensVibrations() && !boss
                 || entity.isSteppingCarefully() && event.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING))) return 0;
         var affected = context.affectedState();

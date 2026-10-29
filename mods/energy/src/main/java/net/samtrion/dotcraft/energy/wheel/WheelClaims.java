@@ -29,6 +29,19 @@ final class WheelClaims<E, W> {
     }
 
     /**
+     * Whether a wheel could claim a mob, without claiming it.
+     *
+     * @param mob   the mob
+     * @param wheel the wheel that wants it
+     * @param now   the game time
+     * @return {@code true} if the mob is free, claimed by this wheel or the claim has lapsed
+     */
+    boolean free(E mob, W wheel, long now) {
+        var held = claims.get(mob);
+        return held == null || held.wheel().equals(wheel) || now - held.time() > LAPSE_TICKS;
+    }
+
+    /**
      * Claims a mob for a wheel.
      *
      * @param mob   the mob

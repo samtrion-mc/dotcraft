@@ -30,12 +30,11 @@
     "I": "#c:ingots/tin"
   },
   "pattern": [
+    "H",
     "I",
-    "I",
-    "H"
+    "I"
   ],
   "result": {
-    "count": 3,
     "id": "dotcraftresources:tin_rod"
   }
 }

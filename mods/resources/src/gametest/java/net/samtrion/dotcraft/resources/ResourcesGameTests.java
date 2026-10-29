@@ -250,8 +250,8 @@ public final class ResourcesGameTests {
     }
 
     /**
-     * Crafts the rod and the wire of iron through the recipe manager: two ingots over the iron hammer make 3 rods, and hammer,
-     * sandpaper and one rod make 2 wires; the hammer and the sandpaper are left damaged.
+     * Crafts the rod and the wire of iron through the recipe manager: the iron hammer over two ingots makes 1 rod, and hammer,
+     * sandpaper and one rod make 1 wire; the hammer and the sandpaper are left damaged.
      *
      * @param helper   the game test helper
      * @param material iron
@@ -264,17 +264,17 @@ public final class ResourcesGameTests {
         var ingot = new ItemStack(Items.IRON_INGOT);
         hammer = hammer.copy();
         hammer.setDamageValue(0); // the caller's hammer is worn down
-        var column = net.minecraft.world.item.crafting.CraftingInput.of(1, 3, java.util.List.of(ingot, ingot.copy(), hammer.copy()));
+        var column = net.minecraft.world.item.crafting.CraftingInput.of(1, 3, java.util.List.of(hammer.copy(), ingot, ingot.copy()));
         var rodRecipe = recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, column, helper.getLevel());
-        helper.assertTrue(rodRecipe.isPresent(), "two iron ingots over the iron hammer craft nothing");
+        helper.assertTrue(rodRecipe.isPresent(), "the iron hammer over two iron ingots crafts nothing");
         var rods = rodRecipe.get().value().assemble(column);
-        helper.assertTrue(rods.is(rod) && rods.getCount() == 3, "the rod recipe makes " + rods);
+        helper.assertTrue(rods.is(rod) && rods.getCount() == 1, "the rod recipe makes " + rods);
         var sandpaper = new ItemStack(ResourceItems.item(material, Forms.get("sandpaper")).get());
         var row = net.minecraft.world.item.crafting.CraftingInput.of(3, 1, java.util.List.of(hammer.copy(), sandpaper, new ItemStack(rod)));
         var wireRecipe = recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, row, helper.getLevel());
         helper.assertTrue(wireRecipe.isPresent(), "hammer, sandpaper and an iron rod craft nothing");
         var wires = wireRecipe.get().value().assemble(row);
-        helper.assertTrue(wires.is(wire) && wires.getCount() == 2, "the wire recipe makes " + wires);
+        helper.assertTrue(wires.is(wire) && wires.getCount() == 1, "the wire recipe makes " + wires);
         var left = net.minecraft.world.item.crafting.CraftingRecipe.defaultCraftingReminder(row);
         helper.assertTrue(left.get(0).is(hammer.getItem()) && left.get(0).getDamageValue() == 1
                 && left.get(1).is(sandpaper.getItem()) && left.get(1).getDamageValue() == 1 && left.get(2).isEmpty(),

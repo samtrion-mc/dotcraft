@@ -214,6 +214,13 @@ public final class VibrationGameTests {
         helper.setBlock(rel, VibrationBlocks.block(1).get());
         long viaZombie = emit(helper, gen, destroy, gen.east(2), GameEvent.Context.of(zombie));
         helper.assertTrue(viaZombie == VibrationMath.eventEnergy(EnergyCommonConfig.VIBRATION_GENERATORS.get(0).peak(), 12), "a normal entity got a bonus");
+        // the config lists resolve against the real registries and tags: ids and #tags
+        var skeletonTag = net.samtrion.dotcraft.energy.EntityFilter.parse(java.util.List.of("#minecraft:skeletons"));
+        helper.assertTrue(skeletonTag.matches(EntityType.SKELETON) && !skeletonTag.matches(EntityType.ZOMBIE), "a tag entry does not resolve");
+        var ids = net.samtrion.dotcraft.energy.EntityFilter.parse(java.util.List.of("minecraft:zombie"));
+        helper.assertTrue(ids.matches(EntityType.ZOMBIE) && !ids.matches(EntityType.WITHER), "an id entry does not resolve");
+        helper.assertTrue(EnergyCommonConfig.VIBRATION_BOSSES.filter().matches(EntityType.WARDEN) && !EnergyCommonConfig.VIBRATION_BOSSES.filter().matches(EntityType.ZOMBIE),
+                "the default boss list is wrong");
         helper.succeed();
     }
 

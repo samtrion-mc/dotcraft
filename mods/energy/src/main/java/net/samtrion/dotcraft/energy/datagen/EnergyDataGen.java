@@ -17,7 +17,6 @@ import net.samtrion.dotcraft.energy.thermo.datagen.ThermoLootPlugin;
 import net.samtrion.dotcraft.energy.thermo.datagen.ThermoRecipeProvider;
 import net.samtrion.dotcraft.energy.thermo.datagen.ThermoTagsProvider;
 import net.samtrion.dotcraft.energy.melt.datagen.MeltLootPlugin;
-import net.samtrion.dotcraft.energy.wheel.datagen.WheelEntityTagsProvider;
 import net.samtrion.dotcraft.energy.wheel.datagen.WheelLootPlugin;
 import net.samtrion.dotcraft.energy.wheel.datagen.WheelRecipeProvider;
 import net.samtrion.dotcraft.resources.datagen.ResourceBlockLootSubProvider;
@@ -60,6 +59,5 @@ public final class EnergyDataGen {
         event.createProvider(ThermoRecipeProvider::new);
         event.createProvider(ThermoTagsProvider::new);
         event.createProvider(WheelRecipeProvider::new);
-        event.createProvider(WheelEntityTagsProvider::new);
     }
 }

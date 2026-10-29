@@ -88,6 +88,11 @@ public final class EnergyCommonConfig {
             .comment("FE a kite wind generator gets from one lightning bolt (only tiers that stay up in a thunderstorm are struck).")
             .defineInRange("kite_lightning_energy", KITE_LIGHTNING_ENERGY_DEFAULT, 0, Integer.MAX_VALUE);
 
+    /** The bosses of the vibration generators: entity types whose game events are worth {@code VibrationMath.BOSS_FACTOR} times as much, key {@code vibration.bosses}. */
+    public static final MobList VIBRATION_BOSSES = new MobList("vibration", "bosses",
+            List.of("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden", "minecraft:elder_guardian"),
+            "Entity types (ids or #tags) whose vibrations are worth much more to a vibration generator; the event must be caused by the entity itself.");
+
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
 
@@ -117,6 +122,38 @@ public final class EnergyCommonConfig {
         var list = new java.util.ArrayList<Generator>();
         for (int i = 0; i < names.size(); i++) list.add(new Generator(names.get(i), peaks[i]));
         return List.copyOf(list);
+    }
+
+    /**
+     * A config list of entity types (see {@link EntityFilter}); it is parsed when first asked for after the registries are ready and again whenever
+     * the config value changes (a reload); the tags inside are read from the data packs at every match. While the config is not loaded the defaults count.
+     */
+    public static final class MobList {
+        private final ModConfigSpec.ConfigValue<List<? extends String>> value;
+        private final List<String> defaults;
+        private volatile @Nullable Cached cached;
+
+        /** A parsed state of the list. */
+        private record Cached(List<? extends String> source, EntityFilter filter) {}
+
+        private MobList(String section, String key, List<String> defaults, String comment) {
+            this.defaults = defaults;
+            BUILDER.push(section);
+            value = BUILDER.comment(comment).defineListAllowEmpty(key, defaults, () -> "minecraft:pig", EntityFilter::isValid);
+            BUILDER.pop();
+        }
+
+        /**
+         * The parsed list.
+         *
+         * @return the filter of the current config value
+         */
+        public EntityFilter filter() {
+            List<? extends String> now = SPEC.isLoaded() ? value.get() : defaults;
+            var c = cached;
+            if (c == null || !c.source().equals(now)) cached = c = new Cached(List.copyOf(now), EntityFilter.parse(now));
+            return c.filter();
+        }
     }
 
     /** The FE values of one battery; while the config is not loaded (e.g. in datagen and unit tests) the defaults count. */
