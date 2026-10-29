@@ -24,6 +24,16 @@ public interface RecipeBuilders {
     ShapedRecipeBuilder shaped(RecipeCategory category, ItemLike result);
 
     /**
+     * Starts a shaped recipe that crafts several items.
+     *
+     * @param category the recipe book category
+     * @param result   the crafted item
+     * @param count    how many of the item are crafted
+     * @return the builder
+     */
+    ShapedRecipeBuilder shaped(RecipeCategory category, ItemLike result, int count);
+
+    /**
      * Starts a shapeless recipe.
      *
      * @param category the recipe book category

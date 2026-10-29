@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "rod",
+      "material": "gold",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "wood"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#c:tools/hammer",
+    "I": "#c:ingots/gold"
+  },
+  "pattern": [
+    "I",
+    "I",
+    "H"
+  ],
+  "result": {
+    "count": 3,
+    "id": "dotcraftresources:gold_rod"
+  }
+}
