@@ -54,18 +54,17 @@ public final class KiteGameTests {
 
     /** The body of a test. */
     private static Consumer<GameTestHelper> body(String name) {
-        var test = rawBody(name);
+        var test = TestSupport.ticking(rawBody(name));
         return helper -> {
-            forceChunks(helper);
+            clear(helper);
             test.accept(helper);
         };
     }
 
     /**
-     * Clears the space the test uses and forces the chunks (see {@link TestSupport#forceChunks}), because the tests sit at random far-away positions where the chunks do not tick on their own
-     * (a kite and a block entity would not tick and the tests would be flaky). The game test world is thrown away afterwards, so nothing is released.
+     * Clears the space the test uses, because the batches of the tests start at the same places and leave things behind.
      */
-    private static void forceChunks(GameTestHelper helper) {
+    private static void clear(GameTestHelper helper) {
         var origin = helper.absolutePos(BlockPos.ZERO);
         // the batches of the tests start at the same places one after the other, so leftovers (water, stone) of an earlier test would
         // be in the way of this one: clear the space the kite tests use
@@ -74,7 +73,6 @@ public final class KiteGameTests {
                 for (int z = -3; z <= 6; z++) helper.getLevel().setBlock(origin.offset(x, y, z), Blocks.AIR.defaultBlockState(), 2);
             }
         }
-        TestSupport.forceChunks(helper);
     }
 
     /** The body of a test without the chunk forcing. */
