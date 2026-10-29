@@ -29,6 +29,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(EnergyItems.PHOTOVOLTAIC_CELL.get(), "Photovoltaic Cell");
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solar Panel (Tier " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Lunar Panel (Tier " + b.get().tier() + ")"));
+        net.samtrion.dotcraft.energy.thermo.ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelectric Generator (Tier " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");

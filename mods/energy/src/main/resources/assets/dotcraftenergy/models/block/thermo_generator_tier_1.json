@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "dotcraftenergy:block/thermo_generator_tier_1_top",
+    "bottom": "dotcraftenergy:block/thermo_generator_tier_1_top",
+    "side": "dotcraftenergy:block/thermo_generator_tier_1_side"
+  }
+}

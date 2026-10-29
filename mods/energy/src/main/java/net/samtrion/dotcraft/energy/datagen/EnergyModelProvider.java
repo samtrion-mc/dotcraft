@@ -65,6 +65,7 @@ public final class EnergyModelProvider extends ModelProvider {
             blocks.blockStateOutput.accept(generator);
             blocks.itemModelOutput.accept(block.asItem(), ItemModelUtils.plainModel(model(name)));
         });
+        net.samtrion.dotcraft.energy.thermo.datagen.ThermoModels.register(blocks);
     }
 
     private static Identifier blockModel(String name) {
