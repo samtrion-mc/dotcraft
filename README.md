@@ -26,13 +26,18 @@ The shared material base of the .Craft mods. Other mods build on it instead of e
 
 Adds an energy system to the game: power is produced, stored and consumed. Depends on Resources for its materials.
 
-- **Generators:** blocks that produce energy.
+- **Batteries:** potato batteries and tiers 2-5 (items); they charge held items from the inventory.
+- **Generators:** blocks that produce energy, five tiers each, that push FE into the neighbours on every side but the top (they cannot be charged). A panel is a flat plate of an eighth of a block (hitbox too), no mob can spawn on it, and it makes nothing while a player, mob or animal stands on it. A panel can be waterlogged, but then it makes only 20 % of its output. Every tier has an own perk besides more FE/t. The peak starts at 15 FE/t (tier 1) and follows the battery ladder, so a panel fills the battery of its tier in well under one MC day; the buffer holds 600 ticks of peak. Every panel is switched on and off in the startup config and tuned in the common config (`generators.<name>.peak/capacity/maxOutput`).
+  - **Solar panel:** follows the height of the sun (a smooth curve from sunrise over noon to sunset), so nothing under cover, at night or in a dimension without a sky. Rain cuts it (the weather perk grows per tier, tier 5 is immune), a thunderstorm halves what rain leaves, tiers 3-5 track the sun (wider plateau). It makes nothing at night. Biome tags `solar_boost`/`solar_malus` (x1.15 / x0.85) change it.
+  - **Groups:** solar panels (any tier) that touch each other sideways in one plane share one pool of FE, up to 256 blocks (16x16): the capacity is the sum of the buffers, production that does not fit into a panel's own buffer goes to the others, and what a neighbour takes comes out of the whole pool, limited by the config of the panel it is taken from. A removed panel hands its FE on to the groups its neighbours fall into; what does not fit is lost. The top of a group is one surface, only the outer edge keeps its border.
+  - **Power drain:** creative-only test block that takes any FE offered to it and pulls FE out of every neighbour (within that neighbour's limit), and destroys it.
+  - **Photovoltaic cell:** the item the solar panels are made of: two quartz, a glass pane and redstone grains give two cells.
 - **Storage:** blocks that buffer energy, so production and consumption do not have to run at the same time.
 - **Machines:** energy-consuming machines that process materials from Resources.
 
 ### Status
 
-Resources: compressed blocks are implemented, the rest is planned. Energy is a scaffold without content. JEI, Jade and REI support lives in standalone compat mods (see below).
+Resources: compressed blocks are implemented, the rest is planned. Energy has batteries and solar panels; more generators are planned. JEI, Jade and REI support lives in standalone compat mods (see below).
 
 ## Commands
 

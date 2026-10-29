@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "dotcraftenergy:block/solar_panel_tier_5_top"
+  }
+}

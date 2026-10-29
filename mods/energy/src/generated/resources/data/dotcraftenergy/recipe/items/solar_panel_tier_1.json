@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:solar_panel_tier_1"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:rechargeable_potato_battery"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:glass_panes",
+    "B": "dotcraftenergy:rechargeable_potato_battery",
+    "C": "dotcraftenergy:photovoltaic_cell",
+    "P": "#c:plates/aluminum",
+    "X": "#c:small_dusts/redstone"
+  },
+  "pattern": [
+    "CAC",
+    "PBP",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:solar_panel_tier_1"
+  }
+}

@@ -1,9 +1,17 @@
 {
+  "block.dotcraftenergy.power_drain": "Power Drain",
+  "block.dotcraftenergy.solar_panel_tier_1": "Solar Panel (Tier 1)",
+  "block.dotcraftenergy.solar_panel_tier_2": "Solar Panel (Tier 2)",
+  "block.dotcraftenergy.solar_panel_tier_3": "Solar Panel (Tier 3)",
+  "block.dotcraftenergy.solar_panel_tier_4": "Solar Panel (Tier 4)",
+  "block.dotcraftenergy.solar_panel_tier_5": "Solar Panel (Tier 5)",
   "item.dotcraftenergy.battery_tier_2": "Battery (Tier 2)",
   "item.dotcraftenergy.battery_tier_3": "Battery (Tier 3)",
   "item.dotcraftenergy.battery_tier_4": "Battery (Tier 4)",
   "item.dotcraftenergy.battery_tier_5": "Battery (Tier 5)",
+  "item.dotcraftenergy.photovoltaic_cell": "Photovoltaic Cell",
   "item.dotcraftenergy.potato_battery": "Potato Battery",
   "item.dotcraftenergy.rechargeable_potato_battery": "Rechargeable Potato Battery",
+  "itemGroup.dotcraftenergy.energy": ".Craft: Energy",
   "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
 }

@@ -2,6 +2,8 @@ package net.samtrion.dotcraft.energy;
 
 import java.util.function.Consumer;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -21,6 +23,9 @@ import net.neoforged.fml.ModList;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
+import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
+import net.samtrion.dotcraft.energy.generator.GeneratorBlockEntity;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 
 /**
@@ -39,6 +44,26 @@ public final class EnergyGameTests {
     private static final ResourceKey<Consumer<GameTestHelper>> BATTERIES_FUNCTION =
             ResourceKey.create(Registries.TEST_FUNCTION, BATTERIES);
 
+    private static final Identifier PANELS = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "panels");
+    private static final ResourceKey<Consumer<GameTestHelper>> PANELS_FUNCTION =
+            ResourceKey.create(Registries.TEST_FUNCTION, PANELS);
+
+    private static final Identifier POWER_DRAIN = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "power_drain");
+    private static final ResourceKey<Consumer<GameTestHelper>> POWER_DRAIN_FUNCTION =
+            ResourceKey.create(Registries.TEST_FUNCTION, POWER_DRAIN);
+
+    private static final Identifier GROUP = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "group");
+    private static final ResourceKey<Consumer<GameTestHelper>> GROUP_FUNCTION =
+            ResourceKey.create(Registries.TEST_FUNCTION, GROUP);
+
+    private static final Identifier FLAT = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "flat_panel");
+    private static final ResourceKey<Consumer<GameTestHelper>> FLAT_FUNCTION =
+            ResourceKey.create(Registries.TEST_FUNCTION, FLAT);
+
+    private static final Identifier DAY_NIGHT = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "day_night");
+    private static final ResourceKey<Consumer<GameTestHelper>> DAY_NIGHT_FUNCTION =
+            ResourceKey.create(Registries.TEST_FUNCTION, DAY_NIGHT);
+
     private EnergyGameTests() {}
 
     /**
@@ -49,8 +74,13 @@ public final class EnergyGameTests {
     @SubscribeEvent
     static void registerFunctions(RegisterEvent event) {
         event.register(Registries.TEST_FUNCTION, registry -> {
-            registry.register(MOD_LOADED, (Consumer<GameTestHelper>) EnergyGameTests::modLoaded);
-            registry.register(BATTERIES, (Consumer<GameTestHelper>) EnergyGameTests::batteries);
+            registry.register(MOD_LOADED, TestSupport.ticking(EnergyGameTests::modLoaded));
+            registry.register(BATTERIES, TestSupport.ticking(EnergyGameTests::batteries));
+            registry.register(PANELS, TestSupport.ticking(EnergyGameTests::panels));
+            registry.register(FLAT, TestSupport.ticking(EnergyGameTests::flatPanel));
+            registry.register(DAY_NIGHT, TestSupport.ticking(EnergyGameTests::dayNight));
+            registry.register(GROUP, TestSupport.ticking(EnergyGameTests::group));
+            registry.register(POWER_DRAIN, TestSupport.ticking(EnergyGameTests::powerDrain));
         });
     }
 
@@ -67,6 +97,21 @@ public final class EnergyGameTests {
         var batteriesEnvironment = event.registerEnvironment(BATTERIES, new TestEnvironmentDefinition.AllOf());
         event.registerTest(BATTERIES, new FunctionGameTestInstance(BATTERIES_FUNCTION,
                 new TestData<>(batteriesEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+        var drainEnvironment = event.registerEnvironment(POWER_DRAIN, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(POWER_DRAIN, new FunctionGameTestInstance(POWER_DRAIN_FUNCTION,
+                new TestData<>(drainEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+        var flatEnvironment = event.registerEnvironment(FLAT, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(FLAT, new FunctionGameTestInstance(FLAT_FUNCTION,
+                new TestData<>(flatEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+        var dayNightEnvironment = event.registerEnvironment(DAY_NIGHT, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(DAY_NIGHT, new FunctionGameTestInstance(DAY_NIGHT_FUNCTION,
+                new TestData<>(dayNightEnvironment, Identifier.withDefaultNamespace("empty"), 80, 0, true)));
+        var groupEnvironment = event.registerEnvironment(GROUP, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(GROUP, new FunctionGameTestInstance(GROUP_FUNCTION,
+                new TestData<>(groupEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+        var panelsEnvironment = event.registerEnvironment(PANELS, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(PANELS, new FunctionGameTestInstance(PANELS_FUNCTION,
+                new TestData<>(panelsEnvironment, Identifier.withDefaultNamespace("empty"), 60, 0, true)));
     }
 
     /**
@@ -126,6 +171,168 @@ public final class EnergyGameTests {
         }
         helper.assertTrue(rechargeableAccess.getResource().is(EnergyItems.RECHARGEABLE_POTATO_BATTERY.get()), "rechargeable battery changed");
         helper.assertTrue(multi.getAmountAsInt() == 0, "rechargeable battery not empty");
+        helper.succeed();
+    }
+
+    /**
+     * Every solar panel gets a block entity with an FE capability on every side that cannot be charged from outside but
+     * can be drained; the panels tick for a while without error and never exceed their capacity.
+     *
+     * @param helper the game test helper
+     */
+    private static void panels(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var blocks = EnergyBlocks.blocks().toList();
+        helper.assertTrue(blocks.size() == 5, "expected 5 panels, found " + blocks.size());
+        int x = 0;
+        for (var block : blocks) helper.setBlock(new BlockPos(2 * x++, 1, 0), block.get());
+        helper.runAfterDelay(45, () -> {
+            int i = 0;
+            for (var block : blocks) {
+                var pos = helper.absolutePos(new BlockPos(2 * i++, 1, 0));
+                helper.assertTrue(level.getBlockEntity(pos) instanceof GeneratorBlockEntity, block.getId() + " has no block entity");
+                for (Direction side : Direction.values()) {
+                    EnergyHandler handler = level.getCapability(Capabilities.Energy.BLOCK, pos, side);
+                    helper.assertTrue(handler != null, block.getId() + " has no capability on " + side);
+                    try (var tx = Transaction.openRoot()) {
+                        helper.assertTrue(handler.insert(1000, tx) == 0, block.getId() + " accepted energy");
+                    }
+                    helper.assertTrue(handler.getAmountAsInt() <= handler.getCapacityAsInt(), block.getId() + " over capacity");
+                }
+            }
+            helper.succeed();
+        });
+    }
+
+    /**
+     * A solar panel makes FE at noon and none at midnight, in a clear sky, with the real sun angle of the
+     * overworld clock.
+     *
+     * @param helper the game test helper
+     */
+    private static void dayNight(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var clock = level.dimensionType().defaultClock().orElseThrow();
+        var solar = EnergyBlocks.SOLAR.block(3).get();
+        // the batches of the tests start at the same places one after the other: clear what an earlier test left above the panels
+        for (int x = 0; x <= 6; x++) {
+            for (int y = 1; y <= 8; y++) helper.setBlock(new BlockPos(x, y, 1), net.minecraft.world.level.block.Blocks.AIR);
+        }
+        var solarPos = new BlockPos(1, 1, 1);
+        helper.setBlock(solarPos, solar);
+        var solarAbs = helper.absolutePos(solarPos);
+        level.getServer().clockManager().moveToTimeMarker(clock, net.minecraft.world.clock.ClockTimeMarkers.NOON);
+        helper.runAfterDelay(5, () -> {
+            float angle = level.environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.SUN_ANGLE, solarAbs);
+            double sun = solar.kind().output(level, solarAbs, 3);
+            String at = " at noon: sun angle " + angle + ", solar " + sun + ", sees sky " + level.canSeeSky(solarAbs.above())
+                    + ", sky " + level.dimensionType().hasSkyLight();
+            helper.assertTrue(sun > 0, "wrong output" + at);
+            level.getServer().clockManager().moveToTimeMarker(clock, net.minecraft.world.clock.ClockTimeMarkers.MIDNIGHT);
+            helper.runAfterDelay(5, () -> {
+                float night = level.environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.SUN_ANGLE, solarAbs);
+                double sun2 = solar.kind().output(level, solarAbs, 3);
+                helper.assertTrue(sun2 == 0, "wrong output at midnight: sun angle " + night + ", solar " + sun2 + at);
+                helper.succeed();
+            });
+        });
+    }
+
+    /**
+     * A panel is a flat plate of an eighth of a block, nothing can spawn on it, and a living entity on it shades it.
+     *
+     * @param helper the game test helper
+     */
+    private static void flatPanel(GameTestHelper helper) {
+        var panel = EnergyBlocks.SOLAR.block(1).get();
+        var pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, panel);
+        var absolute = helper.absolutePos(pos);
+        var state = helper.getLevel().getBlockState(absolute);
+        helper.assertTrue(state.getShape(helper.getLevel(), absolute).max(Direction.Axis.Y) == 0.125, "the panel is not an eighth of a block high");
+        helper.assertTrue(state.getCollisionShape(helper.getLevel(), absolute).max(Direction.Axis.Y) == 0.125, "the collision box is not an eighth of a block high");
+        for (var type : new net.minecraft.world.entity.EntityType<?>[] {net.minecraft.world.entity.EntityType.ZOMBIE, net.minecraft.world.entity.EntityType.PIG}) {
+            helper.assertTrue(!state.isValidSpawn(helper.getLevel(), absolute, type), type + " may spawn on a panel");
+        }
+        helper.assertTrue(!state.getValue(GeneratorBlock.WATERLOGGED), "a dry panel is waterlogged");
+        helper.setBlock(new BlockPos(3, 1, 1), net.minecraft.world.level.block.Blocks.WATER);
+        helper.setBlock(new BlockPos(3, 1, 1), panel.defaultBlockState().setValue(GeneratorBlock.WATERLOGGED, true));
+        var wet = helper.getLevel().getBlockState(helper.absolutePos(new BlockPos(3, 1, 1)));
+        helper.assertTrue(wet.getValue(GeneratorBlock.WATERLOGGED) && wet.getFluidState().is(net.minecraft.tags.FluidTags.WATER), "a waterlogged panel holds no water");
+        var be = (GeneratorBlockEntity) helper.getLevel().getBlockEntity(absolute);
+        helper.assertTrue(!be.isOccupied(), "an empty panel is occupied");
+        helper.spawnWithNoFreeWill(net.minecraft.world.entity.EntityType.PIG, 1.5F, 1.125F, 1.5F);
+        helper.runAfterDelay(5, () -> {
+            helper.assertTrue(be.isOccupied(), "a pig on the panel does not shade it");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * Panels in a row (solar tier 1, solar tier 2, solar tier 1) share one pool: its capacity is the sum, the side properties show the
+     * neighbours, an extraction is limited by the tier of the block it is taken from but draws from all of them, and a removed block
+     * hands its FE on.
+     *
+     * @param helper the game test helper
+     */
+    private static void group(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var solar = EnergyBlocks.SOLAR.block(1).get();
+        var tier2 = EnergyBlocks.SOLAR.block(2).get();
+        helper.setBlock(new BlockPos(0, 5, 0), solar);
+        helper.setBlock(new BlockPos(1, 5, 0), tier2);
+        helper.setBlock(new BlockPos(2, 5, 0), solar);
+        var first = helper.absolutePos(new BlockPos(0, 5, 0));
+        var middle = helper.absolutePos(new BlockPos(1, 5, 0));
+        var last = helper.absolutePos(new BlockPos(2, 5, 0));
+        helper.assertTrue(level.getBlockState(middle).getValue(GeneratorBlock.EAST) && level.getBlockState(middle).getValue(GeneratorBlock.WEST),
+                "the middle panel does not show both neighbours");
+        helper.assertTrue(!level.getBlockState(first).getValue(GeneratorBlock.WEST) && level.getBlockState(first).getValue(GeneratorBlock.EAST),
+                "the first panel shows a wrong neighbour");
+
+        var solarConfig = EnergyCommonConfig.SOLAR_PANELS.get(0);
+        var tier2Config = EnergyCommonConfig.SOLAR_PANELS.get(1);
+        EnergyHandler fromFirst = level.getCapability(Capabilities.Energy.BLOCK, first, Direction.WEST);
+        EnergyHandler fromMiddle = level.getCapability(Capabilities.Energy.BLOCK, middle, Direction.DOWN);
+        helper.assertTrue(fromFirst != null && fromMiddle != null, "no capability");
+        long capacity = 2L * solarConfig.capacity() + tier2Config.capacity();
+        helper.assertTrue(fromFirst.getCapacityAsLong() == capacity, "capacity is not the sum: " + fromFirst.getCapacityAsLong());
+        helper.assertTrue(fromMiddle.getCapacityAsLong() == capacity, "capacity differs between members");
+
+        var middleBe = (GeneratorBlockEntity) level.getBlockEntity(middle);
+        var lastBe = (GeneratorBlockEntity) level.getBlockEntity(last);
+        int offered = tier2Config.capacity() / 2;
+        helper.assertTrue(middleBe.fill(offered) == offered, "buffer too small");
+        helper.assertTrue(fromFirst.getAmountAsLong() >= offered, "the first panel does not see the FE of the middle one");
+        try (var tx = Transaction.openRoot()) {
+            helper.assertTrue(fromFirst.extract(Integer.MAX_VALUE, tx) == Math.min(solarConfig.maxOutput(), offered), "extraction not limited by the tier 1 panel");
+            helper.assertTrue(fromMiddle.extract(Integer.MAX_VALUE, tx) == Math.min(tier2Config.maxOutput(), offered), "extraction not limited by the tier 2 panel");
+        }
+        long before = fromFirst.getAmountAsLong() + lastBe.fill(Math.min(1_000, solarConfig.capacity()));
+        helper.setBlock(new BlockPos(2, 5, 0), net.minecraft.world.level.block.Blocks.AIR);
+        helper.assertTrue(!level.getBlockState(middle).getValue(GeneratorBlock.EAST), "the middle panel still shows the removed neighbour");
+        helper.assertTrue(fromFirst.getAmountAsLong() >= before - 1, "the FE of the removed panel was lost: " + fromFirst.getAmountAsLong() + " < " + before);
+        helper.succeed();
+    }
+
+    /**
+     * The power drain accepts every offered FE from every side, even {@link Integer#MAX_VALUE}, and keeps none of it.
+     *
+     * @param helper the game test helper
+     */
+    private static void powerDrain(GameTestHelper helper) {
+        var pos = new BlockPos(0, 1, 0);
+        helper.setBlock(pos, EnergyBlocks.POWER_DRAIN.get());
+        for (Direction side : Direction.values()) {
+            EnergyHandler handler = helper.getLevel().getCapability(Capabilities.Energy.BLOCK, helper.absolutePos(pos), side);
+            helper.assertTrue(handler != null, "no capability on " + side);
+            try (var tx = Transaction.openRoot()) {
+                helper.assertTrue(handler.insert(Integer.MAX_VALUE, tx) == Integer.MAX_VALUE, "drain did not take everything on " + side);
+                helper.assertTrue(handler.extract(1000, tx) == 0, "drain gave energy on " + side);
+                tx.commit();
+            }
+            helper.assertTrue(handler.getAmountAsLong() == 0, "drain kept energy on " + side);
+        }
         helper.succeed();
     }
 

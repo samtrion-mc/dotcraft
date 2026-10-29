@@ -10,7 +10,8 @@ import net.neoforged.neoforge.common.ModConfigSpec;
  * The common config of the energy mod ({@code config/dotcraft/energy/common.toml}): per battery the FE values
  * {@code batteries.<name>.capacity}, {@code maxInput} (not for the single-use battery, which can never be charged) and {@code maxOutput}. They are read whenever they are needed, so a change
  * counts for every battery already in the world; a stack that holds more than the new capacity is capped on its next transfer. The
- * batteries are switched on and off in the {@link EnergyStartupConfig}. Client and server read their own file: for a correct bar and
+ * generators (panels) have {@code generators.<name>.peak}, {@code capacity} and {@code maxOutput}. The
+ * batteries and generators are switched on and off in the {@link EnergyStartupConfig}. Client and server read their own file: for a correct bar and
  * tooltip on a client of a dedicated server keep the values equal.
  */
 public final class EnergyCommonConfig {
@@ -33,11 +34,27 @@ public final class EnergyCommonConfig {
     /** Tier 5: ten times tier 4. */
     public static final Battery BATTERY_TIER_5 = new Battery(NAMES.get(5), 75_000_000, 375_000, 375_000);
 
+    /** The registry paths of the solar panels, tiers 1-5, which are also their config sections. */
+    static final List<String> SOLAR_NAMES = tierNames("solar_panel");
+
+    /** The solar panels: the peak FE/t at noon under a clear sky, at least 15 FE/t; a panel fills the battery of its tier in well under one MC day. */
+    public static final List<Generator> SOLAR_PANELS = generators(SOLAR_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
 
     /** Not instantiable. */
     private EnergyCommonConfig() {}
+
+    private static List<String> tierNames(String prefix) {
+        return List.of(prefix + "_tier_1", prefix + "_tier_2", prefix + "_tier_3", prefix + "_tier_4", prefix + "_tier_5");
+    }
+
+    private static List<Generator> generators(List<String> names, int[] peaks) {
+        var list = new java.util.ArrayList<Generator>();
+        for (int i = 0; i < names.size(); i++) list.add(new Generator(names.get(i), peaks[i]));
+        return List.copyOf(list);
+    }
 
     /** The FE values of one battery; while the config is not loaded (e.g. in datagen and unit tests) the defaults count. */
     public static final class Battery {
@@ -93,6 +110,81 @@ public final class EnergyCommonConfig {
          * The discharge rate.
          *
          * @return the most FE the battery gives per operation
+         */
+        public int maxOutput() {
+            return SPEC.isLoaded() ? maxOutput.get() : defaultMaxOutput;
+        }
+    }
+
+    /** The FE values of one generator; while the config is not loaded (e.g. in datagen and unit tests) the defaults count. */
+    public static final class Generator {
+        /** Ticks of full output the buffer holds. */
+        private static final int BUFFER_TICKS = 600;
+        /** Multiple of the peak that can be given per operation. */
+        private static final int OUTPUT_FACTOR = 5;
+
+        private final ModConfigSpec.IntValue peak;
+        private final ModConfigSpec.IntValue capacity;
+        private final ModConfigSpec.IntValue maxOutput;
+        private final int defaultPeak;
+        private final int defaultCapacity;
+        private final int defaultMaxOutput;
+
+        /**
+         * Defines the entries of a generator.
+         *
+         * @param name        the registry path of the generator, also its config section
+         * @param defaultPeak the default peak output in FE/t
+         */
+        private Generator(String name, int defaultPeak) {
+            this(name, defaultPeak, 1, "peak");
+        }
+
+        /**
+         * Defines the entries of a generator whose real best case is a multiple of its configured value.
+         *
+         * @param name        the registry path of the generator, also its config section
+         * @param defaultPeak the default value in FE/t (the peak, or the base for a generator that multiplies it)
+         * @param factor      the best-case multiple of that value; the buffer and the push rate default to it
+         * @param key         the config key of the value, {@code peak} or {@code base}
+         */
+        private Generator(String name, int defaultPeak, double factor, String key) {
+            this.defaultPeak = defaultPeak;
+            defaultCapacity = (int) Math.round(defaultPeak * factor * BUFFER_TICKS);
+            defaultMaxOutput = (int) Math.round(defaultPeak * factor * OUTPUT_FACTOR);
+            BUILDER.push("generators").push(name);
+            peak = BUILDER.comment((factor == 1 ? "Peak" : "Base") + " FE per tick of the " + name
+                    + (factor == 1 ? " under ideal conditions." : "; the real output is this base times the length factor of the tether."))
+                    .defineInRange(key, defaultPeak, 0, (int) (Integer.MAX_VALUE / (BUFFER_TICKS * factor)));
+            capacity = BUILDER.comment("How much FE the " + name + " buffers.")
+                    .defineInRange("capacity", defaultCapacity, 1, Integer.MAX_VALUE);
+            maxOutput = BUILDER.comment("Most FE the " + name + " gives to a neighbour per tick.")
+                    .defineInRange("maxOutput", defaultMaxOutput, 0, Integer.MAX_VALUE);
+            BUILDER.pop(2);
+        }
+
+        /**
+         * The peak output.
+         *
+         * @return the most FE per tick the generator makes
+         */
+        public int peak() {
+            return SPEC.isLoaded() ? peak.get() : defaultPeak;
+        }
+
+        /**
+         * The buffer size.
+         *
+         * @return the FE the generator buffers
+         */
+        public int capacity() {
+            return SPEC.isLoaded() ? capacity.get() : defaultCapacity;
+        }
+
+        /**
+         * The push rate.
+         *
+         * @return the most FE per tick given to a neighbour
          */
         public int maxOutput() {
             return SPEC.isLoaded() ? maxOutput.get() : defaultMaxOutput;

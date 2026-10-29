@@ -4,13 +4,14 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
+import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.resources.CraftResources;
 
 /**
  * Entry point of the {@code .Craft: Energy} mod.
  * <p>
- * Registers the potato batteries.
+ * Registers the potato batteries and the solar panels.
  */
 @Mod(EnergyMod.MODID)
 public class EnergyMod {
@@ -29,5 +30,6 @@ public class EnergyMod {
         modContainer.registerConfig(ModConfig.Type.STARTUP, EnergyStartupConfig.SPEC, "dotcraft/energy/startup.toml");
         modContainer.registerConfig(ModConfig.Type.COMMON, EnergyCommonConfig.SPEC, "dotcraft/energy/common.toml");
         EnergyItems.register(modEventBus);
+        EnergyBlocks.register(modEventBus);
     }
 }
