@@ -11,6 +11,9 @@ import net.neoforged.neoforge.data.event.GatherDataEvent;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.datagen.language.EnglishUSLanguageProvider;
 import net.samtrion.dotcraft.energy.datagen.language.GermanLanguageProvider;
+import net.samtrion.dotcraft.energy.wheel.datagen.WheelEntityTagsProvider;
+import net.samtrion.dotcraft.energy.wheel.datagen.WheelLootPlugin;
+import net.samtrion.dotcraft.energy.wheel.datagen.WheelRecipeProvider;
 import net.samtrion.dotcraft.resources.datagen.ResourceBlockLootSubProvider;
 
 /**
@@ -44,8 +47,10 @@ public final class EnergyDataGen {
     static void server(GatherDataEvent.Server event) {
         event.createProvider(EnergyRecipeProvider::new);
         event.createProvider((o, l) -> new LootTableProvider(o, Set.of(),
-                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin()),
+                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin(), new WheelLootPlugin()),
                         LootContextParamSets.BLOCK)), l));
         event.createProvider(EnergyBlockTagsProvider::new);
+        event.createProvider(WheelRecipeProvider::new);
+        event.createProvider(WheelEntityTagsProvider::new);
     }
 }

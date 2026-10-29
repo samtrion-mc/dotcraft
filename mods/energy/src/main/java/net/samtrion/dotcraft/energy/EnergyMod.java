@@ -6,12 +6,13 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.wheel.WheelBlocks;
 import net.samtrion.dotcraft.resources.CraftResources;
 
 /**
  * Entry point of the {@code .Craft: Energy} mod.
  * <p>
- * Registers the potato batteries and the solar and lunar panels.
+ * Registers the potato batteries, the solar and lunar panels and the mob wheels.
  */
 @Mod(EnergyMod.MODID)
 public class EnergyMod {
@@ -31,5 +32,6 @@ public class EnergyMod {
         modContainer.registerConfig(ModConfig.Type.COMMON, EnergyCommonConfig.SPEC, "dotcraft/energy/common.toml");
         EnergyItems.register(modEventBus);
         EnergyBlocks.register(modEventBus);
+        WheelBlocks.register(modEventBus);
     }
 }
