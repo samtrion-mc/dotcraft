@@ -1,0 +1,7 @@
+{
+  "parent": "dotcraftenergy:block/kite_generator",
+  "textures": {
+    "base": "dotcraftenergy:block/kite_generator_tier_2",
+    "spool": "dotcraftenergy:block/kite_spool_tier_2"
+  }
+}

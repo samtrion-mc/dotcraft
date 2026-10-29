@@ -1,4 +1,9 @@
 {
+  "block.dotcraftenergy.kite_generator_tier_1": "Drachen-Windgenerator (Stufe 1)",
+  "block.dotcraftenergy.kite_generator_tier_2": "Drachen-Windgenerator (Stufe 2)",
+  "block.dotcraftenergy.kite_generator_tier_3": "Drachen-Windgenerator (Stufe 3)",
+  "block.dotcraftenergy.kite_generator_tier_4": "Drachen-Windgenerator (Stufe 4)",
+  "block.dotcraftenergy.kite_generator_tier_5": "Drachen-Windgenerator (Stufe 5)",
   "block.dotcraftenergy.lunar_panel_tier_1": "Mondpanel (Stufe 1)",
   "block.dotcraftenergy.lunar_panel_tier_2": "Mondpanel (Stufe 2)",
   "block.dotcraftenergy.lunar_panel_tier_3": "Mondpanel (Stufe 3)",
@@ -10,13 +15,17 @@
   "block.dotcraftenergy.solar_panel_tier_3": "Solarpanel (Stufe 3)",
   "block.dotcraftenergy.solar_panel_tier_4": "Solarpanel (Stufe 4)",
   "block.dotcraftenergy.solar_panel_tier_5": "Solarpanel (Stufe 5)",
+  "entity.dotcraftenergy.kite": "Lenkdrachen",
   "item.dotcraftenergy.battery_tier_2": "Batterie (Stufe 2)",
   "item.dotcraftenergy.battery_tier_3": "Batterie (Stufe 3)",
   "item.dotcraftenergy.battery_tier_4": "Batterie (Stufe 4)",
   "item.dotcraftenergy.battery_tier_5": "Batterie (Stufe 5)",
+  "item.dotcraftenergy.kite": "Lenkdrachen",
   "item.dotcraftenergy.photovoltaic_cell": "Photovoltaikzelle",
   "item.dotcraftenergy.potato_battery": "Kartoffelbatterie",
   "item.dotcraftenergy.rechargeable_potato_battery": "Wiederaufladbare Kartoffelbatterie",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energie",
+  "message.dotcraftenergy.kite.none": "Kein Drachen. Benutze einen Lenkdrachen am Generator; schleichend mit leerer Hand nimmst du ihn zurück.",
+  "message.dotcraftenergy.kite.status": "Drachen auf %1$s von %2$s m, %3$s FE/t",
   "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
 }

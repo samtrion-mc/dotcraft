@@ -43,6 +43,7 @@ public final class EnergyModelProvider extends ModelProvider {
         var drainModel = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "block/power_drain");
         blocks.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(EnergyBlocks.POWER_DRAIN.get(), BlockModelGenerators.plainVariant(drainModel)));
         blocks.itemModelOutput.accept(EnergyBlocks.POWER_DRAIN_ITEM.get(), ItemModelUtils.plainModel(drainModel));
+        net.samtrion.dotcraft.energy.kite.datagen.KiteModels.register(blocks);
         EnergyBlocks.blocks().forEach(b -> {
             var name = b.getId().getPath();
             var block = b.get();

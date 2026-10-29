@@ -25,5 +25,6 @@ public final class EnergyBlockTagsProvider extends BlockTagsProvider {
     protected void addTags(HolderLookup.Provider registries) {
         var pickaxe = tag(BlockTags.MINEABLE_WITH_PICKAXE);
         EnergyBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
+        net.samtrion.dotcraft.energy.kite.KiteBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
     }
 }

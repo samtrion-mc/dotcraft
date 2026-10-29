@@ -1,4 +1,9 @@
 {
+  "block.dotcraftenergy.kite_generator_tier_1": "Kite Wind Generator (Tier 1)",
+  "block.dotcraftenergy.kite_generator_tier_2": "Kite Wind Generator (Tier 2)",
+  "block.dotcraftenergy.kite_generator_tier_3": "Kite Wind Generator (Tier 3)",
+  "block.dotcraftenergy.kite_generator_tier_4": "Kite Wind Generator (Tier 4)",
+  "block.dotcraftenergy.kite_generator_tier_5": "Kite Wind Generator (Tier 5)",
   "block.dotcraftenergy.lunar_panel_tier_1": "Lunar Panel (Tier 1)",
   "block.dotcraftenergy.lunar_panel_tier_2": "Lunar Panel (Tier 2)",
   "block.dotcraftenergy.lunar_panel_tier_3": "Lunar Panel (Tier 3)",
@@ -10,13 +15,17 @@
   "block.dotcraftenergy.solar_panel_tier_3": "Solar Panel (Tier 3)",
   "block.dotcraftenergy.solar_panel_tier_4": "Solar Panel (Tier 4)",
   "block.dotcraftenergy.solar_panel_tier_5": "Solar Panel (Tier 5)",
+  "entity.dotcraftenergy.kite": "Kite",
   "item.dotcraftenergy.battery_tier_2": "Battery (Tier 2)",
   "item.dotcraftenergy.battery_tier_3": "Battery (Tier 3)",
   "item.dotcraftenergy.battery_tier_4": "Battery (Tier 4)",
   "item.dotcraftenergy.battery_tier_5": "Battery (Tier 5)",
+  "item.dotcraftenergy.kite": "Kite",
   "item.dotcraftenergy.photovoltaic_cell": "Photovoltaic Cell",
   "item.dotcraftenergy.potato_battery": "Potato Battery",
   "item.dotcraftenergy.rechargeable_potato_battery": "Rechargeable Potato Battery",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energy",
+  "message.dotcraftenergy.kite.none": "No kite. Use a kite on the generator; sneak with an empty hand to take it back.",
+  "message.dotcraftenergy.kite.status": "Kite at %1$s of %2$s m, %3$s FE/t",
   "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
 }

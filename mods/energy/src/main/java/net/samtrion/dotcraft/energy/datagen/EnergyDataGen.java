@@ -43,8 +43,9 @@ public final class EnergyDataGen {
     @SubscribeEvent
     static void server(GatherDataEvent.Server event) {
         event.createProvider(EnergyRecipeProvider::new);
+        event.createProvider(net.samtrion.dotcraft.energy.kite.datagen.KiteRecipeProvider::new);
         event.createProvider((o, l) -> new LootTableProvider(o, Set.of(),
-                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin()),
+                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin(), new net.samtrion.dotcraft.energy.kite.datagen.KiteLootPlugin()),
                         LootContextParamSets.BLOCK)), l));
         event.createProvider(EnergyBlockTagsProvider::new);
     }

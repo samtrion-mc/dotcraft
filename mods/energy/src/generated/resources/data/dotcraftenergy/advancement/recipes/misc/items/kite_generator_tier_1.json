@@ -1,0 +1,46 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:kite_generator_tier_1"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:rechargeable_potato_battery"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:kite"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_rechargeable_potato_battery": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraftenergy:rechargeable_potato_battery"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftenergy:items/kite_generator_tier_1"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_rechargeable_potato_battery"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftenergy:items/kite_generator_tier_1"
+    ]
+  }
+}

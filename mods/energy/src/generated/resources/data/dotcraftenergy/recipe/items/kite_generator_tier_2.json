@@ -1,0 +1,37 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:kite_generator_tier_2"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_2"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:kite_generator_tier_1"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:kite"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:battery_tier_2",
+    "G": "#c:gears/copper",
+    "P": "#c:plates/copper",
+    "S": "#c:strings",
+    "X": "dotcraftenergy:kite_generator_tier_1"
+  },
+  "pattern": [
+    "GSG",
+    "PBP",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:kite_generator_tier_2"
+  }
+}

@@ -30,6 +30,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solar Panel (Tier " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Lunar Panel (Tier " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
+        net.samtrion.dotcraft.energy.kite.datagen.KiteLanguage.english(this);
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
