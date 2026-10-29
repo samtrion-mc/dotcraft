@@ -45,6 +45,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(VibrationBlockItem.HEARING_KEY, "Hört Erschütterungen im Umkreis von %1$s Blöcken, ab Vibrationsfrequenz %2$s");
         add(VibrationBlockItem.PIERCE_KEY, "Hört durch Wolle");
         WheelBlocks.blocks().forEach(b -> add(b.get(), "Mob-Laufrad (Stufe " + b.get().tier() + ")"));
+        net.samtrion.dotcraft.energy.kite.datagen.KiteLanguage.german(this);
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         MeltBlocks.blocks().forEach(b -> add(b.get(), "Schmelzgenerator (Stufe " + b.get().tier() + ")"));
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energie");

@@ -56,6 +56,7 @@ public final class EnergyModelProvider extends ModelProvider {
             blocks.itemModelOutput.accept(b.get().asItem(), ItemModelUtils.plainModel(model));
         });
         MeltModels.register(blocks);
+        net.samtrion.dotcraft.energy.kite.datagen.KiteModels.register(blocks);
         EnergyBlocks.blocks().forEach(b -> {
             var name = b.getId().getPath();
             var block = b.get();

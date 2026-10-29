@@ -74,13 +74,13 @@ public final class EnergyGameTests {
     @SubscribeEvent
     static void registerFunctions(RegisterEvent event) {
         event.register(Registries.TEST_FUNCTION, registry -> {
-            registry.register(MOD_LOADED, (Consumer<GameTestHelper>) EnergyGameTests::modLoaded);
-            registry.register(BATTERIES, (Consumer<GameTestHelper>) EnergyGameTests::batteries);
-            registry.register(PANELS, (Consumer<GameTestHelper>) EnergyGameTests::panels);
-            registry.register(FLAT, (Consumer<GameTestHelper>) EnergyGameTests::flatPanel);
-            registry.register(DAY_NIGHT, (Consumer<GameTestHelper>) EnergyGameTests::dayNight);
-            registry.register(GROUP, (Consumer<GameTestHelper>) EnergyGameTests::group);
-            registry.register(POWER_DRAIN, (Consumer<GameTestHelper>) EnergyGameTests::powerDrain);
+            registry.register(MOD_LOADED, TestSupport.ticking(EnergyGameTests::modLoaded));
+            registry.register(BATTERIES, TestSupport.ticking(EnergyGameTests::batteries));
+            registry.register(PANELS, TestSupport.ticking(EnergyGameTests::panels));
+            registry.register(FLAT, TestSupport.ticking(EnergyGameTests::flatPanel));
+            registry.register(DAY_NIGHT, TestSupport.ticking(EnergyGameTests::dayNight));
+            registry.register(GROUP, TestSupport.ticking(EnergyGameTests::group));
+            registry.register(POWER_DRAIN, TestSupport.ticking(EnergyGameTests::powerDrain));
         });
     }
 
@@ -217,6 +217,10 @@ public final class EnergyGameTests {
         var lunar = EnergyBlocks.LUNAR.block(3).get();
         var solarPos = new BlockPos(1, 1, 1);
         var lunarPos = new BlockPos(5, 1, 1);
+        // the batches of the tests start at the same places one after the other: clear what an earlier test left above the panels
+        for (int x = 0; x <= 6; x++) {
+            for (int y = 1; y <= 8; y++) helper.setBlock(new BlockPos(x, y, 1), net.minecraft.world.level.block.Blocks.AIR);
+        }
         helper.setBlock(solarPos, solar);
         helper.setBlock(lunarPos, lunar);
         var solarAbs = helper.absolutePos(solarPos);

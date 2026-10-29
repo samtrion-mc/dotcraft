@@ -47,6 +47,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         WheelBlocks.blocks().forEach(b -> add(b.get(), "Mob Wheel (Tier " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
         MeltBlocks.blocks().forEach(b -> add(b.get(), "Melt Generator (Tier " + b.get().tier() + ")"));
+        net.samtrion.dotcraft.energy.kite.datagen.KiteLanguage.english(this);
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(CurrentGeneratorItem.FORMULA_KEY, "Needs water: peak x water share x biome x (1 + animals)");
         add(CurrentGeneratorItem.PERK_KEY + 1, "Baseline: needs a nearly full cube of water");

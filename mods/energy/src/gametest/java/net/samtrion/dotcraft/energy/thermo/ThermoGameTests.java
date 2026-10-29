@@ -26,6 +26,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.TestSupport;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 import net.samtrion.dotcraft.energy.generator.GeneratorBlockEntity;
@@ -72,10 +73,10 @@ public final class ThermoGameTests {
     @SubscribeEvent
     static void registerFunctions(RegisterEvent event) {
         event.register(Registries.TEST_FUNCTION, registry -> {
-            registry.register(OUTPUT, (Consumer<GameTestHelper>) ThermoGameTests::output);
-            registry.register(ENERGY, (Consumer<GameTestHelper>) ThermoGameTests::energy);
-            registry.register(NO_POOL, (Consumer<GameTestHelper>) ThermoGameTests::noPool);
-            registry.register(TAGS, (Consumer<GameTestHelper>) ThermoGameTests::tags);
+            registry.register(OUTPUT, TestSupport.ticking(ThermoGameTests::output));
+            registry.register(ENERGY, TestSupport.ticking(ThermoGameTests::energy));
+            registry.register(NO_POOL, TestSupport.ticking(ThermoGameTests::noPool));
+            registry.register(TAGS, TestSupport.ticking(ThermoGameTests::tags));
         });
     }
 

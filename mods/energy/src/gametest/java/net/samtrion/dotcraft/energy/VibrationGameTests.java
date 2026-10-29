@@ -56,9 +56,9 @@ public final class VibrationGameTests {
     @SubscribeEvent
     static void registerFunctions(RegisterEvent event) {
         event.register(Registries.TEST_FUNCTION, registry -> {
-            registry.register(LISTEN, (Consumer<GameTestHelper>) VibrationGameTests::listen);
-            registry.register(BLOCKS, (Consumer<GameTestHelper>) VibrationGameTests::blocks);
-            registry.register(PUSH, (Consumer<GameTestHelper>) VibrationGameTests::push);
+            registry.register(LISTEN, TestSupport.ticking(VibrationGameTests::listen));
+            registry.register(BLOCKS, TestSupport.ticking(VibrationGameTests::blocks));
+            registry.register(PUSH, TestSupport.ticking(VibrationGameTests::push));
         });
     }
 

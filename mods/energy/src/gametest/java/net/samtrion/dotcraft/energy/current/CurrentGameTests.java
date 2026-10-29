@@ -29,6 +29,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.TestSupport;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 
@@ -67,14 +68,14 @@ public final class CurrentGameTests {
     @SubscribeEvent
     static void registerFunctions(RegisterEvent event) {
         event.register(Registries.TEST_FUNCTION, registry -> {
-            registry.register(REGISTRY, (Consumer<GameTestHelper>) CurrentGameTests::registryTest);
-            registry.register(WATER, (Consumer<GameTestHelper>) CurrentGameTests::water);
-            registry.register(FAUNA, (Consumer<GameTestHelper>) CurrentGameTests::fauna);
-            registry.register(AQUARIUM, (Consumer<GameTestHelper>) CurrentGameTests::aquarium);
-            registry.register(BUCKETED, (Consumer<GameTestHelper>) CurrentGameTests::bucketed);
-            registry.register(PUSH, (Consumer<GameTestHelper>) CurrentGameTests::push);
-            registry.register(SEALED, (Consumer<GameTestHelper>) CurrentGameTests::sealed);
-            registry.register(DRAIN, (Consumer<GameTestHelper>) CurrentGameTests::drain);
+            registry.register(REGISTRY, TestSupport.ticking(CurrentGameTests::registryTest));
+            registry.register(WATER, TestSupport.ticking(CurrentGameTests::water));
+            registry.register(FAUNA, TestSupport.ticking(CurrentGameTests::fauna));
+            registry.register(AQUARIUM, TestSupport.ticking(CurrentGameTests::aquarium));
+            registry.register(BUCKETED, TestSupport.ticking(CurrentGameTests::bucketed));
+            registry.register(PUSH, TestSupport.ticking(CurrentGameTests::push));
+            registry.register(SEALED, TestSupport.ticking(CurrentGameTests::sealed));
+            registry.register(DRAIN, TestSupport.ticking(CurrentGameTests::drain));
         });
     }
 

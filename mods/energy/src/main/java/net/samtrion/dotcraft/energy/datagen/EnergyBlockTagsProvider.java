@@ -43,5 +43,6 @@ public final class EnergyBlockTagsProvider extends BlockTagsProvider {
         tag(MeltTags.PACKED_ICE).add(Blocks.PACKED_ICE);
         tag(MeltTags.BLUE_ICE).add(Blocks.BLUE_ICE);
         WheelBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
+        net.samtrion.dotcraft.energy.kite.KiteBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
     }
 }

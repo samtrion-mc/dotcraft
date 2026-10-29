@@ -24,6 +24,7 @@ import net.neoforged.neoforge.registries.RegisterEvent;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.TestSupport;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 
@@ -36,8 +37,8 @@ import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
  */
 @EventBusSubscriber(modid = EnergyMod.MODID)
 public final class WheelGameTests {
-    /** The height of the floor of all tests, relative to the test; the wheels and the mobs stand on y + 1. */
-    private static final int FLOOR = 19;
+    /** The height of the floor of all tests, relative to the test (high above what the other families build, kites fly up the columns below); the wheels and the mobs stand on y + 1. */
+    private static final int FLOOR = 150;
     /** The edge of the area of a test: it must fit into a chunk. */
     private static final int SIZE = 14;
 
@@ -64,10 +65,10 @@ public final class WheelGameTests {
     @SubscribeEvent
     static void registerFunctions(RegisterEvent event) {
         event.register(Registries.TEST_FUNCTION, registry -> {
-            registry.register(RUN, (Consumer<GameTestHelper>) WheelGameTests::run);
-            registry.register(WEIGHTS, (Consumer<GameTestHelper>) WheelGameTests::weights);
-            registry.register(CLAIMS, (Consumer<GameTestHelper>) WheelGameTests::claims);
-            registry.register(ENERGY, (Consumer<GameTestHelper>) WheelGameTests::energy);
+            registry.register(RUN, TestSupport.ticking(WheelGameTests::run));
+            registry.register(WEIGHTS, TestSupport.ticking(WheelGameTests::weights));
+            registry.register(CLAIMS, TestSupport.ticking(WheelGameTests::claims));
+            registry.register(ENERGY, TestSupport.ticking(WheelGameTests::energy));
         });
     }
 

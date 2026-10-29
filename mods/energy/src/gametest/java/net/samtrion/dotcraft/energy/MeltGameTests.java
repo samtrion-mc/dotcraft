@@ -55,6 +55,21 @@ public final class MeltGameTests {
     private MeltGameTests() {}
 
     /**
+     * Wraps a test so that it first clears the space it uses: the batches of the tests start at the same places one after the other, so
+     * the heat, ice and water an earlier test left there would change the result.
+     */
+    private static Consumer<GameTestHelper> clean(Consumer<GameTestHelper> test) {
+        return helper -> {
+            for (int x = 0; x <= 13; x++) {
+                for (int y = Y - 1; y <= Y + 2; y++) {
+                    for (int z = 0; z <= 14; z++) helper.setBlock(new BlockPos(x, y, z), Blocks.AIR);
+                }
+            }
+            test.accept(helper);
+        };
+    }
+
+    /**
      * Registers the test functions.
      *
      * @param event the registry event
@@ -62,10 +77,10 @@ public final class MeltGameTests {
     @SubscribeEvent
     static void registerFunctions(RegisterEvent event) {
         event.register(Registries.TEST_FUNCTION, registry -> {
-            registry.register(MELT, (Consumer<GameTestHelper>) MeltGameTests::melt);
-            registry.register(MELT_TIERS, (Consumer<GameTestHelper>) MeltGameTests::tiers);
-            registry.register(MELT_ALONE, (Consumer<GameTestHelper>) MeltGameTests::alone);
-            registry.register(MELT_LIMITS, (Consumer<GameTestHelper>) MeltGameTests::limits);
+            registry.register(MELT, TestSupport.ticking(clean(MeltGameTests::melt)));
+            registry.register(MELT_TIERS, TestSupport.ticking(clean(MeltGameTests::tiers)));
+            registry.register(MELT_ALONE, TestSupport.ticking(clean(MeltGameTests::alone)));
+            registry.register(MELT_LIMITS, TestSupport.ticking(clean(MeltGameTests::limits)));
         });
     }
 

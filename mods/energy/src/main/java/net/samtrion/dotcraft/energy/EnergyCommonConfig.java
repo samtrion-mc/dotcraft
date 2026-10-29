@@ -74,6 +74,10 @@ public final class EnergyCommonConfig {
     static final List<String> WHEEL_NAMES = tierNames("mob_wheel");
     /** The mob wheels: the peak FE/t with a full cage of running mobs, anchored by a duty cycle of a quarter (see {@code WheelMath}). */
     public static final List<Generator> MOB_WHEELS = generators(WHEEL_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The registry paths of the kite wind generators, tiers 1-5, which are also their config sections. */
+    public static final List<String> KITE_NAMES = tierNames("kite_generator");
+    /** The kite wind generators: the peak FE/t with the tether fully out, a free sky and clear weather. */
+    public static final List<Generator> KITE_GENERATORS = generators(KITE_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
 
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
