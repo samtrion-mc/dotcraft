@@ -3,104 +3,60 @@ package net.samtrion.dotcraft.energy.wheel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.Arrays;
-
 import org.junit.jupiter.api.Test;
 
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 
-/** Unit tests for the weights, caps, diminishing returns and the economy of the mob wheels. */
+/** Unit tests for the weight, the share of the peak and the economy of the mob wheels (one mob per wheel). */
 class WheelMathTest {
-    private static double[] mobs(int count, double weight) {
-        double[] weights = new double[count];
-        Arrays.fill(weights, weight);
-        return weights;
+    /** A horse makes more than a pig and a pig more than a rabbit; a zombie is derived like any other mob. */
+    @Test
+    void weights() {
+        double pig = WheelMath.weight(10, 0.25, 1);
+        double horse = WheelMath.weight(22.5, 0.225, 1);
+        double rabbit = WheelMath.weight(3, 0.3, 1);
+        double chicken = WheelMath.weight(4, 0.25, 1);
+        double zombie = WheelMath.weight(20, 0.23, 1);
+        assertEquals(1.0, pig, 1e-9);
+        assertTrue(horse > 1.4 && horse < 1.6, "horse " + horse);
+        assertTrue(rabbit > 0.5 && rabbit < 0.65, "rabbit " + rabbit);
+        assertTrue(chicken < 0.7 && chicken > rabbit, "chicken " + chicken);
+        assertTrue(zombie > 1.3 && zombie < 1.5, "zombie " + zombie);
+        assertTrue(WheelMath.share(horse, true) > WheelMath.share(pig, true) && WheelMath.share(pig, true) > WheelMath.share(rabbit, true));
+        // light mobs pull a full weight from tier 3 on, the heavy ones are not touched
+        assertEquals(rabbit, WheelMath.weight(3, 0.3, 2), 1e-9);
+        assertEquals(1.0, WheelMath.weight(3, 0.3, 3), 1e-9);
+        assertEquals(horse, WheelMath.weight(22.5, 0.225, 5), 1e-9);
     }
 
-    /** A full cage of normal mobs is the peak, whatever the tier. */
+    /** The weight is clamped (a boss is at most twice a pig, a mouse still counts) and survives degenerate attributes. */
     @Test
-    void bestCaseIsThePeak() {
-        for (int tier = 1; tier <= WheelMath.MAX_TIER; tier++) {
-            assertEquals(1.0, WheelMath.load(mobs(WheelMath.cap(tier), 1), tier), 1e-9, "tier " + tier);
-        }
+    void weightIsClamped() {
+        assertEquals(WheelMath.MAX_WEIGHT, WheelMath.weight(500, 0.3, 1), 1e-9);
+        assertEquals(WheelMath.MIN_WEIGHT, WheelMath.weight(0.5, 0.2, 1), 1e-9);
+        assertEquals(WheelMath.MIN_WEIGHT, WheelMath.weight(0, 0, 1), 1e-9);
+        assertTrue(WheelMath.weight(10, 0, 1) > 0);
+        assertTrue(WheelMath.weight(10, 0.5, 1) > WheelMath.weight(10, 0.1, 1), "faster is heavier");
     }
 
-    /** Mobs beyond the cap add nothing and no crowd goes past the peak. */
+    /** The share of the peak is {@code min(1, weight * activity / FULL_WEIGHT)}: a strong running mob reaches the peak, nothing goes past it. */
     @Test
-    void capBoundsTheOutput() {
-        for (int tier = 1; tier <= WheelMath.MAX_TIER; tier++) {
-            int cap = WheelMath.cap(tier);
-            assertEquals(WheelMath.effective(mobs(cap, 1), tier), WheelMath.effective(mobs(cap + 50, 1), tier), 1e-9, "tier " + tier);
-            assertEquals(1.0, WheelMath.load(mobs(1000, 2), tier), 1e-9);
-        }
+    void shareOfThePeak() {
+        assertEquals(1.0, WheelMath.share(WheelMath.FULL_WEIGHT, true), 1e-9);
+        assertEquals(1.0, WheelMath.share(WheelMath.MAX_WEIGHT, true), 1e-9);
+        assertEquals(1.0 / WheelMath.FULL_WEIGHT, WheelMath.share(1, true), 1e-9);
+        assertEquals(WheelMath.STANDING_FACTOR / WheelMath.FULL_WEIGHT, WheelMath.share(1, false), 1e-9);
+        assertEquals(0, WheelMath.share(-1, true));
+        // a running horse or zombie makes (nearly) the whole peak
+        assertEquals(1.0, WheelMath.share(WheelMath.weight(22.5, 0.225, 1), true), 0.05);
+        assertTrue(WheelMath.share(WheelMath.weight(20, 0.23, 1), true) > 0.9);
     }
 
-    /** Every further mob adds less than the one before, and never less than nothing. */
+    /** A mob that tries to move counts fully, one that merely stands half. */
     @Test
-    void diminishingAndMonotone() {
-        for (int tier = 1; tier <= WheelMath.MAX_TIER; tier++) {
-            double previous = 0;
-            double previousStep = Double.MAX_VALUE;
-            for (int n = 1; n <= WheelMath.cap(tier); n++) {
-                double now = WheelMath.effective(mobs(n, 1), tier);
-                double step = now - previous;
-                assertTrue(step > 0, "adding a mob must help, tier " + tier);
-                assertTrue(step < previousStep + 1e-12, "returns must diminish, tier " + tier);
-                previous = now;
-                previousStep = step;
-            }
-        }
-    }
-
-    /** The order of the weights does not matter: the strongest count first. */
-    @Test
-    void strongestFirst() {
-        assertEquals(WheelMath.effective(new double[] {2, 1, 0.5}, 3), WheelMath.effective(new double[] {0.5, 2, 1}, 3), 1e-9);
-        assertEquals(2 + 0.75, WheelMath.effective(new double[] {1, 2}, 1), 1e-9);
-        // cap of tier 1 is 2: the weakest one is left out
-        assertEquals(2 + 0.75, WheelMath.effective(new double[] {1, 2, 0.5}, 1), 1e-9);
-    }
-
-    /** A horse makes more than a pig, and a small animal less; from tier 3 on small animals pull their full weight. */
-    @Test
-    void strengths() {
-        double pig = WheelMath.load(new double[] {WheelMath.weight(WheelMath.Strength.NORMAL, 1)}, 1);
-        double horse = WheelMath.load(new double[] {WheelMath.weight(WheelMath.Strength.STRONG, 1)}, 1);
-        double rabbit = WheelMath.load(new double[] {WheelMath.weight(WheelMath.Strength.WEAK, 1)}, 1);
-        assertTrue(horse > pig && pig > rabbit);
-        assertEquals(0.5, WheelMath.weight(WheelMath.Strength.WEAK, 2));
-        assertEquals(1.0, WheelMath.weight(WheelMath.Strength.WEAK, 3));
-        assertEquals(0, WheelMath.weight(WheelMath.Strength.NONE, 5));
-    }
-
-    /** The perk ladder: more mobs per tier, softer returns from tier 4 on. */
-    @Test
-    void tiersGrow() {
-        for (int tier = 2; tier <= WheelMath.MAX_TIER; tier++) {
-            assertTrue(WheelMath.cap(tier) > WheelMath.cap(tier - 1));
-            assertTrue(WheelMath.decay(tier) >= WheelMath.decay(tier - 1));
-        }
-        assertTrue(WheelMath.decay(4) > WheelMath.decay(3));
-    }
-
-    /** An animal below half of its health rests, above it the health counts. */
-    @Test
-    void welfare() {
-        assertEquals(1.0, WheelMath.welfare(10, 10));
-        assertEquals(0.75, WheelMath.welfare(7.5, 10));
-        assertEquals(0.5, WheelMath.welfare(5, 10));
-        assertEquals(0.0, WheelMath.welfare(4.9, 10));
-        assertEquals(0.0, WheelMath.welfare(1, 0));
-        assertEquals(1.0, WheelMath.welfare(12, 10));
-    }
-
-    /** A mob that stands or pottered about does not run, one that covered half a block does. */
-    @Test
-    void movement() {
-        assertTrue(!WheelMath.moved(0, 0));
-        assertTrue(!WheelMath.moved(0.3, 0.3));
-        assertTrue(WheelMath.moved(0.5, 0));
-        assertTrue(WheelMath.moved(-0.4, 0.4));
+    void activity() {
+        assertEquals(1.0, WheelMath.activity(true));
+        assertEquals(WheelMath.STANDING_FACTOR, WheelMath.activity(false));
     }
 
     /** Only tier 5 has the flywheel: it halves instead of stopping, and gives up below 1 FE/t. */

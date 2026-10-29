@@ -13,7 +13,7 @@ package net.samtrion.dotcraft.energy.vibration;
  * (see {@link #dailyCeiling}; tier 1 makes 3.6 as its peak of 15 FE/t only allows whole FE per tick). No amount of events, from a player
  * or from a machine that loops an event, makes more than that on average. A light player (an event every 100 ticks) makes a fraction of it.
  * <p>
- * Boss bonus: a game event caused by an entity of the tag {@link VibrationTags#BOSSES} is worth {@link #BOSS_FACTOR} times as much,
+ * Boss bonus: a game event caused by an entity of the config list {@code vibration.bosses} (the ender dragon, wither, warden and elder guardian by default) is worth {@link #BOSS_FACTOR} times as much,
  * whatever the tier. The normal bucket pays what it can; the rest comes from a second bucket, the bonus bucket, that refills with the
  * rest of the peak ({@link #bonusRefill}, so both buckets together refill with exactly the peak) and holds {@link #BOSS_FACTOR} times
  * the burst. A boss fight may so beat the duty ceiling, but never the peak of the tier on average ({@link #absoluteMaxYield}).

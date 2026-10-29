@@ -49,7 +49,7 @@ public class WheelItem extends BlockItem {
     @SuppressWarnings("deprecation") // the vanilla items add their lines here as well
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
         int tier = wheel.tier();
-        builder.accept(Component.translatable(STATS_KEY, EnergyCommonConfig.MOB_WHEELS.get(tier - 1).peak(), WheelMath.cap(tier))
+        builder.accept(Component.translatable(STATS_KEY, EnergyCommonConfig.MOB_WHEELS.get(tier - 1).peak())
                 .withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable(PERK_KEY + tier).withStyle(ChatFormatting.AQUA));
         builder.accept(Component.translatable(RULES_KEY).withStyle(ChatFormatting.DARK_GRAY));

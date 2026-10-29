@@ -62,13 +62,13 @@ public final class GermanLanguageProvider extends LanguageProvider {
         ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelektrischer Generator (Stufe " + b.get().tier() + ")"));
         add(ThermoBlockItem.TOOLTIP_KEY, "Spitze %1$s FE/t bei einem Temperaturunterschied von %2$s");
         add(ThermoBlockItem.HINT_KEY, "Braucht einen heissen und einen kalten Nachbarn auf gegenüberliegenden Seiten (je Stufe 1-3, sie ergeben zusammen den Unterschied)");
-        add(WheelItem.STATS_KEY, "Bis zu %1$s FE/t, bis zu %2$s Mobs auf dem Rad");
+        add(WheelItem.STATS_KEY, "Bis zu %s FE/t durch ein Mob auf dem Rad");
         add(WheelItem.PERK_KEY + 1, "Basisrad.");
-        add(WheelItem.PERK_KEY + 2, "Größerer Käfig: mehr Mobs.");
-        add(WheelItem.PERK_KEY + 3, "Kleine Tiere zählen voll.");
-        add(WheelItem.PERK_KEY + 4, "Getriebe: weitere Mobs behalten ihr Gewicht.");
-        add(WheelItem.PERK_KEY + 5, "Schwungrad: dreht nach dem Stillstand der Mobs noch einige Sekunden weiter.");
-        add(WheelItem.RULES_KEY, "Tiere, die oben auf dem Rad stehen und laufen, treiben es an (Tiere in der Nähe nicht), Stehen zählt halb: keine Babys, keine verletzten Tiere, keine Tiere im Wasser, ein Rad pro Tier. Ein Komparator liest die Last.");
+        add(WheelItem.PERK_KEY + 2, "Höhere Spitze und größerer Puffer.");
+        add(WheelItem.PERK_KEY + 3, "Kleine Mobs zählen voll.");
+        add(WheelItem.PERK_KEY + 4, "Höhere Spitze und größerer Puffer.");
+        add(WheelItem.PERK_KEY + 5, "Schwungrad: dreht nach dem Stillstand des Mobs noch einige Sekunden weiter.");
+        add(WheelItem.RULES_KEY, "Fängt das erste Mob, das oben darauf steht (immer nur eins, jedes Mob, auch feindliche), und hält es dort fest: es kann nicht weg, aber verletzt und getötet werden, und es despawnt nie. Mobs in der Nähe zählen nicht. Gesundheit und Tempo bestimmen das Gewicht, ein Mob, das laufen will, zählt voll, ein stehendes halb. Keine Babys, keine Mobs im Wasser, ein Rad pro Mob. Ein Komparator liest die Last.");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }

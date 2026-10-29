@@ -28,6 +28,18 @@ class WheelClaimsTest {
         assertFalse(claims.claim("pig", "a", 102 + WheelClaims.LAPSE_TICKS), "the new owner holds it now");
     }
 
+    /** Asking whether a mob is free does not claim it. */
+    @Test
+    void freeDoesNotClaim() {
+        var claims = new WheelClaims<String, String>();
+        assertTrue(claims.free("pig", "a", 100));
+        assertTrue(claims.free("pig", "b", 100));
+        assertTrue(claims.claim("pig", "a", 100));
+        assertFalse(claims.free("pig", "b", 101));
+        assertTrue(claims.free("pig", "a", 101));
+        assertTrue(claims.free("pig", "b", 101 + WheelClaims.LAPSE_TICKS));
+    }
+
     /** A released wheel frees its mobs at once. */
     @Test
     void releaseFreesTheMobs() {

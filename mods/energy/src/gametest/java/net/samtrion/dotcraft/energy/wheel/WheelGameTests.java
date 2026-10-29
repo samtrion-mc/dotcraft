@@ -14,6 +14,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.phys.Vec3;
@@ -34,8 +35,8 @@ import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
  * chunk ticks, so every test builds in the chunk of its origin, from the chunk's corner on ({@link Area}), high above the
  * structure: the wheels then never reach the blocks and mobs of the other tests, and the test removes what it built
  * (the other tests look at the sky above them). The mobs have no free will, so a test puts them on the running plate of a wheel
- * ({@link WheelPlate}) and moves them by hand between two calls of {@link WheelBlockEntity#scan} (a scan compares the position
- * with the one before).
+ * ({@link WheelPlate}) by hand, makes them want to walk and calls {@link WheelBlockEntity#scan} itself (a captured mob is pinned, it
+ * never really moves).
  */
 @EventBusSubscriber(modid = EnergyMod.MODID)
 public final class WheelGameTests {
@@ -47,6 +48,8 @@ public final class WheelGameTests {
     private static final Identifier RUN = id("wheel_run");
     private static final Identifier WEIGHTS = id("wheel_weights");
     private static final Identifier CLAIMS = id("wheel_claims");
+    private static final Identifier SLOT = id("wheel_slot");
+    private static final Identifier PIN = id("wheel_pin");
     private static final Identifier ENERGY = id("wheel_energy");
 
     private WheelGameTests() {}
@@ -70,6 +73,8 @@ public final class WheelGameTests {
             registry.register(RUN, TestSupport.ticking(WheelGameTests::run));
             registry.register(WEIGHTS, TestSupport.ticking(WheelGameTests::weights));
             registry.register(CLAIMS, TestSupport.ticking(WheelGameTests::claims));
+            registry.register(SLOT, TestSupport.ticking(WheelGameTests::slot));
+            registry.register(PIN, TestSupport.ticking(WheelGameTests::pin));
             registry.register(ENERGY, TestSupport.ticking(WheelGameTests::energy));
         });
     }
@@ -81,7 +86,7 @@ public final class WheelGameTests {
      */
     @SubscribeEvent
     static void registerTests(RegisterGameTestsEvent event) {
-        for (var id : new Identifier[] {RUN, WEIGHTS, CLAIMS, ENERGY}) {
+        for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY}) {
             var environment = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf());
             event.registerTest(id, new FunctionGameTestInstance(function(id),
                     new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
@@ -95,12 +100,13 @@ public final class WheelGameTests {
      * @param helper the game test helper
      * @param dx     the offset of the area from the origin of the test in x
      * @param dz     the offset in z
+     * @param lift   the height of the lane of the test above the floor level
      */
-    private record Area(GameTestHelper helper, int dx, int dz) {
-        /** Builds the floor and forces the chunk, so that mobs and block entities tick. */
-        static Area create(GameTestHelper helper) {
+    private record Area(GameTestHelper helper, int dx, int dz, int lift) {
+        /** Builds the floor and forces the chunk, so that mobs and block entities tick; every test has its own lane (6 blocks higher), as the tests of a batch run at the same time and their origins may share a chunk. */
+        static Area create(GameTestHelper helper, int lane) {
             var origin = helper.absolutePos(BlockPos.ZERO);
-            var area = new Area(helper, (origin.getX() >> 4 << 4) + 1 - origin.getX(), (origin.getZ() >> 4 << 4) + 1 - origin.getZ());
+            var area = new Area(helper, (origin.getX() >> 4 << 4) + 1 - origin.getX(), (origin.getZ() >> 4 << 4) + 1 - origin.getZ(), 6 * lane);
             var corner = area.absolute(0, 0, 0);
             helper.getLevel().setChunkForced(corner.getX() >> 4, corner.getZ() >> 4, true);
             for (int x = 0; x < SIZE; x++) {
@@ -114,7 +120,7 @@ public final class WheelGameTests {
         }
 
         BlockPos relative(int x, int y, int z) {
-            return new BlockPos(x + dx, y, z + dz);
+            return new BlockPos(x + dx, y + lift, z + dz);
         }
 
         BlockPos absolute(int x, int y, int z) {
@@ -133,17 +139,17 @@ public final class WheelGameTests {
 
         /** Spawns a mob without free will on the floor. */
         <E extends Mob> E spawn(EntityType<E> type, float x, float z) {
-            return helper.spawnWithNoFreeWill(type, x + dx, FLOOR + 1F, z + dz);
+            return helper.spawnWithNoFreeWill(type, x + dx, FLOOR + 1F + lift, z + dz);
         }
 
         /** Puts a mob on the running plate of the wheel in the block that contains (x, z), by hand: it keeps its ground flag until its next tick. */
         void place(Mob mob, double x, double z) {
-            mob.setPos(helper.absoluteVec(new Vec3(x + dx, FLOOR + 1 + WheelPlate.TOP, z + dz)));
+            mob.setPos(helper.absoluteVec(new Vec3(x + dx, FLOOR + 1 + lift + WheelPlate.TOP, z + dz)));
         }
 
         /** Puts a mob on the stone floor, where no plate is. */
         void ground(Mob mob, double x, double z) {
-            mob.setPos(helper.absoluteVec(new Vec3(x + dx, FLOOR + 1, z + dz)));
+            mob.setPos(helper.absoluteVec(new Vec3(x + dx, FLOOR + 1 + lift, z + dz)));
         }
 
         /** Runs a part of a test after a delay; when it fails, the area is cleaned up before the failure is rethrown. */
@@ -172,14 +178,14 @@ public final class WheelGameTests {
                     for (int y = FLOOR; y <= FLOOR + 2; y++) set(x, y, z, Blocks.AIR);
                 }
             }
-            var corner = absolute(0, 0, 0);
-            level().setChunkForced(corner.getX() >> 4, corner.getZ() >> 4, false);
         }
     }
 
     /** Fails unless the mobs have landed: a mob that does not tick (chunk not ticking) never gets its ground flag. */
     private static void settled(GameTestHelper helper, Mob... mobs) {
-        for (var mob : mobs) helper.assertTrue(mob.onGround(), "a " + mob.getType() + " has not landed, ticks: " + mob.tickCount);
+        for (var mob : mobs) {
+            helper.assertTrue(mob.onGround(), "a " + mob.getType() + " has not landed, ticks: " + mob.tickCount + " at " + mob.position() + " delta " + mob.getDeltaMovement() + " below " + mob.level().getBlockState(mob.blockPosition().below()));
+        }
     }
 
     /** Moves a mob sideways by hand, as a scan compares positions: a mob without free will does not move by itself. */
@@ -187,62 +193,64 @@ public final class WheelGameTests {
         mob.setPos(mob.getX() + dx, mob.getY(), mob.getZ());
     }
 
-    /** The left end of the plate in x, as a share of the block: a mob that goes from here to {@link #RIGHT} has run far enough. */
+    /** A spot on the left side of the plate in x, as a share of the block. */
     private static final double LEFT = 0.2;
-    /** The right end of the plate in x, as a share of the block. */
-    private static final double RIGHT = 0.8;
+
+    /** Makes the mob want to walk to a spot a few blocks away, which is what its goals do; it never gets there on a wheel. */
+    private static void wantToWalk(Mob mob) {
+        mob.getMoveControl().setWantedPosition(mob.getX() + 5, mob.getY(), mob.getZ(), 1.0);
+    }
+
+    /** The share of the peak a mob of the type makes at tier 1 when it runs or stands, from the math. */
+    private static double expected(Mob mob, double peak, boolean running) {
+        return peak * WheelMath.share(WheelMath.weight(mob.getMaxHealth(), mob.getAttributeBaseValue(Attributes.MOVEMENT_SPEED), 1), running);
+    }
 
     /**
-     * A wheel makes nothing for a pig that walks beside it or three blocks away, half for a pig that stands on its plate, the
-     * full weight for a pig that ran on it, and nothing again when the pig leaves the plate (tier 2 has no flywheel); the
-     * comparator reads the load.
+     * A wheel makes nothing for a pig that stands beside it or three blocks away, captures a pig on its plate (a standing pig makes
+     * the standing share, a pig that wants to walk the running share of the peak, see {@link WheelMath#share}), makes nothing again
+     * when the pig leaves the plate (tier 2 has no flywheel); the comparator reads the load.
      *
      * @param helper the game test helper
      */
     private static void run(GameTestHelper helper) {
-        var area = Area.create(helper);
+        var area = Area.create(helper, 1);
         var wheel = area.wheel(2, 4, 4);
-        var pig = area.spawn(EntityType.PIG, 1.5F, 4.5F);
         var level = area.level();
+        var pig = area.spawn(EntityType.PIG, 1.5F, 4.5F);
         area.after(20, () -> {
             settled(helper, pig);
-            wheel.scan(level);
-            step(pig, 0.7);
+            double peak = EnergyCommonConfig.MOB_WHEELS.get(1).peak();
             wheel.scan(level);
             helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a pig three blocks away makes FE: " + wheel.output());
             area.ground(pig, 5.5, 4.5);
             wheel.scan(level);
-            step(pig, 0.7);
+            helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a pig beside the wheel makes FE: " + wheel.output());
+            area.place(pig, 4.5, 4.5);
             wheel.scan(level);
-            helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a pig that runs next to the wheel makes FE: " + wheel.output());
-            helper.assertTrue(wheel.signal() == 0, "the comparator reads a wheel nothing stands on");
-            area.place(pig, 4 + LEFT, 4.5);
-            wheel.scan(level);
-            double standing = wheel.output();
-            double peak = EnergyCommonConfig.MOB_WHEELS.get(1).peak();
-            helper.assertTrue(wheel.runners() == 1, "one pig stands on the plate, wheel counts " + wheel.runners());
-            helper.assertTrue(standing > 0 && standing < peak, "a standing pig makes a part of the peak: " + standing);
-            area.place(pig, 4 + RIGHT, 4.5);
-            wheel.scan(level);
-            helper.assertTrue(wheel.runners() == 1 && wheel.output() > standing, "a running pig makes more than a standing one: " + wheel.output() + " <= " + standing);
+            double pigAsTier2 = peak * WheelMath.share(WheelMath.weight(pig.getMaxHealth(), pig.getAttributeBaseValue(Attributes.MOVEMENT_SPEED), 2), false);
+            helper.assertTrue(wheel.runners() == 1 && wheel.heldMob() == pig, "the pig on the plate is not captured");
+            helper.assertTrue(Math.abs(wheel.output() - pigAsTier2) < 1e-9, "a standing pig makes " + wheel.output() + ", not " + pigAsTier2);
             helper.assertTrue(wheel.signal() > 0, "the comparator reads nothing");
-            var pos = area.absolute(4, FLOOR + 1, 4);
-            helper.assertTrue(level.getBlockState(pos).getAnalogOutputSignal(level, pos, Direction.NORTH) == wheel.signal(), "the block does not report the signal");
-            area.ground(pig, 5.5, 4.5);
+            wantToWalk(pig);
             wheel.scan(level);
-            helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a pig that left the plate still makes FE: " + wheel.output());
+            double running = peak * WheelMath.share(WheelMath.weight(pig.getMaxHealth(), pig.getAttributeBaseValue(Attributes.MOVEMENT_SPEED), 2), true);
+            helper.assertTrue(Math.abs(wheel.output() - running) < 1e-9 && running > pigAsTier2, "a pig that wants to walk makes " + wheel.output() + ", not " + running);
+            area.ground(pig, 1.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0 && wheel.heldMob() == null, "a pig that left the plate still makes FE: " + wheel.output());
             area.finish(pig);
         }, pig);
     }
 
     /**
-     * A horse makes more than a pig, a horse and a pig that run reach the peak of tier 1, and a creeper, a baby and a hurt pig on the
-     * plate count nothing.
+     * Any mob counts and the weight comes from its attributes: a baby is not captured, a creeper (hostile) and a hurt pig are, and a
+     * running horse makes more than a running pig.
      *
      * @param helper the game test helper
      */
     private static void weights(GameTestHelper helper) {
-        var area = Area.create(helper);
+        var area = Area.create(helper, 2);
         var wheel = area.wheel(1, 4, 4);
         var level = area.level();
         var pig = area.spawn(EntityType.PIG, 2.5F, 2.5F);
@@ -255,75 +263,151 @@ public final class WheelGameTests {
         area.after(20, () -> {
             settled(helper, pig, horse, creeper, baby, hurt);
             double peak = EnergyCommonConfig.MOB_WHEELS.get(0).peak();
-            for (var mob : new Mob[] {creeper, baby, hurt}) area.place(mob, 4.5, 4.5);
+            area.place(baby, 4.5, 4.5);
             wheel.scan(level);
-            for (var mob : new Mob[] {creeper, baby, hurt}) area.place(mob, 4.5, 4.7);
+            helper.assertTrue(wheel.output() == 0 && wheel.runners() == 0, "a baby makes FE: " + wheel.output());
+            area.ground(baby, 1.5, 1.5);
+            area.place(creeper, 4.5, 4.5);
             wheel.scan(level);
-            helper.assertTrue(wheel.output() == 0, "creeper, baby and hurt pig make FE: " + wheel.output());
-            for (var mob : new Mob[] {creeper, baby, hurt}) area.ground(mob, 1.5, 1.5);
-            area.place(pig, 4 + LEFT, 4.5);
+            helper.assertTrue(wheel.heldMob() == creeper && wheel.output() > 0, "a hostile mob on the plate does not count: " + wheel.output());
+            area.ground(creeper, 1.5, 1.5);
             wheel.scan(level);
-            area.place(pig, 4 + RIGHT, 4.5);
+            helper.assertTrue(wheel.runners() == 0, "the wheel keeps a creeper that left it");
+            area.place(hurt, 4.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == hurt && wheel.output() > 0, "a hurt pig makes nothing: there is no health rule");
+            area.ground(hurt, 1.5, 1.5);
+            area.place(pig, 4.5, 4.5);
+            wantToWalk(pig);
             wheel.scan(level);
             double pigOutput = wheel.output();
-            helper.assertTrue(pigOutput > 0 && pigOutput < peak, "a pig makes a part of the peak: " + pigOutput);
-            area.place(pig, 4 + LEFT, 4.5);
-            area.place(horse, 4 + LEFT, 4.5);
+            helper.assertTrue(Math.abs(pigOutput - expected(pig, peak, true)) < 1e-9 && pigOutput < peak, "a running pig makes a part of the peak: " + pigOutput);
+            area.ground(pig, 1.5, 1.5);
+            area.place(horse, 4.5, 4.5);
+            wantToWalk(horse);
             wheel.scan(level);
             helper.assertTrue(wheel.output() > pigOutput, "a horse does not make more than a pig: " + wheel.output() + " <= " + pigOutput);
-            area.place(pig, 4 + RIGHT, 4.5);
-            area.place(horse, 4 + RIGHT, 4.5);
-            wheel.scan(level);
-            helper.assertTrue(wheel.output() == peak && wheel.runners() == 2, "a horse and a pig do not reach the peak: " + wheel.output());
+            helper.assertTrue(Math.abs(wheel.output() - expected(horse, peak, true)) < 1e-9, "a running horse makes " + wheel.output());
             area.finish(pig, horse, creeper, baby, hurt);
         }, pig, horse, creeper, baby, hurt);
     }
 
     /**
-     * A tier 1 wheel counts no more than its cap of 2 of three pigs on its plate (the peak), a mob that moves on to the next wheel
-     * is claimed by the first one for a moment (one mob feeds one wheel) and counts for the next wheel when the claim has lapsed.
+     * A wheel holds one mob: of two pigs on the plate only the one nearer to the middle is held, the other is ignored until the first
+     * one dies, then the slot is free and the second is captured.
+     *
+     * @param helper the game test helper
+     */
+    private static void slot(GameTestHelper helper) {
+        var area = Area.create(helper, 3);
+        var wheel = area.wheel(1, 4, 4);
+        var level = area.level();
+        var first = area.spawn(EntityType.PIG, 2.5F, 2.5F);
+        var second = area.spawn(EntityType.PIG, 6.5F, 2.5F);
+        area.after(20, () -> {
+            settled(helper, first, second);
+            area.place(second, 4 + LEFT, 4.5);
+            area.place(first, 4.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == first && wheel.runners() == 1, "the pig in the middle is not the one that is held");
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == first, "the wheel let go of its pig for another one on the plate");
+            double output = wheel.output();
+            first.kill(level);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == second, "the dead pig still blocks the slot");
+            helper.assertTrue(wheel.output() > 0 && wheel.output() <= output + 1e-9, "the output after the change is " + wheel.output());
+            area.finish(first, second);
+        }, first, second);
+    }
+
+    /**
+     * A captured mob cannot leave: pushed, knocked back and wanting to walk away it has no horizontal movement and the same spot on the
+     * plate 20 ticks later, and it then counts as running. The wheel makes it persistent (a mob that was not before) and gives the old
+     * state back when the wheel is broken, which frees the slot.
+     *
+     * @param helper the game test helper
+     */
+    private static void pin(GameTestHelper helper) {
+        var area = Area.create(helper, 4);
+        var wheel = area.wheel(1, 4, 4);
+        var level = area.level();
+        var pig = area.spawn(EntityType.PIG, 2.5F, 2.5F);
+        area.after(20, () -> {
+            settled(helper, pig);
+            WheelBlockEntity.clearPersistence(pig);
+            helper.assertTrue(!pig.isPersistenceRequired(), "the persistence flag cannot be cleared");
+            area.place(pig, 4.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == pig, "the pig is not captured");
+            helper.assertTrue(pig.isPersistenceRequired(), "a captured mob may despawn");
+            double x = pig.getX();
+            double z = pig.getZ();
+            wantToWalk(pig);
+            pig.setDeltaMovement(0.6, 0, 0.3);
+            pig.knockback(1.0, 1, 0);
+            area.after(20, () -> {
+                helper.assertTrue(Math.abs(pig.getX() - x) < 1e-3 && Math.abs(pig.getZ() - z) < 1e-3, "the pig moved to " + pig.position() + " from " + x + ", " + z);
+                var delta = pig.getDeltaMovement();
+                helper.assertTrue(Math.abs(delta.x) < 1e-3 && Math.abs(delta.z) < 1e-3, "the pig still has a movement: " + delta);
+                var p = pig.position();
+                helper.assertTrue(WheelPlate.carries(false, p.x - wheel.getBlockPos().getX(), p.y - wheel.getBlockPos().getY(), p.z - wheel.getBlockPos().getZ()),
+                        "the pig is not on the plate any more: " + p);
+                // what the goals of a mob leave behind after a tick (a forward impulse) is noted by the wheel when the mob has ticked
+                pig.zza = 0.3F;
+                wheel.hold(pig);
+                wheel.scan(level);
+                helper.assertTrue(wheel.heldMob() == pig, "the wheel lost its pig");
+                helper.assertTrue(wheel.output() > expected(pig, EnergyCommonConfig.MOB_WHEELS.get(0).peak(), false) + 1e-9, "a pig that tries to walk does not count as running: " + wheel.output());
+                helper.setBlock(area.relative(4, FLOOR + 1, 4), Blocks.AIR);
+                helper.assertTrue(wheel.heldMob() == null, "breaking the wheel does not free the pig");
+                helper.assertTrue(!pig.isPersistenceRequired(), "the pig keeps the persistence flag of the wheel");
+                area.finish(pig);
+            }, pig);
+        }, pig);
+    }
+
+    /**
+     * Two wheels do not share a mob: a mob that moves on to the next wheel is claimed by the first one for a moment (one mob feeds one
+     * wheel) and is captured by the next wheel when the claim has lapsed.
      *
      * @param helper the game test helper
      */
     private static void claims(GameTestHelper helper) {
-        var area = Area.create(helper);
+        var area = Area.create(helper, 5);
         var first = area.wheel(1, 3, 4);
-        var second = area.wheel(5, 5, 4);
+        var second = area.wheel(5, 6, 4);
         var level = area.level();
-        var pigs = new Mob[3];
-        for (int i = 0; i < pigs.length; i++) pigs[i] = area.spawn(EntityType.PIG, 3.5F, 8.5F + i * 0.2F);
+        var pig = area.spawn(EntityType.PIG, 3.5F, 8.5F);
         area.after(20, () -> {
-            settled(helper, pigs);
-            for (int i = 0; i < pigs.length; i++) area.place(pigs[i], 3 + LEFT, 4.3 + i * 0.2);
+            settled(helper, pig);
+            area.place(pig, 3.5, 4.5);
             first.scan(level);
-            for (int i = 0; i < pigs.length; i++) area.place(pigs[i], 3 + RIGHT, 4.3 + i * 0.2);
+            helper.assertTrue(first.heldMob() == pig, "the first wheel does not hold the pig");
+            area.place(pig, 6.5, 4.5);
             first.scan(level);
-            double peak = EnergyCommonConfig.MOB_WHEELS.get(0).peak();
-            helper.assertTrue(first.output() == peak && first.runners() == 2, "three pigs make " + first.output() + " with " + first.runners()
-                    + " runners, not the peak with the cap of 2");
-            for (int i = 1; i < pigs.length; i++) area.ground(pigs[i], 1.5, 10.5);
-            area.place(pigs[0], 5 + LEFT, 4.5);
+            helper.assertTrue(first.runners() == 0 && first.heldMob() == null, "the first wheel still holds a pig that was carried away");
             second.scan(level);
-            helper.assertTrue(second.runners() == 0, "a pig the first wheel just counted drives the second one as well: " + second.runners());
+            helper.assertTrue(second.runners() == 0, "a pig the first wheel just held is taken by the second one as well");
             area.after((int) WheelClaims.LAPSE_TICKS + 1, () -> {
-                area.place(pigs[0], 5 + LEFT, 4.5);
+                area.place(pig, 6.5, 4.5);
                 second.scan(level);
-                helper.assertTrue(second.runners() == 1 && second.output() > 0, "the pig does not drive the second wheel after the claim lapsed: " + second.runners());
+                helper.assertTrue(second.heldMob() == pig && second.output() > 0, "the pig is not held by the second wheel after the claim lapsed");
                 first.scan(level);
-                helper.assertTrue(first.runners() == 0, "the first wheel still counts a pig that left it: " + first.runners());
-                area.finish(pigs);
-            }, pigs);
-        }, pigs);
+                helper.assertTrue(first.runners() == 0, "the first wheel counts a pig that left it");
+                area.finish(pig);
+            }, pig);
+        }, pig);
     }
 
     /**
      * The buffer of a wheel cannot be charged but drained, a wheel pushes into a neighbour that takes FE (the power drain), a solar
-     * panel next to a wheel does not become part of a panel group, and a tier 5 wheel coasts when the mobs leave the plate.
+     * panel next to a wheel does not become part of a panel group, and a tier 5 wheel coasts when the mob leaves the plate.
      *
      * @param helper the game test helper
      */
     private static void energy(GameTestHelper helper) {
-        var area = Area.create(helper);
+        var area = Area.create(helper, 6);
         var drained = area.wheel(5, 3, 4);
         area.set(4, FLOOR + 1, 4, EnergyBlocks.POWER_DRAIN.get());
         var lone = area.wheel(5, 11, 4);
@@ -333,12 +417,10 @@ public final class WheelGameTests {
         var pigB = area.spawn(EntityType.PIG, 9.5F, 4.5F);
         area.after(20, () -> {
             settled(helper, pigA, pigB);
-            area.place(pigA, 3 + LEFT, 4.5);
-            area.place(pigB, 11 + LEFT, 4.5);
-            drained.scan(level);
-            lone.scan(level);
-            area.place(pigA, 3 + RIGHT, 4.5);
-            area.place(pigB, 11 + RIGHT, 4.5);
+            area.place(pigA, 3.5, 4.5);
+            area.place(pigB, 11.5, 4.5);
+            wantToWalk(pigA);
+            wantToWalk(pigB);
             drained.scan(level);
             lone.scan(level);
             double peak = EnergyCommonConfig.MOB_WHEELS.get(4).peak();
