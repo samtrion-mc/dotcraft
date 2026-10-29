@@ -4,7 +4,7 @@ import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.ModContainer;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
-import net.samtrion.dotcraft.energy.current.CurrentBlocks;
+import net.samtrion.dotcraft.energy.flow.FlowBlocks;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
@@ -16,7 +16,7 @@ import net.samtrion.dotcraft.resources.CraftResources;
 /**
  * Entry point of the {@code .Craft: Energy} mod.
  * <p>
- * Registers the potato batteries, the solar and lunar panels and the current, vibration, thermoelectric and melt generators, the mob wheels and the kite wind generators.
+ * Registers the potato batteries, the solar and lunar panels and the flow, vibration, thermoelectric and melt generators, the mob wheels and the kite wind generators.
  */
 @Mod(EnergyMod.MODID)
 public class EnergyMod {
@@ -36,7 +36,7 @@ public class EnergyMod {
         modContainer.registerConfig(ModConfig.Type.COMMON, EnergyCommonConfig.SPEC, "dotcraft/energy/common.toml");
         EnergyItems.register(modEventBus);
         EnergyBlocks.register(modEventBus);
-        CurrentBlocks.register(modEventBus);
+        FlowBlocks.register(modEventBus);
         VibrationBlocks.register(modEventBus);
         ThermoBlocks.register(modEventBus);
         MeltBlocks.register(modEventBus);
