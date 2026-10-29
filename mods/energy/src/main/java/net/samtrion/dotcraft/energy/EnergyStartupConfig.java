@@ -36,6 +36,15 @@ public final class EnergyStartupConfig {
             BUILDER.pop();
         }
         BUILDER.pop();
+        BUILDER.push("generators");
+        for (String name : EnergyCommonConfig.MELT_NAMES) {
+            BUILDER.push(name);
+            SWITCHES.put(name, BUILDER.comment("Enables the " + name + ". When disabled, the block is not registered at all and its recipe is dropped. "
+                    + "Needs a restart; a client and a server with different values may fail to connect.")
+                    .define("enabled", true));
+            BUILDER.pop();
+        }
+        BUILDER.pop();
     }
 
     /** The built spec, registered as STARTUP config (loaded before the registries are filled). */

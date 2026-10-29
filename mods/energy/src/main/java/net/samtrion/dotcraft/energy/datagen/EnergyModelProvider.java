@@ -15,6 +15,7 @@ import com.mojang.math.Quadrant;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.melt.datagen.MeltModels;
 
 /**
  * The item definitions of the batteries, the solar cell and the generator blocks. The models are source files ({@code models/item/<name>.json}): the vanilla
@@ -43,6 +44,7 @@ public final class EnergyModelProvider extends ModelProvider {
         var drainModel = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "block/power_drain");
         blocks.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(EnergyBlocks.POWER_DRAIN.get(), BlockModelGenerators.plainVariant(drainModel)));
         blocks.itemModelOutput.accept(EnergyBlocks.POWER_DRAIN_ITEM.get(), ItemModelUtils.plainModel(drainModel));
+        MeltModels.register(blocks);
         EnergyBlocks.blocks().forEach(b -> {
             var name = b.getId().getPath();
             var block = b.get();

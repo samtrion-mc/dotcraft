@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:melt_generator_tier_1"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:rechargeable_potato_battery"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:rechargeable_potato_battery",
+    "G": "#c:gears/copper",
+    "P": "#c:plates/copper",
+    "R": "#c:rods/blaze",
+    "X": "#c:small_dusts/redstone"
+  },
+  "pattern": [
+    "PRP",
+    "GBG",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:melt_generator_tier_1"
+  }
+}

@@ -6,6 +6,7 @@ import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.config.ModConfig;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.resources.CraftResources;
 
 /**
@@ -31,5 +32,6 @@ public class EnergyMod {
         modContainer.registerConfig(ModConfig.Type.COMMON, EnergyCommonConfig.SPEC, "dotcraft/energy/common.toml");
         EnergyItems.register(modEventBus);
         EnergyBlocks.register(modEventBus);
+        MeltBlocks.register(modEventBus);
     }
 }

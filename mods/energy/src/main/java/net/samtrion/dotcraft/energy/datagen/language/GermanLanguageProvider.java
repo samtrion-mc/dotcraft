@@ -5,6 +5,7 @@ import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The German translations. Every key added here needs the same key in {@link EnglishUSLanguageProvider}. */
@@ -30,6 +31,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solarpanel (Stufe " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Mondpanel (Stufe " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
+        MeltBlocks.blocks().forEach(b -> add(b.get(), "Schmelzgenerator (Stufe " + b.get().tier() + ")"));
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energie");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }

@@ -1,0 +1,8 @@
+{
+  "parent": "minecraft:block/cube_bottom_top",
+  "textures": {
+    "top": "dotcraftenergy:block/melt_top_tier_1",
+    "bottom": "dotcraftenergy:block/melt_top_tier_1",
+    "side": "dotcraftenergy:block/melt_side_tier_1_lit"
+  }
+}

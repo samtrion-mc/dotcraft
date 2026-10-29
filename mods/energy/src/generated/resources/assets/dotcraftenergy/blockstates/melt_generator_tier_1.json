@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "lit=false": {
+      "model": "dotcraftenergy:block/melt_generator_tier_1"
+    },
+    "lit=true": {
+      "model": "dotcraftenergy:block/melt_generator_tier_1_lit"
+    }
+  }
+}
