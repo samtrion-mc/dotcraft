@@ -25,6 +25,7 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.EnergyStartupConfig;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 
 /**
  * Registers the power drain and the generator blocks of every family, tiers 1-5, their items, one block entity type per family and the creative tab.
@@ -62,7 +63,7 @@ public final class EnergyBlocks {
         TABS.register("energy", () -> CreativeModeTab.builder()
                 .title(Component.translatable("itemGroup." + EnergyMod.MODID + ".energy"))
                 .icon(() -> new ItemStack(SOLAR.itemStream().findFirst().orElseThrow().get()))
-                .displayItems((params, output) -> { output.accept(EnergyItems.PHOTOVOLTAIC_CELL.get()); output.accept(POWER_DRAIN_ITEM.get()); FAMILIES.forEach(f -> f.itemStream().forEach(i -> output.accept(i.get()))); })
+                .displayItems((params, output) -> { output.accept(EnergyItems.PHOTOVOLTAIC_CELL.get()); output.accept(POWER_DRAIN_ITEM.get()); VibrationBlocks.items().forEach(i -> output.accept(i.get())); FAMILIES.forEach(f -> f.itemStream().forEach(i -> output.accept(i.get()))); })
                 .build());
     }
 

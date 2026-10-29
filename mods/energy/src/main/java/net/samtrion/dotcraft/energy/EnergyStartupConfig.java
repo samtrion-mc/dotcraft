@@ -1,6 +1,7 @@
 package net.samtrion.dotcraft.energy;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -28,7 +29,7 @@ public final class EnergyStartupConfig {
         }
         BUILDER.pop();
         BUILDER.push("generators");
-        for (String name : java.util.stream.Stream.concat(EnergyCommonConfig.SOLAR_NAMES.stream(), EnergyCommonConfig.LUNAR_NAMES.stream()).toList()) {
+        for (String name : java.util.stream.Stream.of(EnergyCommonConfig.SOLAR_NAMES, EnergyCommonConfig.LUNAR_NAMES, EnergyCommonConfig.VIBRATION_NAMES).flatMap(List::stream).toList()) {
             BUILDER.push(name);
             SWITCHES.put(name, BUILDER.comment("Enables the " + name + ". When disabled, the block is not registered at all and its recipe is dropped. "
                     + "Needs a restart; a client and a server with different values may fail to connect.")

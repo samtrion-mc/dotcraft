@@ -48,6 +48,14 @@ public final class EnergyCommonConfig {
 
     /** The current generators: the peak FE/t in the best case without animals (full water share in an ocean or river), at least 15 FE/t; animals add up to 30 % on top, so the real maximum is 1.3 times the peak. */
     public static final List<Generator> CURRENT_GENERATORS = generators(CURRENT_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The registry paths of the vibration generators, tiers 1-5, which are also their config sections. */
+    static final List<String> VIBRATION_NAMES = tierNames("vibration_generator");
+
+    /**
+     * The vibration generators: the hard ceiling in FE/t, which a token bucket enforces no matter how many game events there are (see
+     * {@code VibrationBucket}); a generator next to a busy player makes about a quarter of it.
+     */
+    public static final List<Generator> VIBRATION_GENERATORS = generators(VIBRATION_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
 
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();

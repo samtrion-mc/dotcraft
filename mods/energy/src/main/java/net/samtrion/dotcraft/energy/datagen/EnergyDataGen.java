@@ -12,6 +12,7 @@ import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.current.CurrentLootPlugin;
 import net.samtrion.dotcraft.energy.datagen.language.EnglishUSLanguageProvider;
 import net.samtrion.dotcraft.energy.datagen.language.GermanLanguageProvider;
+import net.samtrion.dotcraft.energy.vibration.VibrationLootPlugin;
 import net.samtrion.dotcraft.resources.datagen.ResourceBlockLootSubProvider;
 
 /**
@@ -45,7 +46,7 @@ public final class EnergyDataGen {
     static void server(GatherDataEvent.Server event) {
         event.createProvider(EnergyRecipeProvider::new);
         event.createProvider((o, l) -> new LootTableProvider(o, Set.of(),
-                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin(), new CurrentLootPlugin()),
+                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin(), new CurrentLootPlugin(), new VibrationLootPlugin()),
                         LootContextParamSets.BLOCK)), l));
         event.createProvider(EnergyBlockTagsProvider::new);
     }

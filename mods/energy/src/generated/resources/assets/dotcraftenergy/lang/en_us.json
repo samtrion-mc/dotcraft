@@ -15,6 +15,11 @@
   "block.dotcraftenergy.solar_panel_tier_3": "Solar Panel (Tier 3)",
   "block.dotcraftenergy.solar_panel_tier_4": "Solar Panel (Tier 4)",
   "block.dotcraftenergy.solar_panel_tier_5": "Solar Panel (Tier 5)",
+  "block.dotcraftenergy.vibration_generator_tier_1": "Vibration Generator (Tier 1)",
+  "block.dotcraftenergy.vibration_generator_tier_2": "Vibration Generator (Tier 2)",
+  "block.dotcraftenergy.vibration_generator_tier_3": "Vibration Generator (Tier 3)",
+  "block.dotcraftenergy.vibration_generator_tier_4": "Vibration Generator (Tier 4)",
+  "block.dotcraftenergy.vibration_generator_tier_5": "Vibration Generator (Tier 5)",
   "item.dotcraftenergy.battery_tier_2": "Battery (Tier 2)",
   "item.dotcraftenergy.battery_tier_3": "Battery (Tier 3)",
   "item.dotcraftenergy.battery_tier_4": "Battery (Tier 4)",
@@ -29,5 +34,9 @@
   "tooltip.dotcraftenergy.current.perk_3": "Adaptation: keeps 75% outside ocean and river",
   "tooltip.dotcraftenergy.current.perk_4": "Lean water: a small pond is already enough",
   "tooltip.dotcraftenergy.current.perk_5": "Abyssal: independent of the biome",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.vibration.hearing": "Hears shocks within %1$s blocks, from vibration frequency %2$s",
+  "tooltip.dotcraftenergy.vibration.needs": "Powered by shocks nearby: blocks broken, fights, explosions",
+  "tooltip.dotcraftenergy.vibration.peak": "Peak %1$s FE/t, on average at most %2$s FE/t",
+  "tooltip.dotcraftenergy.vibration.pierce": "Hears through wool"
 }

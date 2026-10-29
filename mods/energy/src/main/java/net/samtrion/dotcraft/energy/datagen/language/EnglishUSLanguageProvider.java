@@ -7,6 +7,8 @@ import net.samtrion.dotcraft.energy.current.CurrentBlocks;
 import net.samtrion.dotcraft.energy.current.CurrentGeneratorItem;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.vibration.VibrationBlockItem;
+import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The English translations. Every key added here needs the same key in {@link GermanLanguageProvider}. */
@@ -32,6 +34,11 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solar Panel (Tier " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Lunar Panel (Tier " + b.get().tier() + ")"));
         CurrentBlocks.blocks().forEach(b -> add(b.get(), "Current Generator (Tier " + b.get().tier() + ")"));
+        VibrationBlocks.blocks().forEach(b -> add(b.get(), "Vibration Generator (Tier " + b.get().tier() + ")"));
+        add(VibrationBlockItem.NEEDS_KEY, "Powered by shocks nearby: blocks broken, fights, explosions");
+        add(VibrationBlockItem.PEAK_KEY, "Peak %1$s FE/t, on average at most %2$s FE/t");
+        add(VibrationBlockItem.HEARING_KEY, "Hears shocks within %1$s blocks, from vibration frequency %2$s");
+        add(VibrationBlockItem.PIERCE_KEY, "Hears through wool");
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(CurrentGeneratorItem.FORMULA_KEY, "Needs water: peak x water share x biome x (1 + animals)");

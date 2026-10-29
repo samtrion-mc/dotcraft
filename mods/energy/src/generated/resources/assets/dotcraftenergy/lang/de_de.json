@@ -15,6 +15,11 @@
   "block.dotcraftenergy.solar_panel_tier_3": "Solarpanel (Stufe 3)",
   "block.dotcraftenergy.solar_panel_tier_4": "Solarpanel (Stufe 4)",
   "block.dotcraftenergy.solar_panel_tier_5": "Solarpanel (Stufe 5)",
+  "block.dotcraftenergy.vibration_generator_tier_1": "Vibrationsgenerator (Stufe 1)",
+  "block.dotcraftenergy.vibration_generator_tier_2": "Vibrationsgenerator (Stufe 2)",
+  "block.dotcraftenergy.vibration_generator_tier_3": "Vibrationsgenerator (Stufe 3)",
+  "block.dotcraftenergy.vibration_generator_tier_4": "Vibrationsgenerator (Stufe 4)",
+  "block.dotcraftenergy.vibration_generator_tier_5": "Vibrationsgenerator (Stufe 5)",
   "item.dotcraftenergy.battery_tier_2": "Batterie (Stufe 2)",
   "item.dotcraftenergy.battery_tier_3": "Batterie (Stufe 3)",
   "item.dotcraftenergy.battery_tier_4": "Batterie (Stufe 4)",
@@ -29,5 +34,9 @@
   "tooltip.dotcraftenergy.current.perk_3": "Anpassung: behält 75% außerhalb von Ozean und Fluss",
   "tooltip.dotcraftenergy.current.perk_4": "Schlankes Wasser: ein kleiner Teich genügt schon",
   "tooltip.dotcraftenergy.current.perk_5": "Abyssal: unabhängig vom Biom",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.vibration.hearing": "Hört Erschütterungen im Umkreis von %1$s Blöcken, ab Vibrationsfrequenz %2$s",
+  "tooltip.dotcraftenergy.vibration.needs": "Wird von Erschütterungen in der Nähe angetrieben: Blöcke abbauen, Kämpfe, Explosionen",
+  "tooltip.dotcraftenergy.vibration.peak": "Spitze %1$s FE/t, im Schnitt höchstens %2$s FE/t",
+  "tooltip.dotcraftenergy.vibration.pierce": "Hört durch Wolle"
 }

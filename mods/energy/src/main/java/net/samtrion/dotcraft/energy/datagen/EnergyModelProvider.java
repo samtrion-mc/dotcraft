@@ -16,6 +16,7 @@ import net.samtrion.dotcraft.energy.current.CurrentModels;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
+import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 
 /**
  * The item definitions of the batteries, the solar cell and the generator blocks. The models are source files ({@code models/item/<name>.json}): the vanilla
@@ -45,6 +46,12 @@ public final class EnergyModelProvider extends ModelProvider {
         blocks.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(EnergyBlocks.POWER_DRAIN.get(), BlockModelGenerators.plainVariant(drainModel)));
         blocks.itemModelOutput.accept(EnergyBlocks.POWER_DRAIN_ITEM.get(), ItemModelUtils.plainModel(drainModel));
         CurrentModels.register(blocks);
+        // the vibration generators are full blocks: the block model is a source file per tier, the blockstate a single variant
+        VibrationBlocks.blocks().forEach(b -> {
+            var model = blockModel(b.getId().getPath());
+            blocks.blockStateOutput.accept(BlockModelGenerators.createSimpleBlock(b.get(), BlockModelGenerators.plainVariant(model)));
+            blocks.itemModelOutput.accept(b.get().asItem(), ItemModelUtils.plainModel(model));
+        });
         EnergyBlocks.blocks().forEach(b -> {
             var name = b.getId().getPath();
             var block = b.get();
