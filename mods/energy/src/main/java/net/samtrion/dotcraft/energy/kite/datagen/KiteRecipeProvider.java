@@ -54,11 +54,18 @@ public final class KiteRecipeProvider extends RecipeProvider.Runner {
 
     /** Builds the recipes; a subclass of {@link RecipeProvider} as its builders are protected. */
     private static final class Recipes extends RecipeProvider {
+        /** The metal of every tier, as in the panels. */
         private static final String[] METALS = {"aluminum", "copper", "steel", "gold", "osmium"};
 
+        /** Takes the recipes. */
         private final RecipeOutput output;
 
-        /** Creates the recipe provider. */
+        /**
+         * Creates the recipe provider.
+         *
+         * @param registries the registries
+         * @param output     takes the recipes
+         */
         Recipes(HolderLookup.Provider registries, RecipeOutput output) {
             super(registries, output);
             this.output = output;
@@ -102,15 +109,20 @@ public final class KiteRecipeProvider extends RecipeProvider.Runner {
             }
         }
 
+        /** The key of one of our recipes. */
         private static ResourceKey<Recipe<?>> key(String path) {
             return ResourceKey.create(Registries.RECIPE, Identifier.fromNamespaceAndPath(EnergyMod.MODID, path));
         }
 
+        /** The condition that an item of ours is registered (a tier switched off in the startup config has no item). */
         private static RegisteredCondition<Item> registered(Item item) {
             return new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, BuiltInRegistries.ITEM.getKey(item)));
         }
 
-        /** The item tag of a material in a form of the resources mod, e.g. {@code c:plates/steel}. */
+        /**
+         * The item tag of a material in a form of the resources mod, e.g. {@code c:plates/steel}. The same helper is private in the
+         * energy recipe provider, a copy here keeps that shared file untouched.
+         */
         private static TagKey<Item> tag(String material, String form) {
             var m = Materials.all().stream().filter(x -> x.id().equals(material)).findFirst().orElseThrow();
             return MaterialTags.item(Forms.get(form), m);

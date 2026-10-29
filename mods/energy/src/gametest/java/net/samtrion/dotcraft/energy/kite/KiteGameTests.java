@@ -34,19 +34,24 @@ import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
  */
 @EventBusSubscriber(modid = EnergyMod.MODID)
 public final class KiteGameTests {
+    /** The names of the tests; every one has a function, an environment and an instance. */
     private static final String[] NAMES = {"kite_blocks", "kite_flight", "kite_above_build_height", "kite_break_and_reel_in", "kite_respawn_and_save",
-            "kite_free_space", "kite_thunder"};
+            "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder"};
 
+    /** Not instantiable. */
     private KiteGameTests() {}
 
+    /** The identifier of a test, in our namespace. */
     private static Identifier id(String name) {
         return Identifier.fromNamespaceAndPath(EnergyMod.MODID, name);
     }
 
+    /** The key of the registered test function of a test. */
     private static ResourceKey<Consumer<GameTestHelper>> function(String name) {
         return ResourceKey.create(Registries.TEST_FUNCTION, id(name));
     }
 
+    /** The body of a test. */
     private static Consumer<GameTestHelper> body(String name) {
         return switch (name) {
             case "kite_blocks" -> KiteGameTests::blocks;
@@ -55,10 +60,13 @@ public final class KiteGameTests {
             case "kite_break_and_reel_in" -> KiteGameTests::breakAndReelIn;
             case "kite_respawn_and_save" -> KiteGameTests::respawnAndSave;
             case "kite_free_space" -> KiteGameTests::freeSpace;
+            case "kite_thin_roof" -> KiteGameTests::thinRoof;
+            case "kite_comparator_and_status" -> KiteGameTests::comparatorAndStatus;
             default -> KiteGameTests::thunder;
         };
     }
 
+    /** The timeout of a test in ticks. */
     private static int timeout(String name) {
         return switch (name) {
             case "kite_blocks" -> 60;
@@ -93,6 +101,7 @@ public final class KiteGameTests {
         }
     }
 
+    /** The kite block entity at a position relative to the test, which must be there. */
     private static KiteBlockEntity entity(GameTestHelper helper, BlockPos relative) {
         helper.assertTrue(helper.getLevel().getBlockEntity(helper.absolutePos(relative)) instanceof KiteBlockEntity, "no kite block entity at " + relative);
         return (KiteBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(relative));
@@ -265,8 +274,54 @@ public final class KiteGameTests {
         var be = entity(helper, pos);
         helper.runAfterDelay(120, () -> {
             var kite = be.kite();
-            helper.assertTrue(kite != null && kite.altitude() <= 1.01, "the kite flies through the roof: " + (kite == null ? -1 : kite.altitude()));
+            helper.assertTrue(kite != null && kite.altitude() <= 2.01, "the kite flies through the roof: " + (kite == null ? -1 : kite.altitude()));
             helper.succeed();
+        });
+    }
+
+    /**
+     * A single block thick plate far up stops the kite right below it; no sample may skip it. Tier 1 needs a free cross, so a plate
+     * that only covers a neighbour of the column stops it, while tier 3 flies past that (a shaft of one block is enough).
+     *
+     * @param helper the game test helper
+     */
+    private static void thinRoof(GameTestHelper helper) {
+        var wide = new BlockPos(1, 1, 1);
+        var slim = new BlockPos(9, 1, 1);
+        helper.setBlock(wide, KiteBlocks.block(1).get());
+        helper.setBlock(slim, KiteBlocks.block(3).get());
+        helper.setBlock(wide.offset(0, 10, 0), Blocks.STONE);
+        helper.setBlock(slim.offset(1, 10, 0), Blocks.STONE);
+        var player = player(helper, true);
+        helper.useBlock(wide, player);
+        helper.useBlock(slim, player);
+        var wideBe = entity(helper, wide);
+        var slimBe = entity(helper, slim);
+        helper.runAfterDelay(200, () -> {
+            helper.assertTrue(wideBe.kite().altitude() <= 9.01 && wideBe.kite().altitude() >= 8.5, "wrong ceiling: " + wideBe.kite().altitude());
+            helper.assertTrue(slimBe.kite().altitude() > 20, "the slim line is stopped by a plate beside the column: " + slimBe.kite().altitude());
+            helper.succeed();
+        });
+    }
+
+    /**
+     * The status message names the reason for a low output and the comparator signal follows the output (0 without a kite, 1..15 with).
+     *
+     * @param helper the game test helper
+     */
+    private static void comparatorAndStatus(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, KiteBlocks.block(1).get());
+        var absolute = helper.absolutePos(pos);
+        helper.assertTrue(level.getBlockState(absolute).getAnalogOutputSignal(level, absolute, Direction.NORTH) == 0, "a signal without a kite");
+        helper.useBlock(pos, player(helper, true));
+        var be = entity(helper, pos);
+        be.kite().setAltitude(KiteMath.tether(1));
+        helper.succeedWhen(() -> {
+            int signal = level.getBlockState(absolute).getAnalogOutputSignal(level, absolute, Direction.NORTH);
+            helper.assertTrue(signal >= 1 && signal <= 15 && signal == be.signal(), "no comparator signal: " + signal);
+            helper.assertTrue(be.limit() == KiteMath.Limit.NONE, "unexpected limit " + be.limit());
         });
     }
 

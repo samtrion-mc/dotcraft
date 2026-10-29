@@ -25,14 +25,18 @@ import net.minecraft.world.level.storage.ValueOutput;
  * Only the anchor and the tier are synchronized, the client draws the tether and the sway from them.
  */
 public class KiteEntity extends Entity {
+    /** The synchronized position of the generator block. */
     private static final EntityDataAccessor<BlockPos> ANCHOR = SynchedEntityData.defineId(KiteEntity.class, EntityDataSerializers.BLOCK_POS);
+    /** The synchronized tier of the generator block. */
     private static final EntityDataAccessor<Integer> TIER = SynchedEntityData.defineId(KiteEntity.class, EntityDataSerializers.INT);
     /** Ticks between two checks that the block still has this kite. */
     private static final int CHECK_TICKS = 20;
     /** Distance in blocks from which the kite and its tether are drawn. */
     private static final double RENDER_DISTANCE = 256;
 
+    /** The altitude above the top of the block; the server's truth (not synchronized, the position carries it to the client). */
     private double altitude;
+    /** The altitude the kite flies to. */
     private double target;
 
     /**

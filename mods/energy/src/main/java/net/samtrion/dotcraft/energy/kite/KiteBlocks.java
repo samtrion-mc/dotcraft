@@ -11,7 +11,6 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
-import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -39,13 +38,19 @@ public final class KiteBlocks {
     /** The mod id, the namespace of everything registered here. */
     public static final String MODID = EnergyMod.MODID;
 
+    /** The blocks. */
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MODID);
+    /** The items. */
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(MODID);
+    /** The block entity types. */
     private static final DeferredRegister<BlockEntityType<?>> TYPES = DeferredRegister.create(Registries.BLOCK_ENTITY_TYPE, MODID);
+    /** The entity types. */
     private static final DeferredRegister.Entities ENTITIES = DeferredRegister.createEntities(MODID);
 
+    /** The registered generator blocks, by tier. */
     private static final List<DeferredBlock<KiteWindBlock>> BLOCK_LIST = new ArrayList<>();
-    private static final List<DeferredItem<BlockItem>> ITEM_LIST = new ArrayList<>();
+    /** The items of the registered generator blocks, by tier. */
+    private static final List<DeferredItem<KiteGeneratorItem>> ITEM_LIST = new ArrayList<>();
 
     /** The kite item: put into a generator it flies on a tether. */
     public static final DeferredItem<Item> KITE = ITEMS.registerSimpleItem("kite");
@@ -67,7 +72,7 @@ public final class KiteBlocks {
             var block = BLOCKS.<KiteWindBlock>registerBlock(name, p -> new KiteWindBlock(p, t, TYPE),
                     () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).requiresCorrectToolForDrops().noOcclusion());
             BLOCK_LIST.add(block);
-            ITEM_LIST.add(ITEMS.registerSimpleBlockItem(block));
+            ITEM_LIST.add(ITEMS.registerItem(name, p -> new KiteGeneratorItem(block.get(), p, t), () -> new Item.Properties().useBlockDescriptionPrefix()));
         }
     }
 

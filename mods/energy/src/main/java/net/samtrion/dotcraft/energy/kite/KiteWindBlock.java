@@ -6,6 +6,7 @@ import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
@@ -33,10 +34,13 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
  * {@code GeneratorBlock}: it does not join the pool of the solar and lunar panels.
  */
 public class KiteWindBlock extends Block implements EntityBlock {
+    /** The shape: the base, the spool and the mast. */
     private static final VoxelShape SHAPE = Shapes.or(Block.box(0, 0, 0, 16, 8, 16), Block.box(3, 8, 3, 13, 13, 13),
             Block.box(7, 13, 7, 9, 15, 9));
 
+    /** The tier, 1..5. */
     private final int tier;
+    /** The block entity type, resolved late as it is registered after the blocks. */
     private final Supplier<? extends BlockEntityType<KiteBlockEntity>> type;
 
     /**
@@ -81,6 +85,17 @@ public class KiteWindBlock extends Block implements EntityBlock {
     }
 
     @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    /** The comparator signal: 0 for no output, else 1..15 by the share of the peak. */
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
+        return level.getBlockEntity(pos) instanceof KiteBlockEntity be ? be.signal() : 0;
+    }
+
+    @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
             BlockHitResult hit) {
         if (!stack.is(KiteBlocks.KITE.get())) return InteractionResult.TRY_WITH_EMPTY_HAND;
@@ -105,8 +120,9 @@ public class KiteWindBlock extends Block implements EntityBlock {
             }
         } else {
             double altitude = be.kite() == null ? 0 : be.kite().altitude();
+            var limit = Component.translatable("message." + KiteBlocks.MODID + ".kite.limit." + be.limit().name().toLowerCase(Locale.ROOT));
             player.sendOverlayMessage(Component.translatable("message." + KiteBlocks.MODID + ".kite.status", String.format(Locale.ROOT, "%.0f", altitude),
-                    KiteMath.tether(tier), String.format(Locale.ROOT, "%.1f", be.output())));
+                    KiteMath.tether(tier), String.format(Locale.ROOT, "%.1f", be.output()), limit));
         }
         return InteractionResult.SUCCESS;
     }

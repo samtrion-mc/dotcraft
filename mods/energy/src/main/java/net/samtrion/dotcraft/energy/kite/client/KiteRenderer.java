@@ -23,6 +23,7 @@ import net.samtrion.dotcraft.energy.kite.KiteEntity;
  * frustum (the kite can be hundreds of blocks above the player), so culling is off.
  */
 public class KiteRenderer extends EntityRenderer<KiteEntity, KiteRenderState> {
+    /** The render type of the kite, one per tier. */
     private static final RenderType[] TYPES = new RenderType[5];
     /** Colour of the tether (ARGB). */
     private static final int LINE_COLOR = 0xFFE9E2D0;
@@ -99,6 +100,7 @@ public class KiteRenderer extends EntityRenderer<KiteEntity, KiteRenderState> {
         vertex(buffer, pose, light, -h * side, h, z, 0, 0, side);
     }
 
+    /** Adds one vertex of the double-sided kite quad. */
     private static void vertex(VertexConsumer buffer, PoseStack.Pose pose, int light, float x, float y, float z, float u, float v, int side) {
         buffer.addVertex(pose, x, y, z).setColor(-1).setUv(u, v).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(pose, 0, 0, side);
     }

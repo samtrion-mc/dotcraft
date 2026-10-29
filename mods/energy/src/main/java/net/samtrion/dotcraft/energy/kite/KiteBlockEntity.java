@@ -36,12 +36,28 @@ public class KiteBlockEntity extends BlockEntity {
     /** Radii in blocks at which the air around the kite is sampled (in the eight horizontal directions). */
     private static final int[] RADII = {3, 6};
 
+    /** The buffer; it can only be drained from outside. */
     private final GeneratorEnergy energy;
+    /** The energy handlers of the neighbours, one cache per side. */
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
+    /** Whether a kite has been put in (saved). */
     private boolean hasKite;
+    /** The kite that flies now; not saved, spawned again when it is missing. */
     private @Nullable KiteEntity kite;
+    /** The FE per tick made in the last tick. */
     private double output;
+    /** The fraction of an FE that is not yet produced (saved), so a fractional output is not lost. */
     private double carry;
+    /** The weather at the kite at the last read of the world. */
+    private KiteMath.Weather weather = KiteMath.Weather.CLEAR;
+    /** The free share of the air around the kite at the last read of the world. */
+    private double openness = 1;
+    /** Whether the dimension has a sky, at the last read of the world. */
+    private boolean sky = true;
+    /** What keeps the output from the peak, at the last read of the world. */
+    private KiteMath.Limit limit = KiteMath.Limit.NONE;
+    /** The redstone signal that the neighbours last saw. */
+    private int signal;
 
     /**
      * Creates the block entity.
@@ -56,6 +72,7 @@ public class KiteBlockEntity extends BlockEntity {
         energy = new GeneratorEnergy(config.capacity(), config.maxOutput(), this::setChanged);
     }
 
+    /** The block of this block entity. */
     private KiteWindBlock block() {
         return (KiteWindBlock) getBlockState().getBlock();
     }
@@ -88,12 +105,30 @@ public class KiteBlockEntity extends BlockEntity {
     }
 
     /**
-     * The FE per tick made at the last read of the world.
+     * The FE per tick made in the last tick.
      *
      * @return the output
      */
     public double output() {
         return output;
+    }
+
+    /**
+     * What keeps the kite from its peak, for the status message.
+     *
+     * @return the limit at the last read of the world
+     */
+    KiteMath.Limit limit() {
+        return limit;
+    }
+
+    /**
+     * The redstone signal for a comparator.
+     *
+     * @return 0 for no output, else 1..15 by the share of the peak
+     */
+    int signal() {
+        return signal;
     }
 
     /**
@@ -124,6 +159,7 @@ public class KiteBlockEntity extends BlockEntity {
         return true;
     }
 
+    /** Spawns a kite at the block; it starts on the ground. */
     private void spawnKite(ServerLevel level) {
         var entity = new KiteEntity(KiteBlocks.KITE_ENTITY.get(), level);
         entity.attach(worldPosition, block().tier());
@@ -131,12 +167,13 @@ public class KiteBlockEntity extends BlockEntity {
         if (!level.addFreshEntity(entity)) kite = null;
     }
 
+    /** Removes the kite entity, if there is one. */
     private void discardKite() {
         if (kite != null) kite.discard();
         kite = null;
     }
 
-    /** Gives the kite back as an item when the block is removed, and removes the entity. */
+    /** Gives the kite back as an item when the block is removed, removes the entity and hands the buffered FE to the neighbours. */
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
         super.preRemoveSideEffects(pos, state);
@@ -145,6 +182,7 @@ public class KiteBlockEntity extends BlockEntity {
             discardKite();
             Block.popResource(server, pos, new ItemStack(KiteBlocks.KITE.get()));
         }
+        if (level instanceof ServerLevel server) push(server);
     }
 
     /**
@@ -153,7 +191,12 @@ public class KiteBlockEntity extends BlockEntity {
      * @param level the level
      */
     void serverTick(ServerLevel level) {
-        if ((level.getGameTime() + worldPosition.hashCode()) % RECOMPUTE_TICKS == 0) recompute(level);
+        long time = level.getGameTime() + worldPosition.hashCode();
+        if (Math.floorMod(time, RECOMPUTE_TICKS) == 0) recompute(level);
+        var config = block().config();
+        output = hasKite && kite != null
+                ? KiteMath.output(config.peak(), block().tier(), kite.altitude(), openness, weather, sky, KiteMath.wind(time)) : 0;
+        updateSignal(level, config.peak());
         carry += output;
         int whole = (int) carry;
         carry -= whole;
@@ -161,38 +204,53 @@ public class KiteBlockEntity extends BlockEntity {
         push(level);
     }
 
+    /** Tells the neighbours (comparators) when the signal changes. */
+    private void updateSignal(ServerLevel level, double peak) {
+        int now = KiteMath.signal(output, peak);
+        if (now == signal) return;
+        signal = now;
+        level.updateNeighbourForOutputSignal(worldPosition, getBlockState().getBlock());
+    }
+
+    /**
+     * Reads the world: the weather and the openness at the kite, the free way up. It sets the target of the kite and remembers what
+     * the output of every tick is made of. A kite is only spawned where entities tick, so it is never a kite that stands still.
+     */
     private void recompute(ServerLevel level) {
         var block = block();
         var config = block.config();
         energy.configure(config.capacity(), config.maxOutput());
-        if (hasKite && (kite == null || kite.isRemoved())) spawnKite(level);
-        double now = 0;
-        if (hasKite && kite != null) {
-            int tier = block.tier();
-            boolean sky = level.dimensionType().hasSkyLight();
-            var cell = BlockPos.containing(kite.position());
-            var weather = weather(level, cell);
-            boolean reeledIn = !sky || KiteMath.weatherFactor(tier, weather) == 0;
-            kite.setTarget(reeledIn ? 0 : KiteMath.reach(tier, h -> blockedAround(level, h)));
-            now = KiteMath.output(config.peak(), tier, kite.altitude(), openness(level, cell), weather, sky);
+        if (hasKite && (kite == null || kite.isRemoved()) && level.isPositionEntityTicking(worldPosition)) spawnKite(level);
+        if (!hasKite || kite == null) {
+            limit = KiteMath.Limit.NONE;
+            return;
         }
-        if (now != output) {
-            output = now;
-            setChanged();
-        }
+        int tier = block.tier();
+        sky = level.dimensionType().hasSkyLight();
+        var cell = BlockPos.containing(kite.position());
+        weather = weather(level, cell);
+        openness = openness(level, cell);
+        int reach = KiteMath.reach(tier, h -> blockedAround(level, tier, h));
+        boolean reeledIn = !sky || KiteMath.weatherFactor(tier, weather) == 0;
+        kite.setTarget(reeledIn ? 0 : reach);
+        limit = KiteMath.limit(tier, sky, weather, reach, openness);
     }
 
-    /** The weather at a position: a thunderstorm only where it rains at all, so a dry biome stays clear. */
+    /**
+     * The weather at a position. Rain and snow both count, and the temperature of the biome (which falls with the height) does not
+     * matter, so the kite in a snowy biome or high up is as wet as the ground (see {@link KiteMath#weather}).
+     */
     private static KiteMath.Weather weather(Level level, BlockPos pos) {
-        if (!level.isRainingAt(pos)) return KiteMath.Weather.CLEAR;
-        return level.isThundering() ? KiteMath.Weather.THUNDER : KiteMath.Weather.RAIN;
+        boolean exposed = level.canSeeSky(pos) && level.getBiome(pos).value().hasPrecipitation();
+        return KiteMath.weather(level.isRaining(), level.isThundering(), exposed);
     }
 
-    /** Whether a block is in the way {@code h} blocks above the top of the generator, in the cell or next to it. */
-    private boolean blockedAround(Level level, int h) {
+    /** Whether a block is in the way {@code h} blocks above the top of the generator: the cell, and for a wide line its neighbours. */
+    private boolean blockedAround(Level level, int tier, int h) {
         var cell = worldPosition.above(h);
-        return blocked(level, cell) || blocked(level, cell.north()) || blocked(level, cell.south()) || blocked(level, cell.east())
-                || blocked(level, cell.west());
+        if (blocked(level, cell)) return true;
+        return KiteMath.wide(tier) && (blocked(level, cell.north()) || blocked(level, cell.south()) || blocked(level, cell.east())
+                || blocked(level, cell.west()));
     }
 
     /** The free share of the air around a cell: the cells at {@link #RADII} in the eight horizontal directions. */
@@ -216,6 +274,7 @@ public class KiteBlockEntity extends BlockEntity {
         return level.hasChunkAt(pos) && level.getBlockState(pos).blocksMotion();
     }
 
+    /** Pushes the buffer into the neighbours on every side but the top. */
     private void push(ServerLevel level) {
         if (energy.getAmountAsLong() <= 0) return;
         for (Direction d : Direction.values()) {

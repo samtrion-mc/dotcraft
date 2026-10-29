@@ -25,7 +25,19 @@
   "item.dotcraftenergy.potato_battery": "Potato Battery",
   "item.dotcraftenergy.rechargeable_potato_battery": "Rechargeable Potato Battery",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energy",
+  "message.dotcraftenergy.kite.limit.blocked": "blocked by something above",
+  "message.dotcraftenergy.kite.limit.crowded": "crowded sky costs output",
+  "message.dotcraftenergy.kite.limit.no_sky": "no sky here",
+  "message.dotcraftenergy.kite.limit.none": "flying freely",
+  "message.dotcraftenergy.kite.limit.storm": "reeled in by the storm",
+  "message.dotcraftenergy.kite.limit.weather": "weather costs output",
   "message.dotcraftenergy.kite.none": "No kite. Use a kite on the generator; sneak with an empty hand to take it back.",
-  "message.dotcraftenergy.kite.status": "Kite at %1$s of %2$s m, %3$s FE/t",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "message.dotcraftenergy.kite.status": "Kite at %1$s of %2$s m, %3$s FE/t (%4$s)",
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.kite.perk.1": "Plain kite: needs a free 3x3 way up, rain halves the output, a storm reels it in.",
+  "tooltip.dotcraftenergy.kite.perk.2": "Waxed line: rain costs only a quarter.",
+  "tooltip.dotcraftenergy.kite.perk.3": "Rain-proof sail, and a slim line that fits a one block wide shaft.",
+  "tooltip.dotcraftenergy.kite.perk.4": "Storm line: flies in a thunderstorm at half output; a crowded sky costs half as much.",
+  "tooltip.dotcraftenergy.kite.perk.5": "Insulated tether: ignores thunder and a crowded sky.",
+  "tooltip.dotcraftenergy.kite.tether": "Tether: %s m"
 }
