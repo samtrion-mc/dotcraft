@@ -78,10 +78,10 @@ public final class EnergyCommonConfig {
     public static final List<String> KITE_NAMES = tierNames("kite_generator");
     /**
      * The kite wind generators. The configured {@code base} FE/t is only the base of the tier: the output is the base times the length
-     * factor of the tether (tether / 16 at the most: 1 / 1.5 / 2 / 3 / 4 for tier 1-5), so the buffer and the push rate default to the
+     * factor of the tether (tether / 64 at the most: 0.25 / 0.375 / 0.5 / 0.75 / 1 for tier 1-5), so the buffer and the push rate default to the
      * real best case, base x factor.
      */
-    public static final List<Generator> KITE_GENERATORS = kiteGenerators(new int[] {15, 75, 560, 5_600, 56_000}, new double[] {1, 1.5, 2, 3, 4});
+    public static final List<Generator> KITE_GENERATORS = kiteGenerators(new int[] {53, 226, 1_645, 14_250, 129_800}, new double[] {0.25, 0.375, 0.5, 0.75, 1});
     /** The default FE one lightning bolt on a kite gives (named constant, see {@link #kiteLightningEnergy()}). */
     public static final int KITE_LIGHTNING_ENERGY_DEFAULT = 1_000_000;
     private static final ModConfigSpec.IntValue KITE_LIGHTNING_ENERGY = BUILDER

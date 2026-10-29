@@ -71,7 +71,7 @@
   "tooltip.dotcraftenergy.kite.perk.3": "Regenfestes Segel; ignoriert Hindernisse: Blöcke darüber und ein zugebauter Himmel kosten nichts.",
   "tooltip.dotcraftenergy.kite.perk.4": "Sturmleine: fliegt im Gewitter mit halber Leistung; ein zugebauter Himmel kostet nur halb so viel. Zwei Lenkdrachen teilen sich die Basis. Blitz auf den Lenkdrachen: 1.000.000 FE, selten.",
   "tooltip.dotcraftenergy.kite.perk.5": "Isolierte Leine: ignoriert Gewitter und einen zugebauten Himmel. Zwei Lenkdrachen teilen sich die Basis. Blitz auf den Lenkdrachen: 1.000.000 FE, selten.",
-  "tooltip.dotcraftenergy.kite.tether": "Leine: %s m (je länger, desto mehr FE: Ertrag = Basis x Leine / 16)",
+  "tooltip.dotcraftenergy.kite.tether": "Leine: %s m (je länger, desto mehr FE: Ertrag = Basis x Leine / 64)",
   "tooltip.dotcraftenergy.melt.tank": "Das Wasser landet in einem Tank mit %s Eimern, der sich nur entleeren lässt",
   "tooltip.dotcraftenergy.melt.tank_full": "Ein voller Tank lässt %s%% der FE pro Eis übrig, bis Wasser entnommen wird",
   "tooltip.dotcraftenergy.thermo": "Spitze %1$s FE/t bei einem Temperaturunterschied von %2$s",

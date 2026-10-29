@@ -22,16 +22,16 @@ class KiteMathTest {
         assertEquals(64, KiteMath.tether(5), "the longest tether is 64 blocks");
     }
 
-    /** The length factor is length / reference, 1 at the reference length (tether of tier 1), not capped at 1, capped by the tether. */
+    /** The length factor is length / 64, 1 at the longest tether (tier 5), capped by the tether. */
     @Test
     void lengthFactorIsLengthOverReference() {
-        assertEquals(16, KiteMath.REFERENCE_LENGTH);
-        assertEquals(1, KiteMath.lengthFactor(1, 16), 1e-9);
-        assertEquals(0.5, KiteMath.lengthFactor(1, 8), 1e-9);
-        assertEquals(1, KiteMath.lengthFactor(5, 16), 1e-9);
+        assertEquals(64, KiteMath.REFERENCE_LENGTH);
+        assertEquals(0.25, KiteMath.lengthFactor(1, 16), 1e-9);
+        assertEquals(0.125, KiteMath.lengthFactor(1, 8), 1e-9);
+        assertEquals(0.25, KiteMath.lengthFactor(5, 16), 1e-9);
         assertEquals(0, KiteMath.lengthFactor(5, -4));
-        double[] best = {1, 1.5, 2, 3, 4};
-        double[] maxFe = {15, 112.5, 1_120, 16_800, 224_000};
+        double[] best = {0.25, 0.375, 0.5, 0.75, 1};
+        double[] maxFe = {13.25, 84.75, 822.5, 10_687.5, 129_800};
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
             assertEquals(best[tier - 1], KiteMath.lengthFactor(tier, 10_000), 1e-9, "tier " + tier);
             assertEquals(maxFe[tier - 1], KiteMath.peak(EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak(), tier), 1e-9, "tier " + tier);
@@ -62,7 +62,7 @@ class KiteMathTest {
             last = now;
         }
         assertEquals(KiteMath.output(100, 5, 64, 1, Weather.CLEAR, true, 1), KiteMath.output(100, 5, 5000, 1, Weather.CLEAR, true, 1));
-        assertEquals(100 * 4, KiteMath.output(100, 5, 64, 1, Weather.CLEAR, true, 1), 1e-9);
+        assertEquals(100, KiteMath.output(100, 5, 64, 1, Weather.CLEAR, true, 1), 1e-9);
         assertEquals(0, KiteMath.output(100, 5, 0, 1, Weather.CLEAR, true, 1));
         assertEquals(0, KiteMath.output(100, 5, -3, 1, Weather.CLEAR, true, 1));
     }
@@ -220,20 +220,20 @@ class KiteMathTest {
     }
 
     /**
-     * Economy anchor on the real model (tether out, free sky, the real gust and weather mix): the bases follow the battery ladder and
-     * the tether is the yield factor (1 / 1.5 / 2 / 3 / 4). Per unit of length factor the yield is held between 2 and 15 batteries per
-     * day, the range of the panels, so a tier with a factor f yields between 2 f and 15 f batteries (about 10 f).
+     * Economy anchor on the real model (tether out, free sky, the real gust and weather mix): the batteries of the same tier per day
+     * rise smoothly from about 8 (tier 1) to about 25 (tier 5), each within 0.5 of its target and all within 8..25.
      */
     @Test
     void dailyYieldFillsTheBatteryOfTheTierWellUnderADay() {
-        int[] ladder = {15, 75, 560, 5_600, 56_000};
+        int[] bases = {53, 226, 1_645, 14_250, 129_800};
+        double[] target = {8, 11, 15, 20, 25};
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
             double base = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
-            assertEquals(ladder[tier - 1], base);
-            double factor = KiteMath.lengthFactor(tier, KiteMath.tether(tier));
+            assertEquals(bases[tier - 1], base);
             double perDay = KiteMath.typicalDailyYield(base, tier);
             double batteries = perDay / BATTERY_CAPACITY[tier - 1];
-            assertTrue(batteries / factor >= 2 && batteries / factor <= 15, "tier " + tier + " yields " + batteries + " batteries per day");
+            assertTrue(batteries >= 8 && batteries <= 25, "tier " + tier + " yields " + batteries + " batteries per day");
+            assertEquals(target[tier - 1], batteries, 0.5, "tier " + tier + " yields " + batteries + " batteries per day");
             assertTrue(perDay <= KiteMath.peak(base, tier) * KiteMath.DAY_TICKS * KiteMath.WIND_MEAN * 1.01,
                     "tier " + tier + " yields more than the mean wind allows");
             // the battery is filled in well over a tick and well under a day at the very best
