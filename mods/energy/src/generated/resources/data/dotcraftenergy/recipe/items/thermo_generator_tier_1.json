@@ -1,0 +1,29 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:thermo_generator_tier_1"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:rechargeable_potato_battery"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:rechargeable_potato_battery",
+    "G": "#c:gears/aluminum",
+    "P": "#c:plates/aluminum",
+    "Q": "#c:gems/quartz",
+    "X": "#c:plates/copper"
+  },
+  "pattern": [
+    "PQP",
+    "GBG",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:thermo_generator_tier_1"
+  }
+}

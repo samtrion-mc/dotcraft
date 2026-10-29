@@ -57,6 +57,13 @@ public final class EnergyCommonConfig {
      * {@code VibrationBucket}); a generator next to a busy player makes 2/9 (tier 1) to 2/3 (tier 5) of it, see {@code VibrationMath}.
      */
     public static final List<Generator> VIBRATION_GENERATORS = generators(VIBRATION_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The registry paths of the thermoelectric generators, tiers 1-5, which are also their config sections. */
+    public static final List<String> THERMO_NAMES = tierNames("thermo_generator");
+    /**
+     * The thermoelectric generators: the peak FE/t at the temperature difference of the tier's ceiling (see ThermoMath in the thermo package). They run day and
+     * night, so even the weakest hot and cold source fills the battery of the tier in well under one MC day.
+     */
+    public static final List<Generator> THERMO_GENERATORS = generators(THERMO_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
 
     /** The bosses of the vibration generators: entity types whose game events are worth {@code VibrationMath.BOSS_FACTOR} times as much, key {@code vibration.bosses}. */
     public static final MobList VIBRATION_BOSSES = new MobList("vibration", "bosses",

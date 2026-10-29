@@ -8,6 +8,7 @@ import net.minecraft.tags.BlockTags;
 import net.neoforged.neoforge.common.data.BlockTagsProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.flow.FlowBlocks;
+import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 
@@ -29,5 +30,6 @@ public final class EnergyBlockTagsProvider extends BlockTagsProvider {
         EnergyBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
         FlowBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
         VibrationBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
+        ThermoBlocks.blocks().forEach(b -> pickaxe.add(b.get()));
     }
 }
