@@ -52,4 +52,17 @@ class VibrationTagsTest {
         }
         for (int i = 1; i <= 15; i++) assertFalse(values.contains("minecraft:resonate_" + i), "resonance of sculk sensors is no source");
     }
+
+    /** The boss tag is a data file (an entity type tag, so data packs can extend it) that holds exactly the four bosses. */
+    @Test
+    void holdsTheBosses() throws IOException {
+        var path = "/data/" + EnergyMod.MODID + "/tags/entity_type/vibration_boss.json";
+        try (var in = VibrationTagsTest.class.getResourceAsStream(path)) {
+            assertNotNull(in, "no boss tag file");
+            var values = new HashSet<String>();
+            JsonParser.parseReader(new InputStreamReader(in, StandardCharsets.UTF_8)).getAsJsonObject().getAsJsonArray("values")
+                    .forEach(e -> values.add(e.getAsString()));
+            assertEquals(Set.of("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden", "minecraft:elder_guardian"), values);
+        }
+    }
 }

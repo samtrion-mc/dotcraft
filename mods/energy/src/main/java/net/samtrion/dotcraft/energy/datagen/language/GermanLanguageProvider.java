@@ -43,6 +43,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(VibrationBlockItem.NEEDS_KEY, "Wird von Erschütterungen in der Nähe angetrieben: Blöcke abbauen, Kämpfe, Explosionen");
         add(VibrationBlockItem.PEAK_KEY, "Spitze %1$s FE/t, im Schnitt höchstens %2$s FE/t");
         add(VibrationBlockItem.HEARING_KEY, "Hört Erschütterungen im Umkreis von %1$s Blöcken, ab Vibrationsfrequenz %2$s");
+        add(VibrationBlockItem.BOSS_KEY, "Bosskämpfe zählen x%s");
         add(VibrationBlockItem.PIERCE_KEY, "Hört durch Wolle");
         WheelBlocks.blocks().forEach(b -> add(b.get(), "Mob-Laufrad (Stufe " + b.get().tier() + ")"));
         add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.TANK_KEY, "Das Wasser landet in einem Tank mit %s Eimern, der sich nur entleeren lässt");

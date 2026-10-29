@@ -7,11 +7,13 @@ import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.EntityTypeTagsProvider;
 import net.minecraft.world.entity.EntityType;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.vibration.VibrationTags;
 import net.samtrion.dotcraft.energy.wheel.WheelTags;
 
 /**
  * The entity type tags of the mob wheels: who runs a wheel, who weighs twice (horses and the like) and who half (small animals).
- * Hostile mobs and everything else are simply not in the tags and so count nothing.
+ * Hostile mobs and everything else are simply not in the tags and so count nothing. It also holds the entity tag of the vibration
+ * generators, the bosses of {@link VibrationTags#BOSSES} (a mod id may have one provider per tag type).
  */
 public final class WheelEntityTagsProvider extends EntityTypeTagsProvider {
     /**
@@ -31,5 +33,6 @@ public final class WheelEntityTagsProvider extends EntityTypeTagsProvider {
         tag(WheelTags.RUNNERS).addTag(WheelTags.STRONG).addTag(WheelTags.WEAK)
                 .add(EntityType.PIG, EntityType.COW, EntityType.MOOSHROOM, EntityType.SHEEP, EntityType.GOAT, EntityType.WOLF, EntityType.FOX,
                         EntityType.CAT, EntityType.OCELOT);
+        tag(VibrationTags.BOSSES).add(EntityType.ENDER_DRAGON, EntityType.WITHER, EntityType.WARDEN, EntityType.ELDER_GUARDIAN);
     }
 }
