@@ -55,7 +55,8 @@ public final class MeltRecipes extends RecipeProvider {
         Item previous = null;
         for (int tier = 1; tier <= METALS.length; tier++) {
             var block = MeltBlocks.block(tier);
-            if (block == null) {
+            // a tier above a missing one gets no recipe, so a switched-off tier cannot be skipped (only tier 1 uses grains)
+            if (block == null || (tier > 1 && previous == null)) {
                 previous = null;
                 continue;
             }

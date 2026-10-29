@@ -1,6 +1,10 @@
 package net.samtrion.dotcraft.energy.melt;
 
+import java.util.Collection;
+
+import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
+import net.neoforged.neoforge.transfer.transaction.Transaction;
 
 /** The buffer of a melt generator: nothing can be inserted from outside, the block entity fills it, and extraction is limited by the config. */
 final class MeltEnergy extends SimpleEnergyHandler {
@@ -54,5 +58,24 @@ final class MeltEnergy extends SimpleEnergyHandler {
     @Override
     protected void onEnergyChanged(int previousAmount) {
         changed.run();
+    }
+
+    /**
+     * Hands FE to the given handlers one after the other, for a generator that is removed: what they do not take is lost.
+     *
+     * @param total   the FE to hand on
+     * @param targets the handlers that may take FE
+     * @return the FE that was not taken
+     */
+    static int handOff(int total, Collection<? extends EnergyHandler> targets) {
+        int left = total;
+        for (var target : targets) {
+            if (left <= 0) break;
+            try (var tx = Transaction.openRoot()) {
+                left -= target.insert(left, tx);
+                tx.commit();
+            }
+        }
+        return left;
     }
 }

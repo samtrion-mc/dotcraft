@@ -184,7 +184,7 @@ public final class EnergyCommonConfig {
         }
     }
 
-    /** The FE a melted ice block gives, per type; while the config is not loaded (e.g. in datagen and unit tests) the defaults count. */
+    /** The FE a melted ice block gives, per type, global for all tiers and so in the top-level section {@code melt}; while the config is not loaded (e.g. in datagen and unit tests) the defaults count. */
     public static final class MeltYield {
         private final ModConfigSpec.IntValue ice;
         private final ModConfigSpec.IntValue packedIce;

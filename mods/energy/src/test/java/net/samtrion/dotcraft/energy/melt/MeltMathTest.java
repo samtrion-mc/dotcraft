@@ -4,7 +4,11 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.List;
+
 import org.junit.jupiter.api.Test;
+
+import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 
@@ -126,5 +130,50 @@ class MeltMathTest {
             assertEquals(MeltMath.reserve(peak(tier)), config.capacity());
             assertEquals(5 * peak(tier), config.maxOutput());
         }
+    }
+
+    /** Tiers 4 and 5 are burst tiers: a day at peak costs far more blue ice than a player can farm, tier 1 does not. */
+    @Test
+    void sustainedSupplyPerDay() {
+        long[] blueIcePerDay = new long[5];
+        for (int tier = 1; tier <= 5; tier++) blueIcePerDay[tier - 1] = MeltMath.dailyYield(peak(tier)) / MeltIce.BLUE_ICE.yield();
+        assertEquals(4, blueIcePerDay[0]);
+        assertTrue(blueIcePerDay[3] > 1_000 && blueIcePerDay[4] > 10_000, "tiers 4 and 5 are burst tiers");
+        for (int tier = 1; tier <= 5; tier++) {
+            long reservoirTicks = MeltMath.reserve(peak(tier)) / peak(tier);
+            assertEquals(MeltMath.RESERVE_TICKS, reservoirTicks);
+        }
+    }
+
+    /** Water is left by the tiers with the perk, never where water evaporates. */
+    @Test
+    void waterOnlyWhereItStays() {
+        assertTrue(MeltMath.leavesWater(MeltMath.tier(4), false));
+        assertFalse(MeltMath.leavesWater(MeltMath.tier(4), true));
+        assertFalse(MeltMath.leavesWater(MeltMath.tier(5), true));
+        assertFalse(MeltMath.leavesWater(MeltMath.tier(1), false));
+    }
+
+    /** The comparator signal is 0 only when empty and 15 only when full. */
+    @Test
+    void comparatorSignal() {
+        assertEquals(0, MeltMath.signal(0, 1_000));
+        assertEquals(1, MeltMath.signal(1, 1_000));
+        assertEquals(8, MeltMath.signal(500, 1_000));
+        assertEquals(15, MeltMath.signal(1_000, 1_000));
+        assertEquals(15, MeltMath.signal(5_000, 1_000));
+        assertEquals(0, MeltMath.signal(5, 0));
+    }
+
+    /** A removed generator gives its FE to the neighbours one after the other; what does not fit is lost. */
+    @Test
+    void handOffFillsNeighbours() {
+        var a = new SimpleEnergyHandler(300, 1_000, 1_000);
+        var b = new SimpleEnergyHandler(500, 1_000, 1_000);
+        assertEquals(0, MeltEnergy.handOff(600, List.of(a, b)));
+        assertEquals(300, a.getAmountAsInt());
+        assertEquals(300, b.getAmountAsInt());
+        assertEquals(800, MeltEnergy.handOff(1_000, List.of(a, b)), "only the 200 FE of room in b fit");
+        assertEquals(500, b.getAmountAsInt());
     }
 }

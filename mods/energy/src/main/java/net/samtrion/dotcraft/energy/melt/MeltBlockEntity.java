@@ -1,5 +1,6 @@
 package net.samtrion.dotcraft.energy.melt;
 
+import java.util.ArrayList;
 import java.util.EnumMap;
 import java.util.Map;
 
@@ -31,7 +32,8 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
  * block of the {@link MeltTags#HEAT} tag touches it; if one does, it melts up to {@link MeltMath.Tier#slots()} blocks of ice that touch
  * it on the other sides (see {@link MeltIce}): they turn to air, or to water on tiers 4 and 5, and their FE goes into the heat reservoir.
  * Every tick the reservoir releases at most the peak into the buffer (see {@link MeltMath}), and the buffer is pushed into the
- * neighbours that take FE. The FE of the reservoir is lost when the block is mined.
+ * neighbours that take FE. When the block is removed, the FE of the reservoir and the buffer is handed to the neighbours that take FE; what they do not
+ * take is lost. A neighbour in a chunk that is not loaded is never touched, so a generator never loads chunks.
  */
 public class MeltBlockEntity extends BlockEntity {
     private final MeltEnergy energy;
@@ -91,6 +93,7 @@ public class MeltBlockEntity extends BlockEntity {
      */
     public static boolean isHeated(Level level, BlockPos pos) {
         for (Direction d : Direction.values()) {
+            if (!level.isLoaded(pos.relative(d))) continue;
             var state = level.getBlockState(pos.relative(d));
             if (state.is(MeltTags.HEAT) && (!state.hasProperty(BlockStateProperties.LIT) || state.getValue(BlockStateProperties.LIT))) return true;
         }
@@ -132,9 +135,10 @@ public class MeltBlockEntity extends BlockEntity {
         for (Direction d : Direction.values()) {
             if (melted >= tier.slots()) break;
             var at = worldPosition.relative(d);
+            if (!level.isLoaded(at)) continue;
             var ice = MeltIce.of(level.getBlockState(at));
             if (ice == null || !MeltMath.mayMelt(pending, ice.yield(), peak)) continue;
-            boolean water = tier.water() && !level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, at);
+            boolean water = MeltMath.leavesWater(tier, level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, at));
             level.setBlockAndUpdate(at, (water ? Blocks.WATER : Blocks.AIR).defaultBlockState());
             level.playSound(null, at, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 1.4F);
             level.sendParticles(ParticleTypes.CLOUD, at.getX() + 0.5, at.getY() + 0.5, at.getZ() + 0.5, 4, 0.25, 0.25, 0.25, 0.01);
@@ -142,6 +146,33 @@ public class MeltBlockEntity extends BlockEntity {
             melted++;
         }
         if (melted > 0) setChanged();
+    }
+
+    /**
+     * The comparator signal: how full the reservoir and the buffer are together.
+     *
+     * @return 0..15
+     */
+    public int signal() {
+        var config = config(getBlockState());
+        return MeltMath.signal(pending + energy.getAmountAsLong(), MeltMath.reserve(config.peak()) + config.capacity());
+    }
+
+    /** Hands the FE of the reservoir and the buffer to the neighbours that take it; the rest is lost. */
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState state) {
+        super.preRemoveSideEffects(pos, state);
+        if (level == null || level.isClientSide()) return;
+        int total = (int) Math.min(Integer.MAX_VALUE, pending + energy.getAmountAsLong());
+        if (total <= 0) return;
+        var targets = new ArrayList<EnergyHandler>();
+        for (Direction d : Direction.values()) {
+            var at = pos.relative(d);
+            if (!level.isLoaded(at)) continue;
+            EnergyHandler handler = level.getCapability(Capabilities.Energy.BLOCK, at, d.getOpposite());
+            if (handler != null) targets.add(handler);
+        }
+        MeltEnergy.handOff(total, targets);
     }
 
     private void push(ServerLevel level) {

@@ -10,10 +10,14 @@ package net.samtrion.dotcraft.energy.melt;
  * generator that is mined is lost).
  * <p>
  * Economy: the peaks follow the battery ladder (15 / 75 / 560 / 5 600 / 56 000 FE/t) so a generator of a tier fills the battery of the
- * same tier in about 1 340 ticks, a twentieth of an MC day, if it is fed. The ice is the price: by default 1 000 FE per ice block,
+ * same tier in about 1 340 ticks (roughly 5.6% of an MC day) if it is fed. The ice is the price: by default 1 000 FE per ice block,
  * so tier 1 at full output burns 360 ice (40 packed ice) per MC day. Ice can be farmed (water freezes in cold biomes, slowly), but
  * never for free: a melted block is gone (the higher tiers leave water, which has to freeze again), and frosted ice, which frost
  * walker boots make without limit, is no fuel. The heat sources are not used up, so the ice is the only running cost.
+ * <p>
+ * Tiers 4 and 5 are burst tiers: running them at their peak for a whole day would take thousands of blue ice, so in practice they
+ * empty the reservoir (600 ticks of peak) into a battery now and then. Water recovery leaves a renewable water source behind; it can
+ * freeze again in a cold biome, but only slowly (random ticks of surface water), so it is a slow loop, not a free one.
  */
 public final class MeltMath {
     /** Ticks of full output the reservoir holds, the same as the buffer. */
@@ -98,6 +102,29 @@ public final class MeltMath {
     public static double supply(int tier, int yield) {
         var t = tier(tier);
         return (double) t.slots() * yield / t.interval();
+    }
+
+    /**
+     * Whether a melted block leaves water.
+     *
+     * @param tier       the perks of the tier
+     * @param evaporates whether water evaporates at the position (the Nether)
+     * @return {@code true} if the block is replaced by a water source, {@code false} for air
+     */
+    public static boolean leavesWater(Tier tier, boolean evaporates) {
+        return tier.water() && !evaporates;
+    }
+
+    /**
+     * The comparator signal: how full the heat reservoir and the buffer are together.
+     *
+     * @param held the FE in the reservoir and the buffer
+     * @param max  the FE both hold at most
+     * @return 0 when empty, otherwise 1..15
+     */
+    public static int signal(long held, long max) {
+        if (held <= 0 || max <= 0) return 0;
+        return (int) Math.min(15, 1 + 14 * held / max);
     }
 
     /**

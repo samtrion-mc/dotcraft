@@ -5,6 +5,7 @@ import java.util.function.Consumer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.gametest.framework.TestData;
@@ -12,6 +13,7 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
@@ -21,6 +23,7 @@ import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
+import net.samtrion.dotcraft.energy.melt.MeltBlock;
 import net.samtrion.dotcraft.energy.melt.MeltBlockEntity;
 import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.energy.melt.MeltIce;
@@ -40,11 +43,15 @@ public final class MeltGameTests {
     private static final Identifier MELT_ALONE = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "melt_alone");
     private static final ResourceKey<Consumer<GameTestHelper>> MELT_ALONE_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, MELT_ALONE);
 
+    private static final Identifier MELT_LIMITS = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "melt_limits");
+    private static final ResourceKey<Consumer<GameTestHelper>> MELT_LIMITS_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, MELT_LIMITS);
+
     /** The height the generators stand at, clear of the floor of the structure. */
     private static final int Y = 2;
     /** Ticks to wait: the first pulse of any tier comes within 20 ticks. */
     private static final int WAIT = 45;
 
+    /** Not instantiable. */
     private MeltGameTests() {}
 
     /**
@@ -58,6 +65,7 @@ public final class MeltGameTests {
             registry.register(MELT, (Consumer<GameTestHelper>) MeltGameTests::melt);
             registry.register(MELT_TIERS, (Consumer<GameTestHelper>) MeltGameTests::tiers);
             registry.register(MELT_ALONE, (Consumer<GameTestHelper>) MeltGameTests::alone);
+            registry.register(MELT_LIMITS, (Consumer<GameTestHelper>) MeltGameTests::limits);
         });
     }
 
@@ -74,6 +82,8 @@ public final class MeltGameTests {
         event.registerTest(MELT_TIERS, new FunctionGameTestInstance(MELT_TIERS_FUNCTION, new TestData<>(tiers, Identifier.withDefaultNamespace("empty"), 70, 0, true)));
         var alone = event.registerEnvironment(MELT_ALONE, new TestEnvironmentDefinition.AllOf());
         event.registerTest(MELT_ALONE, new FunctionGameTestInstance(MELT_ALONE_FUNCTION, new TestData<>(alone, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+        var limits = event.registerEnvironment(MELT_LIMITS, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(MELT_LIMITS, new FunctionGameTestInstance(MELT_LIMITS_FUNCTION, new TestData<>(limits, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
     }
 
     /**
@@ -96,14 +106,22 @@ public final class MeltGameTests {
         helper.setBlock(heated.west(), Blocks.MAGMA_BLOCK);
         helper.setBlock(blue.west(), Blocks.MAGMA_BLOCK);
         helper.setBlock(blue.east(), Blocks.BLUE_ICE);
+        var lastStored = new int[] {0};
+        helper.onEachTick(() -> {
+            if (!(level.getBlockEntity(helper.absolutePos(heated)) instanceof MeltBlockEntity be)) return;
+            int delta = be.stored() - lastStored[0];
+            lastStored[0] = be.stored();
+            helper.assertTrue(delta <= EnergyCommonConfig.MELT_GENERATORS.get(0).peak(), "more than the peak in one tick: " + delta);
+        });
         helper.runAfterDelay(WAIT, () -> {
             var peak = EnergyCommonConfig.MELT_GENERATORS.get(0).peak();
             helper.assertTrue(helper.getBlockState(heated.east()).isAir(), "the ice next to the heated generator was not consumed");
             var be = (MeltBlockEntity) level.getBlockEntity(helper.absolutePos(heated));
             helper.assertTrue(be.stored() > 0, "the heated generator made no FE");
             helper.assertTrue(be.stored() + be.pending() == MeltIce.ICE.yield(), "FE lost or made up: " + be.stored() + " + " + be.pending());
-            helper.assertTrue(be.stored() <= (long) peak * WAIT, "more than the peak per tick: " + be.stored());
-            helper.assertTrue(helper.getBlockState(heated).getValue(net.samtrion.dotcraft.energy.melt.MeltBlock.LIT), "the generator does not glow");
+            helper.assertTrue(be.stored() <= (long) peak * WAIT, "more than the peak in all: " + be.stored());
+            helper.assertTrue(be.signal() > 0, "no comparator signal");
+            helper.assertTrue(helper.getBlockState(heated).getValue(MeltBlock.LIT), "the generator does not glow");
             for (Direction side : Direction.values()) {
                 EnergyHandler handler = level.getCapability(Capabilities.Energy.BLOCK, helper.absolutePos(heated), side);
                 helper.assertTrue(handler != null, "no capability on " + side);
@@ -179,5 +197,49 @@ public final class MeltGameTests {
         EnergyHandler own = level.getCapability(Capabilities.Energy.BLOCK, helper.absolutePos(melt), Direction.DOWN);
         helper.assertTrue(own != null && own.getCapacityAsLong() == EnergyCommonConfig.MELT_GENERATORS.get(0).capacity(), "wrong capacity of the melt generator");
         helper.succeed();
+    }
+
+    /**
+     * Tier 5 melts all five ice sides at once; a full reservoir stops melting (a blue ice burnt in tier 1 keeps the next block from
+     * melting); the FE of a block entity survives saving and loading.
+     *
+     * @param helper the game test helper
+     */
+    private static void limits(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var five = new BlockPos(1, Y, 1);
+        var full = new BlockPos(1, Y, 5);
+        var saved = new BlockPos(1, Y, 9);
+        var copy = new BlockPos(1, Y, 13);
+        helper.setBlock(five, MeltBlocks.block(5).get());
+        helper.setBlock(five.west(), Blocks.MAGMA_BLOCK);
+        for (var d : new Direction[] {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.EAST}) helper.setBlock(five.relative(d), Blocks.ICE);
+        helper.setBlock(full, MeltBlocks.block(1).get());
+        helper.setBlock(full.west(), Blocks.MAGMA_BLOCK);
+        helper.setBlock(full.east(), Blocks.BLUE_ICE);
+        helper.setBlock(full.above(), Blocks.ICE);
+        helper.setBlock(saved, MeltBlocks.block(1).get());
+        helper.setBlock(saved.west(), Blocks.MAGMA_BLOCK);
+        helper.setBlock(saved.east(), Blocks.PACKED_ICE);
+        helper.setBlock(copy, MeltBlocks.block(1).get());
+        helper.runAfterDelay(WAIT, () -> {
+            for (var d : new Direction[] {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.EAST}) {
+                helper.assertTrue(helper.getBlockState(five.relative(d)).is(Blocks.WATER), "tier 5 did not melt " + d + " into water");
+            }
+            var fiveBe = (MeltBlockEntity) level.getBlockEntity(helper.absolutePos(five));
+            helper.assertTrue(fiveBe.stored() + fiveBe.pending() == 5L * MeltIce.ICE.yield(), "wrong FE for five ice blocks: " + fiveBe.stored() + " + " + fiveBe.pending());
+
+            helper.assertTrue(helper.getBlockState(full.above()).isAir(), "the ice above was not consumed");
+            helper.assertTrue(helper.getBlockState(full.east()).is(Blocks.BLUE_ICE), "a block melted into a full reservoir");
+
+            var source = (MeltBlockEntity) level.getBlockEntity(helper.absolutePos(saved));
+            helper.assertTrue(source.pending() > 0 && source.stored() > 0, "nothing to save");
+            var tag = source.saveCustomOnly(level.registryAccess());
+            var target = (MeltBlockEntity) level.getBlockEntity(helper.absolutePos(copy));
+            target.loadCustomOnly(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), tag));
+            helper.assertTrue(target.pending() == source.pending() && target.stored() == source.stored(),
+                    "save and load changed the FE: " + target.pending() + "/" + target.stored() + " instead of " + source.pending() + "/" + source.stored());
+            helper.succeed();
+        });
     }
 }

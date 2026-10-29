@@ -5,6 +5,7 @@ import java.util.function.Supplier;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -20,6 +21,7 @@ import net.minecraft.world.level.block.state.properties.BooleanProperty;
 /**
  * A melt generator of one tier, a full block. It is no {@code GeneratorBlock}, so the solar and lunar panel groups never take it for
  * a panel. The {@link #LIT} property shows that heat is left in the reservoir, for the model and a little light.
+ * A comparator reads how full the reservoir and the buffer are.
  */
 public class MeltBlock extends Block implements EntityBlock {
     /** The reservoir holds heat: the block glows. */
@@ -59,6 +61,16 @@ public class MeltBlock extends Block implements EntityBlock {
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new MeltBlockEntity(type.get(), pos, state);
+    }
+
+    @Override
+    protected boolean hasAnalogOutputSignal(BlockState state) {
+        return true;
+    }
+
+    @Override
+    protected int getAnalogOutputSignal(BlockState state, Level level, BlockPos pos, Direction direction) {
+        return level.getBlockEntity(pos) instanceof MeltBlockEntity be ? be.signal() : 0;
     }
 
     @Override
