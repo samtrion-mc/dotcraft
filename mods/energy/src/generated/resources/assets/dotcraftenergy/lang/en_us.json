@@ -1,4 +1,9 @@
 {
+  "block.dotcraftenergy.flow_generator_tier_1": "Flow Generator (Tier 1)",
+  "block.dotcraftenergy.flow_generator_tier_2": "Flow Generator (Tier 2)",
+  "block.dotcraftenergy.flow_generator_tier_3": "Flow Generator (Tier 3)",
+  "block.dotcraftenergy.flow_generator_tier_4": "Flow Generator (Tier 4)",
+  "block.dotcraftenergy.flow_generator_tier_5": "Flow Generator (Tier 5)",
   "block.dotcraftenergy.lunar_panel_tier_1": "Lunar Panel (Tier 1)",
   "block.dotcraftenergy.lunar_panel_tier_2": "Lunar Panel (Tier 2)",
   "block.dotcraftenergy.lunar_panel_tier_3": "Lunar Panel (Tier 3)",
@@ -18,5 +23,12 @@
   "item.dotcraftenergy.potato_battery": "Potato Battery",
   "item.dotcraftenergy.rechargeable_potato_battery": "Rechargeable Potato Battery",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energy",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.flow.axis": "Front and back must stay free for the water (a solid block there: 0 FE); gives FE to the other sides",
+  "tooltip.dotcraftenergy.flow.formula": "Needs water: peak x water share x biome x (1 + animals)",
+  "tooltip.dotcraftenergy.flow.perk_1": "Baseline: needs a nearly full cube of water",
+  "tooltip.dotcraftenergy.flow.perk_2": "Wide net: animals count within 6 blocks",
+  "tooltip.dotcraftenergy.flow.perk_3": "Adaptation: keeps 75% outside ocean and river",
+  "tooltip.dotcraftenergy.flow.perk_4": "Lean water: a small pond is already enough",
+  "tooltip.dotcraftenergy.flow.perk_5": "Abyssal: independent of the biome"
 }

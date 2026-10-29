@@ -3,6 +3,8 @@ package net.samtrion.dotcraft.energy.datagen.language;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.flow.FlowBlocks;
+import net.samtrion.dotcraft.energy.flow.FlowGeneratorItem;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.resources.common.Locales;
@@ -29,8 +31,16 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(EnergyItems.PHOTOVOLTAIC_CELL.get(), "Photovoltaikzelle");
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solarpanel (Stufe " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Mondpanel (Stufe " + b.get().tier() + ")"));
+        FlowBlocks.blocks().forEach(b -> add(b.get(), "Strömungsgenerator (Stufe " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
+        add(FlowGeneratorItem.FORMULA_KEY, "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)");
+        add(FlowGeneratorItem.AXIS_KEY, "Vorder- und Rückseite müssen für das Wasser frei bleiben (ein fester Block dort: 0 FE); gibt FE an die anderen Seiten");
+        add(FlowGeneratorItem.PERK_KEY + 1, "Basis: braucht einen fast vollen Wasserwürfel");
+        add(FlowGeneratorItem.PERK_KEY + 2, "Weites Netz: Tiere zählen im Umkreis von 6 Blöcken");
+        add(FlowGeneratorItem.PERK_KEY + 3, "Anpassung: behält 75% außerhalb von Ozean und Fluss");
+        add(FlowGeneratorItem.PERK_KEY + 4, "Schlankes Wasser: ein kleiner Teich genügt schon");
+        add(FlowGeneratorItem.PERK_KEY + 5, "Abyssal: unabhängig vom Biom");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }

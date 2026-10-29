@@ -3,6 +3,8 @@ package net.samtrion.dotcraft.energy.datagen.language;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.LanguageProvider;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.flow.FlowBlocks;
+import net.samtrion.dotcraft.energy.flow.FlowGeneratorItem;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.resources.common.Locales;
@@ -29,8 +31,16 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(EnergyItems.PHOTOVOLTAIC_CELL.get(), "Photovoltaic Cell");
         EnergyBlocks.SOLAR.blocks().forEach(b -> add(b.get(), "Solar Panel (Tier " + b.get().tier() + ")"));
         EnergyBlocks.LUNAR.blocks().forEach(b -> add(b.get(), "Lunar Panel (Tier " + b.get().tier() + ")"));
+        FlowBlocks.blocks().forEach(b -> add(b.get(), "Flow Generator (Tier " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
+        add(FlowGeneratorItem.FORMULA_KEY, "Needs water: peak x water share x biome x (1 + animals)");
+        add(FlowGeneratorItem.AXIS_KEY, "Front and back must stay free for the water (a solid block there: 0 FE); gives FE to the other sides");
+        add(FlowGeneratorItem.PERK_KEY + 1, "Baseline: needs a nearly full cube of water");
+        add(FlowGeneratorItem.PERK_KEY + 2, "Wide net: animals count within 6 blocks");
+        add(FlowGeneratorItem.PERK_KEY + 3, "Adaptation: keeps 75% outside ocean and river");
+        add(FlowGeneratorItem.PERK_KEY + 4, "Lean water: a small pond is already enough");
+        add(FlowGeneratorItem.PERK_KEY + 5, "Abyssal: independent of the biome");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }
