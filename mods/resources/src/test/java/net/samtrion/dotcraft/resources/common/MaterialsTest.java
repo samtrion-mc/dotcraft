@@ -336,7 +336,7 @@ class MaterialsTest {
     @Test
     void external() {
         Material m = only(IRON);
-        assertEquals(List.of(form("dust"), form("plate"), form("gear")), m.forms());
+        assertEquals(List.of(form("dust"), form("plate"), form("gear"), form("rod"), form("wire")), m.forms());
         assertTrue(m.isExternal());
         var source = m.external().get(0);
         assertTrue(source.mod().isEmpty());

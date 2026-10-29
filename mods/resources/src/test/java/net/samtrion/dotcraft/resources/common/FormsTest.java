@@ -45,9 +45,9 @@ class FormsTest {
     @Test
     void shippedSourcesAreValid() throws Exception {
         List<Form> forms = shipped();
-        assertEquals(List.of("raw", "raw_block", "ingot", "nugget", "grains", "block", "dust", "dust_block", "plate", "gear", "ore", "hammer", "sandpaper"),
+        assertEquals(List.of("raw", "raw_block", "ingot", "nugget", "grains", "block", "dust", "dust_block", "plate", "gear", "rod", "wire", "ore", "hammer", "sandpaper"),
                 forms.stream().map(Form::id).toList());
-        assertEquals(List.of("raw", "raw_blocks", "ingots", "nuggets", "grains", "blocks", "dusts", "dust_blocks", "plates", "gears", "ores", "hammers", "sandpapers"),
+        assertEquals(List.of("raw", "raw_blocks", "ingots", "nuggets", "grains", "blocks", "dusts", "dust_blocks", "plates", "gears", "rods", "wires", "ores", "hammers", "sandpapers"),
                 forms.stream().map(Form::configKey).toList());
         assertEquals(forms.size(), forms.stream().map(Form::configKey).distinct().count());
         for (Form f : forms) {
@@ -58,6 +58,24 @@ class FormsTest {
         assertEquals("%s_dust_block", Forms.find(forms, "dust_block").pathPattern());
         assertEquals("Rich Deepslate Tin Ore", Forms.find(forms, "ore").displayName("en_us", "Tin", OreHost.DEEPSLATE, OreRichness.RICH));
         assertEquals("Tin-Barren", Forms.find(forms, "ingot").displayName("de_de", "Tin"));
+    }
+
+    /** Rod and wire: a shaped column of two ingots over a hammer makes 3 rods, a hammer, sandpaper and a rod make 2 wires. */
+    @Test
+    void rodAndWire() throws Exception {
+        Form rod = Forms.find(shipped(), "rod");
+        Form.Conversion cr = rod.conversions().get(0);
+        assertEquals(List.of("I", "I", "H"), cr.pattern());
+        assertEquals(3, cr.ratio());
+        assertEquals(Form.Conversion.HAMMER, cr.key().get("H"));
+        Form wire = Forms.find(shipped(), "wire");
+        Form.Conversion cw = wire.conversions().get(0);
+        assertEquals(Form.Conversion.Kind.SHAPELESS, cw.kind());
+        assertEquals(2, cw.ratio());
+        assertEquals(List.of("rod"), wire.requires());
+        assertEquals("rods", rod.tag().parent());
+        assertEquals("wires", wire.tag().parent());
+        assertThrows(IllegalArgumentException.class, () -> parse("cog", 5, ",\"conversions\":[{\"kind\":\"shaped\",\"ratio\":10,\"pattern\":[\"I\"],\"key\":{\"I\":\"ingot\"}}]"));
     }
 
     /** A tool form has a durability above 0 and is no block; its recipe is a shaped or shapeless conversion with {@code #} for the material. */

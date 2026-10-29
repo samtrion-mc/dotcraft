@@ -44,7 +44,7 @@ import net.samtrion.dotcraft.resources.tool.ToolTier;
  * An alloy input that lists alternatives (see {@link Material.Alloy.Input}) gets one {@code recipes} switch per
  * alternative material.
  * The key of a form is its {@link Form#configKey()} ({@code raw}, {@code raw_blocks}, {@code ingots},
- * {@code nuggets}, {@code grains}, {@code blocks}, {@code dusts}, {@code dust_blocks}, {@code plates}, {@code gears},
+ * {@code nuggets}, {@code grains}, {@code blocks}, {@code dusts}, {@code dust_blocks}, {@code plates}, {@code gears}, {@code rods}, {@code wires},
  * {@code hammers}, {@code sandpapers},
  * {@code ores}); only the forms a material has are listed. A disabled form drops every generated
  * recipe that makes or uses it, is hidden in the creative tab and the recipe viewers, and (the ores) is not generated in

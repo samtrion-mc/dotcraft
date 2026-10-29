@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "silver",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "rod",
+      "material": "silver",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "iron"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#dotcraftresources:hammers/iron",
+    "I": "#c:ingots/silver"
+  },
+  "pattern": [
+    "I",
+    "I",
+    "H"
+  ],
+  "result": {
+    "count": 3,
+    "id": "dotcraftresources:silver_rod"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "ingot",
+      "material": "tin",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "rod",
+      "material": "tin",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "stone"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#dotcraftresources:hammers/stone",
+    "I": "#c:ingots/tin"
+  },
+  "pattern": [
+    "I",
+    "I",
+    "H"
+  ],
+  "result": {
+    "count": 3,
+    "id": "dotcraftresources:tin_rod"
+  }
+}

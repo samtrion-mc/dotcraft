@@ -11,6 +11,8 @@
     "nugget",
     "plate",
     "gear",
+    "rod",
+    "wire",
     "hammer"
   ],
   "tools": {
