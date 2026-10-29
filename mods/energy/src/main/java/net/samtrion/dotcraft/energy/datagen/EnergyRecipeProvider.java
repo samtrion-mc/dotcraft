@@ -22,6 +22,7 @@ import net.minecraft.world.item.crafting.Recipe;
 import net.neoforged.neoforge.common.Tags;
 import net.neoforged.neoforge.common.conditions.RegisteredCondition;
 import net.samtrion.dotcraft.energy.EnergyMod;
+import net.samtrion.dotcraft.energy.current.CurrentRecipes;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.resources.common.Forms;
@@ -77,6 +78,7 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
                     EnergyItems.BATTERY_TIER_4.get(), EnergyItems.BATTERY_TIER_5.get()};
             panels(EnergyBlocks.SOLAR, batteries, Tags.Items.GLASS_PANES, "aluminum", "bronze", "steel", "electrum", "osmium");
             panels(EnergyBlocks.LUNAR, batteries, Tags.Items.GEMS_LAPIS, "lead", "brass", "invar", "silver", "platinum");
+            new CurrentRecipes(this.registries, output).generate();
         }
 
         /** Two photovoltaic cells: two quartz, a glass pane and redstone grains; unlocked by the quartz. */
@@ -122,7 +124,7 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
         }
 
         private static RegisteredCondition<Item> registered(Item item) {
-            return new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item)));
+            return EnergyRecipeProvider.registered(item);
         }
 
         /** A rechargeable battery as a recipe result: always uncharged (0 FE), a stack without the component would be full. */
@@ -175,8 +177,29 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
 
         /** The item tag of a material in a form of the resources mod, e.g. {@code c:nuggets/zinc}. */
         private static TagKey<Item> tag(String material, String form) {
-            var m = Materials.all().stream().filter(x -> x.id().equals(material)).findFirst().orElseThrow();
-            return MaterialTags.item(Forms.get(form), m);
+            return materialTag(material, form);
         }
+    }
+
+    /**
+     * The item tag of a material in a form of the resources mod, e.g. {@code c:plates/iron}; shared with the recipes of the other packages.
+     *
+     * @param material the id of the material
+     * @param form     the id of the form, e.g. {@code plate}
+     * @return the tag
+     */
+    public static TagKey<Item> materialTag(String material, String form) {
+        var m = Materials.all().stream().filter(x -> x.id().equals(material)).findFirst().orElseThrow();
+        return MaterialTags.item(Forms.get(form), m);
+    }
+
+    /**
+     * The condition that an item is registered, so a recipe is dropped when the item is switched off; shared with the recipes of the other packages.
+     *
+     * @param item the item
+     * @return the condition
+     */
+    public static RegisteredCondition<Item> registered(Item item) {
+        return new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, net.minecraft.core.registries.BuiltInRegistries.ITEM.getKey(item)));
     }
 }

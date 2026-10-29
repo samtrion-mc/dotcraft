@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:current_generator_tier_5"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_5"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:current_generator_tier_4"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:battery_tier_5",
+    "G": "#c:gears/iridium",
+    "P": "#c:plates/iridium",
+    "X": "dotcraftenergy:current_generator_tier_4"
+  },
+  "pattern": [
+    "PGP",
+    "GBG",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:current_generator_tier_5"
+  }
+}

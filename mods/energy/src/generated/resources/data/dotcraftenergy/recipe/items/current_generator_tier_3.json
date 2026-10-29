@@ -1,0 +1,32 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:current_generator_tier_3"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_3"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:current_generator_tier_2"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:battery_tier_3",
+    "G": "#c:gears/steel",
+    "P": "#c:plates/steel",
+    "X": "dotcraftenergy:current_generator_tier_2"
+  },
+  "pattern": [
+    "PGP",
+    "GBG",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:current_generator_tier_3"
+  }
+}

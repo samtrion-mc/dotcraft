@@ -7,7 +7,7 @@ import net.neoforged.neoforge.transfer.transaction.TransactionContext;
  * The FE share of one generator block: nothing can be inserted from outside, the block entity fills it; extraction is limited by the
  * config, which is applied by {@link #configure}.
  */
-final class GeneratorEnergy extends SimpleEnergyHandler {
+public final class GeneratorEnergy extends SimpleEnergyHandler {
     private final Runnable changed;
 
     /**
@@ -17,7 +17,7 @@ final class GeneratorEnergy extends SimpleEnergyHandler {
      * @param maxOutput the most FE extracted per operation
      * @param changed   called when the stored FE changes
      */
-    GeneratorEnergy(int capacity, int maxOutput, Runnable changed) {
+    public GeneratorEnergy(int capacity, int maxOutput, Runnable changed) {
         super(capacity, 0, maxOutput);
         this.changed = changed;
     }
@@ -28,7 +28,7 @@ final class GeneratorEnergy extends SimpleEnergyHandler {
      * @param newCapacity  the capacity
      * @param newMaxOutput the most FE extracted per operation
      */
-    void configure(int newCapacity, int newMaxOutput) {
+    public void configure(int newCapacity, int newMaxOutput) {
         capacity = newCapacity;
         maxExtract = newMaxOutput;
         if (energy > capacity) set(capacity);
@@ -40,7 +40,7 @@ final class GeneratorEnergy extends SimpleEnergyHandler {
      * @param amount the FE made
      * @return the FE that fitted
      */
-    int produce(int amount) {
+    public int produce(int amount) {
         if (amount <= 0 || energy >= capacity) return 0;
         int before = energy;
         set((int) Math.min(capacity, (long) energy + amount));
@@ -52,7 +52,7 @@ final class GeneratorEnergy extends SimpleEnergyHandler {
      *
      * @return the limit per operation
      */
-    int maxOutput() {
+    public int maxOutput() {
         return maxExtract;
     }
 
