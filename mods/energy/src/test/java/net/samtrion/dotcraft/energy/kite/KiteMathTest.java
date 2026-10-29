@@ -31,7 +31,7 @@ class KiteMathTest {
         assertEquals(0.25, KiteMath.lengthFactor(5, 16), 1e-9);
         assertEquals(0, KiteMath.lengthFactor(5, -4));
         double[] best = {0.25, 0.375, 0.5, 0.75, 1};
-        double[] maxFe = {13.25, 84.75, 822.5, 10_687.5, 129_800};
+        double[] maxFe = {16, 150, 1_300, 12_999.75, 128_000};
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
             assertEquals(best[tier - 1], KiteMath.lengthFactor(tier, 10_000), 1e-9, "tier " + tier);
             assertEquals(maxFe[tier - 1], KiteMath.peak(EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak(), tier), 1e-9, "tier " + tier);
@@ -221,12 +221,12 @@ class KiteMathTest {
 
     /**
      * Economy anchor on the real model (tether out, free sky, the real gust and weather mix): the batteries of the same tier per day
-     * rise smoothly from about 8 (tier 1) to about 25 (tier 5), each within 0.5 of its target and all within 8..25.
+     * are about 9.8 / 19.4 / 23.7 / 24.3 / 24.6 (tier 1-5), each within 0.5 of its target and all within 8..25.
      */
     @Test
     void dailyYieldFillsTheBatteryOfTheTierWellUnderADay() {
-        int[] bases = {53, 226, 1_645, 14_250, 129_800};
-        double[] target = {8, 11, 15, 20, 25};
+        int[] bases = {64, 400, 2_600, 17_333, 128_000};
+        double[] target = {9.8, 19.4, 23.7, 24.3, 24.6};
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
             double base = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
             assertEquals(bases[tier - 1], base);
