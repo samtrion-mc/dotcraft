@@ -82,7 +82,7 @@ class VibrationBucketTest {
     void ceilingOverADay() {
         for (int tier = 1; tier <= 5; tier++) {
             int peak = net.samtrion.dotcraft.energy.EnergyCommonConfig.VIBRATION_GENERATORS.get(tier - 1).peak();
-            long refill = VibrationMath.refill(peak);
+            long refill = VibrationMath.refill(tier, peak);
             var hammer = new VibrationBucket();
             var random = new VibrationBucket();
             var rnd = new Random(tier);
@@ -96,11 +96,46 @@ class VibrationBucketTest {
                     for (int i = rnd.nextInt(30); i > 0; i--) randomly += random.take(tick, VibrationMath.eventEnergy(peak, 1 + rnd.nextInt(15)), refill, VibrationMath.burst(peak));
                 }
             }
-            long max = VibrationMath.maxYield(peak, VibrationMath.DAY_TICKS);
+            long max = VibrationMath.maxYield(tier, peak, VibrationMath.DAY_TICKS);
             assertTrue(hammered <= max, "tier " + tier + ": " + hammered + " > " + max);
             assertTrue(randomly <= max, "tier " + tier + ": " + randomly + " > " + max);
             // the hammer reaches the ceiling (within one loudest event per tick), so the cap is the real limit
             assertTrue(hammered >= refill * VibrationMath.DAY_TICKS - VibrationMath.eventEnergy(peak, 15), "tier " + tier + ": " + hammered);
         }
+    }
+
+    /**
+     * Boss events beat the duty ceiling but never the peak: hammering the loudest boss event every tick for a day makes more than
+     * the duty ceiling and no more than {@link VibrationMath#absoluteMaxYield}, and nearly the peak per tick on average.
+     */
+    @Test
+    void bossCeilingOverADay() {
+        for (int tier = 1; tier <= 5; tier++) {
+            int peak = net.samtrion.dotcraft.energy.EnergyCommonConfig.VIBRATION_GENERATORS.get(tier - 1).peak();
+            var bucket = new VibrationBucket();
+            var bonus = new VibrationBucket();
+            VibrationMath.grant(tier, peak, 0, 0, true, bucket, bonus);
+            long made = 0;
+            for (int tick = 1; tick <= VibrationMath.DAY_TICKS; tick++) {
+                for (int i = 0; i < 3; i++) made += VibrationMath.grant(tier, peak, tick, VibrationMath.eventEnergy(peak, 15), true, bucket, bonus);
+            }
+            long max = VibrationMath.absoluteMaxYield(peak, VibrationMath.DAY_TICKS);
+            assertTrue(made <= max, "tier " + tier + ": " + made + " > " + max);
+            assertTrue(made > VibrationMath.maxYield(tier, peak, VibrationMath.DAY_TICKS), "tier " + tier + ": " + made);
+            assertTrue(made >= (long) peak * VibrationMath.DAY_TICKS - VibrationMath.bossEventEnergy(peak, 15), "tier " + tier + ": " + made);
+        }
+    }
+
+    /** A boss event is worth five normal ones from a full pair of buckets, a normal event never touches the bonus bucket. */
+    @Test
+    void bossEventPaysFromBonus() {
+        var bucket = new VibrationBucket();
+        var bonus = new VibrationBucket();
+        // tier 1, peak 15: a loudest event is 150 FE, a boss one 750; the bucket holds 300, the bonus bucket 1500
+        assertEquals(150, VibrationMath.grant(1, 15, 0, 150, false, bucket, bonus));
+        assertEquals(Long.MAX_VALUE, bonus.tokens());
+        assertEquals(750, VibrationMath.grant(1, 15, 0, 150, true, bucket, bonus));
+        assertEquals(0, bucket.tokens());
+        assertEquals(1500 - 600, bonus.tokens());
     }
 }

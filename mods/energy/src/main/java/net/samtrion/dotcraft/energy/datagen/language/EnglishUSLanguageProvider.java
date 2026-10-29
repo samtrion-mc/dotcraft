@@ -43,6 +43,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(VibrationBlockItem.NEEDS_KEY, "Powered by shocks nearby: blocks broken, fights, explosions");
         add(VibrationBlockItem.PEAK_KEY, "Peak %1$s FE/t, on average at most %2$s FE/t");
         add(VibrationBlockItem.HEARING_KEY, "Hears shocks within %1$s blocks, from vibration frequency %2$s");
+        add(VibrationBlockItem.BOSS_KEY, "Boss fights count x%s");
         add(VibrationBlockItem.PIERCE_KEY, "Hears through wool");
         WheelBlocks.blocks().forEach(b -> add(b.get(), "Mob Wheel (Tier " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");

@@ -36,7 +36,9 @@ import net.samtrion.dotcraft.energy.generator.GeneratorEnergy;
  * The block entity of a vibration generator. It listens to the game events of the world like a sculk sensor does (it is the
  * {@link GameEventListener} of its block, see {@link Listener}), turns the ones of the {@link VibrationTags#SOURCES} tag it can hear
  * into FE (see {@link VibrationMath}) and pushes the FE into the neighbours on every side. The hard cap is the {@link VibrationBucket}: no
- * event, however many, makes more than the peak of the tier per tick on average. It keeps no record of the sources of the events.
+ * event, however many, makes more than the duty of the tier ({@link VibrationMath#duty}) of the peak per tick on average. Events caused by
+ * a boss ({@link VibrationTags#BOSSES}) are worth {@link VibrationMath#BOSS_FACTOR} times as much; what the bucket cannot pay for them comes
+ * from a second, bonus bucket, so a boss fight may exceed the duty cap but both buckets together never pass the peak per tick on average.
  * <p>
  * Which events count, as the sculk sensor sees it: spectators are not heard, nor are entities that dampen vibrations (wearing wool),
  * nor are sneaking entities for the events the vanilla tag {@code ignore_vibrations_sneaking} lists, nor events on blocks that
@@ -59,6 +61,8 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
     /** The hard cap of the output. */
     private VibrationBucket bucket = new VibrationBucket();
+    /** The extra cap that only the events of bosses use, on top of the bucket. */
+    private VibrationBucket bonus = new VibrationBucket();
 
     /**
      * Creates the block entity.
@@ -112,6 +116,15 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
         return bucket;
     }
 
+    /**
+     * The bonus bucket of boss events, for tests and diagnostics.
+     *
+     * @return the bucket
+     */
+    public VibrationBucket bonusBucket() {
+        return bonus;
+    }
+
     @Override
     public Listener getListener() {
         return listener;
@@ -141,7 +154,8 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
         int frequency = VibrationSystem.getGameEventFrequency(event);
         if (!VibrationMath.hears(tier, frequency)) return 0;
         var entity = context.sourceEntity();
-        if (entity != null && (entity.isSpectator() || entity.dampensVibrations()
+        boolean boss = entity != null && entity.typeHolder().is(VibrationTags.BOSSES);
+        if (entity != null && (entity.isSpectator() || entity.dampensVibrations() && !boss
                 || entity.isSteppingCarefully() && event.is(GameEventTags.IGNORE_VIBRATIONS_SNEAKING))) return 0;
         var affected = context.affectedState();
         if (affected != null && affected.is(BlockTags.DAMPENS_VIBRATIONS)) return 0;
@@ -149,7 +163,8 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
         // a full buffer takes nothing, so the bucket keeps its FE and nothing is saved
         if (energy.getAmountAsLong() >= energy.getCapacityAsLong()) return 0;
         int peak = config.peak();
-        long granted = bucket.take(level.getGameTime(), VibrationMath.eventEnergy(peak, frequency), VibrationMath.refill(peak), VibrationMath.burst(peak));
+        // a boss event may exceed the duty cap: what the bucket cannot pay comes from the bonus bucket, which refills with the rest of the peak
+        long granted = VibrationMath.grant(tier, peak, level.getGameTime(), VibrationMath.eventEnergy(peak, frequency), boss, bucket, bonus);
         if (granted <= 0) return 0;
         // what does not fit into the buffer is lost, as the bucket has given it
         energy.produce((int) Math.min(granted, Integer.MAX_VALUE));
@@ -176,6 +191,8 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
         energy.serialize(output);
         output.putLong("bucket", bucket.tokens());
         output.putLong("bucketTick", bucket.lastTick());
+        output.putLong("bonus", bonus.tokens());
+        output.putLong("bonusTick", bonus.lastTick());
     }
 
     @Override
@@ -183,6 +200,7 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
         super.loadAdditional(input);
         energy.deserialize(input);
         bucket = new VibrationBucket(input.getLongOr("bucket", 0), input.getLongOr("bucketTick", -1));
+        bonus = new VibrationBucket(input.getLongOr("bonus", 0), input.getLongOr("bonusTick", -1));
     }
 
     /** The game event listener of the block: the radius is the one of the tier. */

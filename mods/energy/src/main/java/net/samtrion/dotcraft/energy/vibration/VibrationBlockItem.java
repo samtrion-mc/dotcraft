@@ -22,6 +22,8 @@ public class VibrationBlockItem extends BlockItem {
     public static final String HEARING_KEY = "tooltip." + EnergyMod.MODID + ".vibration.hearing";
     /** Lang key of the line that says the tier hears through wool. */
     public static final String PIERCE_KEY = "tooltip." + EnergyMod.MODID + ".vibration.pierce";
+    /** Lang key of the line that says boss fights are worth a multiple. */
+    public static final String BOSS_KEY = "tooltip." + EnergyMod.MODID + ".vibration.boss";
     /** Lang key of the line that says what makes FE. */
     public static final String NEEDS_KEY = "tooltip." + EnergyMod.MODID + ".vibration.needs";
 
@@ -43,8 +45,9 @@ public class VibrationBlockItem extends BlockItem {
     public void appendHoverText(ItemStack stack, Item.TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
         int peak = EnergyCommonConfig.VIBRATION_GENERATORS.get(tier - 1).peak();
         builder.accept(Component.translatable(NEEDS_KEY).withStyle(ChatFormatting.GRAY));
-        builder.accept(Component.translatable(PEAK_KEY, peak, VibrationMath.refill(peak)).withStyle(ChatFormatting.GRAY));
+        builder.accept(Component.translatable(PEAK_KEY, peak, VibrationMath.refill(tier, peak)).withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable(HEARING_KEY, VibrationMath.radius(tier), VibrationMath.minFrequency(tier)).withStyle(ChatFormatting.GRAY));
+        builder.accept(Component.translatable(BOSS_KEY, VibrationMath.BOSS_FACTOR).withStyle(ChatFormatting.GRAY));
         if (VibrationMath.pierces(tier)) builder.accept(Component.translatable(PIERCE_KEY).withStyle(ChatFormatting.GRAY));
     }
 }

@@ -12,6 +12,7 @@ import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.level.GameType;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -46,6 +47,9 @@ public final class VibrationGameTests {
     private static final Identifier BLOCKS = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "vibration_blocks");
     private static final ResourceKey<Consumer<GameTestHelper>> BLOCKS_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, BLOCKS);
 
+    private static final Identifier BOSS = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "vibration_boss");
+    private static final ResourceKey<Consumer<GameTestHelper>> BOSS_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, BOSS);
+
     private VibrationGameTests() {}
 
     /**
@@ -59,6 +63,7 @@ public final class VibrationGameTests {
             registry.register(LISTEN, TestSupport.ticking(VibrationGameTests::listen));
             registry.register(BLOCKS, TestSupport.ticking(VibrationGameTests::blocks));
             registry.register(PUSH, TestSupport.ticking(VibrationGameTests::push));
+            registry.register(BOSS, TestSupport.ticking(VibrationGameTests::boss));
         });
     }
 
@@ -75,6 +80,9 @@ public final class VibrationGameTests {
         var pushEnvironment = event.registerEnvironment(PUSH, new TestEnvironmentDefinition.AllOf());
         event.registerTest(PUSH, new FunctionGameTestInstance(PUSH_FUNCTION,
                 new TestData<>(pushEnvironment, Identifier.withDefaultNamespace("empty"), 40, 0, true)));
+        var bossEnvironment = event.registerEnvironment(BOSS, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(BOSS, new FunctionGameTestInstance(BOSS_FUNCTION,
+                new TestData<>(bossEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
         var blocksEnvironment = event.registerEnvironment(BLOCKS, new TestEnvironmentDefinition.AllOf());
         event.registerTest(BLOCKS, new FunctionGameTestInstance(BLOCKS_FUNCTION,
                 new TestData<>(blocksEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
@@ -164,6 +172,49 @@ public final class VibrationGameTests {
             helper.assertTrue(emit(helper, gen, GameEvent.BLOCK_DESTROY, gen.east(2), GameEvent.Context.of(quiet)) > 0, "a sneaking entity that breaks a block was not heard");
             helper.succeed();
         });
+    }
+
+    /**
+     * The boss bonus, deterministic with one synchronous emit per step on fresh generators (tiers 1 and 5): a block destroyed by a
+     * zombie gives the normal worth, by a wither five times as much, which is more than the burst of the normal bucket (the bonus may
+     * exceed the duty cap); a warden, which dampens vibrations, is still heard as a boss; the bucket and the bonus bucket together
+     * never give more than their capacities in one tick, so a second boss event right after drains them and the next one is cut.
+     * The entities are spawned without free will so nothing else happens.
+     *
+     * @param helper the game test helper
+     */
+    private static void boss(GameTestHelper helper) {
+        var rel = new BlockPos(1, 17, 1);
+        var gen = helper.absolutePos(rel);
+        var destroy = GameEvent.BLOCK_DESTROY;
+        var zombie = helper.spawnWithNoFreeWill(EntityType.ZOMBIE, 3.5F, 17.5F, 3.5F);
+        var wither = helper.spawnWithNoFreeWill(EntityType.WITHER, 3.5F, 18.5F, 3.5F);
+        var warden = helper.spawnWithNoFreeWill(EntityType.WARDEN, 4.5F, 17.5F, 3.5F);
+        helper.assertTrue(warden.dampensVibrations(), "the warden should dampen vibrations");
+        for (int tier : new int[] {1, 5}) {
+            int peak = EnergyCommonConfig.VIBRATION_GENERATORS.get(tier - 1).peak();
+            helper.setBlock(rel, Blocks.AIR);
+            helper.setBlock(rel, VibrationBlocks.block(tier).get());
+            long normal = emit(helper, gen, destroy, gen.east(2), GameEvent.Context.of(zombie));
+            helper.assertTrue(normal == VibrationMath.eventEnergy(peak, 12), "tier " + tier + ": a normal event gave " + normal);
+            helper.setBlock(rel, Blocks.AIR);
+            helper.setBlock(rel, VibrationBlocks.block(tier).get());
+            long boss = emit(helper, gen, destroy, gen.east(2), GameEvent.Context.of(wither));
+            helper.assertTrue(boss == VibrationMath.BOSS_FACTOR * normal, "tier " + tier + ": a boss event gave " + boss);
+            helper.assertTrue(boss > VibrationMath.burst(peak), "a boss event did not exceed the duty cap burst");
+            long again = emit(helper, gen, destroy, gen.east(2), GameEvent.Context.of(warden));
+            helper.assertTrue(again > 0, "tier " + tier + ": a dampening boss was not heard");
+            var be = (VibrationBlockEntity) helper.getLevel().getBlockEntity(gen);
+            helper.assertTrue(boss + again <= VibrationMath.absoluteMaxYield(peak, 0),
+                    "tier " + tier + ": more than both buckets hold: " + (boss + again));
+            helper.assertTrue(be.bonusBucket().tokens() <= VibrationMath.bonusBurst(peak), "the bonus bucket holds too much");
+        }
+        // a bystander boss does not count: the event is caused by a zombie, so it is worth the normal amount
+        helper.setBlock(rel, Blocks.AIR);
+        helper.setBlock(rel, VibrationBlocks.block(1).get());
+        long viaZombie = emit(helper, gen, destroy, gen.east(2), GameEvent.Context.of(zombie));
+        helper.assertTrue(viaZombie == VibrationMath.eventEnergy(EnergyCommonConfig.VIBRATION_GENERATORS.get(0).peak(), 12), "a normal entity got a bonus");
+        helper.succeed();
     }
 
     /**

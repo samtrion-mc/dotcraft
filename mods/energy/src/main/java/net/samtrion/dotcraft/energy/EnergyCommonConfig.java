@@ -54,7 +54,7 @@ public final class EnergyCommonConfig {
 
     /**
      * The vibration generators: the hard ceiling in FE/t, which a token bucket enforces no matter how many game events there are (see
-     * {@code VibrationBucket}); a generator next to a busy player makes about a quarter of it.
+     * {@code VibrationBucket}); a generator next to a busy player makes 2/9 (tier 1) to 2/3 (tier 5) of it, see {@code VibrationMath}.
      */
     public static final List<Generator> VIBRATION_GENERATORS = generators(VIBRATION_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
     /** The registry paths of the thermoelectric generators, tiers 1-5, which are also their config sections. */
