@@ -13,6 +13,8 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelAccessor;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.EntityBlock;
+import net.minecraft.world.level.block.Mirror;
+import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.SimpleWaterloggedBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -21,6 +23,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.FluidState;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.phys.shapes.CollisionContext;
@@ -31,10 +34,16 @@ import net.minecraft.world.phys.shapes.VoxelShape;
  * {@code GeneratorBlock}, so it never joins the pool of the solar and lunar panels. It is a sealed pod: it holds water but does not
  * spread it (it schedules no fluid tick, neither when placed in water nor when a neighbour changes), so one bucket on dry ground does not make a current around it. It has a
  * comparator signal (how much of the best output it makes).
+ *
+ * <p>It has a flow direction, {@link #FACING}: the player's look direction when placed. Front and back are the flow axis, which must
+ * stay free for the water (see {@link CurrentMath#blocksFlow}; a block there makes the output 0); the generator gives FE to the other
+ * four sides only (see {@link #connects}).
  */
 public class CurrentGeneratorBlock extends Block implements EntityBlock, SimpleWaterloggedBlock {
     /** The pod stands in water; without it the generator makes nothing. */
     public static final BooleanProperty WATERLOGGED = BlockStateProperties.WATERLOGGED;
+    /** The flow direction: the water runs through the pod along this axis (front to back). */
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     private static final VoxelShape SHAPE = Block.box(0, 0, 0, 16, 16, 16);
 
     private final int tier;
@@ -49,7 +58,7 @@ public class CurrentGeneratorBlock extends Block implements EntityBlock, SimpleW
      */
     public CurrentGeneratorBlock(Properties properties, int tier, Supplier<? extends BlockEntityType<CurrentGeneratorBlockEntity>> type) {
         super(properties);
-        registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false));
+        registerDefaultState(stateDefinition.any().setValue(WATERLOGGED, false).setValue(FACING, Direction.NORTH));
         this.tier = tier;
         this.type = type;
     }
@@ -61,6 +70,27 @@ public class CurrentGeneratorBlock extends Block implements EntityBlock, SimpleW
      */
     public int tier() {
         return tier;
+    }
+
+    /**
+     * Whether a side takes part in the energy exchange: every side but the front and the back, which are the flow axis.
+     *
+     * @param state the state of the generator
+     * @param side  the side, may be {@code null} (no side given)
+     * @return {@code true} for up, down, left and right of the flow direction
+     */
+    public static boolean connects(BlockState state, @Nullable Direction side) {
+        return side != null && side.getAxis() != state.getValue(FACING).getAxis();
+    }
+
+    @Override
+    protected BlockState rotate(BlockState state, Rotation rotation) {
+        return state.setValue(FACING, rotation.rotate(state.getValue(FACING)));
+    }
+
+    @Override
+    protected BlockState mirror(BlockState state, Mirror mirror) {
+        return state.rotate(mirror.getRotation(state.getValue(FACING)));
     }
 
     @Override
@@ -75,12 +105,13 @@ public class CurrentGeneratorBlock extends Block implements EntityBlock, SimpleW
 
     @Override
     protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> builder) {
-        builder.add(WATERLOGGED);
+        builder.add(WATERLOGGED, FACING);
     }
 
     @Override
     public @Nullable BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).is(Fluids.WATER));
+        return defaultBlockState().setValue(FACING, context.getHorizontalDirection())
+                .setValue(WATERLOGGED, context.getLevel().getFluidState(context.getClickedPos()).is(Fluids.WATER));
     }
 
     /**

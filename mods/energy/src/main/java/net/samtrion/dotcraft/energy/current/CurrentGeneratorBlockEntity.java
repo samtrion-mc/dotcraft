@@ -27,7 +27,7 @@ import net.samtrion.dotcraft.energy.generator.GeneratorEnergy;
 /**
  * The block entity of every current generator. It re-reads the surroundings (see {@link CurrentScan}) every
  * {@link #RECOMPUTE_TICKS} ticks, staggered by position so a farm of generators does not scan in the same tick, and once on its
- * first tick, buffers what it makes and pushes FE into the neighbours on every side. Unlike the panels it has no pool: every
+ * first tick, buffers what it makes and pushes FE into the neighbours on the four sides across the flow axis (never front or back, which stay free for the water; a solid block there makes the output 0). Unlike the panels it has no pool: every
  * generator is on its own, since each needs its own water. Its capability can only be drained.
  */
 public class CurrentGeneratorBlockEntity extends BlockEntity {
@@ -114,7 +114,8 @@ public class CurrentGeneratorBlockEntity extends BlockEntity {
         energy.configure(config.capacity(), config.maxOutput());
         boolean submerged = getBlockState().getValue(CurrentGeneratorBlock.WATERLOGGED);
         wet = submerged;
-        double now = submerged ? CurrentScan.scan(level, worldPosition, tier).output(tier, true) * config.peak() : 0;
+        boolean free = !CurrentScan.axisBlocked(level, worldPosition, getBlockState().getValue(CurrentGeneratorBlock.FACING));
+        double now = submerged && free ? CurrentScan.scan(level, worldPosition, tier).output(tier, true) * config.peak() : 0;
         if (now != output) {
             output = now;
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
@@ -125,7 +126,9 @@ public class CurrentGeneratorBlockEntity extends BlockEntity {
 
     private void push(ServerLevel level) {
         if (energy.getAmountAsLong() <= 0) return;
+        var state = getBlockState();
         for (Direction d : Direction.values()) {
+            if (!CurrentGeneratorBlock.connects(state, d)) continue;
             var cache = neighbours.computeIfAbsent(d,
                     dir -> BlockCapabilityCache.create(Capabilities.Energy.BLOCK, level, worldPosition.relative(dir), dir.getOpposite()));
             EnergyHandlerUtil.move(energy, cache.getCapability(), Integer.MAX_VALUE, null);

@@ -3,6 +3,7 @@ package net.samtrion.dotcraft.energy.current;
 import java.util.HashSet;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.tags.FluidTags;
 import net.minecraft.world.entity.EntityType;
@@ -36,6 +37,25 @@ public final class CurrentScan {
         public double output(int tier, boolean submerged) {
             return CurrentMath.output(tier, submerged, sources, flowing, primeBiome, faunaTypes);
         }
+    }
+
+    /**
+     * Whether the flow axis is blocked: the block in front of or behind the generator stops the water (see
+     * {@link CurrentMath#blocksFlow}). An unloaded block does not block, and it is never force-loaded.
+     *
+     * @param level  the level
+     * @param pos    the position of the generator
+     * @param facing the horizontal facing of the generator, the direction of the flow
+     * @return {@code true} if the output must be 0
+     */
+    public static boolean axisBlocked(ServerLevel level, BlockPos pos, Direction facing) {
+        for (Direction d : new Direction[] {facing, facing.getOpposite()}) {
+            var at = pos.relative(d);
+            if (!level.isLoaded(at)) continue;
+            var state = level.getBlockState(at);
+            if (CurrentMath.blocksFlow(state.isCollisionShapeFullBlock(level, at), state.getFluidState().is(FluidTags.WATER), state.canBeReplaced())) return true;
+        }
+        return false;
     }
 
     /**

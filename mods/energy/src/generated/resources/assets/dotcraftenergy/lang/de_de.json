@@ -58,6 +58,7 @@
   "message.dotcraftenergy.kite.limit.weather": "Wetter kostet Leistung",
   "message.dotcraftenergy.kite.none": "Kein Lenkdrachen. Benutze einen Lenkdrachen am Generator; schleichend mit leerer Hand nimmst du ihn zurück.",
   "message.dotcraftenergy.kite.status": "Lenkdrachen auf %1$s von %2$s m, %3$s FE/t (%4$s)",
+  "tooltip.dotcraftenergy.current.axis": "Vorder- und Rückseite müssen für das Wasser frei bleiben (ein fester Block dort: 0 FE); gibt FE an die anderen Seiten",
   "tooltip.dotcraftenergy.current.formula": "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)",
   "tooltip.dotcraftenergy.current.perk_1": "Basis: braucht einen fast vollen Wasserwürfel",
   "tooltip.dotcraftenergy.current.perk_2": "Weites Netz: Tiere zählen im Umkreis von 6 Blöcken",

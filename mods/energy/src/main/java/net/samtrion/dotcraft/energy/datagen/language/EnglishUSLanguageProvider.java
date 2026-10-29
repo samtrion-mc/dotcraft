@@ -50,6 +50,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         net.samtrion.dotcraft.energy.kite.datagen.KiteLanguage.english(this);
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(CurrentGeneratorItem.FORMULA_KEY, "Needs water: peak x water share x biome x (1 + animals)");
+        add(CurrentGeneratorItem.AXIS_KEY, "Front and back must stay free for the water (a solid block there: 0 FE); gives FE to the other sides");
         add(CurrentGeneratorItem.PERK_KEY + 1, "Baseline: needs a nearly full cube of water");
         add(CurrentGeneratorItem.PERK_KEY + 2, "Wide net: animals count within 6 blocks");
         add(CurrentGeneratorItem.PERK_KEY + 3, "Adaptation: keeps 75% outside ocean and river");

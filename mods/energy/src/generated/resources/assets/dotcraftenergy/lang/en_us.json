@@ -58,6 +58,7 @@
   "message.dotcraftenergy.kite.limit.weather": "weather costs output",
   "message.dotcraftenergy.kite.none": "No kite. Use a kite on the generator; sneak with an empty hand to take it back.",
   "message.dotcraftenergy.kite.status": "Kite at %1$s of %2$s m, %3$s FE/t (%4$s)",
+  "tooltip.dotcraftenergy.current.axis": "Front and back must stay free for the water (a solid block there: 0 FE); gives FE to the other sides",
   "tooltip.dotcraftenergy.current.formula": "Needs water: peak x water share x biome x (1 + animals)",
   "tooltip.dotcraftenergy.current.perk_1": "Baseline: needs a nearly full cube of water",
   "tooltip.dotcraftenergy.current.perk_2": "Wide net: animals count within 6 blocks",
