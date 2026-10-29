@@ -54,7 +54,7 @@ public class KiteRenderer extends EntityRenderer<KiteEntity, KiteRenderState> {
         var anchor = entity.anchor();
         state.tier = Math.clamp(entity.tier(), 1, TYPES.length);
         state.anchorOffset = new Vec3(anchor.getX() + 0.5, anchor.getY() + 1.0, anchor.getZ() + 0.5).subtract(entity.getPosition(partialTicks));
-        state.phase = (anchor.getX() * 31 + anchor.getZ() * 17) & 0xFF;
+        state.phase = (anchor.getX() * 31 + anchor.getZ() * 17 + entity.slot() * 101) & 0xFF;
     }
 
     @Override

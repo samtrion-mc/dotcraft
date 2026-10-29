@@ -37,7 +37,7 @@ import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 public final class KiteGameTests {
     /** The names of the tests; every one has a function, an environment and an instance. */
     private static final String[] NAMES = {"kite_blocks", "kite_flight", "kite_above_build_height", "kite_break_and_reel_in", "kite_respawn_and_save",
-            "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder"};
+            "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder", "kite_ignores_obstructions", "kite_two_kites"};
 
     /** Not instantiable. */
     private KiteGameTests() {}
@@ -86,6 +86,8 @@ public final class KiteGameTests {
             case "kite_free_space" -> KiteGameTests::freeSpace;
             case "kite_thin_roof" -> KiteGameTests::thinRoof;
             case "kite_comparator_and_status" -> KiteGameTests::comparatorAndStatus;
+            case "kite_ignores_obstructions" -> KiteGameTests::ignoresObstructions;
+            case "kite_two_kites" -> KiteGameTests::twoKites;
             default -> KiteGameTests::thunder;
         };
     }
@@ -288,7 +290,7 @@ public final class KiteGameTests {
      */
     private static void freeSpace(GameTestHelper helper) {
         var pos = new BlockPos(1, 1, 1);
-        helper.setBlock(pos, KiteBlocks.block(3).get());
+        helper.setBlock(pos, KiteBlocks.block(2).get());
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 for (int h = 3; h <= 6; h++) helper.setBlock(pos.offset(dx, h, dz), Blocks.STONE);
@@ -305,7 +307,7 @@ public final class KiteGameTests {
 
     /**
      * A single block thick plate far up stops the kite right below it; no sample may skip it. Tier 1 needs a free cross, so a plate
-     * that only covers a neighbour of the column stops it, while tier 3 flies past that (a shaft of one block is enough).
+     * that only covers a neighbour of the column stops it, while tier 4 flies past that (a shaft of one block is enough).
      *
      * @param helper the game test helper
      */
@@ -313,7 +315,7 @@ public final class KiteGameTests {
         var wide = new BlockPos(1, 1, 1);
         var slim = new BlockPos(9, 1, 1);
         helper.setBlock(wide, KiteBlocks.block(1).get());
-        helper.setBlock(slim, KiteBlocks.block(3).get());
+        helper.setBlock(slim, KiteBlocks.block(4).get());
         helper.setBlock(wide.offset(0, 10, 0), Blocks.STONE);
         helper.setBlock(slim.offset(1, 10, 0), Blocks.STONE);
         var player = player(helper, true);
@@ -376,6 +378,80 @@ public final class KiteGameTests {
             helper.assertTrue(strongBe.kite().altitude() >= 20 && strongBe.output() > 0, "the tier 5 kite does not fly in the storm: " + strongBe.output());
             // the weather is global: leave clear weather behind for the tests that follow
             level.getServer().setWeatherParameters(6000, 0, false, false);
+        });
+    }
+
+    /**
+     * The tier 3 kite ignores obstructions: under a thick roof it still flies to its tether and makes the output of it, while a
+     * tier 2 kite under the same roof stays down. The kite stays above the generator block (the tether never runs through it).
+     *
+     * @param helper the game test helper
+     */
+    private static void ignoresObstructions(GameTestHelper helper) {
+        var free = new BlockPos(1, 1, 1);
+        var capped = new BlockPos(9, 1, 1);
+        helper.setBlock(free, KiteBlocks.block(3).get());
+        helper.setBlock(capped, KiteBlocks.block(2).get());
+        for (var base : new BlockPos[] {free, capped}) {
+            for (int dx = -1; dx <= 1; dx++) {
+                for (int dz = -1; dz <= 1; dz++) {
+                    for (int h = 3; h <= 6; h++) helper.setBlock(base.offset(dx, h, dz), Blocks.STONE);
+                }
+            }
+        }
+        var player = player(helper, true);
+        helper.useBlock(free, player);
+        helper.useBlock(capped, player);
+        var freeBe = entity(helper, free);
+        var cappedBe = entity(helper, capped);
+        helper.runAfterDelay(150, () -> {
+            var kite = freeBe.kite();
+            helper.assertTrue(kite != null && kite.altitude() > 20, "the tier 3 kite is stopped by the roof: " + (kite == null ? -1 : kite.altitude()));
+            helper.assertTrue(kite.getY() >= helper.absolutePos(free).getY() + 1, "the kite is inside its generator block");
+            helper.assertTrue(freeBe.limit() == KiteMath.Limit.NONE, "unexpected limit " + freeBe.limit());
+            helper.assertTrue(freeBe.output() > 0, "no output under the roof");
+            helper.assertTrue(cappedBe.kite().altitude() <= 2.01, "the tier 2 kite flies through the roof: " + cappedBe.kite().altitude());
+            helper.assertTrue(freeBe.kite(1) == null, "tier 3 has a second kite");
+            helper.succeed();
+        });
+    }
+
+    /**
+     * Tier 4 and 5 fly two kites on tethers from the same block: they are two different entities in slot 0 and 1, a second use of
+     * the item changes nothing (no duplicate), a missing kite is replaced without touching the other one, and the output of the pair
+     * stays within the peak of the tier. Tier 1 has one kite only.
+     *
+     * @param helper the game test helper
+     */
+    private static void twoKites(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = new BlockPos(1, 1, 1);
+        var single = new BlockPos(9, 1, 1);
+        helper.setBlock(pos, KiteBlocks.block(4).get());
+        helper.setBlock(single, KiteBlocks.block(1).get());
+        var player = player(helper, true);
+        helper.useBlock(pos, player);
+        helper.useBlock(single, player);
+        helper.useBlock(pos, player);
+        helper.assertTrue(player.getMainHandItem().getCount() == 0, "a second kite item was used up");
+        var be = entity(helper, pos);
+        var first = be.kite(0);
+        var second = be.kite(1);
+        helper.assertTrue(first != null && second != null && first != second, "tier 4 has not two kites");
+        helper.assertTrue(first.slot() == 0 && second.slot() == 1, "wrong slots");
+        helper.assertTrue(entity(helper, single).kite(1) == null, "tier 1 has a second kite");
+        int kites = level.getEntities(KiteBlocks.KITE_ENTITY.get(), new net.minecraft.world.phys.AABB(helper.absolutePos(pos)).inflate(2, 600, 2), k -> true).size();
+        helper.assertTrue(kites == 2, "expected two kite entities, found " + kites);
+        double peak = EnergyCommonConfig.KITE_GENERATORS.get(3).peak();
+        second.kill(level);
+        helper.succeedWhen(() -> {
+            var now = be.kite(1);
+            helper.assertTrue(now != null && now != second && !now.isRemoved() && level.getEntity(now.getUUID()) == now, "the second kite was not replaced");
+            helper.assertTrue(be.kite(0) == first && !first.isRemoved(), "the first kite was replaced");
+            helper.assertTrue(now.altitude() > 5 && first.altitude() > 20, "the kites do not climb");
+            helper.assertTrue(be.output() > 0 && be.output() <= peak, "wrong output " + be.output());
+            helper.assertTrue(level.getEntities(KiteBlocks.KITE_ENTITY.get(), new net.minecraft.world.phys.AABB(helper.absolutePos(pos)).inflate(2, 600, 2), k -> true).size() == 2,
+                    "a duplicate kite flies");
         });
     }
 }

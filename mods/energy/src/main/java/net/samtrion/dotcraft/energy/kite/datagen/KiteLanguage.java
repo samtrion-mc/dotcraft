@@ -28,9 +28,9 @@ public final class KiteLanguage {
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.tether", "Tether: %s m");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.1", "Plain kite: needs a free 3x3 way up, rain halves the output, a storm reels it in.");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.2", "Waxed line: rain costs only a quarter.");
-        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.3", "Rain-proof sail, and a slim line that fits a one block wide shaft.");
-        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.4", "Storm line: flies in a thunderstorm at half output; a crowded sky costs half as much.");
-        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.5", "Insulated tether: ignores thunder and a crowded sky.");
+        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.3", "Rain-proof sail; ignores obstructions: blocks above and a crowded sky cost nothing.");
+        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.4", "Storm line: flies in a thunderstorm at half output; a crowded sky costs half as much. Two kites share the peak.");
+        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.5", "Insulated tether: ignores thunder and a crowded sky. Two kites share the peak.");
     }
 
     /**
@@ -53,8 +53,8 @@ public final class KiteLanguage {
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.tether", "Leine: %s m");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.1", "Einfacher Lenkdrachen: braucht einen freien 3x3-Weg nach oben, Regen halbiert die Leistung, ein Sturm holt ihn ein.");
         lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.2", "Gewachste Leine: Regen kostet nur ein Viertel.");
-        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.3", "Regenfestes Segel und eine schlanke Leine, die durch einen Schacht von nur einem Block Breite passt.");
-        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.4", "Sturmleine: fliegt im Gewitter mit halber Leistung; ein zugebauter Himmel kostet nur halb so viel.");
-        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.5", "Isolierte Leine: ignoriert Gewitter und einen zugebauten Himmel.");
+        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.3", "Regenfestes Segel; ignoriert Hindernisse: Blöcke darüber und ein zugebauter Himmel kosten nichts.");
+        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.4", "Sturmleine: fliegt im Gewitter mit halber Leistung; ein zugebauter Himmel kostet nur halb so viel. Zwei Lenkdrachen teilen sich die Spitzenleistung.");
+        lang.add("tooltip." + KiteBlocks.MODID + ".kite.perk.5", "Isolierte Leine: ignoriert Gewitter und einen zugebauten Himmel. Zwei Lenkdrachen teilen sich die Spitzenleistung.");
     }
 }
