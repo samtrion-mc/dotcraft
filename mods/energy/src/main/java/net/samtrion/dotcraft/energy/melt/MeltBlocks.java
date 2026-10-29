@@ -10,7 +10,7 @@ import org.jspecify.annotations.Nullable;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -43,7 +43,7 @@ public final class MeltBlocks {
             Identifier.fromNamespaceAndPath(EnergyMod.MODID, "energy"));
 
     private static final List<DeferredBlock<MeltBlock>> LIST = new ArrayList<>();
-    private static final List<DeferredItem<BlockItem>> ITEM_LIST = new ArrayList<>();
+    private static final List<DeferredItem<MeltGeneratorItem>> ITEM_LIST = new ArrayList<>();
 
     /** The block entity type of all melt generators. */
     public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MeltBlockEntity>> TYPE = TYPES.register(PREFIX,
@@ -60,7 +60,7 @@ public final class MeltBlocks {
                     () -> BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(3.0F, 6.0F).requiresCorrectToolForDrops()
                             .lightLevel(s -> s.getValue(MeltBlock.LIT) ? 7 : 0));
             LIST.add(block);
-            ITEM_LIST.add(ITEMS.registerSimpleBlockItem(block));
+            ITEM_LIST.add(ITEMS.registerItem(name, p -> new MeltGeneratorItem(block.get(), p, t), () -> new Item.Properties().useBlockDescriptionPrefix()));
         }
     }
 
@@ -81,7 +81,7 @@ public final class MeltBlocks {
      *
      * @return the items, in the order of the blocks
      */
-    public static Stream<DeferredItem<BlockItem>> items() {
+    public static Stream<DeferredItem<MeltGeneratorItem>> items() {
         return ITEM_LIST.stream();
     }
 
@@ -109,9 +109,10 @@ public final class MeltBlocks {
         bus.addListener(MeltBlocks::tab);
     }
 
-    /** Exposes the buffer; it can only be drained. */
+    /** Exposes the buffer and the water tank; both can only be drained. */
     private static void registerCapabilities(RegisterCapabilitiesEvent event) {
         event.registerBlockEntity(Capabilities.Energy.BLOCK, TYPE.get(), (be, side) -> be.energy());
+        event.registerBlockEntity(Capabilities.Fluid.BLOCK, TYPE.get(), (be, side) -> be.tank());
     }
 
     /** Adds the items to the creative tab of the energy mod. */

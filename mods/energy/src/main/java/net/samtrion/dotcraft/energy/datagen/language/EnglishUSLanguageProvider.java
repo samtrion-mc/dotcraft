@@ -47,6 +47,8 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         WheelBlocks.blocks().forEach(b -> add(b.get(), "Mob Wheel (Tier " + b.get().tier() + ")"));
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
         MeltBlocks.blocks().forEach(b -> add(b.get(), "Melt Generator (Tier " + b.get().tier() + ")"));
+        add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.TANK_KEY, "Water goes into a tank of %s buckets that can only be drained");
+        add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.FULL_KEY, "A full tank leaves %s%% of the FE per ice until water is drained");
         net.samtrion.dotcraft.energy.kite.datagen.KiteLanguage.english(this);
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(CurrentGeneratorItem.FORMULA_KEY, "Needs water: peak x water share x biome x (1 + animals)");

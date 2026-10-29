@@ -12,8 +12,8 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -23,20 +23,25 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
+import net.neoforged.neoforge.transfer.ResourceHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 
 /**
  * The block entity of a melt generator. Every {@link MeltMath.Tier#interval()} ticks (staggered by position) it checks whether a
  * block of the {@link MeltTags#HEAT} tag touches it; if one does, it melts up to {@link MeltMath.Tier#slots()} blocks of ice that touch
- * it on the other sides (see {@link MeltIce}): they turn to air, to a water source on tier 4, and on tier 5 to all the water they are worth (see {@link MeltMath#waterBlocks}); their FE goes into the heat reservoir.
+ * it on the other sides (see {@link MeltIce}): they turn to air; on tier 4 and 5 their water (one bucket, on tier 5 all the water they are worth, see {@link MeltMath#waterBlocks}) goes into the
+ * water tank of {@link MeltMath#TANK_CAPACITY_MB} mB, what does not fit is lost; their FE goes into the heat reservoir, a quarter of it while the tank is full
+ * (see {@link MeltMath#effectiveYield}).
  * Every tick the reservoir releases at most the peak into the buffer (see {@link MeltMath}), and the buffer is pushed into the
  * neighbours that take FE. When the block is removed, the FE of the reservoir and the buffer is handed to the neighbours that take FE; what they do not
  * take is lost. A neighbour in a chunk that is not loaded is never touched, so a generator never loads chunks.
  */
 public class MeltBlockEntity extends BlockEntity {
     private final MeltEnergy energy;
+    private final MeltTank tank = new MeltTank(this::setChanged);
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
     private long pending;
 
@@ -64,6 +69,33 @@ public class MeltBlockEntity extends BlockEntity {
      */
     public EnergyHandler energy() {
         return energy;
+    }
+
+    /**
+     * The water tank, for the capability: nothing can be inserted, it can only be drained.
+     *
+     * @return the tank
+     */
+    public ResourceHandler<FluidResource> tank() {
+        return tank;
+    }
+
+    /**
+     * The water in the tank.
+     *
+     * @return the amount in mB
+     */
+    public int water() {
+        return tank.amount();
+    }
+
+    /**
+     * Whether the tank is full, which cuts the FE of the ice to a quarter.
+     *
+     * @return {@code true} if the tank is full
+     */
+    public boolean tankFull() {
+        return tank.isFull();
     }
 
     /**
@@ -137,18 +169,16 @@ public class MeltBlockEntity extends BlockEntity {
             var at = worldPosition.relative(d);
             if (!level.isLoaded(at)) continue;
             var ice = MeltIce.of(level.getBlockState(at));
-            if (ice == null || !MeltMath.mayMelt(pending, ice.yield(), peak)) continue;
+            if (ice == null) continue;
             int water = MeltMath.waterBlocks(tier, level.environmentAttributes().getValue(EnvironmentAttributes.WATER_EVAPORATES, at),
                     ice.yield(), MeltIce.ICE.yield());
-            level.setBlockAndUpdate(at, (water > 0 ? Blocks.WATER : Blocks.AIR).defaultBlockState());
-            if (water > 1) {
-                for (var extra : MeltWater.spill(at, water - 1, p -> level.getBlockState(p).isAir() && level.isLoaded(p))) {
-                    level.setBlockAndUpdate(extra, Blocks.WATER.defaultBlockState());
-                }
-            }
+            int yield = MeltMath.effectiveYield(ice.yield(), tank.isFull());
+            if (!MeltMath.mayMelt(pending, yield, peak)) continue;
+            level.setBlockAndUpdate(at, Blocks.AIR.defaultBlockState());
+            tank.fill(water * MeltMath.BUCKET_MB);
             level.playSound(null, at, SoundEvents.FIRE_EXTINGUISH, SoundSource.BLOCKS, 0.4F, 1.4F);
             level.sendParticles(ParticleTypes.CLOUD, at.getX() + 0.5, at.getY() + 0.5, at.getZ() + 0.5, 4, 0.25, 0.25, 0.25, 0.01);
-            pending += ice.yield();
+            pending += yield;
             melted++;
         }
         if (melted > 0) setChanged();
@@ -196,6 +226,7 @@ public class MeltBlockEntity extends BlockEntity {
         super.saveAdditional(output);
         energy.serialize(output);
         output.putLong("pending", pending);
+        tank.serialize(output.child("tank"));
     }
 
     @Override
@@ -203,5 +234,6 @@ public class MeltBlockEntity extends BlockEntity {
         super.loadAdditional(input);
         energy.deserialize(input);
         pending = input.getLongOr("pending", 0);
+        input.child("tank").ifPresent(tank::deserialize);
     }
 }

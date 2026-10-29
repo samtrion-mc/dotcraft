@@ -8,8 +8,6 @@ import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
-import net.minecraft.core.BlockPos;
-
 import net.neoforged.neoforge.transfer.energy.SimpleEnergyHandler;
 
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
@@ -147,7 +145,7 @@ class MeltMathTest {
         }
     }
 
-    /** Tier 4 leaves one source per block, tier 5 the water of the ice a block is made of, and nothing where water evaporates. */
+    /** Tier 4 gives one bucket per block, tier 5 the water of the ice a block is made of, and nothing where water evaporates. */
     @Test
     void completeRecoveryOnlyAtTierFive() {
         int ice = 1_000;
@@ -161,25 +159,24 @@ class MeltMathTest {
         assertEquals(1, MeltMath.waterBlocks(MeltMath.tier(5), false, ice, ice));
         assertEquals(9, MeltMath.waterBlocks(MeltMath.tier(5), false, 9 * ice, ice));
         assertEquals(81, MeltMath.waterBlocks(MeltMath.tier(5), false, 81 * ice, ice));
-        assertEquals(1, MeltMath.waterBlocks(MeltMath.tier(5), false, 10, ice), "never less than one source");
+        assertEquals(1, MeltMath.waterBlocks(MeltMath.tier(5), false, 10, ice), "never less than one bucket");
         assertTrue(MeltMath.tier(5).complete() && !MeltMath.tier(4).complete());
     }
 
-    /** The spill fills the free blocks nearest first, never the blocked ones, never the origin, and stops when the room is full. */
+    /** The tank holds 32 buckets; water that does not fit is lost, and a full tank cuts the FE of the ice to a quarter. */
     @Test
-    void spillFillsFreeRoomNearestFirst() {
-        var origin = new BlockPos(0, 0, 0);
-        var open = MeltWater.spill(origin, 8, p -> true);
-        assertEquals(8, open.size());
-        assertEquals(8, new java.util.HashSet<>(open).size(), "distinct");
-        assertFalse(open.contains(origin));
-        assertTrue(open.stream().allMatch(p -> p.distManhattan(origin) <= 2), "nearest first");
-        assertEquals(6, open.stream().filter(p -> p.distManhattan(origin) == 1).count());
-        // a pocket of three free blocks in a row holds three sources, however many are asked
-        var pocket = java.util.Set.of(new BlockPos(1, 0, 0), new BlockPos(2, 0, 0), new BlockPos(3, 0, 0));
-        assertEquals(3, MeltWater.spill(origin, 80, pocket::contains).size());
-        assertTrue(MeltWater.spill(origin, 5, p -> false).isEmpty());
-        assertTrue(MeltWater.spill(origin, 0, p -> true).isEmpty());
+    void tankAndEfficiency() {
+        assertEquals(32_000, MeltMath.TANK_CAPACITY_MB);
+        assertEquals(1_000, MeltMath.tankFit(0, 1_000));
+        assertEquals(500, MeltMath.tankFit(31_500, 9_000), "only the room is taken");
+        assertEquals(0, MeltMath.tankFit(32_000, 1_000), "a full tank takes nothing");
+        assertEquals(0, MeltMath.tankFit(0, 0));
+        // blue ice at tier 5 is 81 buckets: more than the whole tank
+        assertEquals(32_000, MeltMath.tankFit(0, 81 * MeltMath.BUCKET_MB));
+        for (var ice : MeltIce.values()) {
+            assertEquals(ice.yield(), MeltMath.effectiveYield(ice.yield(), false));
+            assertEquals(ice.yield() / 4, MeltMath.effectiveYield(ice.yield(), true), "75 percent less while the tank is full");
+        }
     }
 
     /** Water is left by the tiers with the perk, never where water evaporates. */

@@ -12,19 +12,26 @@ package net.samtrion.dotcraft.energy.melt;
  * Economy: the peaks follow the battery ladder (15 / 75 / 560 / 5 600 / 56 000 FE/t) so a generator of a tier fills the battery of the
  * same tier in about 1 340 ticks (roughly 5.6% of an MC day) if it is fed. The ice is the price: by default 1 000 FE per ice block,
  * so tier 1 at full output burns 360 ice (40 packed ice) per MC day. Ice can be farmed (water freezes in cold biomes, slowly), but
- * never for free: a melted block is gone (the higher tiers leave water, which has to freeze again), and frosted ice, which frost
+ * never for free: a melted block is gone (the higher tiers give water, which has to freeze again), and frosted ice, which frost
  * walker boots make without limit, is no fuel. The heat sources are not used up, so the ice is the only running cost.
  * <p>
  * Tiers 4 and 5 are burst tiers: running them at their peak for a whole day would take thousands of blue ice, so in practice they
- * empty the reservoir (600 ticks of peak) into a battery now and then. Water recovery leaves a renewable water source behind; it can
- * freeze again in a cold biome, but only slowly (random ticks of surface water), so it is a slow loop, not a free one. Tier 4 leaves
- * one source per melted block, tier 5 recovers all the water (see {@link #waterBlocks}).
+ * empty the reservoir (600 ticks of peak) into a battery now and then. Water recovery fills the tank of the generator, which has to
+ * be drained to keep the full efficiency. Tier 4 recovers one bucket per melted block, tier 5 recovers all the water (see {@link #waterBlocks}). The water goes into the tank of the generator
+ * ({@link #TANK_CAPACITY_MB}), what does not fit is lost, and while the tank is full the ice only gives {@link #FULL_TANK_EFFICIENCY} of its FE
+ * until the water is drained.
  */
 public final class MeltMath {
     /** Ticks of full output the reservoir holds, the same as the buffer. */
     public static final int RESERVE_TICKS = 600;
     /** The number of tiers. */
     public static final int TIER_COUNT = 5;
+    /** The water the tank of a generator holds, in mB (32 buckets). */
+    public static final int TANK_CAPACITY_MB = 32_000;
+    /** The water of one water source block, in mB. */
+    public static final int BUCKET_MB = 1_000;
+    /** The share of the FE per ice that a generator with a full tank still makes: the efficiency drops by 75 percent. */
+    public static final double FULL_TANK_EFFICIENCY = 0.25;
     /** Ticks of one MC day. */
     public static final int DAY_TICKS = 24_000;
 
@@ -33,8 +40,8 @@ public final class MeltMath {
      *
      * @param slots    how many ice blocks it melts at most per pulse; more than one means more of the six sides can feed it at once
      * @param interval ticks between two pulses
-     * @param water    whether a melted block leaves a water source (not where water evaporates, as in the Nether)
-     * @param complete whether the water recovery is complete: the melted block leaves as many water sources as it is worth plain ice
+     * @param water    whether a melted block gives a bucket of water for the tank (not where water evaporates, as in the Nether)
+     * @param complete whether the water recovery is complete: the melted block gives as many buckets as it is worth plain ice
      *                 (1 for ice, 9 for packed ice, 81 for blue ice with the default yields), not just one; implies {@code water}
      */
     public record Tier(int slots, int interval, boolean water, boolean complete) {}
@@ -43,7 +50,7 @@ public final class MeltMath {
             new Tier(1, 20, false, false), // 1: one block per second
             new Tier(2, 20, false, false), // 2: two blocks at once
             new Tier(3, 10, false, false), // 3: three blocks, twice a second
-            new Tier(4, 10, true, false), // 4: water recovery (one source per block)
+            new Tier(4, 10, true, false), // 4: water recovery (one bucket per block)
             new Tier(5, 5, true, true) // 5: five blocks, four times a second, and the water comes back in full
     };
 
@@ -108,30 +115,52 @@ public final class MeltMath {
     }
 
     /**
-     * Whether a melted block leaves water.
+     * Whether a melted block gives water.
      *
      * @param tier       the perks of the tier
      * @param evaporates whether water evaporates at the position (the Nether)
-     * @return {@code true} if the block is replaced by a water source, {@code false} for air
+     * @return {@code true} if the block gives water for the tank, {@code false} if it gives none
      */
     public static boolean leavesWater(Tier tier, boolean evaporates) {
         return tier.water() && !evaporates;
     }
 
     /**
-     * How many water sources a melted block leaves. Tier 4 leaves one source for every ice type; the complete recovery of tier 5
-     * leaves as many as the block is worth plain ice, so packed and blue ice give back the water of the ice they are made of.
+     * How many buckets (water source blocks) of water a melted block gives. Tier 4 gives one bucket for every ice type; the complete recovery of tier 5
+     * gives as many as the block is worth plain ice, so packed and blue ice give back the water of the ice they are made of.
      *
      * @param tier       the perks of the tier
      * @param evaporates whether water evaporates at the position (the Nether)
      * @param yield      the FE of the melted block
      * @param iceYield   the FE of one plain ice block
-     * @return 0 for air, else the number of sources, at least 1
+     * @return 0 for no water, else the number of buckets, at least 1
      */
     public static int waterBlocks(Tier tier, boolean evaporates, int yield, int iceYield) {
         if (!leavesWater(tier, evaporates)) return 0;
         if (!tier.complete() || iceYield <= 0) return 1;
         return Math.max(1, yield / iceYield);
+    }
+
+    /**
+     * The FE a melted block gives: the full yield, a quarter of it while the tank is full.
+     *
+     * @param yield    the FE of the block
+     * @param tankFull whether the water tank is full
+     * @return the FE that goes into the reservoir
+     */
+    public static int effectiveYield(int yield, boolean tankFull) {
+        return tankFull ? (int) Math.round(yield * FULL_TANK_EFFICIENCY) : yield;
+    }
+
+    /**
+     * How much of some water fits into the tank; the rest is lost.
+     *
+     * @param stored the water in the tank in mB
+     * @param add    the water to add in mB
+     * @return the mB that fit, 0..add
+     */
+    public static int tankFit(int stored, int add) {
+        return Math.max(0, Math.min(add, TANK_CAPACITY_MB - stored));
     }
 
     /**

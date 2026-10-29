@@ -13,12 +13,14 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
+import net.neoforged.neoforge.transfer.fluid.FluidResource;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.transaction.Transaction;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
@@ -27,6 +29,7 @@ import net.samtrion.dotcraft.energy.melt.MeltBlock;
 import net.samtrion.dotcraft.energy.melt.MeltBlockEntity;
 import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.energy.melt.MeltIce;
+import net.samtrion.dotcraft.energy.melt.MeltMath;
 
 /**
  * GameTests of the melt generators, run with {@code ./gradlew :mods:energy:runGameTestServer}. Every test gets its own structure,
@@ -48,6 +51,9 @@ public final class MeltGameTests {
 
     private static final Identifier MELT_RECOVERY = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "melt_recovery");
     private static final ResourceKey<Consumer<GameTestHelper>> MELT_RECOVERY_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, MELT_RECOVERY);
+
+    private static final Identifier MELT_TANK = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "melt_tank");
+    private static final ResourceKey<Consumer<GameTestHelper>> MELT_TANK_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, MELT_TANK);
 
     /** The height the generators stand at, clear of the floor of the structure. */
     private static final int Y = 2;
@@ -85,6 +91,7 @@ public final class MeltGameTests {
             registry.register(MELT_ALONE, TestSupport.ticking(clean(MeltGameTests::alone)));
             registry.register(MELT_LIMITS, TestSupport.ticking(clean(MeltGameTests::limits)));
             registry.register(MELT_RECOVERY, TestSupport.ticking(clean(MeltGameTests::recovery)));
+            registry.register(MELT_TANK, TestSupport.ticking(clean(MeltGameTests::tank)));
         });
     }
 
@@ -105,6 +112,8 @@ public final class MeltGameTests {
         event.registerTest(MELT_LIMITS, new FunctionGameTestInstance(MELT_LIMITS_FUNCTION, new TestData<>(limits, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
         var recovery = event.registerEnvironment(MELT_RECOVERY, new TestEnvironmentDefinition.AllOf());
         event.registerTest(MELT_RECOVERY, new FunctionGameTestInstance(MELT_RECOVERY_FUNCTION, new TestData<>(recovery, Identifier.withDefaultNamespace("empty"), 70, 0, true)));
+        var tank = event.registerEnvironment(MELT_TANK, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(MELT_TANK, new FunctionGameTestInstance(MELT_TANK_FUNCTION, new TestData<>(tank, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
     }
 
     /**
@@ -166,7 +175,7 @@ public final class MeltGameTests {
     }
 
     /**
-     * Tier 2 melts two ice blocks at once (its slots), tier 4 leaves a water source where the ice was and tier 1 leaves air; frosted ice
+     * Tier 2 melts two ice blocks at once (its slots), tier 4 puts a bucket of water into its tank and leaves air, tier 1 gives no water; frosted ice
      * and snow are no fuel.
      *
      * @param helper the game test helper
@@ -192,15 +201,19 @@ public final class MeltGameTests {
             helper.assertTrue(helper.getBlockState(two.east()).isAir() && helper.getBlockState(two.above()).isAir(), "tier 2 did not melt both blocks");
             var be = (MeltBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(two));
             helper.assertTrue(be.stored() + be.pending() == 2L * MeltIce.ICE.yield(), "wrong FE for two ice blocks: " + be.stored() + " + " + be.pending());
-            helper.assertTrue(helper.getBlockState(water.east()).is(Blocks.WATER), "tier 4 left no water");
+            helper.assertTrue(helper.getBlockState(water.east()).isAir(), "tier 4 placed a block instead of filling its tank");
+            var tank4 = (MeltBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(water));
+            helper.assertTrue(tank4.water() == MeltMath.BUCKET_MB, "tier 4 tank holds " + tank4.water() + " mB, expected one bucket");
             helper.assertTrue(helper.getBlockState(air.east()).isAir(), "tier 1 left something but air");
+            var tank1 = (MeltBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(air));
+            helper.assertTrue(tank1.water() == 0, "tier 1 holds water");
             helper.succeed();
         });
     }
 
     /**
-     * Water recovery of a packed ice block: tier 4 leaves one water source (unchanged), tier 5 recovers all the water the block is
-     * worth, nine sources (the ice it is made of), and none of them is lost.
+     * Water recovery of a packed ice block: tier 4 puts one bucket into its tank, tier 5 all the water the block is worth, nine buckets
+     * (the ice it is made of); no water block is placed in the world.
      *
      * @param helper the game test helper
      */
@@ -215,9 +228,11 @@ public final class MeltGameTests {
         }
         helper.runAfterDelay(WAIT, () -> {
             int expected = MeltIce.PACKED_ICE.yield() / MeltIce.ICE.yield();
-            helper.assertTrue(sources(helper, 0, 5) == 1, "tier 4 left " + sources(helper, 0, 5) + " water sources for packed ice, expected 1");
-            helper.assertTrue(sources(helper, 6, 14) >= expected, "tier 5 left " + sources(helper, 6, 14) + " water sources for packed ice, expected " + expected);
-            helper.assertTrue(helper.getBlockState(five.east()).is(Blocks.WATER), "tier 5 left no water where the ice was");
+            var fourBe = (MeltBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(four));
+            var fiveBe = (MeltBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(five));
+            helper.assertTrue(fourBe.water() == MeltMath.BUCKET_MB, "tier 4 tank holds " + fourBe.water() + " mB for packed ice, expected 1000");
+            helper.assertTrue(fiveBe.water() == expected * MeltMath.BUCKET_MB, "tier 5 tank holds " + fiveBe.water() + " mB for packed ice, expected " + expected * MeltMath.BUCKET_MB);
+            helper.assertTrue(sources(helper, 0, 14) == 0, "water was placed in the world");
             helper.succeed();
         });
     }
@@ -233,6 +248,62 @@ public final class MeltGameTests {
             }
         }
         return count;
+    }
+
+    /**
+     * The water tank: blue ice at tier 5 is worth 81 buckets and fills it (32 buckets, the rest is lost), which cuts the FE of the next
+     * ice to a quarter; the tank can be drained from every side but nothing can be inserted, and once there is room again the ice gives
+     * its full FE; the water survives saving and loading.
+     *
+     * @param helper the game test helper
+     */
+    private static void tank(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var gen = new BlockPos(1, Y, 1);
+        var copy = new BlockPos(1, Y, 8);
+        helper.setBlock(gen, MeltBlocks.block(5).get());
+        helper.setBlock(gen.west(), Blocks.MAGMA_BLOCK);
+        helper.setBlock(gen.above(), Blocks.BLUE_ICE);
+        helper.setBlock(gen.east(), Blocks.ICE);
+        helper.setBlock(copy, MeltBlocks.block(1).get());
+        helper.runAfterDelay(25, () -> {
+            var be = (MeltBlockEntity) level.getBlockEntity(helper.absolutePos(gen));
+            helper.assertTrue(helper.getBlockState(gen.above()).isAir() && helper.getBlockState(gen.east()).isAir(), "the ice was not melted");
+            helper.assertTrue(be.water() == MeltMath.TANK_CAPACITY_MB && be.tankFull(), "the tank is not full: " + be.water());
+            long expected = MeltIce.BLUE_ICE.yield() + MeltMath.effectiveYield(MeltIce.ICE.yield(), true);
+            helper.assertTrue(be.stored() + be.pending() == expected, "a full tank did not cut the ice to a quarter: " + be.stored() + " + " + be.pending() + " instead of " + expected);
+            helper.assertTrue(MeltMath.effectiveYield(MeltIce.ICE.yield(), true) * 4 == MeltIce.ICE.yield(), "not a quarter");
+            helper.assertTrue(sources(helper, 0, 14) == 0, "water was placed in the world");
+
+            for (Direction side : Direction.values()) {
+                var handler = level.getCapability(Capabilities.Fluid.BLOCK, helper.absolutePos(gen), side);
+                helper.assertTrue(handler != null, "no fluid capability on " + side);
+                try (var tx = Transaction.openRoot()) {
+                    helper.assertTrue(handler.insert(FluidResource.of(Fluids.WATER), 1000, tx) == 0, "the tank accepted water on " + side);
+                }
+            }
+
+            var saved = be.saveCustomOnly(level.registryAccess());
+            var target = (MeltBlockEntity) level.getBlockEntity(helper.absolutePos(copy));
+            target.loadCustomOnly(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), saved));
+            helper.assertTrue(target.water() == be.water(), "save and load changed the water: " + target.water());
+
+            var out = level.getCapability(Capabilities.Fluid.BLOCK, helper.absolutePos(gen), Direction.DOWN);
+            try (var tx = Transaction.openRoot()) {
+                helper.assertTrue(out.extract(FluidResource.of(Fluids.WATER), MeltMath.BUCKET_MB, tx) == MeltMath.BUCKET_MB, "the tank cannot be drained");
+                tx.commit();
+            }
+            helper.assertTrue(be.water() == MeltMath.TANK_CAPACITY_MB - MeltMath.BUCKET_MB && !be.tankFull(), "draining did not free the tank");
+            long before = be.stored() + be.pending();
+            helper.setBlock(gen.east(), Blocks.ICE);
+            helper.runAfterDelay(20, () -> {
+                helper.assertTrue(helper.getBlockState(gen.east()).isAir(), "the ice was not melted after draining");
+                long gained = be.stored() + be.pending() - before;
+                helper.assertTrue(gained == MeltIce.ICE.yield(), "the ice gave " + gained + " FE after draining, expected the full " + MeltIce.ICE.yield());
+                helper.assertTrue(be.tankFull(), "the tank was not refilled");
+                helper.succeed();
+            });
+        });
     }
 
     /**
@@ -282,9 +353,10 @@ public final class MeltGameTests {
         helper.setBlock(copy, MeltBlocks.block(1).get());
         helper.runAfterDelay(WAIT, () -> {
             for (var d : new Direction[] {Direction.DOWN, Direction.UP, Direction.NORTH, Direction.SOUTH, Direction.EAST}) {
-                helper.assertTrue(helper.getBlockState(five.relative(d)).is(Blocks.WATER), "tier 5 did not melt " + d + " into water");
+                helper.assertTrue(helper.getBlockState(five.relative(d)).isAir(), "tier 5 did not melt " + d);
             }
             var fiveBe = (MeltBlockEntity) level.getBlockEntity(helper.absolutePos(five));
+            helper.assertTrue(fiveBe.water() == 5 * MeltMath.BUCKET_MB, "the tank holds " + fiveBe.water() + " mB for five ice blocks");
             helper.assertTrue(fiveBe.stored() + fiveBe.pending() == 5L * MeltIce.ICE.yield(), "wrong FE for five ice blocks: " + fiveBe.stored() + " + " + fiveBe.pending());
 
             helper.assertTrue(helper.getBlockState(full.above()).isAir(), "the ice above was not consumed");
