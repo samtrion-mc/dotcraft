@@ -11,6 +11,7 @@ import net.samtrion.dotcraft.energy.vibration.VibrationBlockItem;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlockItem;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
+import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The German translations. Every key added here needs the same key in {@link EnglishUSLanguageProvider}. */
@@ -42,6 +43,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(VibrationBlockItem.HEARING_KEY, "Hört Erschütterungen im Umkreis von %1$s Blöcken, ab Vibrationsfrequenz %2$s");
         add(VibrationBlockItem.PIERCE_KEY, "Hört durch Wolle");
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
+        MeltBlocks.blocks().forEach(b -> add(b.get(), "Schmelzgenerator (Stufe " + b.get().tier() + ")"));
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energie");
         add(CurrentGeneratorItem.FORMULA_KEY, "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)");
         add(CurrentGeneratorItem.PERK_KEY + 1, "Basis: braucht einen fast vollen Wasserwürfel");

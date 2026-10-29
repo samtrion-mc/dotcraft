@@ -11,6 +11,7 @@ import net.samtrion.dotcraft.energy.vibration.VibrationBlockItem;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlockItem;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
+import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The English translations. Every key added here needs the same key in {@link GermanLanguageProvider}. */
@@ -42,6 +43,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(VibrationBlockItem.HEARING_KEY, "Hears shocks within %1$s blocks, from vibration frequency %2$s");
         add(VibrationBlockItem.PIERCE_KEY, "Hears through wool");
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
+        MeltBlocks.blocks().forEach(b -> add(b.get(), "Melt Generator (Tier " + b.get().tier() + ")"));
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(CurrentGeneratorItem.FORMULA_KEY, "Needs water: peak x water share x biome x (1 + animals)");
         add(CurrentGeneratorItem.PERK_KEY + 1, "Baseline: needs a nearly full cube of water");

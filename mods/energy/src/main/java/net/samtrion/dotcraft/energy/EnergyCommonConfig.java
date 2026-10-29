@@ -63,6 +63,12 @@ public final class EnergyCommonConfig {
      * night, so even the weakest hot and cold source fills the battery of the tier in well under one MC day.
      */
     public static final List<Generator> THERMO_GENERATORS = generators(THERMO_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The registry paths of the melt generators, tiers 1-5, which are also their config sections. */
+    static final List<String> MELT_NAMES = tierNames("melt_generator");
+    /** The melt generators: the most FE per tick the heat of the melted ice is released at (a rate limit, see {@code MeltMath}). */
+    public static final List<Generator> MELT_GENERATORS = generators(MELT_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The FE a melted block of ice, packed ice and blue ice gives, section {@code melt}. */
+    public static final MeltYield MELT_YIELD = new MeltYield(1_000, 9_000, 81_000);
 
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
@@ -195,6 +201,61 @@ public final class EnergyCommonConfig {
          */
         public int maxOutput() {
             return SPEC.isLoaded() ? maxOutput.get() : defaultPeak * OUTPUT_FACTOR;
+        }
+    }
+
+    /** The FE a melted ice block gives, per type, global for all tiers and so in the top-level section {@code melt}; while the config is not loaded (e.g. in datagen and unit tests) the defaults count. */
+    public static final class MeltYield {
+        private final ModConfigSpec.IntValue ice;
+        private final ModConfigSpec.IntValue packedIce;
+        private final ModConfigSpec.IntValue blueIce;
+        private final int defaultIce;
+        private final int defaultPackedIce;
+        private final int defaultBlueIce;
+
+        /**
+         * Defines the entries {@code melt.ice}, {@code melt.packed_ice} and {@code melt.blue_ice}.
+         *
+         * @param defaultIce       the default FE of an ice block
+         * @param defaultPackedIce the default FE of a packed ice block (crafted from nine ice)
+         * @param defaultBlueIce   the default FE of a blue ice block (crafted from nine packed ice)
+         */
+        private MeltYield(int defaultIce, int defaultPackedIce, int defaultBlueIce) {
+            this.defaultIce = defaultIce;
+            this.defaultPackedIce = defaultPackedIce;
+            this.defaultBlueIce = defaultBlueIce;
+            BUILDER.push("melt");
+            ice = BUILDER.comment("FE a melted block of ice gives a melt generator.").defineInRange("ice", defaultIce, 0, 100_000_000);
+            packedIce = BUILDER.comment("FE a melted block of packed ice gives a melt generator.").defineInRange("packed_ice", defaultPackedIce, 0, 100_000_000);
+            blueIce = BUILDER.comment("FE a melted block of blue ice gives a melt generator.").defineInRange("blue_ice", defaultBlueIce, 0, 100_000_000);
+            BUILDER.pop();
+        }
+
+        /**
+         * The FE of an ice block.
+         *
+         * @return the FE
+         */
+        public int ice() {
+            return SPEC.isLoaded() ? ice.get() : defaultIce;
+        }
+
+        /**
+         * The FE of a packed ice block.
+         *
+         * @return the FE
+         */
+        public int packedIce() {
+            return SPEC.isLoaded() ? packedIce.get() : defaultPackedIce;
+        }
+
+        /**
+         * The FE of a blue ice block.
+         *
+         * @return the FE
+         */
+        public int blueIce() {
+            return SPEC.isLoaded() ? blueIce.get() : defaultBlueIce;
         }
     }
 }

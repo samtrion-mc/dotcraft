@@ -9,6 +9,7 @@ import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
+import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.resources.CraftResources;
 
 /**
@@ -37,5 +38,6 @@ public class EnergyMod {
         CurrentBlocks.register(modEventBus);
         VibrationBlocks.register(modEventBus);
         ThermoBlocks.register(modEventBus);
+        MeltBlocks.register(modEventBus);
     }
 }

@@ -16,6 +16,7 @@ import net.samtrion.dotcraft.energy.vibration.VibrationLootPlugin;
 import net.samtrion.dotcraft.energy.thermo.datagen.ThermoLootPlugin;
 import net.samtrion.dotcraft.energy.thermo.datagen.ThermoRecipeProvider;
 import net.samtrion.dotcraft.energy.thermo.datagen.ThermoTagsProvider;
+import net.samtrion.dotcraft.energy.melt.datagen.MeltLootPlugin;
 import net.samtrion.dotcraft.resources.datagen.ResourceBlockLootSubProvider;
 
 /**
@@ -49,7 +50,7 @@ public final class EnergyDataGen {
     static void server(GatherDataEvent.Server event) {
         event.createProvider(EnergyRecipeProvider::new);
         event.createProvider((o, l) -> new LootTableProvider(o, Set.of(),
-                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin(), new CurrentLootPlugin(), new VibrationLootPlugin(), new ThermoLootPlugin()),
+                List.of(new LootTableProvider.SubProviderEntry(r -> new ResourceBlockLootSubProvider(r, new GeneratorLootPlugin(), new CurrentLootPlugin(), new VibrationLootPlugin(), new ThermoLootPlugin(), new MeltLootPlugin()),
                         LootContextParamSets.BLOCK)), l));
         event.createProvider(EnergyBlockTagsProvider::new);
         event.createProvider(ThermoRecipeProvider::new);

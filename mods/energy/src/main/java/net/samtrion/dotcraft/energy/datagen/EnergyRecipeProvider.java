@@ -26,6 +26,7 @@ import net.samtrion.dotcraft.energy.current.CurrentRecipes;
 import net.samtrion.dotcraft.energy.generator.EnergyBlocks;
 import net.samtrion.dotcraft.energy.item.EnergyItems;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
+import net.samtrion.dotcraft.energy.melt.datagen.MeltRecipes;
 import net.samtrion.dotcraft.resources.common.Forms;
 import net.samtrion.dotcraft.resources.common.MaterialTags;
 import net.samtrion.dotcraft.resources.common.Materials;
@@ -81,6 +82,7 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
             panels(EnergyBlocks.LUNAR, batteries, Tags.Items.GEMS_LAPIS, "lead", "brass", "invar", "silver", "platinum");
             new CurrentRecipes(this.registries, output).generate();
             vibrationGenerators(batteries, "iron", "copper", "nickel", "gold", "iridium");
+            new MeltRecipes(registries, output).build();
         }
 
         /** Two photovoltaic cells: two quartz, a glass pane and redstone grains; unlocked by the quartz. */
