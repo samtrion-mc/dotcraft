@@ -37,7 +37,8 @@ import net.samtrion.dotcraft.energy.generator.GeneratorBlock;
 public final class KiteGameTests {
     /** The names of the tests; every one has a function, an environment and an instance. */
     private static final String[] NAMES = {"kite_blocks", "kite_flight", "kite_above_build_height", "kite_break_and_reel_in", "kite_respawn_and_save",
-            "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder", "kite_ignores_obstructions", "kite_two_kites"};
+            "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder", "kite_ignores_obstructions", "kite_two_kites",
+            "kite_lightning"};
 
     /** Not instantiable. */
     private KiteGameTests() {}
@@ -88,6 +89,7 @@ public final class KiteGameTests {
             case "kite_comparator_and_status" -> KiteGameTests::comparatorAndStatus;
             case "kite_ignores_obstructions" -> KiteGameTests::ignoresObstructions;
             case "kite_two_kites" -> KiteGameTests::twoKites;
+            case "kite_lightning" -> KiteGameTests::lightning;
             default -> KiteGameTests::thunder;
         };
     }
@@ -190,7 +192,7 @@ public final class KiteGameTests {
         helper.assertTrue(be.hasKite() && be.kite() != null && !be.kite().isRemoved(), "no kite flies");
         helper.useBlock(pos, player);
         helper.assertTrue(player.getMainHandItem().getCount() == 1, "a second kite was put in");
-        var peak = EnergyCommonConfig.KITE_GENERATORS.get(0).peak();
+        var peak = KiteMath.peak(EnergyCommonConfig.KITE_GENERATORS.get(0).peak(), 1);
         helper.succeedWhen(() -> {
             var kite = be.kite();
             helper.assertTrue(kite != null && kite.altitude() >= KiteMath.tether(1) - 0.5, "the kite has not reached the tether yet");
@@ -222,7 +224,7 @@ public final class KiteGameTests {
             helper.assertTrue(!kite.isRemoved() && level.getEntity(kite.getUUID()) == kite, "the kite above the build height was removed");
             helper.assertTrue(kite.tickCount > age + 40, "the kite above the build height does not tick");
             helper.assertTrue(kite.getY() > level.getMaxY() + 50, "the kite does not climb on above the build height: " + kite.getY());
-            double expectedMin = EnergyCommonConfig.KITE_GENERATORS.get(4).peak() * KiteMath.share(5, needed) * 0.4;
+            double expectedMin = EnergyCommonConfig.KITE_GENERATORS.get(4).peak() * KiteMath.lengthFactor(5, needed) * 0.4;
             helper.assertTrue(be.output() > expectedMin, "output " + be.output() + " below " + expectedMin);
         });
     }
@@ -442,7 +444,7 @@ public final class KiteGameTests {
         helper.assertTrue(entity(helper, single).kite(1) == null, "tier 1 has a second kite");
         int kites = level.getEntities(KiteBlocks.KITE_ENTITY.get(), new net.minecraft.world.phys.AABB(helper.absolutePos(pos)).inflate(2, 600, 2), k -> true).size();
         helper.assertTrue(kites == 2, "expected two kite entities, found " + kites);
-        double peak = EnergyCommonConfig.KITE_GENERATORS.get(3).peak();
+        double peak = KiteMath.peak(EnergyCommonConfig.KITE_GENERATORS.get(3).peak(), 4);
         second.kill(level);
         helper.succeedWhen(() -> {
             var now = be.kite(1);
@@ -453,5 +455,50 @@ public final class KiteGameTests {
             helper.assertTrue(level.getEntities(KiteBlocks.KITE_ENTITY.get(), new net.minecraft.world.phys.AABB(helper.absolutePos(pos)).inflate(2, 600, 2), k -> true).size() == 2,
                     "a duplicate kite flies");
         });
+    }
+
+    /**
+     * A lightning strike on a tier 5 kite spawns a purely visual bolt and credits 1 000 000 FE to the block, one block for both kites;
+     * a full buffer hands the bolt to a neighbouring drain as a burst (the push limit per tick does not apply), and without a
+     * neighbour what does not fit is lost. A tier 1 kite is never struck (it is reeled in during a storm).
+     *
+     * @param helper the game test helper
+     */
+    private static void lightning(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var lone = new BlockPos(1, 1, 1);
+        var next = new BlockPos(5, 1, 1);
+        helper.setBlock(lone, KiteBlocks.block(5).get());
+        helper.setBlock(next, KiteBlocks.block(4).get());
+        helper.setBlock(next.east(), EnergyBlocks.POWER_DRAIN.get());
+        var player = player(helper, true);
+        helper.useBlock(lone, player);
+        helper.useBlock(next, player);
+        var be = entity(helper, lone);
+        var bigBe = entity(helper, next);
+        int bolt = EnergyCommonConfig.kiteLightningEnergy();
+        helper.assertTrue(bolt == 1_000_000, "the bolt is not 1 000 000 FE: " + bolt);
+        var kite = be.kite(0);
+        helper.assertTrue(kite != null, "no kite");
+        var area = new net.minecraft.world.phys.AABB(kite.blockPosition()).inflate(3);
+        var credit = be.strike(level, 0);
+        helper.assertTrue(credit != null && credit.stored() == bolt && credit.pushed() == 0 && credit.lost() == 0, "wrong credit " + credit);
+        helper.assertTrue(be.energy().getAmountAsLong() == bolt, "the buffer did not get the bolt: " + be.energy().getAmountAsLong());
+        var bolts = level.getEntities(net.minecraft.world.entity.EntityType.LIGHTNING_BOLT, area, b -> true);
+        helper.assertTrue(bolts.size() == 1 && bolts.get(0).getPersistentData() != null, "no bolt at the kite");
+        helper.assertTrue(!(level.getBlockState(kite.blockPosition()).is(Blocks.FIRE)), "the bolt set fire");
+        // a full buffer: the bolt goes to the drain next to it in one burst, far above the push limit per tick
+        int capacity = EnergyCommonConfig.KITE_GENERATORS.get(3).capacity();
+        bigBe.creditLightning(level, capacity);
+        helper.assertTrue(bigBe.energy().getAmountAsLong() == capacity, "the buffer is not full");
+        var burst = bigBe.creditLightning(level, bolt);
+        helper.assertTrue(burst.stored() == 0 && burst.pushed() == bolt && burst.lost() == 0, "the bolt did not go to the drain: " + burst);
+        helper.assertTrue(bolt > EnergyCommonConfig.KITE_GENERATORS.get(3).maxOutput(), "the burst is not above the push limit");
+        // without a neighbour what does not fit is lost
+        be.creditLightning(level, EnergyCommonConfig.KITE_GENERATORS.get(4).capacity());
+        var lost = be.creditLightning(level, bolt);
+        helper.assertTrue(lost.stored() == 0 && lost.pushed() == 0 && lost.lost() == bolt, "wrong overflow " + lost);
+        helper.assertTrue(!KiteMath.struck(1, KiteMath.Weather.THUNDER, 0, 0), "a tier 1 kite can be struck");
+        helper.succeed();
     }
 }
