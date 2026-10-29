@@ -4,6 +4,9 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 
+import org.joml.Matrix4f;
+import org.joml.Vector3f;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -19,12 +22,16 @@ import net.samtrion.dotcraft.energy.kite.KiteEntity;
 
 /**
  * Draws the kite: a flat diamond (one texture per tier, double-sided) that leans into the wind and sways a little, and the tether, a
- * straight line from the kite down to the top of its generator block. The tether is drawn even when the kite itself is out of the
- * frustum (the kite can be hundreds of blocks above the player), so culling is off.
+ * straight line from the top of its generator block up to a point a bit below the kite, where it splits into the bridle: two short
+ * lines to the two bottom corners of the kite. Every kite (both of a pair) draws its own tether and bridle, so two kites never share
+ * a line. The bridle is only drawn, it has no effect on the game. The tether is drawn even when the kite itself is out of the frustum
+ * (the kite can be hundreds of blocks above the player), so culling is off.
  */
 public class KiteRenderer extends EntityRenderer<KiteEntity, KiteRenderState> {
     /** The render type of the kite, one per tier. */
     private static final RenderType[] TYPES = new RenderType[5];
+    /** How far below the bottom edge of the kite the tether splits into the bridle, as a share of the kite size. */
+    private static final float BRIDLE_DROP = 0.45F;
     /** Colour of the tether (ARGB). */
     private static final int LINE_COLOR = 0xFFE9E2D0;
 
@@ -69,6 +76,11 @@ public class KiteRenderer extends EntityRenderer<KiteEntity, KiteRenderState> {
         poseStack.translate(sx, 0, sz);
         poseStack.mulPose(Axis.YP.rotationDegrees(state.phase * 360F / 256F + (float) Math.sin(state.ageInTicks * 0.07) * 12F));
         poseStack.mulPose(Axis.XP.rotationDegrees(-25F));
+        // the two bottom corners of the kite, in the space of the entity
+        Matrix4f kiteMatrix = new Matrix4f(poseStack.last().pose());
+        float h = size / 2;
+        Vector3f left = kiteMatrix.transformPosition(-h, -h, 0, new Vector3f());
+        Vector3f right = kiteMatrix.transformPosition(h, -h, 0, new Vector3f());
         collector.submitCustomGeometry(poseStack, TYPES[state.tier - 1], (pose, buffer) -> {
             quad(buffer, pose, state.lightCoords, size, 1);
             quad(buffer, pose, state.lightCoords, size, -1);
@@ -79,15 +91,26 @@ public class KiteRenderer extends EntityRenderer<KiteEntity, KiteRenderState> {
         float ex = (float) state.anchorOffset.x;
         float ey = (float) state.anchorOffset.y;
         float ez = (float) state.anchorOffset.z;
-        float length = (float) Math.sqrt((ex - sx) * (ex - sx) + ey * ey + (ez - sz) * (ez - sz));
-        float nx = length == 0 ? 0 : (ex - sx) / length;
-        float ny = length == 0 ? 1 : ey / length;
-        float nz = length == 0 ? 0 : (ez - sz) / length;
+        // the junction: below the middle of the bottom edge, on the way to the anchor
+        Vector3f anchor = new Vector3f(ex, ey, ez);
+        Vector3f junction = left.add(right, new Vector3f()).mul(0.5F);
+        Vector3f toAnchor = anchor.sub(junction, new Vector3f());
+        if (toAnchor.lengthSquared() > 0) junction.add(toAnchor.normalize().mul(Math.min(size * BRIDLE_DROP, toAnchor.length())));
         collector.submitCustomGeometry(poseStack, RenderTypes.lines(), (pose, buffer) -> {
-            buffer.addVertex(pose, sx, -size * 0.45F, sz).setColor(LINE_COLOR).setNormal(pose, nx, ny, nz).setLineWidth(width);
-            buffer.addVertex(pose, ex, ey, ez).setColor(LINE_COLOR).setNormal(pose, nx, ny, nz).setLineWidth(width);
+            line(buffer, pose, junction, anchor, width);
+            line(buffer, pose, junction, left, width);
+            line(buffer, pose, junction, right, width);
         });
         super.submit(state, poseStack, collector, camera);
+    }
+
+    /** One line of the tether or the bridle; the normal of a line is its direction. */
+    private static void line(VertexConsumer buffer, PoseStack.Pose pose, Vector3f from, Vector3f to, float width) {
+        Vector3f n = to.sub(from, new Vector3f());
+        if (n.lengthSquared() == 0) n.set(0, 1, 0);
+        n.normalize();
+        buffer.addVertex(pose, from.x, from.y, from.z).setColor(LINE_COLOR).setNormal(pose, n.x, n.y, n.z).setLineWidth(width);
+        buffer.addVertex(pose, to.x, to.y, to.z).setColor(LINE_COLOR).setNormal(pose, n.x, n.y, n.z).setLineWidth(width);
     }
 
     /** One side of the diamond: a square of the given size in the plane facing {@code side} (+1 front, -1 back). */

@@ -35,7 +35,22 @@ import java.util.function.IntPredicate;
  * <b>Two kites.</b> The output of tier 4 and 5 is that of the <i>pair</i>: the first kite makes {@link #SLOT_SHARES}[0] = 60 % of
  * the base, the second one, which flies in the wind shadow of the first, 40 % (see {@link #slotShare(int, int)}), so one kite alone
  * never reaches the peak and both together at full tether, clear weather and a free sky make exactly the peak, never more.
- * A thunderstorm never attracts lightning to a kite (no lightning is ever spawned): a kite that has to give way is simply reeled in.
+ * A kite that has to give way in a thunderstorm (tier 1-3) is simply reeled in and never struck.
+ * <p>
+ * <b>Wire.</b> The tether is not there by default: the player feeds iron wire into the generator, 1 wire = 1 block of tether, at most
+ * {@link #tether(int)} of the tier (see {@link #wireStored(int, int, int)}). A kite reaches at most {@code min(wire, tether, free
+ * altitude)} (see {@link #flightTarget(int, int, int)}); without wire no kite is launched and the output is 0.
+ * <p>
+ * <b>Play.</b> The single kite of tier 1-3 hangs straight above its block, as before (a single kite has nothing to keep away from, and
+ * the simple layout keeps it in the chunk of its block). The two kites of tier 4 and 5 each get a horizontal play of +-{@link #SPREAD}
+ * blocks around the vertical axis of the block, slot specific and slowly wandering (see {@link #offset(int, int, long, boolean)}), and
+ * stay at least {@link #MIN_KITE_GAP} blocks apart. In a thunderstorm the kite is guided tightly: its horizontal offset is clamped to a
+ * radius of {@link #THUNDER_RADIUS} blocks around the axis (the play of +-4 lies inside that anyway, the clamp is the guarantee), and a
+ * natural lightning bolt within {@link #THUNDER_RADIUS} blocks of a kite or its tether is attracted to the generator (see
+ * {@link #attracts}). The 1 % per second spawn of a visual bolt stays as the way to get bolts when natural ones rarely land there.
+ * <p>
+ * <b>Distance.</b> Two kite generators with a tether closer than {@link #MIN_DISTANCE} blocks horizontally (and within the tether
+ * reach vertically, see {@link #tooClose}) would tangle: both are blocked, their kites are reeled in and the output is 0.
  * <p>
  * <b>Economy.</b> The ladder is deliberately gentle: the best case per MC day (tether fully out, a free sky, the real gust curve and a
  * weather mix of {@link #TYPICAL_CLEAR} / {@link #TYPICAL_RAIN} / {@link #TYPICAL_THUNDER}, see {@link #typicalDailyYield(double, int)})
@@ -70,6 +85,15 @@ final class KiteMath {
     private static final long SWELL_TICKS = 1_700;
     /** The period in ticks of the quick gusts on top of the swell. */
     private static final long GUST_TICKS = 611;
+
+    /** The minimum horizontal distance in blocks between the block positions of two kite generators with a tether; closer ones block each other. */
+    static final int MIN_DISTANCE = 16;
+    /** The horizontal play in blocks of a kite of tier 4 and 5 around the vertical axis of its block, per axis. */
+    static final double SPREAD = 4;
+    /** The least distance in blocks between the two kites of one block (their play is arranged so that it always holds). */
+    static final double MIN_KITE_GAP = 3;
+    /** In a thunderstorm the horizontal distance of a kite from the axis of its block is at most this many blocks; lightning within it is attracted. */
+    static final double THUNDER_RADIUS = 6;
 
     private static final int[] TETHER = {16, 24, 32, 48, 64};
     /** The most kites a block flies (tier 4 and 5). */
@@ -387,5 +411,106 @@ final class KiteMath {
     static int signal(double output, double peak) {
         if (output <= 0 || peak <= 0) return 0;
         return (int) Math.clamp(1 + (long) (14 * output / peak), 1, 15);
+    }
+
+    /**
+     * The wire a generator holds after an insert: 1 wire is 1 block of tether, at most the tether of the tier.
+     *
+     * @param tier   the tier, 1..5
+     * @param stored the wire held now
+     * @param added  the wire offered
+     * @return the wire held after the insert, between {@code stored} and {@link #tether(int)}
+     */
+    static int wireStored(int tier, int stored, int added) {
+        return (int) Math.min((long) stored + Math.max(added, 0), Math.max(stored, tether(tier)));
+    }
+
+    /**
+     * The altitude a kite flies to: no more than the wire, the tether of the tier and the free way up allow.
+     *
+     * @param tier  the tier, 1..5
+     * @param wire  the wire held
+     * @param reach the free altitude on the way up, see {@link #reach(int, IntPredicate)}
+     * @return the altitude in blocks, 0 without wire
+     */
+    static int flightTarget(int tier, int wire, int reach) {
+        return Math.max(0, Math.min(Math.min(wire, tether(tier)), reach));
+    }
+
+    /**
+     * A horizontal offset from the axis of the block.
+     *
+     * @param x the offset in x in blocks
+     * @param z the offset in z in blocks
+     */
+    record Offset(double x, double z) {}
+
+    /**
+     * Where a kite hangs horizontally relative to the vertical axis of its block, deterministic in the game time and the slot. Tier
+     * 1-3 hang on the axis. The kites of tier 4 and 5 wander slowly inside +-{@link #SPREAD}: slot 0 in x between -4 and -1.5, slot 1 in
+     * x between 1.5 and 4 (so they are at least {@link #MIN_KITE_GAP} apart), both in z between -4 and 4, with a different period per
+     * slot and axis. In a thunderstorm the offset is clamped to {@link #THUNDER_RADIUS} around the axis.
+     *
+     * @param tier  the tier, 1..5
+     * @param slot  the slot of the kite
+     * @param time  the game time in ticks
+     * @param storm whether the kite is guided tightly in a thunderstorm
+     * @return the offset
+     */
+    static Offset offset(int tier, int slot, long time, boolean storm) {
+        if (kites(tier) == 1) return new Offset(0, 0);
+        int s = slot == 0 ? 0 : 1;
+        double px = 1_300 + 170.0 * s;
+        double pz = 1_900 - 230.0 * s;
+        double x = (s == 0 ? -2.75 : 2.75) + 1.25 * Math.sin(2 * Math.PI * Math.floorMod(time, (long) px) / px + s);
+        double z = SPREAD * Math.sin(2 * Math.PI * Math.floorMod(time, (long) pz) / pz + 2 * s);
+        var o = new Offset(x, z);
+        return storm ? clamp(o, THUNDER_RADIUS) : o;
+    }
+
+    /**
+     * Limits an offset to a horizontal radius, keeping its direction.
+     *
+     * @param o      the offset
+     * @param radius the radius in blocks
+     * @return the offset itself if it is inside, else the point on the circle in the same direction
+     */
+    static Offset clamp(Offset o, double radius) {
+        double len = Math.hypot(o.x(), o.z());
+        return len <= radius ? o : new Offset(o.x() * radius / len, o.z() * radius / len);
+    }
+
+    /**
+     * Whether two kite generators tangle: closer than {@link #MIN_DISTANCE} horizontally and not further apart vertically than the
+     * tether of the longer one. It is symmetric, so both are blocked.
+     *
+     * @param dx    the x distance of the block positions
+     * @param dy    the y distance
+     * @param dz    the z distance
+     * @param tier  the tier of one
+     * @param other the tier of the other
+     * @return {@code true} if both are blocked
+     */
+    static boolean tooClose(int dx, int dy, int dz, int tier, int other) {
+        return Math.hypot(dx, dz) < MIN_DISTANCE && Math.abs(dy) <= Math.max(tether(tier), tether(other));
+    }
+
+    /**
+     * Whether a lightning bolt is attracted to a kite: it lands within {@link #THUNDER_RADIUS} blocks of the kite or of any point of
+     * the tether, the straight line from the top of the block (a) to the kite (k).
+     *
+     * @param b the position of the bolt, {x, y, z}
+     * @param a the top of the block where the tether starts, {x, y, z}
+     * @param k the kite, {x, y, z}
+     * @return {@code true} if the bolt counts as a strike on the kite
+     */
+    static boolean attracts(double[] b, double[] a, double[] k) {
+        double[] v = {k[0] - a[0], k[1] - a[1], k[2] - a[2]};
+        double len2 = v[0] * v[0] + v[1] * v[1] + v[2] * v[2];
+        double t = len2 == 0 ? 0 : Math.clamp(((b[0] - a[0]) * v[0] + (b[1] - a[1]) * v[1] + (b[2] - a[2]) * v[2]) / len2, 0, 1);
+        double dx = b[0] - (a[0] + t * v[0]);
+        double dy = b[1] - (a[1] + t * v[1]);
+        double dz = b[2] - (a[2] + t * v[2]);
+        return dx * dx + dy * dy + dz * dz <= THUNDER_RADIUS * THUNDER_RADIUS;
     }
 }

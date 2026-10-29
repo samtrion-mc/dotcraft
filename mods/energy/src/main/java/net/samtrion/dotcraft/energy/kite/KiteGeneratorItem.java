@@ -42,6 +42,8 @@ public class KiteGeneratorItem extends BlockItem {
     public void appendHoverText(ItemStack stack, TooltipContext context, TooltipDisplay display, Consumer<Component> builder, TooltipFlag flag) {
         super.appendHoverText(stack, context, display, builder, flag);
         builder.accept(Component.translatable("tooltip." + KiteBlocks.MODID + ".kite.tether", KiteMath.tether(tier)).withStyle(ChatFormatting.GRAY));
+        builder.accept(Component.translatable("tooltip." + KiteBlocks.MODID + ".kite.wire", KiteMath.tether(tier)).withStyle(ChatFormatting.GRAY));
+        builder.accept(Component.translatable("tooltip." + KiteBlocks.MODID + ".kite.distance", KiteMath.MIN_DISTANCE).withStyle(ChatFormatting.GRAY));
         builder.accept(Component.translatable("tooltip." + KiteBlocks.MODID + ".kite.perk." + tier).withStyle(ChatFormatting.GRAY));
     }
 }

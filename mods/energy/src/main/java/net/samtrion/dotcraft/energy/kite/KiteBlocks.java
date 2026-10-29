@@ -11,6 +11,7 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
+import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
@@ -51,6 +52,9 @@ public final class KiteBlocks {
     private static final List<DeferredBlock<KiteWindBlock>> BLOCK_LIST = new ArrayList<>();
     /** The items of the registered generator blocks, by tier. */
     private static final List<DeferredItem<KiteGeneratorItem>> ITEM_LIST = new ArrayList<>();
+
+    /** The wire a generator takes as tether, 1 wire = 1 block: {@code c:wires/iron}. */
+    public static final TagKey<Item> IRON_WIRE = TagKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath("c", "wires/iron"));
 
     /** The kite item: put into a generator it flies on a tether. */
     public static final DeferredItem<Item> KITE = ITEMS.registerSimpleItem("kite");

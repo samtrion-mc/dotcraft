@@ -278,4 +278,82 @@ class KiteMathTest {
             assertEquals(Math.round(best * 5), config.maxOutput());
         }
     }
+
+    /** One wire is one block of tether, at most the tether of the tier; the kite reaches min(wire, tether, free altitude). */
+    @Test
+    void wireIsCappedByTheTetherAndLimitsTheFlight() {
+        assertEquals(10, KiteMath.wireStored(1, 0, 10));
+        assertEquals(16, KiteMath.wireStored(1, 10, 100), "capped at the tether of tier 1");
+        assertEquals(64, KiteMath.wireStored(5, 60, 64));
+        assertEquals(10, KiteMath.wireStored(1, 10, -3), "negative amounts add nothing");
+        assertEquals(0, KiteMath.flightTarget(5, 0, 64), "no wire, no flight");
+        assertEquals(7, KiteMath.flightTarget(5, 7, 64));
+        assertEquals(16, KiteMath.flightTarget(1, 64, 100), "the tether of the tier caps it");
+        assertEquals(5, KiteMath.flightTarget(5, 64, 5), "the free altitude caps it");
+        assertEquals(0.125, KiteMath.lengthFactor(5, KiteMath.flightTarget(5, 8, 64)), 1e-9, "the wire feeds the length factor");
+    }
+
+    /** The play of the pair stays inside +-4, the two kites stay 3 apart, tier 1-3 hang on the axis, and it is deterministic. */
+    @Test
+    void spreadStaysInsideThePlayAndKeepsTheKitesApart() {
+        assertEquals(new KiteMath.Offset(0, 0), KiteMath.offset(3, 0, 12345, false));
+        double minX0 = 99;
+        double maxX0 = -99;
+        for (long t = 0; t < 40_000; t += 7) {
+            var a = KiteMath.offset(4, 0, t, false);
+            var b = KiteMath.offset(5, 1, t, false);
+            assertTrue(Math.abs(a.x()) <= 4 && Math.abs(a.z()) <= 4 && Math.abs(b.x()) <= 4 && Math.abs(b.z()) <= 4, "outside +-4 at " + t);
+            assertTrue(Math.hypot(a.x() - b.x(), a.z() - b.z()) >= KiteMath.MIN_KITE_GAP, "kites closer than 3 at " + t);
+            assertEquals(a, KiteMath.offset(4, 0, t, false));
+            minX0 = Math.min(minX0, a.x());
+            maxX0 = Math.max(maxX0, a.x());
+        }
+        assertTrue(maxX0 - minX0 > 2, "the kite does not wander");
+        var step = KiteMath.offset(4, 0, 101, false);
+        var next = KiteMath.offset(4, 0, 102, false);
+        assertTrue(Math.hypot(step.x() - next.x(), step.z() - next.z()) < 0.1, "the drift is not smooth");
+    }
+
+    /** In a thunderstorm the horizontal offset is clamped to a radius of 6; the play lies inside it and is not touched. */
+    @Test
+    void thunderClampsTheOffsetToTheRadius() {
+        assertEquals(6, KiteMath.THUNDER_RADIUS);
+        var far = KiteMath.clamp(new KiteMath.Offset(12, 0), KiteMath.THUNDER_RADIUS);
+        assertEquals(6, far.x(), 1e-9);
+        var diagonal = KiteMath.clamp(new KiteMath.Offset(8, 8), KiteMath.THUNDER_RADIUS);
+        assertEquals(6, Math.hypot(diagonal.x(), diagonal.z()), 1e-9);
+        assertEquals(new KiteMath.Offset(3, -4), KiteMath.clamp(new KiteMath.Offset(3, -4), 6));
+        for (long t = 0; t < 40_000; t += 11) {
+            var o = KiteMath.offset(5, 0, t, true);
+            assertTrue(Math.hypot(o.x(), o.z()) <= KiteMath.THUNDER_RADIUS + 1e-9);
+            assertEquals(KiteMath.offset(5, 0, t, false), o, "the play is inside the radius");
+        }
+    }
+
+    /** A bolt within 6 blocks of the kite or any point of the tether is attracted; further away it is not. */
+    @Test
+    void boltsWithinSixBlocksOfKiteOrTetherAreAttracted() {
+        double[] anchor = {0.5, 64, 0.5};
+        double[] kite = {3, 94, 2};
+        assertTrue(KiteMath.attracts(new double[] {3, 94, 2 + 5.9}, anchor, kite), "near the kite");
+        assertTrue(KiteMath.attracts(new double[] {5, 64, 0.5}, anchor, kite), "near the foot of the tether");
+        assertTrue(KiteMath.attracts(new double[] {2 + 3, 79, 1}, anchor, kite), "beside the middle of the tether");
+        assertTrue(!KiteMath.attracts(new double[] {0.5 + 6.5, 64, 0.5}, anchor, kite), "too far from the foot");
+        assertTrue(!KiteMath.attracts(new double[] {3, 120, 2}, anchor, kite), "above the kite");
+        assertTrue(KiteMath.attracts(anchor, anchor, anchor), "a zero-length tether does not divide by zero");
+    }
+
+    /** Two generators closer than 16 blocks horizontally, and within the tether vertically, block each other (symmetric). */
+    @Test
+    void minimumDistanceBlocksBoth() {
+        assertEquals(16, KiteMath.MIN_DISTANCE);
+        assertTrue(KiteMath.tooClose(15, 0, 0, 1, 1));
+        assertTrue(KiteMath.tooClose(0, 0, -15, 3, 5));
+        assertTrue(!KiteMath.tooClose(16, 0, 0, 1, 1), "exactly 16 is allowed");
+        assertTrue(KiteMath.tooClose(11, 0, 11, 1, 1), "diagonal 15.55");
+        assertTrue(!KiteMath.tooClose(12, 0, 12, 1, 1), "diagonal 16.97");
+        assertTrue(!KiteMath.tooClose(3, 17, 3, 1, 1), "above the tether of tier 1");
+        assertTrue(KiteMath.tooClose(3, 17, 3, 1, 2), "within the longer tether of tier 2");
+        assertEquals(KiteMath.tooClose(3, -30, 3, 1, 4), KiteMath.tooClose(-3, 30, -3, 4, 1), "symmetric");
+    }
 }

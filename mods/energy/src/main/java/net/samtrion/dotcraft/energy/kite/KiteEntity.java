@@ -19,6 +19,9 @@ import net.minecraft.world.level.storage.ValueOutput;
  * is <b>not</b> limited by the build height: an entity can be anywhere above the world (only below the bottom of the world it is
  * removed), it is tracked by the players around and it keeps ticking, which the game tests verify.
  * <p>
+ * The tier 4 and 5 kites additionally wander horizontally inside +-4 blocks of that axis (see {@link KiteMath#offset}); tier 1-3 hang
+ * on the axis. In a thunderstorm the offset is clamped to a radius of 6 blocks. Both are deterministic in the game time and the slot.
+ * <p>
  * It is the block entity that owns the kite: the entity type is not saved ({@code noSave}), so there is never a stray kite after a
  * restart or a chunk reload; the block entity remembers that it has a kite and spawns a new one (which climbs again from the block)
  * when its chunk is ticking and none is there. A kite whose block is gone or that is not the block's current kite discards itself.
@@ -41,6 +44,8 @@ public class KiteEntity extends Entity {
     private double altitude;
     /** The altitude the kite flies to. */
     private double target;
+    /** Whether the kite is guided tightly in a thunderstorm (set by the block entity). */
+    private boolean storm;
 
     /**
      * Creates the kite; invoked by the entity type.
@@ -112,7 +117,17 @@ public class KiteEntity extends Entity {
     void setAltitude(double value) {
         altitude = Math.max(0, value);
         var anchor = anchor();
-        setPos(anchor.getX() + 0.5, anchor.getY() + 1 + altitude, anchor.getZ() + 0.5);
+        var o = KiteMath.offset(tier(), slot(), level().getGameTime(), storm);
+        setPos(anchor.getX() + 0.5 + o.x(), anchor.getY() + 1 + altitude, anchor.getZ() + 0.5 + o.z());
+    }
+
+    /**
+     * Tells the kite whether a thunderstorm guides it tightly (horizontal radius {@link KiteMath#THUNDER_RADIUS}).
+     *
+     * @param value {@code true} in a thunderstorm
+     */
+    void setStorm(boolean value) {
+        storm = value;
     }
 
     /**
@@ -143,6 +158,7 @@ public class KiteEntity extends Entity {
         double speed = 0.25 + KiteMath.tether(tier()) / 1000.0;
         if (altitude < target) setAltitude(Math.min(target, altitude + speed));
         else if (altitude > target) setAltitude(Math.max(target, altitude - 2 * speed));
+        else setAltitude(altitude); // the play drifts with the game time
     }
 
     @Override

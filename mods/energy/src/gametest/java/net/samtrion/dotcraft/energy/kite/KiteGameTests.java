@@ -4,6 +4,7 @@ import java.util.function.Consumer;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.gametest.framework.FunctionGameTestInstance;
 import net.minecraft.gametest.framework.GameTestHelper;
@@ -38,7 +39,7 @@ public final class KiteGameTests {
     /** The names of the tests; every one has a function, an environment and an instance. */
     private static final String[] NAMES = {"kite_blocks", "kite_flight", "kite_above_build_height", "kite_break_and_reel_in", "kite_respawn_and_save",
             "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder", "kite_ignores_obstructions", "kite_two_kites",
-            "kite_lightning"};
+            "kite_lightning", "kite_wire", "kite_short_wire", "kite_too_close", "kite_play", "kite_storm_radius", "kite_bolts", "kite_recipe_wire"};
 
     /** Not instantiable. */
     private KiteGameTests() {}
@@ -67,9 +68,11 @@ public final class KiteGameTests {
      */
     private static void clear(GameTestHelper helper) {
         var origin = helper.absolutePos(BlockPos.ZERO);
+        // a generator that an earlier test left (anywhere in the level) would block this test through the minimum distance
+        for (var be : KiteBlockEntity.loaded(helper.getLevel())) helper.getLevel().setBlock(be.getBlockPos(), Blocks.AIR.defaultBlockState(), 2);
         // the batches of the tests start at the same places one after the other, so leftovers (water, stone) of an earlier test would
         // be in the way of this one: clear the space the kite tests use
-        for (int x = -3; x <= 13; x++) {
+        for (int x = -3; x <= 24; x++) {
             for (int y = 0; y <= 30; y++) {
                 for (int z = -3; z <= 6; z++) helper.getLevel().setBlock(origin.offset(x, y, z), Blocks.AIR.defaultBlockState(), 2);
             }
@@ -90,6 +93,13 @@ public final class KiteGameTests {
             case "kite_ignores_obstructions" -> KiteGameTests::ignoresObstructions;
             case "kite_two_kites" -> KiteGameTests::twoKites;
             case "kite_lightning" -> KiteGameTests::lightning;
+            case "kite_wire" -> KiteGameTests::wire;
+            case "kite_short_wire" -> KiteGameTests::shortWire;
+            case "kite_too_close" -> KiteGameTests::tooClose;
+            case "kite_play" -> KiteGameTests::play;
+            case "kite_storm_radius" -> KiteGameTests::stormRadius;
+            case "kite_bolts" -> KiteGameTests::bolts;
+            case "kite_recipe_wire" -> KiteGameTests::recipeWire;
             default -> KiteGameTests::thunder;
         };
     }
@@ -133,6 +143,26 @@ public final class KiteGameTests {
     private static KiteBlockEntity entity(GameTestHelper helper, BlockPos relative) {
         helper.assertTrue(helper.getLevel().getBlockEntity(helper.absolutePos(relative)) instanceof KiteBlockEntity, "no kite block entity at " + relative);
         return (KiteBlockEntity) helper.getLevel().getBlockEntity(helper.absolutePos(relative));
+    }
+
+    /** The second generator of a test: further than {@link KiteMath#MIN_DISTANCE} from the one at x = 1, so the two do not block each other. */
+    private static final int FAR_X = 20;
+
+    /** Sets a generator block of a tier with its tether full, so a kite put in flies at once. */
+    private static void place(GameTestHelper helper, BlockPos pos, int tier) {
+        helper.setBlock(pos, KiteBlocks.block(tier).get());
+        entity(helper, pos).insertWire(KiteMath.tether(tier));
+    }
+
+    /** A stack of the iron wire of the resources mod. */
+    private static ItemStack wireStack(int count) {
+        return new ItemStack(BuiltInRegistries.ITEM.getValue(Identifier.fromNamespaceAndPath("dotcraftresources", "iron_wire")), count);
+    }
+
+    /** The horizontal offset of a kite from the axis of its block. */
+    private static double offset(GameTestHelper helper, BlockPos block, KiteEntity kite) {
+        var abs = helper.absolutePos(block);
+        return Math.hypot(kite.getX() - (abs.getX() + 0.5), kite.getZ() - (abs.getZ() + 0.5));
     }
 
     /** A mock player that right-clicks the block with a kite (or with an empty hand). */
@@ -183,7 +213,7 @@ public final class KiteGameTests {
      */
     private static void flight(GameTestHelper helper) {
         var pos = new BlockPos(1, 1, 1);
-        helper.setBlock(pos, KiteBlocks.block(1).get());
+        place(helper, pos, 1);
         helper.setBlock(new BlockPos(2, 1, 1), EnergyBlocks.POWER_DRAIN.get());
         var player = player(helper, true);
         helper.useBlock(pos, player);
@@ -210,7 +240,7 @@ public final class KiteGameTests {
     private static void aboveBuildHeight(GameTestHelper helper) {
         var level = helper.getLevel();
         var pos = new BlockPos(1, level.getMaxY() - 10 - helper.absolutePos(BlockPos.ZERO).getY(), 1);
-        helper.setBlock(pos, KiteBlocks.block(5).get());
+        place(helper, pos, 5);
         helper.useBlock(pos, player(helper, true));
         var be = entity(helper, pos);
         var kite = be.kite();
@@ -237,9 +267,9 @@ public final class KiteGameTests {
      */
     private static void breakAndReelIn(GameTestHelper helper) {
         var first = new BlockPos(1, 1, 1);
-        var second = new BlockPos(5, 1, 1);
-        helper.setBlock(first, KiteBlocks.block(2).get());
-        helper.setBlock(second, KiteBlocks.block(2).get());
+        var second = new BlockPos(FAR_X, 1, 1);
+        place(helper, first, 2);
+        place(helper, second, 2);
         var player = player(helper, true);
         helper.useBlock(first, player);
         helper.useBlock(second, player);
@@ -268,7 +298,7 @@ public final class KiteGameTests {
     private static void respawnAndSave(GameTestHelper helper) {
         var level = helper.getLevel();
         var pos = new BlockPos(1, 1, 1);
-        helper.setBlock(pos, KiteBlocks.block(1).get());
+        place(helper, pos, 1);
         helper.useBlock(pos, player(helper, true));
         var be = entity(helper, pos);
         var old = be.kite();
@@ -292,7 +322,7 @@ public final class KiteGameTests {
      */
     private static void freeSpace(GameTestHelper helper) {
         var pos = new BlockPos(1, 1, 1);
-        helper.setBlock(pos, KiteBlocks.block(2).get());
+        place(helper, pos, 2);
         for (int dx = -1; dx <= 1; dx++) {
             for (int dz = -1; dz <= 1; dz++) {
                 for (int h = 3; h <= 6; h++) helper.setBlock(pos.offset(dx, h, dz), Blocks.STONE);
@@ -315,9 +345,9 @@ public final class KiteGameTests {
      */
     private static void thinRoof(GameTestHelper helper) {
         var wide = new BlockPos(1, 1, 1);
-        var slim = new BlockPos(9, 1, 1);
-        helper.setBlock(wide, KiteBlocks.block(1).get());
-        helper.setBlock(slim, KiteBlocks.block(4).get());
+        var slim = new BlockPos(FAR_X, 1, 1);
+        place(helper, wide, 1);
+        place(helper, slim, 4);
         helper.setBlock(wide.offset(0, 10, 0), Blocks.STONE);
         helper.setBlock(slim.offset(1, 10, 0), Blocks.STONE);
         var player = player(helper, true);
@@ -340,7 +370,7 @@ public final class KiteGameTests {
     private static void comparatorAndStatus(GameTestHelper helper) {
         var level = helper.getLevel();
         var pos = new BlockPos(1, 1, 1);
-        helper.setBlock(pos, KiteBlocks.block(1).get());
+        place(helper, pos, 1);
         var absolute = helper.absolutePos(pos);
         helper.assertTrue(level.getBlockState(absolute).getAnalogOutputSignal(level, absolute, Direction.NORTH) == 0, "a signal without a kite");
         helper.useBlock(pos, player(helper, true));
@@ -362,9 +392,9 @@ public final class KiteGameTests {
     private static void thunder(GameTestHelper helper) {
         var level = helper.getLevel();
         var weak = new BlockPos(1, 1, 1);
-        var strong = new BlockPos(5, 1, 1);
-        helper.setBlock(weak, KiteBlocks.block(1).get());
-        helper.setBlock(strong, KiteBlocks.block(5).get());
+        var strong = new BlockPos(FAR_X, 1, 1);
+        place(helper, weak, 1);
+        place(helper, strong, 5);
         var player = player(helper, true);
         helper.useBlock(weak, player);
         helper.useBlock(strong, player);
@@ -391,9 +421,9 @@ public final class KiteGameTests {
      */
     private static void ignoresObstructions(GameTestHelper helper) {
         var free = new BlockPos(1, 1, 1);
-        var capped = new BlockPos(9, 1, 1);
-        helper.setBlock(free, KiteBlocks.block(3).get());
-        helper.setBlock(capped, KiteBlocks.block(2).get());
+        var capped = new BlockPos(FAR_X, 1, 1);
+        place(helper, free, 3);
+        place(helper, capped, 2);
         for (var base : new BlockPos[] {free, capped}) {
             for (int dx = -1; dx <= 1; dx++) {
                 for (int dz = -1; dz <= 1; dz++) {
@@ -428,9 +458,9 @@ public final class KiteGameTests {
     private static void twoKites(GameTestHelper helper) {
         var level = helper.getLevel();
         var pos = new BlockPos(1, 1, 1);
-        var single = new BlockPos(9, 1, 1);
-        helper.setBlock(pos, KiteBlocks.block(4).get());
-        helper.setBlock(single, KiteBlocks.block(1).get());
+        var single = new BlockPos(FAR_X, 1, 1);
+        place(helper, pos, 4);
+        place(helper, single, 1);
         var player = player(helper, true);
         helper.useBlock(pos, player);
         helper.useBlock(single, player);
@@ -442,7 +472,7 @@ public final class KiteGameTests {
         helper.assertTrue(first != null && second != null && first != second, "tier 4 has not two kites");
         helper.assertTrue(first.slot() == 0 && second.slot() == 1, "wrong slots");
         helper.assertTrue(entity(helper, single).kite(1) == null, "tier 1 has a second kite");
-        int kites = level.getEntities(KiteBlocks.KITE_ENTITY.get(), new net.minecraft.world.phys.AABB(helper.absolutePos(pos)).inflate(2, 600, 2), k -> true).size();
+        int kites = level.getEntities(KiteBlocks.KITE_ENTITY.get(), new net.minecraft.world.phys.AABB(helper.absolutePos(pos)).inflate(8, 600, 8), k -> true).size();
         helper.assertTrue(kites == 2, "expected two kite entities, found " + kites);
         double peak = KiteMath.peak(EnergyCommonConfig.KITE_GENERATORS.get(3).peak(), 4);
         second.kill(level);
@@ -452,7 +482,7 @@ public final class KiteGameTests {
             helper.assertTrue(be.kite(0) == first && !first.isRemoved(), "the first kite was replaced");
             helper.assertTrue(now.altitude() > 5 && first.altitude() > 20, "the kites do not climb");
             helper.assertTrue(be.output() > 0 && be.output() <= peak, "wrong output " + be.output());
-            helper.assertTrue(level.getEntities(KiteBlocks.KITE_ENTITY.get(), new net.minecraft.world.phys.AABB(helper.absolutePos(pos)).inflate(2, 600, 2), k -> true).size() == 2,
+            helper.assertTrue(level.getEntities(KiteBlocks.KITE_ENTITY.get(), new net.minecraft.world.phys.AABB(helper.absolutePos(pos)).inflate(8, 600, 8), k -> true).size() == 2,
                     "a duplicate kite flies");
         });
     }
@@ -467,9 +497,9 @@ public final class KiteGameTests {
     private static void lightning(GameTestHelper helper) {
         var level = helper.getLevel();
         var lone = new BlockPos(1, 1, 1);
-        var next = new BlockPos(5, 1, 1);
-        helper.setBlock(lone, KiteBlocks.block(5).get());
-        helper.setBlock(next, KiteBlocks.block(4).get());
+        var next = new BlockPos(FAR_X, 1, 1);
+        place(helper, lone, 5);
+        place(helper, next, 4);
         helper.setBlock(next.east(), EnergyBlocks.POWER_DRAIN.get());
         var player = player(helper, true);
         helper.useBlock(lone, player);
@@ -500,5 +530,242 @@ public final class KiteGameTests {
         helper.assertTrue(lost.stored() == 0 && lost.pushed() == 0 && lost.lost() == bolt, "wrong overflow " + lost);
         helper.assertTrue(!KiteMath.struck(1, KiteMath.Weather.THUNDER, 0, 0), "a tier 1 kite can be struck");
         helper.succeed();
+    }
+
+    /**
+     * Wire is the tether: without it a kite is put in but does not fly (output 0, status NO_WIRE); right-click with iron wire stores
+     * 1 wire = 1 block, never more than the tether of the tier (the rest stays in the hand); a kite then flies no higher than the wire;
+     * the wire is saved and breaking the block drops it as an item.
+     *
+     * @param helper the game test helper
+     */
+    private static void wire(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, KiteBlocks.block(1).get());
+        var be = entity(helper, pos);
+        helper.assertTrue(be.wire() == 0 && be.wireCapacity() == 16, "a generator starts with wire or has no capacity of 16");
+        var kitePlayer = player(helper, true);
+        helper.useBlock(pos, kitePlayer);
+        helper.assertTrue(be.hasKite() && be.kite() == null, "a kite flies without wire");
+        helper.assertTrue(be.diagnostics().status() == KiteBlockEntity.Status.NO_WIRE, "status " + be.diagnostics().status());
+        var player = helper.makeMockPlayer(GameType.SURVIVAL);
+        player.setItemInHand(InteractionHand.MAIN_HAND, wireStack(10));
+        helper.useBlock(pos, player);
+        helper.assertTrue(be.wire() == 10 && player.getMainHandItem().isEmpty(), "10 wire were not stored: " + be.wire());
+        player.setItemInHand(InteractionHand.MAIN_HAND, wireStack(20));
+        helper.useBlock(pos, player);
+        helper.assertTrue(be.wire() == 16 && player.getMainHandItem().getCount() == 14, "the wire is not capped at the tether: " + be.wire() + ", rest "
+                + player.getMainHandItem().getCount());
+        helper.useBlock(pos, player);
+        helper.assertTrue(be.wire() == 16 && player.getMainHandItem().getCount() == 14, "a full generator took wire");
+        var saved = be.saveWithFullMetadata(level.registryAccess());
+        var absolute = helper.absolutePos(pos);
+        var loaded = BlockEntity.loadStatic(absolute, level.getBlockState(absolute), saved, level.registryAccess());
+        helper.assertTrue(loaded instanceof KiteBlockEntity copy && copy.wire() == 16, "the wire is not saved");
+        helper.assertTrue(be.diagnostics().wire() == 16 && be.diagnostics().wireCapacity() == 16, "the diagnostics do not show the wire");
+        helper.runAfterDelay(140, () -> {
+            helper.assertTrue(be.kite() != null && be.kite().altitude() >= 15.5, "the kite does not fly on the full wire");
+            helper.assertTrue(be.output() > 0 && be.diagnostics().status() == KiteBlockEntity.Status.FLYING, "no output " + be.diagnostics());
+            helper.assertTrue(be.diagnostics().lengthFactor() > 0.2, "the length factor does not follow the wire: " + be.diagnostics());
+            // breaking the block drops the wire
+            level.destroyBlock(absolute, true);
+            helper.assertItemEntityCountIs(wireStack(1).getItem(), pos, 2.0, 16);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * A kite only climbs as far as the wire: with 6 wire the kite of tier 4 stays at 6 blocks, not at its tether of 48.
+     *
+     * @param helper the game test helper
+     */
+    private static void shortWire(GameTestHelper helper) {
+        var pos = new BlockPos(1, 1, 1);
+        helper.setBlock(pos, KiteBlocks.block(4).get());
+        var be = entity(helper, pos);
+        be.insertWire(6);
+        helper.useBlock(pos, player(helper, true));
+        helper.runAfterDelay(150, () -> {
+            helper.assertTrue(be.kite(0).altitude() <= 6.01 && be.kite(0).altitude() >= 5.5, "wrong altitude " + be.kite(0).altitude());
+            helper.succeed();
+        });
+    }
+
+    /**
+     * Two generators with a kite and wire closer than 16 blocks block each other: both kites are discarded, the output is 0 and the
+     * status is TOO_CLOSE with the distance of the other one; when one is gone the other flies again. Generators 16 blocks apart do not
+     * block each other, and one without wire counts as no neighbour.
+     *
+     * @param helper the game test helper
+     */
+    private static void tooClose(GameTestHelper helper) {
+        var a = new BlockPos(1, 1, 1);
+        var b = new BlockPos(10, 1, 1);
+        var c = new BlockPos(1, 1, 5);
+        place(helper, a, 1);
+        place(helper, b, 2);
+        helper.setBlock(c, KiteBlocks.block(1).get());
+        var player = player(helper, true);
+        player.setItemInHand(InteractionHand.MAIN_HAND, new ItemStack(KiteBlocks.KITE.get(), 3));
+        helper.useBlock(c, player); // a kite but no wire: no neighbour for the others
+        helper.useBlock(a, player);
+        var first = entity(helper, a);
+        var second = entity(helper, b);
+        helper.useBlock(b, player);
+        helper.runAfterDelay(60, () -> {
+            for (var be : new KiteBlockEntity[] {first, second}) {
+                var d = be.diagnostics();
+                helper.assertTrue(d.status() == KiteBlockEntity.Status.TOO_CLOSE, "not blocked: " + d);
+                helper.assertTrue(be.kite() == null && d.kites() == 0 && be.output() == 0, "a blocked generator flies or makes FE: " + d);
+            }
+            helper.assertTrue(Math.abs(first.diagnostics().nearestOffender() - 9) < 1e-6 && first.diagnostics().minDistance() == KiteMath.MIN_DISTANCE,
+                    "wrong distance " + first.diagnostics());
+            helper.setBlock(b, Blocks.AIR);
+            helper.succeedWhen(() -> {
+                helper.assertTrue(first.kite() != null && first.diagnostics().status() == KiteBlockEntity.Status.FLYING, "the other did not fly again: "
+                        + first.diagnostics());
+                helper.assertTrue(first.diagnostics().nearestOffender() < 0, "still an offender");
+            });
+        });
+    }
+
+    /**
+     * The two kites of tier 4 and 5 stay inside +-4 blocks of the axis of the block on both axes, at least 3 blocks apart, and they do
+     * wander; the single kite of tier 1 hangs on the axis.
+     *
+     * @param helper the game test helper
+     */
+    private static void play(GameTestHelper helper) {
+        var pair = new BlockPos(1, 1, 1);
+        var single = new BlockPos(FAR_X, 1, 1);
+        place(helper, pair, 5);
+        place(helper, single, 1);
+        var player = player(helper, true);
+        helper.useBlock(pair, player);
+        helper.useBlock(single, player);
+        var be = entity(helper, pair);
+        var lone = entity(helper, single);
+        double[] range = {99, -99};
+        helper.onEachTick(() -> {
+            var k0 = be.kite(0);
+            var k1 = be.kite(1);
+            helper.assertTrue(k0 != null && k1 != null, "the kites are missing");
+            var abs = helper.absolutePos(pair);
+            for (var k : new KiteEntity[] {k0, k1}) {
+                helper.assertTrue(Math.abs(k.getX() - (abs.getX() + 0.5)) <= 4.001 && Math.abs(k.getZ() - (abs.getZ() + 0.5)) <= 4.001,
+                        "a kite is outside the play of 4 blocks");
+            }
+            helper.assertTrue(Math.hypot(k0.getX() - k1.getX(), k0.getZ() - k1.getZ()) >= KiteMath.MIN_KITE_GAP - 0.001, "the kites are closer than 3 blocks");
+            range[0] = Math.min(range[0], k0.getX());
+            range[1] = Math.max(range[1], k0.getX());
+            helper.assertTrue(offset(helper, single, lone.kite()) < 1e-6, "the single kite is not on the axis");
+        });
+        helper.runAfterDelay(250, () -> {
+            helper.assertTrue(range[1] - range[0] > 0.05, "the kite does not move: " + (range[1] - range[0]));
+            helper.succeed();
+        });
+    }
+
+    /**
+     * In a thunderstorm the kites of tier 5 stay inside a horizontal radius of 6 blocks around the axis and still fly.
+     *
+     * @param helper the game test helper
+     */
+    private static void stormRadius(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = new BlockPos(1, 1, 1);
+        place(helper, pos, 5);
+        helper.useBlock(pos, player(helper, true));
+        var be = entity(helper, pos);
+        level.getServer().setWeatherParameters(0, 100_000, true, true);
+        helper.onEachTick(() -> {
+            for (int slot = 0; slot < 2; slot++) {
+                var k = be.kite(slot);
+                helper.assertTrue(k != null, "a kite is missing");
+                helper.assertTrue(offset(helper, pos, k) <= KiteMath.THUNDER_RADIUS + 1e-6, "a kite is further than 6 blocks from the axis: " + offset(helper, pos, k));
+            }
+        });
+        helper.runAfterDelay(150, () -> {
+            helper.assertTrue(level.isThundering() && be.output() > 0, "no storm or no output");
+            level.getServer().setWeatherParameters(6000, 0, false, false);
+            helper.succeed();
+        });
+    }
+
+    /**
+     * A bolt that is not ours and lands within 6 blocks of the kites or their tether is credited once (to one kite, with its own
+     * cooldown); a bolt further away or the visual bolt a generator spawns itself is not credited a second time.
+     *
+     * @param helper the game test helper
+     */
+    private static void bolts(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = new BlockPos(1, 1, 1);
+        place(helper, pos, 5);
+        helper.useBlock(pos, player(helper, true));
+        var be = entity(helper, pos);
+        be.kite(0).setAltitude(30);
+        be.kite(1).setAltitude(30);
+        level.getServer().setWeatherParameters(0, 100_000, true, true);
+        int bolt = EnergyCommonConfig.kiteLightningEnergy();
+        helper.runAfterDelay(160, () -> {
+            helper.assertTrue(level.isThundering(), "no thunderstorm");
+            var abs = helper.absolutePos(pos);
+            long before = be.energy().getAmountAsLong();
+            spawnBolt(level, abs.getX() + 0.5 + 40, abs.getY() + 1, abs.getZ() + 0.5);
+            helper.assertTrue(be.energy().getAmountAsLong() == before, "a far bolt was credited");
+            // our own bolt is credited by the strike, not a second time by the event
+            before = be.energy().getAmountAsLong();
+            be.strike(level, 1);
+            helper.assertTrue(be.energy().getAmountAsLong() - before == bolt, "the own bolt was not credited exactly once: " + (be.energy().getAmountAsLong() - before));
+            // a natural bolt next to the foot of both tethers: one credit (slot 0, as slot 1 is cooling down)
+            before = be.energy().getAmountAsLong();
+            spawnBolt(level, abs.getX() + 0.5 + 3, abs.getY() + 1, abs.getZ() + 0.5);
+            helper.assertTrue(be.energy().getAmountAsLong() - before == bolt, "a near bolt was not credited exactly once: " + (be.energy().getAmountAsLong() - before));
+            // both kites are cooling down now
+            before = be.energy().getAmountAsLong();
+            spawnBolt(level, abs.getX() + 0.5 + 3, abs.getY() + 1, abs.getZ() + 0.5);
+            helper.assertTrue(be.energy().getAmountAsLong() == before, "a bolt was credited during the cooldown");
+            level.getServer().setWeatherParameters(6000, 0, false, false);
+            helper.succeed();
+        });
+    }
+
+    /** Spawns a bolt that does not burn or hurt (it is visual only) but is not one of ours, as natural lightning is. */
+    private static void spawnBolt(net.minecraft.server.level.ServerLevel level, double x, double y, double z) {
+        var bolt = net.minecraft.world.entity.EntityType.LIGHTNING_BOLT.create(level, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
+        bolt.setPos(x, y, z);
+        bolt.setVisualOnly(true);
+        level.addFreshEntity(bolt);
+    }
+
+    /**
+     * The recipe of the tier 1 generator takes iron wire where it took string: with the wire in the top middle it crafts the
+     * generator, with string it does not.
+     *
+     * @param helper the game test helper
+     */
+    private static void recipeWire(GameTestHelper helper) {
+        var recipes = helper.getLevel().getServer().getRecipeManager();
+        var aluminum = net.samtrion.dotcraft.resources.common.Materials.all().stream().filter(m -> m.id().equals("aluminum")).findFirst().orElseThrow();
+        var redstone = net.samtrion.dotcraft.resources.common.Materials.all().stream().filter(m -> m.id().equals("redstone")).findFirst().orElseThrow();
+        var gear = new ItemStack(net.samtrion.dotcraft.resources.item.ResourceItems.item(aluminum, net.samtrion.dotcraft.resources.common.Forms.get("gear")).get());
+        var plate = new ItemStack(net.samtrion.dotcraft.resources.item.ResourceItems.item(aluminum, net.samtrion.dotcraft.resources.common.Forms.get("plate")).get());
+        var grains = new ItemStack(net.samtrion.dotcraft.resources.item.ResourceItems.item(redstone, net.samtrion.dotcraft.resources.common.Forms.get("grains")).get());
+        var battery = new ItemStack(net.samtrion.dotcraft.energy.item.EnergyItems.RECHARGEABLE_POTATO_BATTERY.get());
+        var with = crafting(wireStack(1), gear, plate, battery, grains);
+        var found = recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, with, helper.getLevel());
+        helper.assertTrue(found.isPresent() && found.get().value().assemble(with).is(KiteBlocks.block(1).get().asItem()), "the generator is not crafted with iron wire");
+        var without = crafting(new ItemStack(net.minecraft.world.item.Items.STRING), gear, plate, battery, grains);
+        helper.assertTrue(recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, without, helper.getLevel()).isEmpty(),
+                "the generator is still crafted with string");
+        helper.succeed();
+    }
+
+    /** The 3x3 grid of the generator recipe: gear, tether, gear / plate, battery, plate / plate, grains, plate. */
+    private static net.minecraft.world.item.crafting.CraftingInput crafting(ItemStack tether, ItemStack gear, ItemStack plate, ItemStack battery, ItemStack x) {
+        return net.minecraft.world.item.crafting.CraftingInput.of(3, 3, java.util.List.of(gear.copy(), tether, gear.copy(), plate.copy(), battery.copy(), plate.copy(),
+                plate.copy(), x.copy(), plate.copy()));
     }
 }

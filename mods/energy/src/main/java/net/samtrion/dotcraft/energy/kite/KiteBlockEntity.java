@@ -1,17 +1,26 @@
 package net.samtrion.dotcraft.energy.kite;
 
 import java.util.EnumMap;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -34,12 +43,61 @@ import net.samtrion.dotcraft.energy.generator.GeneratorEnergy;
  * air around it. It sets the kite's target altitude from that and makes FE from the kites' <i>actual</i> altitudes (see
  * {@link KiteMath}; the kites of a pair share the peak). The FE is buffered and pushed into the neighbours on every side but the top; the capability can only be drained.
  * Nothing is read from a chunk that is not loaded, so the block never loads chunks.
+ * <p>
+ * <b>Wire.</b> The tether comes from the player: {@link #insertWire(int)} stores 1 wire = 1 block of tether (at most the tether of the
+ * tier, saved, dropped when the block breaks). Without wire no kite is launched. <b>Distance.</b> Generators with a kite and wire are
+ * kept in a small per-level registry of the loaded ones; every {@link #RECOMPUTE_TICKS} ticks (and on insert) a generator scans that
+ * set once for a neighbour closer than {@link KiteMath#MIN_DISTANCE}; both are then blocked (kites discarded, output 0).
+ * <b>Lightning.</b> Besides the rolled visual bolt a natural bolt within {@link KiteMath#THUNDER_RADIUS} of a kite or its tether is
+ * credited once, see {@link #onBolt}. {@link #diagnostics()} is the read-only view for the overlay and for other mods.
  */
 public class KiteBlockEntity extends BlockEntity {
     /** Ticks between two reads of the world. */
     static final int RECOMPUTE_TICKS = 20;
     /** Radii in blocks at which the air around the kite is sampled (in the eight horizontal directions). */
     private static final int[] RADII = {3, 6};
+
+    /** The loaded generators that have a kite and wire (a tether), by level; only the server thread touches it. */
+    private static final Map<ResourceKey<Level>, Set<KiteBlockEntity>> ACTIVE = new HashMap<>();
+    /** The id of the wire item: iron wire of the resources mod, the tag {@code c:wires/iron} accepts it. */
+    private static final Identifier WIRE_ITEM = Identifier.fromNamespaceAndPath("dotcraftresources", "iron_wire");
+
+    /** The entity tag of the visual bolts a generator spawns itself, so the bolt event does not credit them a second time. */
+    static final String OWN_BOLT = "dotcraftenergy_kite_bolt";
+
+    /** What a generator is doing, the first reason that applies; read by the overlay and by other mods. */
+    public enum Status {
+        /** No kite has been put in. */
+        NO_KITE,
+        /** No wire: the tether is not there, no kite is launched. */
+        NO_WIRE,
+        /** Another kite generator is closer than the minimum distance: both are blocked. */
+        TOO_CLOSE,
+        /** The dimension has no sky: the kite is reeled in. */
+        NO_SKY,
+        /** A thunderstorm tears the tether of the tier: the kite is reeled in. */
+        WEATHER_REELED,
+        /** The kites fly (maybe limited, see {@link Diagnostics#limit()}). */
+        FLYING
+    }
+
+    /**
+     * A read-only snapshot of a generator, for the overlay and for Jade.
+     *
+     * @param status          what the generator is doing
+     * @param wire            the wire stored, = blocks of tether
+     * @param wireCapacity    the most wire it takes (the tether of the tier)
+     * @param effectiveLength the altitude of the first kite in blocks, 0 if none flies
+     * @param lengthFactor    the yield factor of that length, 0..1
+     * @param output          the FE per tick now
+     * @param minDistance     the minimum horizontal distance to other kite generators in blocks
+     * @param nearestOffender the horizontal distance to the nearest generator that is too close, -1 if none
+     * @param kites           how many kites fly now
+     * @param limit           what keeps the output from its peak: {@code none}, {@code no_sky}, {@code storm}, {@code blocked},
+     *                        {@code weather} or {@code crowded}
+     */
+    public record Diagnostics(Status status, int wire, int wireCapacity, double effectiveLength, double lengthFactor, double output,
+            int minDistance, double nearestOffender, int kites, String limit) {}
 
     /** The buffer; it can only be drained from outside. */
     private final GeneratorEnergy energy;
@@ -65,6 +123,10 @@ public class KiteBlockEntity extends BlockEntity {
     private final long[] strikeCooldownUntil = new long[KiteMath.MAX_KITES];
     /** The redstone signal that the neighbours last saw. */
     private int signal;
+    /** The wire stored (saved), 1 per block of tether. */
+    private int wire;
+    /** The horizontal distance to the nearest other generator that is too close, -1 if none. */
+    private double nearestOffender = -1;
 
     /**
      * Creates the block entity.
@@ -135,6 +197,72 @@ public class KiteBlockEntity extends BlockEntity {
     }
 
     /**
+     * The wire stored.
+     *
+     * @return 0..{@link #wireCapacity()}
+     */
+    public int wire() {
+        return wire;
+    }
+
+    /**
+     * The most wire the generator takes: the tether of its tier.
+     *
+     * @return the capacity in blocks
+     */
+    public int wireCapacity() {
+        return KiteMath.tether(block().tier());
+    }
+
+    /**
+     * Stores wire: 1 wire is 1 block of tether, up to the tether of the tier.
+     *
+     * @param amount the wire offered
+     * @return how much was taken
+     */
+    public int insertWire(int amount) {
+        int now = KiteMath.wireStored(block().tier(), wire, amount);
+        int taken = now - wire;
+        if (taken > 0) {
+            wire = now;
+            setChanged();
+        }
+        return taken;
+    }
+
+    /**
+     * Whether the generator is blocked because another one is too close (as of the last read).
+     *
+     * @return {@code true} if both are blocked
+     */
+    public boolean tooClose() {
+        return nearestOffender >= 0;
+    }
+
+    /**
+     * The read-only state of the generator.
+     *
+     * @return what it does, its wire, its length and output, its distances and its kites
+     */
+    public Diagnostics diagnostics() {
+        int tier = block().tier();
+        Status status;
+        if (!hasKite) status = Status.NO_KITE;
+        else if (wire <= 0) status = Status.NO_WIRE;
+        else if (tooClose()) status = Status.TOO_CLOSE;
+        else if (!sky) status = Status.NO_SKY;
+        else if (KiteMath.weatherFactor(tier, weather) == 0) status = Status.WEATHER_REELED;
+        else status = Status.FLYING;
+        int flying = 0;
+        for (var k : kites) {
+            if (k != null && !k.isRemoved()) flying++;
+        }
+        double length = kites[0] == null || kites[0].isRemoved() ? 0 : kites[0].altitude();
+        return new Diagnostics(status, wire, wireCapacity(), length, KiteMath.lengthFactor(tier, length), output, KiteMath.MIN_DISTANCE,
+                nearestOffender, flying, limit.name().toLowerCase(Locale.ROOT));
+    }
+
+    /**
      * The FE per tick made in the last tick.
      *
      * @return the output
@@ -170,7 +298,7 @@ public class KiteBlockEntity extends BlockEntity {
     boolean insertKite(ServerLevel level) {
         if (hasKite) return false;
         hasKite = true;
-        spawnMissing(level);
+        if (canFly()) spawnMissing(level);
         setChanged();
         return true;
     }
@@ -187,6 +315,32 @@ public class KiteBlockEntity extends BlockEntity {
         discardKite();
         setChanged();
         return true;
+    }
+
+    /** Whether the kites may fly: a kite, wire and no generator that is too close (the distance is read now). */
+    private boolean canFly() {
+        scanNeighbours();
+        return hasKite && wire > 0 && !tooClose();
+    }
+
+    /**
+     * Looks for the nearest other generator (with a kite and wire) that tangles with this one. One pass over the small registry of
+     * the loaded ones; a generator without a tether is not counted, so the rule is symmetric.
+     * ponytail: linear scan per generator and second, fine for dozens of loaded generators; use a spatial hash for thousands.
+     */
+    private void scanNeighbours() {
+        nearestOffender = -1;
+        if (level == null || !hasKite || wire <= 0) return;
+        int tier = block().tier();
+        for (var other : ACTIVE.getOrDefault(level.dimension(), Set.of())) {
+            if (other == this || other.isRemoved() || !other.hasKite || other.wire <= 0) continue;
+            var o = other.worldPosition;
+            int dx = o.getX() - worldPosition.getX();
+            int dz = o.getZ() - worldPosition.getZ();
+            if (!KiteMath.tooClose(dx, o.getY() - worldPosition.getY(), dz, tier, other.block().tier())) continue;
+            double d = Math.hypot(dx, dz);
+            if (nearestOffender < 0 || d < nearestOffender) nearestOffender = d;
+        }
     }
 
     /** Spawns a kite in every slot of the tier that has none (or whose kite is gone); a kite starts on the ground. */
@@ -229,6 +383,67 @@ public class KiteBlockEntity extends BlockEntity {
         return sum;
     }
 
+    /** Joins the registry of the loaded generators (server only). */
+    @Override
+    public void onLoad() {
+        super.onLoad();
+        if (level instanceof ServerLevel server) ACTIVE.computeIfAbsent(server.dimension(), k -> new HashSet<>()).add(this);
+    }
+
+    /** Leaves the registry, so a removed or unloaded generator frees the ones it blocked. */
+    @Override
+    public void setRemoved() {
+        super.setRemoved();
+        if (level != null) {
+            var set = ACTIVE.get(level.dimension());
+            if (set != null) set.remove(this);
+        }
+    }
+
+    /**
+     * The loaded generators of a level that have a kite and wire, as a copy (the game tests use it to clear leftovers that would block a test).
+     *
+     * @param level the level
+     * @return the generators
+     */
+    static List<KiteBlockEntity> loaded(ServerLevel level) {
+        return List.copyOf(ACTIVE.getOrDefault(level.dimension(), Set.of()));
+    }
+
+    /** Forgets all generators, when a server stops. */
+    static void clearRegistry() {
+        ACTIVE.clear();
+    }
+
+    /**
+     * A lightning bolt that joined a level: every generator in range whose kite stays up in the storm credits it once. A bolt we
+     * spawned ourselves carries {@link #OWN_BOLT} and is ignored here, it was credited when it was rolled.
+     *
+     * @param level the level
+     * @param bolt  the bolt
+     */
+    static void onBolt(ServerLevel level, LightningBolt bolt) {
+        if (bolt.entityTags().contains(OWN_BOLT)) return;
+        for (var be : List.copyOf(ACTIVE.getOrDefault(level.dimension(), Set.of()))) be.attract(level, bolt);
+    }
+
+    /** Credits a natural bolt if it is within {@link KiteMath#THUNDER_RADIUS} of a flying kite or its tether; once per bolt, with the cooldown. */
+    private void attract(ServerLevel level, LightningBolt bolt) {
+        int tier = block().tier();
+        if (!hasKite || weather != KiteMath.Weather.THUNDER || KiteMath.weatherFactor(tier, KiteMath.Weather.THUNDER) <= 0) return;
+        long now = level.getGameTime();
+        double[] a = {worldPosition.getX() + 0.5, worldPosition.getY() + 1.0, worldPosition.getZ() + 0.5};
+        double[] b = {bolt.getX(), bolt.getY(), bolt.getZ()};
+        for (int slot = 0; slot < KiteMath.kites(tier); slot++) {
+            var k = kites[slot];
+            if (k == null || k.isRemoved() || strikeCooldownUntil[slot] > now) continue;
+            if (!KiteMath.attracts(b, a, new double[] {k.getX(), k.getY(), k.getZ()})) continue;
+            strikeCooldownUntil[slot] = now + KiteMath.LIGHTNING_COOLDOWN_TICKS;
+            creditLightning(level, EnergyCommonConfig.kiteLightningEnergy());
+            return;
+        }
+    }
+
     /** Gives the kite back as an item when the block is removed, removes the entity and hands the buffered FE to the neighbours. */
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
@@ -237,6 +452,11 @@ public class KiteBlockEntity extends BlockEntity {
             hasKite = false;
             discardKite();
             Block.popResource(server, pos, new ItemStack(KiteBlocks.KITE.get()));
+        }
+        if (level instanceof ServerLevel server && wire > 0) {
+            var item = BuiltInRegistries.ITEM.getValue(WIRE_ITEM);
+            if (item != Items.AIR) Block.popResource(server, pos, new ItemStack(item, wire));
+            wire = 0;
         }
         if (level instanceof ServerLevel server) push(server);
     }
@@ -276,9 +496,14 @@ public class KiteBlockEntity extends BlockEntity {
         var block = block();
         var config = block.config();
         energy.configure(config.capacity(), config.maxOutput());
-        if (hasKite && !allFly() && level.isPositionEntityTicking(worldPosition)) spawnMissing(level);
+        if (!canFly()) {
+            discardKite();
+            limit = KiteMath.Limit.NONE;
+            return;
+        }
+        if (!allFly() && level.isPositionEntityTicking(worldPosition)) spawnMissing(level);
         var first = kites[0];
-        if (!hasKite || first == null) {
+        if (first == null) {
             limit = KiteMath.Limit.NONE;
             return;
         }
@@ -289,8 +514,11 @@ public class KiteBlockEntity extends BlockEntity {
         openness = openness(level, cell);
         int reach = KiteMath.reach(tier, h -> blockedAround(level, tier, h));
         boolean reeledIn = !sky || KiteMath.weatherFactor(tier, weather) == 0;
+        boolean storm = weather == KiteMath.Weather.THUNDER;
         for (var k : kites) {
-            if (k != null) k.setTarget(reeledIn ? 0 : reach);
+            if (k == null) continue;
+            k.setTarget(reeledIn ? 0 : KiteMath.flightTarget(tier, wire, reach));
+            k.setStorm(storm);
         }
         limit = KiteMath.limit(tier, sky, weather, reach, openness);
         rollLightning(level, tier);
@@ -323,6 +551,7 @@ public class KiteBlockEntity extends BlockEntity {
         if (bolt != null) {
             bolt.setPos(k.getX(), k.getY(), k.getZ());
             bolt.setVisualOnly(true);
+            bolt.addTag(OWN_BOLT);
             level.addFreshEntity(bolt);
         }
         return creditLightning(level, EnergyCommonConfig.kiteLightningEnergy());
@@ -411,6 +640,7 @@ public class KiteBlockEntity extends BlockEntity {
         energy.serialize(output);
         output.putBoolean("kite", hasKite);
         output.putDouble("carry", carry);
+        output.putInt("wire", wire);
     }
 
     @Override
@@ -419,5 +649,6 @@ public class KiteBlockEntity extends BlockEntity {
         energy.deserialize(input);
         hasKite = input.getBooleanOr("kite", false);
         carry = input.getDoubleOr("carry", 0);
+        wire = Math.clamp(input.getIntOr("wire", 0), 0, wireCapacity());
     }
 }

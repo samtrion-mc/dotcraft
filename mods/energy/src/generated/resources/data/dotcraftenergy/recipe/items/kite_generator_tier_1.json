@@ -19,7 +19,7 @@
     "B": "dotcraftenergy:rechargeable_potato_battery",
     "G": "#c:gears/aluminum",
     "P": "#c:plates/aluminum",
-    "S": "#c:strings",
+    "S": "#c:wires/iron",
     "X": "#c:small_dusts/redstone"
   },
   "pattern": [

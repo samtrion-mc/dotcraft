@@ -28,9 +28,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 
 /**
- * A kite wind generator of one tier: a winch with a spool. Right-click with a kite item puts the kite in, and a {@link KiteEntity}
- * flies up from the block on the tether; right-click with an empty hand shows the altitude and the output, and sneaking with an empty
- * hand reels the kite in (the item comes back). Breaking the block drops the kite as an item. This is deliberately <b>not</b> a
+ * A kite wind generator of one tier: a winch with a spool. Right-click with a kite item puts the kite in, right-click with iron wire
+ * stores it as tether (1 wire = 1 block, up to the tether of the tier; shift is not needed), and a {@link KiteEntity} flies up from the
+ * block on that tether; right-click with an empty hand shows the diagnostics (see {@link KiteBlockEntity#diagnostics()}), and sneaking
+ * with an empty hand reels the kite in (the item comes back). Breaking the block drops the kite and the wire as items. This is deliberately <b>not</b> a
  * {@code GeneratorBlock}: it does not join the pool of the solar and lunar panels.
  */
 public class KiteWindBlock extends Block implements EntityBlock {
@@ -98,6 +99,14 @@ public class KiteWindBlock extends Block implements EntityBlock {
     @Override
     protected InteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
             BlockHitResult hit) {
+        if (stack.is(KiteBlocks.IRON_WIRE)) {
+            if (!(level.getBlockEntity(pos) instanceof KiteBlockEntity be) || be.wire() >= be.wireCapacity()) return InteractionResult.TRY_WITH_EMPTY_HAND;
+            if (level.isClientSide()) return InteractionResult.SUCCESS;
+            int taken = be.insertWire(stack.getCount());
+            if (!player.hasInfiniteMaterials()) stack.shrink(taken);
+            player.sendOverlayMessage(Component.translatable("message." + KiteBlocks.MODID + ".kite.wire", be.wire(), be.wireCapacity()));
+            return InteractionResult.SUCCESS;
+        }
         if (!stack.is(KiteBlocks.KITE.get())) return InteractionResult.TRY_WITH_EMPTY_HAND;
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (level.getBlockEntity(pos) instanceof KiteBlockEntity be && be.insertKite((ServerLevel) level)) {
@@ -111,6 +120,7 @@ public class KiteWindBlock extends Block implements EntityBlock {
     protected InteractionResult useWithoutItem(BlockState state, Level level, BlockPos pos, Player player, BlockHitResult hit) {
         if (level.isClientSide()) return InteractionResult.SUCCESS;
         if (!(level.getBlockEntity(pos) instanceof KiteBlockEntity be)) return InteractionResult.PASS;
+        var d = be.diagnostics();
         if (!be.hasKite()) {
             player.sendOverlayMessage(Component.translatable("message." + KiteBlocks.MODID + ".kite.none"));
         } else if (player.isShiftKeyDown()) {
@@ -118,11 +128,13 @@ public class KiteWindBlock extends Block implements EntityBlock {
                 var kite = new ItemStack(KiteBlocks.KITE.get());
                 if (!player.hasInfiniteMaterials() && !player.getInventory().add(kite)) player.drop(kite, false);
             }
+        } else if (d.status() == KiteBlockEntity.Status.NO_WIRE || d.status() == KiteBlockEntity.Status.TOO_CLOSE) {
+            player.sendOverlayMessage(Component.translatable("message." + KiteBlocks.MODID + ".kite.state." + d.status().name().toLowerCase(Locale.ROOT),
+                    d.wire(), d.wireCapacity(), d.minDistance(), String.format(Locale.ROOT, "%.1f", d.nearestOffender())));
         } else {
-            double altitude = be.kite() == null ? 0 : be.kite().altitude();
-            var limit = Component.translatable("message." + KiteBlocks.MODID + ".kite.limit." + be.limit().name().toLowerCase(Locale.ROOT));
-            player.sendOverlayMessage(Component.translatable("message." + KiteBlocks.MODID + ".kite.status", String.format(Locale.ROOT, "%.0f", altitude),
-                    KiteMath.tether(tier), String.format(Locale.ROOT, "%.1f", be.output()), limit));
+            var limit = Component.translatable("message." + KiteBlocks.MODID + ".kite.limit." + d.limit());
+            player.sendOverlayMessage(Component.translatable("message." + KiteBlocks.MODID + ".kite.status", String.format(Locale.ROOT, "%.0f", d.effectiveLength()),
+                    d.wire(), String.format(Locale.ROOT, "%.1f", d.output()), limit, d.wireCapacity()));
         }
         return InteractionResult.SUCCESS;
     }

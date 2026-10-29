@@ -27,7 +27,7 @@ import net.samtrion.dotcraft.resources.common.Materials;
 
 /**
  * The recipes of the kite and the kite wind generators. The kite is shaped from wool, a wooden rod and string. A generator is
- * shaped: gear, string and gear on top; a plate, the battery of the tier and a plate in the middle; at the bottom a plate, the
+ * shaped: gear, iron wire and gear on top; a plate, the battery of the tier and a plate in the middle; at the bottom a plate, the
  * generator of the tier below (tier 1: redstone grains) and a plate. The metals are aluminum, copper, steel, gold and osmium; the
  * ingredients are tags except the batteries and the lower generator, which are items of this mod.
  */
@@ -95,7 +95,7 @@ public final class KiteRecipeProvider extends RecipeProvider.Runner {
                 var battery = batteries[tier - 1];
                 var builder = shaped(RecipeCategory.MISC, item)
                         .define('G', tag(METALS[tier - 1], "gear"))
-                        .define('S', Tags.Items.STRINGS)
+                        .define('S', KiteBlocks.IRON_WIRE)
                         .define('P', tag(METALS[tier - 1], "plate"))
                         .define('B', battery)
                         .pattern("GSG").pattern("PBP");
