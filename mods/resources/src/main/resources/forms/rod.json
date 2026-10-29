@@ -1,0 +1,20 @@
+{
+  "id": "rod",
+  "kind": "item",
+  "order": 105,
+  "configKey": "rods",
+  "tag": { "parent": "rods" },
+  "name": {
+    "en_us": "%s Rod",
+    "de_de": "%s-Stab"
+  },
+  "external": "default",
+  "conversions": [
+    {
+      "kind": "shaped",
+      "ratio": 1,
+      "pattern": ["H", "I", "I"],
+      "key": { "I": "ingot", "H": "@hammer" }
+    }
+  ]
+}

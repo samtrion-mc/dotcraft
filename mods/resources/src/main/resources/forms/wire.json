@@ -1,0 +1,21 @@
+{
+  "id": "wire",
+  "kind": "item",
+  "order": 110,
+  "configKey": "wires",
+  "tag": { "parent": "wires" },
+  "name": {
+    "en_us": "%s Wire",
+    "de_de": "%s-Draht"
+  },
+  "external": "default",
+  "requires": ["rod"],
+  "conversions": [
+    {
+      "kind": "shapeless",
+      "ratio": 1,
+      "pattern": ["HSR"],
+      "key": { "H": "@hammer", "S": "c:tools/sandpaper", "R": "rod" }
+    }
+  ]
+}

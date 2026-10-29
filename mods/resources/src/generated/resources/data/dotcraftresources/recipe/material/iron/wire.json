@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "rod",
+      "material": "iron",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "wire",
+      "material": "iron",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "iron"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#dotcraftresources:hammers/iron",
+    "#c:tools/sandpaper",
+    "#c:rods/iron"
+  ],
+  "result": {
+    "id": "dotcraftresources:iron_wire"
+  }
+}

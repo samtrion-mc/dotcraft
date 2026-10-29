@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "rod",
+      "material": "iridium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "wire",
+      "material": "iridium",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "diamond"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#dotcraftresources:hammers/diamond",
+    "#c:tools/sandpaper",
+    "#c:rods/iridium"
+  ],
+  "result": {
+    "id": "dotcraftresources:iridium_wire"
+  }
+}

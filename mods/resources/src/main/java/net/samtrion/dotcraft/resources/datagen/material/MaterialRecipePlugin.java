@@ -63,7 +63,7 @@ import net.samtrion.dotcraft.resources.item.ResourceItems;
  *   <li>{@code <to>_from_<from>} for a pack (both directions) and a craft;</li>
  *   <li>{@code <to>_from_<from>_smelting} and {@code <to>_from_<from>_blasting} for a smelt or blast;</li>
  *   <li>{@code <to>_from_<from>_crushing} for a crush and {@code <to>_from_<from>_forging} for a forge;</li>
- *   <li>{@code <to>} for a shaped or shapeless conversion ({@code gear}, {@code hammer}, {@code sandpaper});</li>
+ *   <li>{@code <to>} for a shaped or shapeless conversion ({@code gear}, {@code rod}, {@code wire}, {@code hammer}, {@code sandpaper});</li>
  * </ul>
  * and a source of another mod adds {@code _<mod>} at the end; the alloys, see {@link MaterialAlloyRecipePlugin}, are
  * {@code <to>_from_alloy}.
@@ -282,6 +282,8 @@ public final class MaterialRecipePlugin implements RecipePlugin {
     /**
      * Makes the recipe of a {@code shaped} or {@code shapeless} conversion. Each symbol of the key is an item tag, or the tag of a
      * form of the material, which, where the material lacks the form, is the tag its first source that names one gives for it.
+     * A key value of {@link Form.Conversion#HAMMER} is the hammer tag of the tier of the material, and adds the condition that such a hammer is
+     * enabled; the result is {@code ratio} items.
      * The symbol {@code #} is the ingredient of the material for the tool form (its {@code tools} entry), and in a shapeless recipe
      * it stands for as many items as the {@code count} of that entry. The recipe is skipped where a form of the key is missing in
      * both, and where the tool form is used by a material without a {@code tools} entry.
@@ -290,9 +292,13 @@ public final class MaterialRecipePlugin implements RecipePlugin {
         Map<Character, TagKey<Item>> tags = new LinkedHashMap<>();
         Form first = null;
         Material.External external = null;
+        List<ICondition> hammer = List.of();
         for (var entry : c.key().entrySet()) {
             String value = entry.getValue();
-            if (value.contains(":")) {
+            if (value.equals(Form.Conversion.HAMMER)) {
+                tags.put(entry.getKey().charAt(0), ResourceBlockTags.hammers(m.tier()));
+                hammer = List.of(ConfigCondition.ofTool(ResourceBlockTags.HAMMER_FORM, m.tier()));
+            } else if (value.contains(":")) {
                 tags.put(entry.getKey().charAt(0), TagKey.create(Registries.ITEM, Identifier.parse(value)));
             } else if (m.has(value)) {
                 Form form = Forms.get(value);
@@ -313,9 +319,9 @@ public final class MaterialRecipePlugin implements RecipePlugin {
         ItemLike result = ResourceItems.item(m, to).get();
         RecipeCategory category = to.tool().isPresent() ? RecipeCategory.TOOLS : RecipeCategory.MISC;
         TagKey<Item> unlock = tags.values().iterator().next();
-        RecipeOutput output = first != null ? out(all, m, first, to, external) : out(all, m, to, null, external);
+        RecipeOutput output = first != null ? out(all, m, first, to, external, hammer) : out(all, m, to, null, external, hammer);
         if (c.kind() == Form.Conversion.Kind.SHAPELESS) {
-            var shapeless = recipes.shapeless(category, result, 1);
+            var shapeless = recipes.shapeless(category, result, c.ratio());
             for (char symbol : c.pattern().get(0).toCharArray()) {
                 if (symbol != '#') shapeless.requires(recipes.tag(tags.get(symbol)));
             }
@@ -323,7 +329,7 @@ public final class MaterialRecipePlugin implements RecipePlugin {
             shapeless.unlockedBy(recipes.hasName(unlock), recipes.has(unlock)).save(output, key(m, to.id()));
             return;
         }
-        var shaped = recipes.shaped(category, result);
+        var shaped = recipes.shaped(category, result, c.ratio());
         tags.forEach(shaped::define);
         c.pattern().forEach(shaped::pattern);
         shaped.unlockedBy(recipes.hasName(unlock), recipes.has(unlock)).save(output, key(m, to.id()));

@@ -12,6 +12,8 @@
     "grains",
     "plate",
     "gear",
+    "rod",
+    "wire",
     "ore"
   ],
   "ore": [

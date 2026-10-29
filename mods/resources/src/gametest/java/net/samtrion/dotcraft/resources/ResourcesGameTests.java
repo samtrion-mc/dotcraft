@@ -250,6 +250,38 @@ public final class ResourcesGameTests {
     }
 
     /**
+     * Crafts the rod and the wire of iron through the recipe manager: the iron hammer over two ingots makes 1 rod, and hammer,
+     * sandpaper and one rod make 1 wire; the hammer and the sandpaper are left damaged.
+     *
+     * @param helper   the game test helper
+     * @param material iron
+     * @param hammer   an iron hammer
+     */
+    private static void craftRodAndWire(GameTestHelper helper, net.samtrion.dotcraft.resources.common.Material material, ItemStack hammer) {
+        var recipes = helper.getLevel().getServer().getRecipeManager();
+        var rod = ResourceItems.item(material, Forms.get("rod")).get();
+        var wire = ResourceItems.item(material, Forms.get("wire")).get();
+        var ingot = new ItemStack(Items.IRON_INGOT);
+        hammer = hammer.copy();
+        hammer.setDamageValue(0); // the caller's hammer is worn down
+        var column = net.minecraft.world.item.crafting.CraftingInput.of(1, 3, java.util.List.of(hammer.copy(), ingot, ingot.copy()));
+        var rodRecipe = recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, column, helper.getLevel());
+        helper.assertTrue(rodRecipe.isPresent(), "the iron hammer over two iron ingots crafts nothing");
+        var rods = rodRecipe.get().value().assemble(column);
+        helper.assertTrue(rods.is(rod) && rods.getCount() == 1, "the rod recipe makes " + rods);
+        var sandpaper = new ItemStack(ResourceItems.item(material, Forms.get("sandpaper")).get());
+        var row = net.minecraft.world.item.crafting.CraftingInput.of(3, 1, java.util.List.of(hammer.copy(), sandpaper, new ItemStack(rod)));
+        var wireRecipe = recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, row, helper.getLevel());
+        helper.assertTrue(wireRecipe.isPresent(), "hammer, sandpaper and an iron rod craft nothing");
+        var wires = wireRecipe.get().value().assemble(row);
+        helper.assertTrue(wires.is(wire) && wires.getCount() == 1, "the wire recipe makes " + wires);
+        var left = net.minecraft.world.item.crafting.CraftingRecipe.defaultCraftingReminder(row);
+        helper.assertTrue(left.get(0).is(hammer.getItem()) && left.get(0).getDamageValue() == 1
+                && left.get(1).is(sandpaper.getItem()) && left.get(1).getDamageValue() == 1 && left.get(2).isEmpty(),
+                "the tools are not left damaged and the rod used up: " + left);
+    }
+
+    /**
      * A crafting tool stays in the grid of a craft with one more damage, breaks with the last point, and has the
      * durability of its material; the recipe of the tool exists.
      *
@@ -284,6 +316,7 @@ public final class ResourcesGameTests {
         helper.assertTrue(last.isEmpty(), "the worn hammer does not break");
         helper.assertTrue(helper.getLevel().getServer().getRecipeManager().byKey(ResourceKey.create(Registries.RECIPE,
                 Identifier.fromNamespaceAndPath(CraftResources.MODID, "material/iron/hammer"))).isPresent(), "missing the hammer recipe");
+        craftRodAndWire(helper, material, hammer);
         helper.succeed();
     }
 

@@ -1,0 +1,36 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "rod",
+      "material": "lead",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "wire",
+      "material": "lead",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "stone"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#dotcraftresources:hammers/stone",
+    "#c:tools/sandpaper",
+    "#c:rods/lead"
+  ],
+  "result": {
+    "id": "dotcraftresources:lead_wire"
+  }
+}

@@ -75,6 +75,11 @@ public final class ResourceRecipeProvider extends RecipeProvider.Runner {
         }
 
         @Override
+        public ShapedRecipeBuilder shaped(RecipeCategory category, ItemLike result, int count) {
+            return super.shaped(category, result, count);
+        }
+
+        @Override
         public ShapelessRecipeBuilder shapeless(RecipeCategory category, ItemLike result, int count) {
             return super.shapeless(category, result, count);
         }

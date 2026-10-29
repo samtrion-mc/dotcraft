@@ -433,9 +433,11 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
      *                        {@code alloy}: alloys are mixed in this form, from the forms of the alloy inputs
      *                        (see {@link Material.Alloy}); {@code external} is the key of the {@code external} item of an input that lacks the form;
      *                        {@code forge}: a shaped recipe of the hammer tag over a row of {@code ratio} (1 to 3) items of the other form, making one item;
-     *                        {@code shaped}: a shaped recipe of {@code pattern} and {@code key}, making one item (its {@code ratio} must be 1);
+     *                        {@code shaped}: a shaped recipe of {@code pattern} and {@code key}, making {@code ratio} (1 to 9) items;
      *                        {@code shapeless}: the same shapeless, the {@code pattern} is one row whose symbols are the ingredients, a repeated symbol is
-     *                        used that often; in both, the symbol {@code #} is the ingredient of a tool form, see {@link ToolSpec};
+     *                        used that often; in both, the symbol {@code #} is the ingredient of a tool form, see {@link ToolSpec}, and a key
+     *                        value of {@link #HAMMER} is the hammer tag of the tier of the material, like the hammer of a forge, which also drops the
+     *                        recipe where no hammer of that tier is enabled;
      *                        {@code crush}: like a craft, but the hammer tag is an ingredient as well (the hammer stays and
      *                        wears) and {@code ratio} is the number of items that come out
      * @param xp              experience of a smelt or blast
@@ -448,6 +450,9 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
      */
     public record Conversion(String from, Kind kind, int ratio, float xp, List<String> materials, Optional<String> external,
                              List<String> pattern, Map<String, String> key, boolean externalRequired) {
+        /** The key value that stands for the hammer tag of the tier of the material in a {@code shaped} or {@code shapeless} conversion. */
+        public static final String HAMMER = "@hammer";
+
         /** Source format: {@code {"from": "nugget", "kind": "pack", "ratio": 9}}, {@code {"from": "dust", "kind": "smelt", "xp": 0.7}} or {@code {"from": "ingot", "kind": "craft", "ratio": 1}}. */
         public static final Codec<Conversion> CODEC = RecordCodecBuilder.<Conversion>create(i -> i.group(
                 Codec.STRING.optionalFieldOf("from", "").forGetter(Conversion::from),
@@ -472,7 +477,7 @@ public record Form(String id, Kind kind, int order, String configKey, String tem
             }
             if (kind == Kind.SHAPED || kind == Kind.SHAPELESS) {
                 boolean shaped = kind == Kind.SHAPED;
-                if (ratio != 1) return DataResult.error(() -> "a \"" + kind.getSerializedName() + "\" makes one item, its \"ratio\" must be 1");
+                if (ratio < 1 || ratio > 9) return DataResult.error(() -> "a \"" + kind.getSerializedName() + "\" makes 1 to 9 items, its \"ratio\" is the count");
                 if (shaped ? pattern.isEmpty() || pattern.size() > 3 || pattern.stream().anyMatch(r -> r.isEmpty() || r.length() > 3)
                         : pattern.size() != 1 || pattern.get(0).isEmpty() || pattern.get(0).length() > 9) {
                     return DataResult.error(() -> shaped ? "a \"shaped\" needs a \"pattern\" of 1 to 3 rows of 1 to 3 symbols"
