@@ -1,7 +1,0 @@
-{
-  "parent": "dotcraftenergy:block/current_generator",
-  "textures": {
-    "rotor": "dotcraftenergy:block/current_generator_tier_5_rotor",
-    "frame": "dotcraftenergy:block/current_generator_tier_5_frame"
-  }
-}

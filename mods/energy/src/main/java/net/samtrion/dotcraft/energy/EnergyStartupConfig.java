@@ -36,7 +36,7 @@ public final class EnergyStartupConfig {
                     .define("enabled", true));
             BUILDER.pop();
         }
-        for (String name : EnergyCommonConfig.CURRENT_NAMES) {
+        for (String name : EnergyCommonConfig.FLOW_NAMES) {
             BUILDER.push(name);
             SWITCHES.put(name, BUILDER.comment("Enables the " + name + ". When disabled, the block is not registered at all and its recipe is dropped. "
                     + "Needs a restart; a client and a server with different values may fail to connect.")

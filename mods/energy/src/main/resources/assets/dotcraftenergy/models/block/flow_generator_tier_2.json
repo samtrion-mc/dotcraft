@@ -1,0 +1,7 @@
+{
+  "parent": "dotcraftenergy:block/flow_generator",
+  "textures": {
+    "rotor": "dotcraftenergy:block/flow_generator_tier_2_rotor",
+    "frame": "dotcraftenergy:block/flow_generator_tier_2_frame"
+  }
+}

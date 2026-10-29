@@ -44,11 +44,11 @@ public final class EnergyCommonConfig {
     /** The lunar panels: the peak FE/t at full moon in a clear night. */
     public static final List<Generator> LUNAR_PANELS = generators(LUNAR_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
 
-    /** The registry paths of the current generators, tiers 1-5, which are also their config sections. */
-    static final List<String> CURRENT_NAMES = tierNames("current_generator");
+    /** The registry paths of the flow generators, tiers 1-5, which are also their config sections. */
+    static final List<String> FLOW_NAMES = tierNames("flow_generator");
 
-    /** The current generators: the peak FE/t in the best case without animals (full water share in an ocean or river), at least 15 FE/t; animals add up to 30 % on top, so the real maximum is 1.3 times the peak. */
-    public static final List<Generator> CURRENT_GENERATORS = generators(CURRENT_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The flow generators: the peak FE/t in the best case without animals (full water share in an ocean or river), at least 15 FE/t; animals add up to 30 % on top, so the real maximum is 1.3 times the peak. */
+    public static final List<Generator> FLOW_GENERATORS = generators(FLOW_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
     /** The registry paths of the vibration generators, tiers 1-5, which are also their config sections. */
     static final List<String> VIBRATION_NAMES = tierNames("vibration_generator");
 
