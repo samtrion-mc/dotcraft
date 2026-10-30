@@ -63,6 +63,10 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
     private VibrationBucket bucket = new VibrationBucket();
     /** The extra cap that only the events of bosses use, on top of the bucket. */
     private VibrationBucket bonus = new VibrationBucket();
+    /** The registered id of the game event that last paid FE, {@code null} if none since the load; not saved. */
+    private @Nullable String lastEvent;
+    /** The game time of {@link #lastEvent}. */
+    private long lastEventTick;
 
     /**
      * Creates the block entity.
@@ -125,6 +129,24 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
         return bonus;
     }
 
+    /**
+     * The game event that last paid FE, for diagnostics.
+     *
+     * @return its registered id, {@code null} if none was counted since the block was loaded
+     */
+    public @Nullable String lastEvent() {
+        return lastEvent;
+    }
+
+    /**
+     * The game time at which {@link #lastEvent()} was counted.
+     *
+     * @return the game time, meaningless while {@link #lastEvent()} is {@code null}
+     */
+    public long lastEventTick() {
+        return lastEventTick;
+    }
+
     @Override
     public Listener getListener() {
         return listener;
@@ -166,6 +188,8 @@ public class VibrationBlockEntity extends BlockEntity implements GameEventListen
         // a boss event may exceed the duty cap: what the bucket cannot pay comes from the bonus bucket, which refills with the rest of the peak
         long granted = VibrationMath.grant(tier, peak, level.getGameTime(), VibrationMath.eventEnergy(peak, frequency), boss, bucket, bonus);
         if (granted <= 0) return 0;
+        lastEvent = event.getRegisteredName();
+        lastEventTick = level.getGameTime();
         // what does not fit into the buffer is lost, as the bucket has given it
         energy.produce((int) Math.min(granted, Integer.MAX_VALUE));
         level.sendParticles(ParticleTypes.ELECTRIC_SPARK, worldPosition.getX() + 0.5, worldPosition.getY() + 1.1, worldPosition.getZ() + 0.5, 3, 0.25, 0.05, 0.25, 0.02);

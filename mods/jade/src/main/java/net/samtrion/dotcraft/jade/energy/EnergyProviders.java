@@ -8,6 +8,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.attribute.EnvironmentAttributes;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 import net.samtrion.dotcraft.energy.flow.FlowGeneratorBlock;
 import net.samtrion.dotcraft.energy.flow.FlowGeneratorBlockEntity;
@@ -31,6 +32,7 @@ import net.samtrion.dotcraft.energy.vibration.VibrationBlockEntity;
 import net.samtrion.dotcraft.energy.vibration.VibrationMath;
 import net.samtrion.dotcraft.energy.wheel.WheelBlock;
 import net.samtrion.dotcraft.energy.wheel.WheelBlockEntity;
+import net.samtrion.dotcraft.energy.wheel.WheelMath;
 import snownee.jade.api.ITooltip;
 
 /**
@@ -132,7 +134,7 @@ final class EnergyProviders {
         }
     }
 
-    /** Vibration generators: the bucket, the peak and the average ceiling, the hearing. */
+    /** Vibration generators: the bucket, the peak and the average ceiling, the hearing, the last counted event. */
     static final class Vibration extends FamilyProvider<VibrationBlockEntity> {
         Vibration() {
             super("vibration", VibrationBlockEntity.class, VibrationBlock.class);
@@ -149,6 +151,11 @@ final class EnergyProviders {
             data.putDouble("average", peak * VibrationMath.duty(tier));
             data.putInt("radius", VibrationMath.radius(tier));
             data.putInt("frequency", VibrationMath.minFrequency(tier));
+            var last = be.lastEvent();
+            if (last != null) {
+                data.putString("last_event", last);
+                data.putLong("last_event_age", Math.max(0, level.getGameTime() - be.lastEventTick()));
+            }
         }
 
         @Override
@@ -156,6 +163,9 @@ final class EnergyProviders {
             tooltip.add(Component.translatable(JadeKeys.VIBRATION_PEAK, number(data.getIntOr("peak", 0)), number(data.getDoubleOr("average", 0))));
             tooltip.add(Component.translatable(JadeKeys.VIBRATION_BUCKET, number(data.getLongOr("tokens", 0)), number(data.getLongOr("burst", 0))));
             tooltip.add(Component.translatable(JadeKeys.VIBRATION_HEARING, data.getIntOr("radius", 0), data.getIntOr("frequency", 0)));
+            var last = data.getStringOr("last_event", "");
+            if (last.isEmpty()) tooltip.add(Component.translatable(JadeKeys.VIBRATION_LAST_EVENT_NONE));
+            else tooltip.add(Component.translatable(JadeKeys.VIBRATION_LAST_EVENT, last, data.getLongOr("last_event_age", 0) / 20));
         }
     }
 
@@ -222,7 +232,7 @@ final class EnergyProviders {
         }
     }
 
-    /** Mob wheels: whether the wheel turns and its output. */
+    /** Mob wheels: whether the wheel turns, its output, the captured mob, its weight and whether it runs or stands. */
     static final class Wheel extends FamilyProvider<WheelBlockEntity> {
         Wheel() {
             super("wheel", WheelBlockEntity.class, WheelBlock.class);
@@ -233,12 +243,26 @@ final class EnergyProviders {
             int tier = ((WheelBlock) be.getBlockState().getBlock()).tier();
             putEnergy(data, be.energy());
             putOutput(data, be.output(), EnergyCommonConfig.MOB_WHEELS.get(tier - 1).peak());
+            var mob = be.heldMob();
+            if (mob != null) {
+                data.putString("mob", mob.getType().getDescriptionId());
+                data.putDouble("weight", WheelMath.weight(mob.getMaxHealth(), mob.getAttributeBaseValue(Attributes.MOVEMENT_SPEED), tier));
+                data.putBoolean("trying", be.running());
+            }
         }
 
         @Override
         void show(ITooltip tooltip, CompoundTag data) {
             showOutput(tooltip, data);
             tooltip.add(Component.translatable(data.getDoubleOr("now", 0) > 0 ? JadeKeys.WHEEL_RUNNING : JadeKeys.WHEEL_IDLE));
+            var mob = data.getStringOr("mob", "");
+            if (mob.isEmpty()) {
+                tooltip.add(Component.translatable(JadeKeys.WHEEL_NO_MOB));
+                return;
+            }
+            tooltip.add(Component.translatable(JadeKeys.WHEEL_MOB, Component.translatable(mob), number(Math.round(data.getDoubleOr("weight", 0) * 100) / 100.0)));
+            tooltip.add(data.getBooleanOr("trying", false) ? Component.translatable(JadeKeys.WHEEL_ACTIVITY_RUNNING)
+                    : Component.translatable(JadeKeys.WHEEL_ACTIVITY_STANDING, percent(WheelMath.STANDING_FACTOR)));
         }
     }
 

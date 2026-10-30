@@ -87,6 +87,8 @@ public class WheelBlockEntity extends BlockEntity {
     private double carry;
     /** The number of mobs held at the last scan, 0 or 1. */
     private int runners;
+    /** Whether the held mob counted as running at the last scan; not saved. */
+    private boolean running;
 
     /**
      * Creates the block entity.
@@ -153,6 +155,15 @@ public class WheelBlockEntity extends BlockEntity {
      */
     public @Nullable Mob heldMob() {
         return held;
+    }
+
+    /**
+     * Whether the held mob counted as running (full weight) at the last scan, for diagnostics.
+     *
+     * @return {@code true} if the mob tried to move, {@code false} if it stood or no mob is held
+     */
+    public boolean running() {
+        return running;
     }
 
     /**
@@ -237,9 +248,10 @@ public class WheelBlockEntity extends BlockEntity {
         double target = 0;
         if (held != null) {
             CLAIMS.claim(held, this, level.getGameTime());
-            boolean running = trying || tries(held);
+            running = trying || tries(held);
             target = config.peak() * WheelMath.share(WheelMath.weight(held.getMaxHealth(), held.getAttributeBaseValue(Attributes.MOVEMENT_SPEED), tier), running);
         }
+        if (held == null) running = false;
         trying = false;
         double peak = config.peak();
         double next = WheelMath.coast(target, output, tier);
