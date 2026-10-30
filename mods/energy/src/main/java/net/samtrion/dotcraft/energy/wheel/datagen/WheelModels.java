@@ -8,7 +8,7 @@ import net.samtrion.dotcraft.energy.EnergyMod;
 import net.samtrion.dotcraft.energy.wheel.WheelBlocks;
 
 /**
- * The block states and item definitions of the mob wheels. The models are source files ({@code models/block/mob_wheel_tier_<n>.json}, all
+ * The block states and item definitions of the mob wheels. The models are source files ({@code models/block/wheel_generator_tier_<n>.json}, all
  * with the parent {@code mob_wheel}): a drum on a stand, with the wheel face on both discs. The block state turns the wheel by its facing.
  */
 public final class WheelModels {

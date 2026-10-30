@@ -2,20 +2,24 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:mob_wheel_tier_1"
+      "value": "dotcraftenergy:wheel_generator_tier_4"
     },
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:rechargeable_potato_battery"
+      "value": "dotcraftenergy:battery_tier_4"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:wheel_generator_tier_3"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_rechargeable_potato_battery": {
+    "has_battery_tier_4": {
       "conditions": {
         "items": [
           {
-            "items": "dotcraftenergy:rechargeable_potato_battery"
+            "items": "dotcraftenergy:battery_tier_4"
           }
         ]
       },
@@ -23,7 +27,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dotcraftenergy:items/mob_wheel_tier_1"
+        "recipe": "dotcraftenergy:items/wheel_generator_tier_4"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -31,12 +35,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_rechargeable_potato_battery"
+      "has_battery_tier_4"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dotcraftenergy:items/mob_wheel_tier_1"
+      "dotcraftenergy:items/wheel_generator_tier_4"
     ]
   }
 }

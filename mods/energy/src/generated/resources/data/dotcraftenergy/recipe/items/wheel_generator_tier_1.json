@@ -2,7 +2,7 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:mob_wheel_tier_1"
+      "value": "dotcraftenergy:wheel_generator_tier_1"
     },
     {
       "type": "neoforge:registered",
@@ -23,6 +23,6 @@
     "PBP"
   ],
   "result": {
-    "id": "dotcraftenergy:mob_wheel_tier_1"
+    "id": "dotcraftenergy:wheel_generator_tier_1"
   }
 }

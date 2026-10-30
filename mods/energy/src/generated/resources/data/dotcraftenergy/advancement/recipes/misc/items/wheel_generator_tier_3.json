@@ -2,7 +2,7 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:mob_wheel_tier_3"
+      "value": "dotcraftenergy:wheel_generator_tier_3"
     },
     {
       "type": "neoforge:registered",
@@ -10,7 +10,7 @@
     },
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:mob_wheel_tier_2"
+      "value": "dotcraftenergy:wheel_generator_tier_2"
     }
   ],
   "parent": "minecraft:recipes/root",
@@ -27,7 +27,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dotcraftenergy:items/mob_wheel_tier_3"
+        "recipe": "dotcraftenergy:items/wheel_generator_tier_3"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -40,7 +40,7 @@
   ],
   "rewards": {
     "recipes": [
-      "dotcraftenergy:items/mob_wheel_tier_3"
+      "dotcraftenergy:items/wheel_generator_tier_3"
     ]
   }
 }

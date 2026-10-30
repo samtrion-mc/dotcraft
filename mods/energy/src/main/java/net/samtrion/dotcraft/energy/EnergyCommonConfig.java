@@ -71,7 +71,7 @@ public final class EnergyCommonConfig {
     /** The FE a melted block of ice, packed ice and blue ice gives, section {@code melt}. */
     public static final MeltYield MELT_YIELD = new MeltYield(1_000, 9_000, 81_000);
     /** The registry paths of the mob wheels, tiers 1-5, which are also their config sections. */
-    static final List<String> WHEEL_NAMES = tierNames("mob_wheel");
+    static final List<String> WHEEL_NAMES = tierNames("wheel_generator");
     /** The mob wheels: the peak FE/t with a full cage of running mobs, anchored by a duty cycle of a quarter (see {@code WheelMath}). */
     public static final List<Generator> MOB_WHEELS = generators(WHEEL_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
     /** The registry paths of the kite wind generators, tiers 1-5, which are also their config sections. */

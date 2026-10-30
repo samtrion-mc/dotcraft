@@ -2,7 +2,7 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:mob_wheel_tier_2"
+      "value": "dotcraftenergy:wheel_generator_tier_2"
     },
     {
       "type": "neoforge:registered",
@@ -10,7 +10,7 @@
     },
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:mob_wheel_tier_1"
+      "value": "dotcraftenergy:wheel_generator_tier_1"
     }
   ],
   "type": "minecraft:crafting_shaped",
@@ -19,7 +19,7 @@
     "B": "dotcraftenergy:battery_tier_2",
     "G": "#c:gears/nickel",
     "P": "#c:plates/nickel",
-    "X": "dotcraftenergy:mob_wheel_tier_1"
+    "X": "dotcraftenergy:wheel_generator_tier_1"
   },
   "pattern": [
     "PGP",
@@ -27,6 +27,6 @@
     "PBP"
   ],
   "result": {
-    "id": "dotcraftenergy:mob_wheel_tier_2"
+    "id": "dotcraftenergy:wheel_generator_tier_2"
   }
 }
