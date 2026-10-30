@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:lunar_panel_tier_5"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_5"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:lunar_panel_tier_4"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:gems/lapis",
+    "B": "dotcraftenergy:battery_tier_5",
+    "C": "dotcraftenergy:photovoltaic_cell",
+    "P": "#c:plates/platinum",
+    "X": "dotcraftenergy:lunar_panel_tier_4"
+  },
+  "pattern": [
+    "CAC",
+    "PBP",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:lunar_panel_tier_5"
+  }
+}

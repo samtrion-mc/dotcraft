@@ -1,4 +1,9 @@
 {
+  "block.dotcraftenergy.lunar_panel_tier_1": "Lunar Panel (Tier 1)",
+  "block.dotcraftenergy.lunar_panel_tier_2": "Lunar Panel (Tier 2)",
+  "block.dotcraftenergy.lunar_panel_tier_3": "Lunar Panel (Tier 3)",
+  "block.dotcraftenergy.lunar_panel_tier_4": "Lunar Panel (Tier 4)",
+  "block.dotcraftenergy.lunar_panel_tier_5": "Lunar Panel (Tier 5)",
   "block.dotcraftenergy.power_drain": "Power Drain",
   "block.dotcraftenergy.solar_panel_tier_1": "Solar Panel (Tier 1)",
   "block.dotcraftenergy.solar_panel_tier_2": "Solar Panel (Tier 2)",

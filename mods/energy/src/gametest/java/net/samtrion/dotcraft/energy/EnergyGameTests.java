@@ -175,7 +175,7 @@ public final class EnergyGameTests {
     }
 
     /**
-     * Every solar panel gets a block entity with an FE capability on every side that cannot be charged from outside but
+     * Every solar and lunar panel gets a block entity with an FE capability on every side that cannot be charged from outside but
      * can be drained; the panels tick for a while without error and never exceed their capacity.
      *
      * @param helper the game test helper
@@ -183,7 +183,7 @@ public final class EnergyGameTests {
     private static void panels(GameTestHelper helper) {
         var level = helper.getLevel();
         var blocks = EnergyBlocks.blocks().toList();
-        helper.assertTrue(blocks.size() == 5, "expected 5 panels, found " + blocks.size());
+        helper.assertTrue(blocks.size() == 10, "expected 10 panels, found " + blocks.size());
         int x = 0;
         for (var block : blocks) helper.setBlock(new BlockPos(2 * x++, 1, 0), block.get());
         helper.runAfterDelay(45, () -> {
@@ -205,7 +205,7 @@ public final class EnergyGameTests {
     }
 
     /**
-     * A solar panel makes FE at noon and none at midnight, in a clear sky, with the real sun angle of the
+     * At noon only a solar panel makes FE and at midnight only a lunar panel, in a clear sky, with the real sun angle of the
      * overworld clock.
      *
      * @param helper the game test helper
@@ -214,25 +214,31 @@ public final class EnergyGameTests {
         var level = helper.getLevel();
         var clock = level.dimensionType().defaultClock().orElseThrow();
         var solar = EnergyBlocks.SOLAR.block(3).get();
+        var lunar = EnergyBlocks.LUNAR.block(3).get();
+        var solarPos = new BlockPos(1, 1, 1);
+        var lunarPos = new BlockPos(5, 1, 1);
         // the batches of the tests start at the same places one after the other: clear what an earlier test left above the panels
         for (int x = 0; x <= 6; x++) {
             for (int y = 1; y <= 8; y++) helper.setBlock(new BlockPos(x, y, 1), net.minecraft.world.level.block.Blocks.AIR);
         }
-        var solarPos = new BlockPos(1, 1, 1);
         helper.setBlock(solarPos, solar);
+        helper.setBlock(lunarPos, lunar);
         var solarAbs = helper.absolutePos(solarPos);
+        var lunarAbs = helper.absolutePos(lunarPos);
         level.getServer().clockManager().moveToTimeMarker(clock, net.minecraft.world.clock.ClockTimeMarkers.NOON);
         helper.runAfterDelay(5, () -> {
             float angle = level.environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.SUN_ANGLE, solarAbs);
             double sun = solar.kind().output(level, solarAbs, 3);
-            String at = " at noon: sun angle " + angle + ", solar " + sun + ", sees sky " + level.canSeeSky(solarAbs.above())
+            double moon = lunar.kind().output(level, lunarAbs, 3);
+            String at = " at noon: sun angle " + angle + ", solar " + sun + ", lunar " + moon + ", sees sky " + level.canSeeSky(solarAbs.above())
                     + ", sky " + level.dimensionType().hasSkyLight();
-            helper.assertTrue(sun > 0, "wrong output" + at);
+            helper.assertTrue(sun > 0 && moon == 0, "wrong output" + at);
             level.getServer().clockManager().moveToTimeMarker(clock, net.minecraft.world.clock.ClockTimeMarkers.MIDNIGHT);
             helper.runAfterDelay(5, () -> {
                 float night = level.environmentAttributes().getValue(net.minecraft.world.attribute.EnvironmentAttributes.SUN_ANGLE, solarAbs);
                 double sun2 = solar.kind().output(level, solarAbs, 3);
-                helper.assertTrue(sun2 == 0, "wrong output at midnight: sun angle " + night + ", solar " + sun2 + at);
+                double moon2 = lunar.kind().output(level, lunarAbs, 3);
+                helper.assertTrue(sun2 == 0 && moon2 > 0, "wrong output at midnight: sun angle " + night + ", solar " + sun2 + ", lunar " + moon2 + at);
                 helper.succeed();
             });
         });
@@ -269,7 +275,7 @@ public final class EnergyGameTests {
     }
 
     /**
-     * Panels in a row (solar tier 1, solar tier 2, solar tier 1) share one pool: its capacity is the sum, the side properties show the
+     * Panels in a row (solar tier 1, lunar tier 2, solar tier 1) share one pool: its capacity is the sum, the side properties show the
      * neighbours, an extraction is limited by the tier of the block it is taken from but draws from all of them, and a removed block
      * hands its FE on.
      *
@@ -278,9 +284,9 @@ public final class EnergyGameTests {
     private static void group(GameTestHelper helper) {
         var level = helper.getLevel();
         var solar = EnergyBlocks.SOLAR.block(1).get();
-        var tier2 = EnergyBlocks.SOLAR.block(2).get();
+        var lunar = EnergyBlocks.LUNAR.block(2).get();
         helper.setBlock(new BlockPos(0, 5, 0), solar);
-        helper.setBlock(new BlockPos(1, 5, 0), tier2);
+        helper.setBlock(new BlockPos(1, 5, 0), lunar);
         helper.setBlock(new BlockPos(2, 5, 0), solar);
         var first = helper.absolutePos(new BlockPos(0, 5, 0));
         var middle = helper.absolutePos(new BlockPos(1, 5, 0));
@@ -291,22 +297,22 @@ public final class EnergyGameTests {
                 "the first panel shows a wrong neighbour");
 
         var solarConfig = EnergyCommonConfig.SOLAR_PANELS.get(0);
-        var tier2Config = EnergyCommonConfig.SOLAR_PANELS.get(1);
+        var lunarConfig = EnergyCommonConfig.LUNAR_PANELS.get(1);
         EnergyHandler fromFirst = level.getCapability(Capabilities.Energy.BLOCK, first, Direction.WEST);
         EnergyHandler fromMiddle = level.getCapability(Capabilities.Energy.BLOCK, middle, Direction.DOWN);
         helper.assertTrue(fromFirst != null && fromMiddle != null, "no capability");
-        long capacity = 2L * solarConfig.capacity() + tier2Config.capacity();
+        long capacity = 2L * solarConfig.capacity() + lunarConfig.capacity();
         helper.assertTrue(fromFirst.getCapacityAsLong() == capacity, "capacity is not the sum: " + fromFirst.getCapacityAsLong());
         helper.assertTrue(fromMiddle.getCapacityAsLong() == capacity, "capacity differs between members");
 
         var middleBe = (GeneratorBlockEntity) level.getBlockEntity(middle);
         var lastBe = (GeneratorBlockEntity) level.getBlockEntity(last);
-        int offered = tier2Config.capacity() / 2;
+        int offered = lunarConfig.capacity() / 2;
         helper.assertTrue(middleBe.fill(offered) == offered, "buffer too small");
         helper.assertTrue(fromFirst.getAmountAsLong() >= offered, "the first panel does not see the FE of the middle one");
         try (var tx = Transaction.openRoot()) {
             helper.assertTrue(fromFirst.extract(Integer.MAX_VALUE, tx) == Math.min(solarConfig.maxOutput(), offered), "extraction not limited by the tier 1 panel");
-            helper.assertTrue(fromMiddle.extract(Integer.MAX_VALUE, tx) == Math.min(tier2Config.maxOutput(), offered), "extraction not limited by the tier 2 panel");
+            helper.assertTrue(fromMiddle.extract(Integer.MAX_VALUE, tx) == Math.min(lunarConfig.maxOutput(), offered), "extraction not limited by the tier 2 panel");
         }
         long before = fromFirst.getAmountAsLong() + lastBe.fill(Math.min(1_000, solarConfig.capacity()));
         helper.setBlock(new BlockPos(2, 5, 0), net.minecraft.world.level.block.Blocks.AIR);

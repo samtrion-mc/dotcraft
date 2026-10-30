@@ -11,7 +11,7 @@ import net.samtrion.dotcraft.resources.CraftResources;
 /**
  * Entry point of the {@code .Craft: Energy} mod.
  * <p>
- * Registers the potato batteries and the solar panels.
+ * Registers the potato batteries and the solar and lunar panels.
  */
 @Mod(EnergyMod.MODID)
 public class EnergyMod {
