@@ -49,6 +49,19 @@ public final class EnergyCommonConfig {
 
     /** The flow generators: the peak FE/t in the best case without animals (full water share in an ocean or river), at least 15 FE/t; animals add up to 30 % on top, so the real maximum is 1.3 times the peak. */
     public static final List<Generator> FLOW_GENERATORS = generators(FLOW_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The registry paths of the vibration generators, tiers 1-5, which are also their config sections. */
+    static final List<String> VIBRATION_NAMES = tierNames("vibration_generator");
+
+    /**
+     * The vibration generators: the hard ceiling in FE/t, which a token bucket enforces no matter how many game events there are (see
+     * {@code VibrationBucket}); a generator next to a busy player makes 2/9 (tier 1) to 2/3 (tier 5) of it, see {@code VibrationMath}.
+     */
+    public static final List<Generator> VIBRATION_GENERATORS = generators(VIBRATION_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+
+    /** The bosses of the vibration generators: entity types whose game events are worth {@code VibrationMath.BOSS_FACTOR} times as much, key {@code vibration.bosses}. */
+    public static final MobList VIBRATION_BOSSES = new MobList("vibration", "bosses",
+            List.of("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden", "minecraft:elder_guardian"),
+            "Entity types (ids or #tags) whose vibrations are worth much more to a vibration generator; the event must be caused by the entity itself.");
 
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
@@ -64,6 +77,38 @@ public final class EnergyCommonConfig {
         var list = new java.util.ArrayList<Generator>();
         for (int i = 0; i < names.size(); i++) list.add(new Generator(names.get(i), peaks[i]));
         return List.copyOf(list);
+    }
+
+    /**
+     * A config list of entity types (see {@link EntityFilter}); it is parsed when first asked for after the registries are ready and again whenever
+     * the config value changes (a reload); the tags inside are read from the data packs at every match. While the config is not loaded the defaults count.
+     */
+    public static final class MobList {
+        private final ModConfigSpec.ConfigValue<List<? extends String>> value;
+        private final List<String> defaults;
+        private volatile @Nullable Cached cached;
+
+        /** A parsed state of the list. */
+        private record Cached(List<? extends String> source, EntityFilter filter) {}
+
+        private MobList(String section, String key, List<String> defaults, String comment) {
+            this.defaults = defaults;
+            BUILDER.push(section);
+            value = BUILDER.comment(comment).defineListAllowEmpty(key, defaults, () -> "minecraft:pig", EntityFilter::isValid);
+            BUILDER.pop();
+        }
+
+        /**
+         * The parsed list.
+         *
+         * @return the filter of the current config value
+         */
+        public EntityFilter filter() {
+            List<? extends String> now = SPEC.isLoaded() ? value.get() : defaults;
+            var c = cached;
+            if (c == null || !c.source().equals(now)) cached = c = new Cached(List.copyOf(now), EntityFilter.parse(now));
+            return c.filter();
+        }
     }
 
     /** The FE values of one battery; while the config is not loaded (e.g. in datagen and unit tests) the defaults count. */
