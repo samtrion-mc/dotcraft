@@ -47,6 +47,8 @@ public final class EnergyItems {
     /** The battery that can be charged again and again; {@code null} when switched off in the config. */
     public static final @Nullable DeferredItem<? extends Item> RECHARGEABLE_POTATO_BATTERY = register("rechargeable_potato_battery", EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY);
 
+    /** Tier 1 (copper), {@code null} when switched off in the config. */
+    public static final @Nullable DeferredItem<? extends Item> BATTERY_TIER_1 = register("battery_tier_1", EnergyCommonConfig.BATTERY_TIER_1);
     /** Tier 2 (lead), {@code null} when switched off in the config. */
     public static final @Nullable DeferredItem<? extends Item> BATTERY_TIER_2 = register("battery_tier_2", EnergyCommonConfig.BATTERY_TIER_2);
     /** Tier 3 (nickel), {@code null} when switched off in the config. */
@@ -97,6 +99,7 @@ public final class EnergyItems {
             }, POTATO_BATTERY.get());
         }
         rechargeable(event, RECHARGEABLE_POTATO_BATTERY, EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY);
+        rechargeable(event, BATTERY_TIER_1, EnergyCommonConfig.BATTERY_TIER_1);
         rechargeable(event, BATTERY_TIER_2, EnergyCommonConfig.BATTERY_TIER_2);
         rechargeable(event, BATTERY_TIER_3, EnergyCommonConfig.BATTERY_TIER_3);
         rechargeable(event, BATTERY_TIER_4, EnergyCommonConfig.BATTERY_TIER_4);
@@ -118,7 +121,7 @@ public final class EnergyItems {
     private static void addToVanillaTabs(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() != CreativeModeTabs.TOOLS_AND_UTILITIES) return;
         if (POTATO_BATTERY != null) event.accept(POTATO_BATTERY.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
-        for (var battery : new DeferredItem<?>[] {RECHARGEABLE_POTATO_BATTERY, BATTERY_TIER_2, BATTERY_TIER_3, BATTERY_TIER_4, BATTERY_TIER_5}) {
+        for (var battery : new DeferredItem<?>[] {RECHARGEABLE_POTATO_BATTERY, BATTERY_TIER_1, BATTERY_TIER_2, BATTERY_TIER_3, BATTERY_TIER_4, BATTERY_TIER_5}) {
             if (battery != null) event.accept(battery.get(), CreativeModeTab.TabVisibility.PARENT_AND_SEARCH_TABS);
         }
     }

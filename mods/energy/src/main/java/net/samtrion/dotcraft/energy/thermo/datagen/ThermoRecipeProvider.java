@@ -67,7 +67,7 @@ public final class ThermoRecipeProvider extends RecipeProvider.Runner {
 
         @Override
         protected void buildRecipes() {
-            Item[] batteries = {EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), EnergyItems.BATTERY_TIER_2.get(), EnergyItems.BATTERY_TIER_3.get(),
+            Item[] batteries = {EnergyItems.BATTERY_TIER_1.get(), EnergyItems.BATTERY_TIER_2.get(), EnergyItems.BATTERY_TIER_3.get(),
                     EnergyItems.BATTERY_TIER_4.get(), EnergyItems.BATTERY_TIER_5.get()};
             Item previous = null;
             for (int tier = 1; tier <= METALS.length; tier++) {

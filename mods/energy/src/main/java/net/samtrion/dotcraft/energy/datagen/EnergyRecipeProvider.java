@@ -71,12 +71,13 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
             battery("potato_battery", EnergyItems.POTATO_BATTERY.get(), Tags.Items.CROPS_POTATO);
             // no tag holds the poisonous potato alone ("c:foods/food_poisoning" has other items too), so its id it is
             battery("rechargeable_potato_battery", EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), Items.POISONOUS_POTATO);
-            tier("battery_tier_2", EnergyItems.BATTERY_TIER_2.get(), EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), "tin", "lead");
+            tier("battery_tier_1", EnergyItems.BATTERY_TIER_1.get(), EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), "copper", "zinc");
+            tier("battery_tier_2", EnergyItems.BATTERY_TIER_2.get(), EnergyItems.BATTERY_TIER_1.get(), "tin", "lead");
             tier("battery_tier_3", EnergyItems.BATTERY_TIER_3.get(), EnergyItems.BATTERY_TIER_2.get(), "nickel", "zinc");
             tier("battery_tier_4", EnergyItems.BATTERY_TIER_4.get(), EnergyItems.BATTERY_TIER_3.get(), "silver", "zinc");
             tier("battery_tier_5", EnergyItems.BATTERY_TIER_5.get(), EnergyItems.BATTERY_TIER_4.get(), "iridium", "platinum");
             photovoltaicCell();
-            Item[] batteries = {EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), EnergyItems.BATTERY_TIER_2.get(), EnergyItems.BATTERY_TIER_3.get(),
+            Item[] batteries = {EnergyItems.BATTERY_TIER_1.get(), EnergyItems.BATTERY_TIER_2.get(), EnergyItems.BATTERY_TIER_3.get(),
                     EnergyItems.BATTERY_TIER_4.get(), EnergyItems.BATTERY_TIER_5.get()};
             panels(EnergyBlocks.SOLAR, batteries, Tags.Items.GLASS_PANES, "aluminum", "bronze", "steel", "electrum", "osmium");
             panels(EnergyBlocks.LUNAR, batteries, Tags.Items.GEMS_LAPIS, "lead", "brass", "invar", "silver", "platinum");

@@ -6,16 +6,16 @@
     },
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:rechargeable_potato_battery"
+      "value": "dotcraftenergy:battery_tier_1"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_rechargeable_potato_battery": {
+    "has_battery_tier_1": {
       "conditions": {
         "items": [
           {
-            "items": "dotcraftenergy:rechargeable_potato_battery"
+            "items": "dotcraftenergy:battery_tier_1"
           }
         ]
       },
@@ -31,7 +31,7 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_rechargeable_potato_battery"
+      "has_battery_tier_1"
     ]
   ],
   "rewards": {

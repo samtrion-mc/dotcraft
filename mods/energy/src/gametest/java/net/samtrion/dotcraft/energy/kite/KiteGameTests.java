@@ -753,7 +753,7 @@ public final class KiteGameTests {
         var gear = new ItemStack(net.samtrion.dotcraft.resources.item.ResourceItems.item(aluminum, net.samtrion.dotcraft.resources.common.Forms.get("gear")).get());
         var plate = new ItemStack(net.samtrion.dotcraft.resources.item.ResourceItems.item(aluminum, net.samtrion.dotcraft.resources.common.Forms.get("plate")).get());
         var grains = new ItemStack(net.samtrion.dotcraft.resources.item.ResourceItems.item(redstone, net.samtrion.dotcraft.resources.common.Forms.get("grains")).get());
-        var battery = new ItemStack(net.samtrion.dotcraft.energy.item.EnergyItems.RECHARGEABLE_POTATO_BATTERY.get());
+        var battery = new ItemStack(net.samtrion.dotcraft.energy.item.EnergyItems.BATTERY_TIER_1.get());
         var with = crafting(wireStack(1), gear, plate, battery, grains);
         var found = recipes.getRecipeFor(net.minecraft.world.item.crafting.RecipeType.CRAFTING, with, helper.getLevel());
         helper.assertTrue(found.isPresent() && found.get().value().assemble(with).is(KiteBlocks.block(1).get().asItem()), "the generator is not crafted with iron wire");

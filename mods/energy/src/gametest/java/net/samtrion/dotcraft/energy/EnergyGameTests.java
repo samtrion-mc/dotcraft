@@ -171,6 +171,12 @@ public final class EnergyGameTests {
         }
         helper.assertTrue(rechargeableAccess.getResource().is(EnergyItems.RECHARGEABLE_POTATO_BATTERY.get()), "rechargeable battery changed");
         helper.assertTrue(multi.getAmountAsInt() == 0, "rechargeable battery not empty");
+
+        // the copper tier 1 battery: its own FE capability, twice the capacity of the potato one
+        player.getInventory().setItem(2, new ItemStack(EnergyItems.BATTERY_TIER_1.get()));
+        EnergyHandler tier1 = ItemAccess.forPlayerSlot(player, 2).getCapability(Capabilities.Energy.ITEM);
+        helper.assertTrue(tier1 != null && tier1.getAmountAsInt() == EnergyCommonConfig.BATTERY_TIER_1.capacity()
+                && tier1.getCapacityAsInt() == 2 * RECHARGEABLE.capacity(), "tier 1 battery is not a full 40 000 FE battery");
         helper.succeed();
     }
 
