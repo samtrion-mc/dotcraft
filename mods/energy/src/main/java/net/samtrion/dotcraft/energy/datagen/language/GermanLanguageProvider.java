@@ -12,6 +12,8 @@ import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlockItem;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
 import net.samtrion.dotcraft.energy.melt.MeltBlocks;
+import net.samtrion.dotcraft.energy.wheel.WheelBlocks;
+import net.samtrion.dotcraft.energy.wheel.WheelItem;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The German translations. Every key added here needs the same key in {@link EnglishUSLanguageProvider}. */
@@ -43,6 +45,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(VibrationBlockItem.HEARING_KEY, "Hört Erschütterungen im Umkreis von %1$s Blöcken, ab Vibrationsfrequenz %2$s");
         add(VibrationBlockItem.BOSS_KEY, "Bosskämpfe zählen x%s");
         add(VibrationBlockItem.PIERCE_KEY, "Hört durch Wolle");
+        WheelBlocks.blocks().forEach(b -> add(b.get(), "Mob-Laufrad (Stufe " + b.get().tier() + ")"));
         add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.TANK_KEY, "Das Wasser landet in einem Tank mit %s Eimern, der sich nur entleeren lässt");
         add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.FULL_KEY, "Ein voller Tank lässt %s%% der FE pro Eis übrig, bis Wasser entnommen wird");
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
@@ -58,6 +61,13 @@ public final class GermanLanguageProvider extends LanguageProvider {
         ThermoBlocks.blocks().forEach(b -> add(b.get(), "Thermoelektrischer Generator (Stufe " + b.get().tier() + ")"));
         add(ThermoBlockItem.TOOLTIP_KEY, "Spitze %1$s FE/t bei einem Temperaturunterschied von %2$s");
         add(ThermoBlockItem.HINT_KEY, "Braucht einen heissen und einen kalten Nachbarn auf gegenüberliegenden Seiten (je Stufe 1-3, sie ergeben zusammen den Unterschied)");
+        add(WheelItem.STATS_KEY, "Bis zu %s FE/t durch ein Mob auf dem Rad");
+        add(WheelItem.PERK_KEY + 1, "Basisrad.");
+        add(WheelItem.PERK_KEY + 2, "Höhere Spitze und größerer Puffer.");
+        add(WheelItem.PERK_KEY + 3, "Kleine Mobs zählen voll.");
+        add(WheelItem.PERK_KEY + 4, "Höhere Spitze und größerer Puffer.");
+        add(WheelItem.PERK_KEY + 5, "Schwungrad: dreht nach dem Stillstand des Mobs noch einige Sekunden weiter.");
+        add(WheelItem.RULES_KEY, "Fängt das erste Mob, das oben darauf steht (immer nur eins, jedes Mob, auch feindliche), und hält es dort fest: es kann nicht weg, aber verletzt und getötet werden, und es despawnt nie. Mobs in der Nähe zählen nicht. Gesundheit und Tempo bestimmen das Gewicht, ein Mob, das laufen will, zählt voll, ein stehendes halb. Keine Babys, keine Mobs im Wasser, ein Rad pro Mob. Ein Komparator liest die Last.");
         add(EnergyItems.TOOLTIP_KEY, "%1$s / %2$s FE");
     }
 }

@@ -14,6 +14,11 @@
   "block.dotcraftenergy.melt_generator_tier_3": "Melt Generator (Tier 3)",
   "block.dotcraftenergy.melt_generator_tier_4": "Melt Generator (Tier 4)",
   "block.dotcraftenergy.melt_generator_tier_5": "Melt Generator (Tier 5)",
+  "block.dotcraftenergy.mob_wheel_tier_1": "Mob Wheel (Tier 1)",
+  "block.dotcraftenergy.mob_wheel_tier_2": "Mob Wheel (Tier 2)",
+  "block.dotcraftenergy.mob_wheel_tier_3": "Mob Wheel (Tier 3)",
+  "block.dotcraftenergy.mob_wheel_tier_4": "Mob Wheel (Tier 4)",
+  "block.dotcraftenergy.mob_wheel_tier_5": "Mob Wheel (Tier 5)",
   "block.dotcraftenergy.power_drain": "Power Drain",
   "block.dotcraftenergy.solar_panel_tier_1": "Solar Panel (Tier 1)",
   "block.dotcraftenergy.solar_panel_tier_2": "Solar Panel (Tier 2)",
@@ -54,5 +59,12 @@
   "tooltip.dotcraftenergy.vibration.hearing": "Hears shocks within %1$s blocks, from vibration frequency %2$s",
   "tooltip.dotcraftenergy.vibration.needs": "Powered by shocks nearby: blocks broken, fights, explosions",
   "tooltip.dotcraftenergy.vibration.peak": "Peak %1$s FE/t, on average at most %2$s FE/t",
-  "tooltip.dotcraftenergy.vibration.pierce": "Hears through wool"
+  "tooltip.dotcraftenergy.vibration.pierce": "Hears through wool",
+  "tooltip.dotcraftenergy.wheel.perk.1": "Base wheel.",
+  "tooltip.dotcraftenergy.wheel.perk.2": "Higher peak and bigger buffer.",
+  "tooltip.dotcraftenergy.wheel.perk.3": "Small mobs pull their full weight.",
+  "tooltip.dotcraftenergy.wheel.perk.4": "Higher peak and bigger buffer.",
+  "tooltip.dotcraftenergy.wheel.perk.5": "Flywheel: keeps turning for a few seconds after the mob stops.",
+  "tooltip.dotcraftenergy.wheel.rules": "Captures the first mob that stands on top of it (one at a time, any mob, hostile too) and holds it there: it cannot leave but can still be hurt and killed, and never despawns. Mobs nearby do not count. Health and speed set the weight, a mob that tries to walk counts fully, a standing one half. No babies, no mobs in water, one wheel per mob. A comparator reads the load.",
+  "tooltip.dotcraftenergy.wheel.stats": "Up to %s FE/t from one mob on the wheel"
 }

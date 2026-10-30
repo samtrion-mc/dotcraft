@@ -14,6 +14,11 @@
   "block.dotcraftenergy.melt_generator_tier_3": "Schmelzgenerator (Stufe 3)",
   "block.dotcraftenergy.melt_generator_tier_4": "Schmelzgenerator (Stufe 4)",
   "block.dotcraftenergy.melt_generator_tier_5": "Schmelzgenerator (Stufe 5)",
+  "block.dotcraftenergy.mob_wheel_tier_1": "Mob-Laufrad (Stufe 1)",
+  "block.dotcraftenergy.mob_wheel_tier_2": "Mob-Laufrad (Stufe 2)",
+  "block.dotcraftenergy.mob_wheel_tier_3": "Mob-Laufrad (Stufe 3)",
+  "block.dotcraftenergy.mob_wheel_tier_4": "Mob-Laufrad (Stufe 4)",
+  "block.dotcraftenergy.mob_wheel_tier_5": "Mob-Laufrad (Stufe 5)",
   "block.dotcraftenergy.power_drain": "Energie-Senke",
   "block.dotcraftenergy.solar_panel_tier_1": "Solarpanel (Stufe 1)",
   "block.dotcraftenergy.solar_panel_tier_2": "Solarpanel (Stufe 2)",
@@ -54,5 +59,12 @@
   "tooltip.dotcraftenergy.vibration.hearing": "Hört Erschütterungen im Umkreis von %1$s Blöcken, ab Vibrationsfrequenz %2$s",
   "tooltip.dotcraftenergy.vibration.needs": "Wird von Erschütterungen in der Nähe angetrieben: Blöcke abbauen, Kämpfe, Explosionen",
   "tooltip.dotcraftenergy.vibration.peak": "Spitze %1$s FE/t, im Schnitt höchstens %2$s FE/t",
-  "tooltip.dotcraftenergy.vibration.pierce": "Hört durch Wolle"
+  "tooltip.dotcraftenergy.vibration.pierce": "Hört durch Wolle",
+  "tooltip.dotcraftenergy.wheel.perk.1": "Basisrad.",
+  "tooltip.dotcraftenergy.wheel.perk.2": "Höhere Spitze und größerer Puffer.",
+  "tooltip.dotcraftenergy.wheel.perk.3": "Kleine Mobs zählen voll.",
+  "tooltip.dotcraftenergy.wheel.perk.4": "Höhere Spitze und größerer Puffer.",
+  "tooltip.dotcraftenergy.wheel.perk.5": "Schwungrad: dreht nach dem Stillstand des Mobs noch einige Sekunden weiter.",
+  "tooltip.dotcraftenergy.wheel.rules": "Fängt das erste Mob, das oben darauf steht (immer nur eins, jedes Mob, auch feindliche), und hält es dort fest: es kann nicht weg, aber verletzt und getötet werden, und es despawnt nie. Mobs in der Nähe zählen nicht. Gesundheit und Tempo bestimmen das Gewicht, ein Mob, das laufen will, zählt voll, ein stehendes halb. Keine Babys, keine Mobs im Wasser, ein Rad pro Mob. Ein Komparator liest die Last.",
+  "tooltip.dotcraftenergy.wheel.stats": "Bis zu %s FE/t durch ein Mob auf dem Rad"
 }

@@ -1,0 +1,28 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:mob_wheel_tier_1"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:rechargeable_potato_battery"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:rechargeable_potato_battery",
+    "G": "#c:gears/iron",
+    "P": "#c:plates/iron",
+    "X": "#c:rods/wooden"
+  },
+  "pattern": [
+    "PGP",
+    "GXG",
+    "PBP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:mob_wheel_tier_1"
+  }
+}
