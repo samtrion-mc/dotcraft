@@ -1,4 +1,9 @@
 {
+  "block.dotcraftenergy.flow_generator_tier_1": "Strömungsgenerator (Stufe 1)",
+  "block.dotcraftenergy.flow_generator_tier_2": "Strömungsgenerator (Stufe 2)",
+  "block.dotcraftenergy.flow_generator_tier_3": "Strömungsgenerator (Stufe 3)",
+  "block.dotcraftenergy.flow_generator_tier_4": "Strömungsgenerator (Stufe 4)",
+  "block.dotcraftenergy.flow_generator_tier_5": "Strömungsgenerator (Stufe 5)",
   "block.dotcraftenergy.lunar_panel_tier_1": "Mondpanel (Stufe 1)",
   "block.dotcraftenergy.lunar_panel_tier_2": "Mondpanel (Stufe 2)",
   "block.dotcraftenergy.lunar_panel_tier_3": "Mondpanel (Stufe 3)",
@@ -18,5 +23,12 @@
   "item.dotcraftenergy.potato_battery": "Kartoffelbatterie",
   "item.dotcraftenergy.rechargeable_potato_battery": "Wiederaufladbare Kartoffelbatterie",
   "itemGroup.dotcraftenergy.energy": ".Craft: Energy",
-  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE"
+  "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
+  "tooltip.dotcraftenergy.flow.axis": "Vorder- und Rückseite müssen für das Wasser frei bleiben (ein fester Block dort: 0 FE); gibt FE an die anderen Seiten",
+  "tooltip.dotcraftenergy.flow.formula": "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)",
+  "tooltip.dotcraftenergy.flow.perk_1": "Basis: braucht einen fast vollen Wasserwürfel",
+  "tooltip.dotcraftenergy.flow.perk_2": "Weites Netz: Tiere zählen im Umkreis von 6 Blöcken",
+  "tooltip.dotcraftenergy.flow.perk_3": "Anpassung: behält 75% außerhalb von Ozean und Fluss",
+  "tooltip.dotcraftenergy.flow.perk_4": "Schlankes Wasser: ein kleiner Teich genügt schon",
+  "tooltip.dotcraftenergy.flow.perk_5": "Abyssal: unabhängig vom Biom"
 }

@@ -9,6 +9,11 @@
     "dotcraftenergy:lunar_panel_tier_2",
     "dotcraftenergy:lunar_panel_tier_3",
     "dotcraftenergy:lunar_panel_tier_4",
-    "dotcraftenergy:lunar_panel_tier_5"
+    "dotcraftenergy:lunar_panel_tier_5",
+    "dotcraftenergy:flow_generator_tier_1",
+    "dotcraftenergy:flow_generator_tier_2",
+    "dotcraftenergy:flow_generator_tier_3",
+    "dotcraftenergy:flow_generator_tier_4",
+    "dotcraftenergy:flow_generator_tier_5"
   ]
 }
