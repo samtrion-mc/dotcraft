@@ -11,11 +11,11 @@
       "entries": [
         {
           "type": "minecraft:item",
-          "name": "dotcraftenergy:mob_wheel_tier_4"
+          "name": "dotcraftenergy:wheel_generator_tier_5"
         }
       ],
       "rolls": 1.0
     }
   ],
-  "random_sequence": "dotcraftenergy:blocks/mob_wheel_tier_4"
+  "random_sequence": "dotcraftenergy:blocks/wheel_generator_tier_5"
 }

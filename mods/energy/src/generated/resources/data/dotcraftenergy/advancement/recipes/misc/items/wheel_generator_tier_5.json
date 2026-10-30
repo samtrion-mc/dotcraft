@@ -2,24 +2,24 @@
   "neoforge:conditions": [
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:mob_wheel_tier_4"
+      "value": "dotcraftenergy:wheel_generator_tier_5"
     },
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:battery_tier_4"
+      "value": "dotcraftenergy:battery_tier_5"
     },
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:mob_wheel_tier_3"
+      "value": "dotcraftenergy:wheel_generator_tier_4"
     }
   ],
   "parent": "minecraft:recipes/root",
   "criteria": {
-    "has_battery_tier_4": {
+    "has_battery_tier_5": {
       "conditions": {
         "items": [
           {
-            "items": "dotcraftenergy:battery_tier_4"
+            "items": "dotcraftenergy:battery_tier_5"
           }
         ]
       },
@@ -27,7 +27,7 @@
     },
     "has_the_recipe": {
       "conditions": {
-        "recipe": "dotcraftenergy:items/mob_wheel_tier_4"
+        "recipe": "dotcraftenergy:items/wheel_generator_tier_5"
       },
       "trigger": "minecraft:recipe_unlocked"
     }
@@ -35,12 +35,12 @@
   "requirements": [
     [
       "has_the_recipe",
-      "has_battery_tier_4"
+      "has_battery_tier_5"
     ]
   ],
   "rewards": {
     "recipes": [
-      "dotcraftenergy:items/mob_wheel_tier_4"
+      "dotcraftenergy:items/wheel_generator_tier_5"
     ]
   }
 }

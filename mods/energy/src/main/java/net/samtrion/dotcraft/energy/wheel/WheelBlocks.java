@@ -33,8 +33,8 @@ import net.samtrion.dotcraft.energy.EnergyStartupConfig;
  * the block entity type, and puts the items into the creative tab {@code .Craft: Energy} of {@code EnergyBlocks}.
  */
 public final class WheelBlocks {
-    /** The registry path prefix of the wheels, which are named {@code mob_wheel_tier_<n>}. */
-    public static final String PREFIX = "mob_wheel";
+    /** The registry path prefix of the wheels, which are named {@code wheel_generator_tier_<n>}. */
+    public static final String PREFIX = "wheel_generator";
 
     private static final DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(EnergyMod.MODID);
     private static final DeferredRegister.Items ITEMS = DeferredRegister.createItems(EnergyMod.MODID);
