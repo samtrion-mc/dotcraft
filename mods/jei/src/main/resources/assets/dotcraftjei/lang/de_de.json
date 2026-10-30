@@ -1,9 +1,9 @@
 {
   "info.dotcraftjei.drain.1": "Nur-Kreativ-Testblock: nimmt beliebig viel FE von jeder Seite an und vernichtet es, und zieht FE aus allen Nachbarn auf jeder Seite. Er ist nicht herstellbar, im Überleben unzerstörbar und lässt nichts fallen.",
-  "info.dotcraftjei.flow.1": "Eine Turbinenkapsel, die nur läuft, solange sie geflutet ist: in Wasser setzen oder einen Wassereimer darauf benutzen. Sie ist dicht, hält also Wasser, verteilt es aber nie.",
+  "info.dotcraftjei.flow.1": "Eine Turbinenkapsel, die nur läuft, solange sie geflutet ist: in Wasser setzen oder einen Wassereimer darauf benutzen. Sie ist dicht, hält also Wasser, verteilt es aber nie. Ohne Wasser liefert sie nichts und explodiert alle 30 Ticks mit einer gewissen Wahrscheinlichkeit (kleine Explosion, kein Blockschaden).",
   "info.dotcraftjei.flow.2": "Beste Platzierung: tief in einem Ozean oder Fluss, in einem Gewässer mit Strömung. Ein weiterer Strömungsgenerator daneben zählt nicht als Wasser.",
   "info.dotcraftjei.flow.3": "Spitze ohne Tiere, Stufe 1 bis 5: %1$s FE/t. Puffer: %2$s FE.",
-  "info.dotcraftjei.flow.4": "Gezählt wird das Wasser im 5x5x5-Würfel um den Generator: ein Quellblock zählt %2$s, fließendes Wasser %3$s. Der Wasseranteil ist voll bei einem Gewicht von %1$s (Stufe 1 bis 5); mehr Wasser hilft nicht.",
+  "info.dotcraftjei.flow.4": "Gezählt wird das Wasser im 3x3x3-Würfel um den Generator: ein Quellblock zählt %2$s, fließendes Wasser %3$s. Der Wasseranteil ist voll bei einem Gewicht von %1$s (Stufe 1 bis 5); mehr Wasser hilft nicht.",
   "info.dotcraftjei.flow.5": "Die Strömungsachse (Vorder- und Rückseite der Kapsel) muss für das Wasser frei bleiben: ein fester Block dort macht die Leistung zu 0. FE gibt es nur über die anderen vier Seiten ab.",
   "info.dotcraftjei.flow.6": "Fauna-Bonus: jede verschiedene Tierart, die in der Nähe schwimmt (bis zu %1$s Arten), bringt %2$s, also bis zu +%3$s auf die Spitze. Der Suchradius beträgt %4$s Blöcke (Stufe 1: %5$s).",
   "info.dotcraftjei.flow.7": "Biom: außerhalb von Ozean- und Flussbiomen beträgt die Leistung %1$s (ab Stufe 3 %2$s); Stufe 5 ist vom Biom unabhängig.",

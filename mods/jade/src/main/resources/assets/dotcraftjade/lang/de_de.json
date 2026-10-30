@@ -9,7 +9,7 @@
   "config.jade.plugin_dotcraftresources.ore_richness": "Erz-Ergiebigkeit",
   "jade.dotcraftjade.flow.biome": "Biomfaktor: %1$s",
   "jade.dotcraftjade.flow.blocked": "Strömungsachse blockiert: keine Leistung",
-  "jade.dotcraftjade.flow.dry": "Nicht geflutet: keine Leistung",
+  "jade.dotcraftjade.flow.dry": "Nicht geflutet: keine Leistung, Explosionsgefahr",
   "jade.dotcraftjade.flow.fauna": "Fauna: %1$s Arten, +%2$s",
   "jade.dotcraftjade.flow.water": "Wasser: %1$s des Vollwerts (%2$s Quell-, %3$s fließende Blöcke)",
   "jade.dotcraftjade.kite.kites": "Drachen in der Luft: %1$s",

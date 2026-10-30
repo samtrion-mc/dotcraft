@@ -52,7 +52,7 @@ public final class GermanLanguageProvider extends LanguageProvider {
         add(EnergyBlocks.POWER_DRAIN.get(), "Energie-Senke");
         MeltBlocks.blocks().forEach(b -> add(b.get(), "Schmelzgenerator (Stufe " + b.get().tier() + ")"));
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
-        add(FlowGeneratorItem.FORMULA_KEY, "Braucht Wasser: Spitze x Wasseranteil x Biom x (1 + Tiere)");
+        add(FlowGeneratorItem.FORMULA_KEY, "Muss geflutet sein (sonst Explosionsgefahr): Spitze x Wasseranteil x Biom x (1 + Tiere)");
         add(FlowGeneratorItem.AXIS_KEY, "Vorder- und Rückseite müssen für das Wasser frei bleiben (ein fester Block dort: 0 FE); gibt FE an die anderen Seiten");
         add(FlowGeneratorItem.PERK_KEY + 1, "Basis: braucht einen fast vollen Wasserwürfel");
         add(FlowGeneratorItem.PERK_KEY + 2, "Weites Netz: Tiere zählen im Umkreis von 6 Blöcken");

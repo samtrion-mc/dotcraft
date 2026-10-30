@@ -88,6 +88,14 @@ public final class EnergyCommonConfig {
             .comment("FE a kite wind generator gets from one lightning bolt (only tiers that stay up in a thunderstorm are struck).")
             .defineInRange("kite_lightning_energy", KITE_LIGHTNING_ENERGY_DEFAULT, 0, Integer.MAX_VALUE);
 
+    /**
+     * The chance per scan interval that a flow generator that is not waterlogged explodes (it removes itself and its FE, harms no
+     * other block), key {@code flow.dry_explosion_chance}; 0 switches the risk off.
+     */
+    private static final ModConfigSpec.DoubleValue FLOW_DRY_EXPLOSION_CHANCE = BUILDER
+            .comment("Chance per scan interval (30 ticks) that a flow generator that is not waterlogged explodes: the generator is destroyed (no drop, its FE is lost), no other block is harmed. 0 switches it off.")
+            .defineInRange("flow.dry_explosion_chance", net.samtrion.dotcraft.energy.flow.FlowMath.DRY_EXPLOSION_CHANCE_DEFAULT, 0D, 1D);
+
     /** The bosses of the vibration generators: entity types whose game events are worth {@code VibrationMath.BOSS_FACTOR} times as much, key {@code vibration.bosses}. */
     public static final MobList VIBRATION_BOSSES = new MobList("vibration", "bosses",
             List.of("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden", "minecraft:elder_guardian"),
@@ -116,6 +124,15 @@ public final class EnergyCommonConfig {
      */
     public static int kiteLightningEnergy() {
         return SPEC.isLoaded() ? KITE_LIGHTNING_ENERGY.get() : KITE_LIGHTNING_ENERGY_DEFAULT;
+    }
+
+    /**
+     * The chance that a dry flow generator explodes at one roll.
+     *
+     * @return 0..1, 0.05 by default
+     */
+    public static double flowDryExplosionChance() {
+        return SPEC.isLoaded() ? FLOW_DRY_EXPLOSION_CHANCE.get() : net.samtrion.dotcraft.energy.flow.FlowMath.DRY_EXPLOSION_CHANCE_DEFAULT;
     }
 
     private static List<Generator> generators(List<String> names, int[] peaks) {
