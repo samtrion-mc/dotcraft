@@ -16,7 +16,7 @@ import net.samtrion.dotcraft.resources.CraftResources;
 /**
  * Entry point of the {@code .Craft: Energy} mod.
  * <p>
- * Registers the potato batteries, the solar and lunar panels and the flow, vibration, thermoelectric and melt generators and the mob wheels.
+ * Registers the potato batteries, the solar and lunar panels and the flow, vibration, thermoelectric and melt generators, the mob wheels and the kite wind generators.
  */
 @Mod(EnergyMod.MODID)
 public class EnergyMod {
@@ -41,5 +41,6 @@ public class EnergyMod {
         ThermoBlocks.register(modEventBus);
         MeltBlocks.register(modEventBus);
         WheelBlocks.register(modEventBus);
+        net.samtrion.dotcraft.energy.kite.KiteBlocks.register(modEventBus);
     }
 }

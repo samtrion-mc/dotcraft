@@ -34,6 +34,11 @@
     "dotcraftenergy:mob_wheel_tier_2",
     "dotcraftenergy:mob_wheel_tier_3",
     "dotcraftenergy:mob_wheel_tier_4",
-    "dotcraftenergy:mob_wheel_tier_5"
+    "dotcraftenergy:mob_wheel_tier_5",
+    "dotcraftenergy:kite_generator_tier_1",
+    "dotcraftenergy:kite_generator_tier_2",
+    "dotcraftenergy:kite_generator_tier_3",
+    "dotcraftenergy:kite_generator_tier_4",
+    "dotcraftenergy:kite_generator_tier_5"
   ]
 }

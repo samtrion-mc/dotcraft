@@ -74,6 +74,19 @@ public final class EnergyCommonConfig {
     static final List<String> WHEEL_NAMES = tierNames("mob_wheel");
     /** The mob wheels: the peak FE/t with a full cage of running mobs, anchored by a duty cycle of a quarter (see {@code WheelMath}). */
     public static final List<Generator> MOB_WHEELS = generators(WHEEL_NAMES, new int[] {15, 75, 560, 5_600, 56_000});
+    /** The registry paths of the kite wind generators, tiers 1-5, which are also their config sections. */
+    public static final List<String> KITE_NAMES = tierNames("kite_generator");
+    /**
+     * The kite wind generators. The configured {@code base} FE/t is only the base of the tier: the output is the base times the length
+     * factor of the tether (tether / 64 at the most: 0.25 / 0.375 / 0.5 / 0.75 / 1 for tier 1-5), so the buffer and the push rate default to the
+     * real best case, base x factor.
+     */
+    public static final List<Generator> KITE_GENERATORS = kiteGenerators(new int[] {64, 400, 2_600, 17_333, 128_000}, new double[] {0.25, 0.375, 0.5, 0.75, 1});
+    /** The default FE one lightning bolt on a kite gives (named constant, see {@link #kiteLightningEnergy()}). */
+    public static final int KITE_LIGHTNING_ENERGY_DEFAULT = 1_000_000;
+    private static final ModConfigSpec.IntValue KITE_LIGHTNING_ENERGY = BUILDER
+            .comment("FE a kite wind generator gets from one lightning bolt (only tiers that stay up in a thunderstorm are struck).")
+            .defineInRange("kite_lightning_energy", KITE_LIGHTNING_ENERGY_DEFAULT, 0, Integer.MAX_VALUE);
 
     /** The bosses of the vibration generators: entity types whose game events are worth {@code VibrationMath.BOSS_FACTOR} times as much, key {@code vibration.bosses}. */
     public static final MobList VIBRATION_BOSSES = new MobList("vibration", "bosses",
@@ -88,6 +101,21 @@ public final class EnergyCommonConfig {
 
     private static List<String> tierNames(String prefix) {
         return List.of(prefix + "_tier_1", prefix + "_tier_2", prefix + "_tier_3", prefix + "_tier_4", prefix + "_tier_5");
+    }
+
+    private static List<Generator> kiteGenerators(int[] bases, double[] factors) {
+        var list = new java.util.ArrayList<Generator>();
+        for (int i = 0; i < KITE_NAMES.size(); i++) list.add(new Generator(KITE_NAMES.get(i), bases[i], factors[i], "base"));
+        return List.copyOf(list);
+    }
+
+    /**
+     * The FE one lightning bolt gives a kite generator.
+     *
+     * @return the FE per bolt, 1 000 000 by default
+     */
+    public static int kiteLightningEnergy() {
+        return SPEC.isLoaded() ? KITE_LIGHTNING_ENERGY.get() : KITE_LIGHTNING_ENERGY_DEFAULT;
     }
 
     private static List<Generator> generators(List<String> names, int[] peaks) {
@@ -236,7 +264,7 @@ public final class EnergyCommonConfig {
         }
 
         /**
-         * The peak output.
+         * The peak output (for the kite generators the base, see {@link #KITE_GENERATORS}).
          *
          * @return the most FE per tick the generator makes
          */
