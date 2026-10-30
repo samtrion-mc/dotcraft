@@ -51,6 +51,7 @@ public final class WheelGameTests {
     private static final Identifier SLOT = id("wheel_slot");
     private static final Identifier PIN = id("wheel_pin");
     private static final Identifier ENERGY = id("wheel_energy");
+    private static final Identifier BLOCKED = id("wheel_blocked");
 
     private WheelGameTests() {}
 
@@ -76,6 +77,7 @@ public final class WheelGameTests {
             registry.register(SLOT, TestSupport.ticking(WheelGameTests::slot));
             registry.register(PIN, TestSupport.ticking(WheelGameTests::pin));
             registry.register(ENERGY, TestSupport.ticking(WheelGameTests::energy));
+            registry.register(BLOCKED, TestSupport.ticking(WheelGameTests::blocked));
         });
     }
 
@@ -86,7 +88,7 @@ public final class WheelGameTests {
      */
     @SubscribeEvent
     static void registerTests(RegisterGameTestsEvent event) {
-        for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY}) {
+        for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY, BLOCKED}) {
             var environment = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf());
             event.registerTest(id, new FunctionGameTestInstance(function(id),
                     new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
@@ -290,6 +292,33 @@ public final class WheelGameTests {
             helper.assertTrue(Math.abs(wheel.output() - expected(horse, peak, true)) < 1e-9, "a running horse makes " + wheel.output());
             area.finish(pig, horse, creeper, baby, hurt);
         }, pig, horse, creeper, baby, hurt);
+    }
+
+    /**
+     * A mob of a type in {@code wheel.blocked_mobs} (a warden, a default boss) is never captured, even alone on the plate; a pig on the plate
+     * is, so the wheel itself works.
+     *
+     * @param helper the game test helper
+     */
+    private static void blocked(GameTestHelper helper) {
+        var area = Area.create(helper, 6);
+        var wheel = area.wheel(1, 4, 4);
+        var level = area.level();
+        var warden = area.spawn(EntityType.WARDEN, 2.5F, 2.5F);
+        var pig = area.spawn(EntityType.PIG, 6.5F, 2.5F);
+        area.after(20, () -> {
+            settled(helper, warden, pig);
+            helper.assertTrue(EnergyCommonConfig.WHEEL_BLOCKED_MOBS.filter().matches(EntityType.WARDEN) && !EnergyCommonConfig.WHEEL_BLOCKED_MOBS.filter().matches(EntityType.PIG),
+                    "the default blocked list is wrong");
+            area.place(warden, 4.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == null && wheel.runners() == 0 && wheel.output() == 0, "a blocked mob is captured: " + wheel.heldMob());
+            area.ground(warden, 1.5, 1.5);
+            area.place(pig, 4.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == pig, "the pig beside the blocked mob is not captured");
+            area.finish(warden, pig);
+        }, warden, pig);
     }
 
     /**

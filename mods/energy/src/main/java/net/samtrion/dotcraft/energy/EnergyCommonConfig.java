@@ -93,6 +93,11 @@ public final class EnergyCommonConfig {
             List.of("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden", "minecraft:elder_guardian"),
             "Entity types (ids or #tags) whose vibrations are worth much more to a vibration generator; the event must be caused by the entity itself.");
 
+    /** The mobs a mob wheel never captures (a held one is released at the next scan): entity types, key {@code wheel.blocked_mobs}; bosses by default, the same as {@link #VIBRATION_BOSSES}. */
+    public static final MobList WHEEL_BLOCKED_MOBS = new MobList("wheel", "blocked_mobs",
+            List.of("minecraft:ender_dragon", "minecraft:wither", "minecraft:warden", "minecraft:elder_guardian"),
+            "Entity types (ids or #tags) a mob wheel never captures; a mob that is held when it is added here is released.");
+
     /** The built spec, registered as COMMON config. */
     public static final ModConfigSpec SPEC = BUILDER.build();
 
