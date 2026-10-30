@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "dotcraftenergy:block/thermo_generator_tier_4"
+    }
+  }
+}
