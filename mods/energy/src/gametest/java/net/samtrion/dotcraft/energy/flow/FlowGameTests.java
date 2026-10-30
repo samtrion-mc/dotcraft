@@ -114,7 +114,7 @@ public final class FlowGameTests {
     private static void register(RegisterGameTestsEvent event, Identifier id, int maxTicks) {
         var environment = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf());
         event.registerTest(id, new FunctionGameTestInstance(function(id),
-                new TestData<>(environment, Identifier.withDefaultNamespace("empty"), maxTicks, 0, true)));
+                new TestData<>(environment, TestSupport.STRUCTURE, maxTicks, 0, true)));
     }
 
     /**

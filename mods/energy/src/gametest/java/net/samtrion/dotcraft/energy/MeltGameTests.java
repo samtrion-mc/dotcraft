@@ -103,17 +103,17 @@ public final class MeltGameTests {
     @SubscribeEvent
     static void registerTests(RegisterGameTestsEvent event) {
         var melt = event.registerEnvironment(MELT, new TestEnvironmentDefinition.AllOf());
-        event.registerTest(MELT, new FunctionGameTestInstance(MELT_FUNCTION, new TestData<>(melt, Identifier.withDefaultNamespace("empty"), 70, 0, true)));
+        event.registerTest(MELT, new FunctionGameTestInstance(MELT_FUNCTION, new TestData<>(melt, TestSupport.STRUCTURE, 70, 0, true)));
         var tiers = event.registerEnvironment(MELT_TIERS, new TestEnvironmentDefinition.AllOf());
-        event.registerTest(MELT_TIERS, new FunctionGameTestInstance(MELT_TIERS_FUNCTION, new TestData<>(tiers, Identifier.withDefaultNamespace("empty"), 70, 0, true)));
+        event.registerTest(MELT_TIERS, new FunctionGameTestInstance(MELT_TIERS_FUNCTION, new TestData<>(tiers, TestSupport.STRUCTURE, 70, 0, true)));
         var alone = event.registerEnvironment(MELT_ALONE, new TestEnvironmentDefinition.AllOf());
-        event.registerTest(MELT_ALONE, new FunctionGameTestInstance(MELT_ALONE_FUNCTION, new TestData<>(alone, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+        event.registerTest(MELT_ALONE, new FunctionGameTestInstance(MELT_ALONE_FUNCTION, new TestData<>(alone, TestSupport.STRUCTURE, 20, 0, true)));
         var limits = event.registerEnvironment(MELT_LIMITS, new TestEnvironmentDefinition.AllOf());
-        event.registerTest(MELT_LIMITS, new FunctionGameTestInstance(MELT_LIMITS_FUNCTION, new TestData<>(limits, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
+        event.registerTest(MELT_LIMITS, new FunctionGameTestInstance(MELT_LIMITS_FUNCTION, new TestData<>(limits, TestSupport.STRUCTURE, 100, 0, true)));
         var recovery = event.registerEnvironment(MELT_RECOVERY, new TestEnvironmentDefinition.AllOf());
-        event.registerTest(MELT_RECOVERY, new FunctionGameTestInstance(MELT_RECOVERY_FUNCTION, new TestData<>(recovery, Identifier.withDefaultNamespace("empty"), 70, 0, true)));
+        event.registerTest(MELT_RECOVERY, new FunctionGameTestInstance(MELT_RECOVERY_FUNCTION, new TestData<>(recovery, TestSupport.STRUCTURE, 70, 0, true)));
         var tank = event.registerEnvironment(MELT_TANK, new TestEnvironmentDefinition.AllOf());
-        event.registerTest(MELT_TANK, new FunctionGameTestInstance(MELT_TANK_FUNCTION, new TestData<>(tank, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
+        event.registerTest(MELT_TANK, new FunctionGameTestInstance(MELT_TANK_FUNCTION, new TestData<>(tank, TestSupport.STRUCTURE, 100, 0, true)));
     }
 
     /**

@@ -135,7 +135,7 @@ public final class KiteGameTests {
         for (String name : NAMES) {
             var environment = event.registerEnvironment(id(name), new TestEnvironmentDefinition.Weather(TestEnvironmentDefinition.Weather.Type.CLEAR));
             event.registerTest(id(name), new FunctionGameTestInstance(function(name),
-                    new TestData<>(environment, Identifier.withDefaultNamespace("empty"), timeout(name), 0, true)));
+                    new TestData<>(environment, TestSupport.STRUCTURE, timeout(name), 0, true)));
         }
     }
 
