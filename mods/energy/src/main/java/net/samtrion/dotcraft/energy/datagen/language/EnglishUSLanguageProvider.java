@@ -11,6 +11,7 @@ import net.samtrion.dotcraft.energy.vibration.VibrationBlockItem;
 import net.samtrion.dotcraft.energy.vibration.VibrationBlocks;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlockItem;
 import net.samtrion.dotcraft.energy.thermo.ThermoBlocks;
+import net.samtrion.dotcraft.energy.melt.MeltBlocks;
 import net.samtrion.dotcraft.resources.common.Locales;
 
 /** The English translations. Every key added here needs the same key in {@link GermanLanguageProvider}. */
@@ -43,6 +44,9 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(VibrationBlockItem.BOSS_KEY, "Boss fights count x%s");
         add(VibrationBlockItem.PIERCE_KEY, "Hears through wool");
         add(EnergyBlocks.POWER_DRAIN.get(), "Power Drain");
+        MeltBlocks.blocks().forEach(b -> add(b.get(), "Melt Generator (Tier " + b.get().tier() + ")"));
+        add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.TANK_KEY, "Water goes into a tank of %s buckets that can only be drained");
+        add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.FULL_KEY, "A full tank leaves %s%% of the FE per ice until water is drained");
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
         add(FlowGeneratorItem.FORMULA_KEY, "Needs water: peak x water share x biome x (1 + animals)");
         add(FlowGeneratorItem.AXIS_KEY, "Front and back must stay free for the water (a solid block there: 0 FE); gives FE to the other sides");
