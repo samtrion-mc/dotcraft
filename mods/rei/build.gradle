@@ -7,5 +7,6 @@ dependencies {
     compileOnly project(':mods:resources')
     compileOnly project(':mods:energy')
     compileOnly libs.rei.api
+    compileOnly libs.rei // the information display lives in the REI plugin package, which the api artifact lacks
     localRuntime libs.rei
 }
