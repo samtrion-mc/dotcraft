@@ -57,6 +57,7 @@ public final class FlowGameTests {
     private static final Identifier DRAIN = id("flow_drain");
     private static final Identifier FACING = id("flow_facing");
     private static final Identifier AXIS = id("flow_axis");
+    private static final Identifier DRY = id("flow_dry");
 
     private FlowGameTests() {}
 
@@ -88,6 +89,7 @@ public final class FlowGameTests {
             registry.register(DRAIN, TestSupport.ticking(FlowGameTests::drain));
             registry.register(FACING, TestSupport.ticking(FlowGameTests::facing));
             registry.register(AXIS, TestSupport.ticking(FlowGameTests::axis));
+            registry.register(DRY, TestSupport.ticking(FlowGameTests::dry));
         });
     }
 
@@ -108,6 +110,9 @@ public final class FlowGameTests {
         register(event, DRAIN, 40);
         register(event, FACING, 20);
         register(event, AXIS, 80);
+        register(event, DRY, 60);
+        // a dry generator in another test must never blow up by chance; the dry test rolls with an explicit chance
+        FlowGeneratorBlockEntity.dryChanceOverride = 0;
     }
 
     /** Registers one test with an own environment and the empty template. */
@@ -225,7 +230,7 @@ public final class FlowGameTests {
             var be = entity(helper, center);
             var reading = scan(helper, center, 1);
             helper.assertTrue(reading.sources() == FlowMath.CUBE_BLOCKS && reading.flowing() == 0,
-                    "a full pool must read 124 sources: " + reading);
+                    "a full pool must read 26 sources: " + reading);
             helper.assertTrue(reading.faunaTypes() == 0, "no animals yet: " + reading);
             double output = expected(1, reading);
             helper.assertTrue(output > 0 && Math.abs(be.output() - output) < 1e-9, "wet output " + be.output() + ", expected " + output);
@@ -244,11 +249,11 @@ public final class FlowGameTests {
             helper.assertTrue(scan(helper, center, 1).sources() == FlowMath.CUBE_BLOCKS - 1, "a neighbouring generator counted as water");
             helper.setBlock(neighbour, Blocks.WATER);
 
-            // two layers less water: less output
+            // the layer below the generator turned into glass: less output
             for (int x = 1; x <= 5; x++) for (int z = 1; z <= 5; z++) for (int y = 1; y <= 2; y++) helper.setBlock(new BlockPos(x, y0 + y, z), Blocks.GLASS);
             be.recompute(level);
             var less = scan(helper, center, 1);
-            helper.assertTrue(less.sources() == FlowMath.CUBE_BLOCKS - 50, "wrong water count " + less);
+            helper.assertTrue(less.sources() == FlowMath.CUBE_BLOCKS - 9, "wrong water count " + less);
             helper.assertTrue(be.output() < output && Math.abs(be.output() - expected(1, less)) < 1e-9,
                     "less water must make less: " + be.output() + " vs " + output);
 
@@ -258,7 +263,7 @@ public final class FlowGameTests {
                 if (x != 3 || z != 3 || y != 3) helper.setBlock(new BlockPos(x, y0 + y, z), flowing);
             }
             var stream = scan(helper, center, 1);
-            helper.assertTrue(stream.flowing() == 74 && stream.sources() == 0, "wrong flowing count " + stream);
+            helper.assertTrue(stream.flowing() == 17 && stream.sources() == 0, "wrong flowing count " + stream);
             helper.succeed();
         });
     }
@@ -489,6 +494,50 @@ public final class FlowGameTests {
                 helper.assertTrue(be.output() > 0, "a solid block at the side blocks");
                 helper.succeed();
             });
+        });
+    }
+
+    /**
+     * The dry risk: a generator that is not waterlogged makes 0 and survives any number of rolls at chance 0; at chance 1 it is gone,
+     * drops nothing, no neighbouring block changes (no crater, no fire) and an entity at its side takes only minor damage. A waterlogged
+     * one never explodes, even at chance 1.
+     *
+     * @param helper the game test helper
+     */
+    private static void dry(GameTestHelper helper) {
+        var level = helper.getLevel();
+        int y0 = 150;
+        for (int x = 0; x <= 4; x++) for (int z = 0; z <= 4; z++) helper.setBlock(new BlockPos(x, y0, z), Blocks.STONE);
+        var center = new BlockPos(2, y0 + 1, 2);
+        var stone = new BlockPos(3, y0 + 1, 2);
+        var grass = new BlockPos(1, y0 + 1, 2);
+        helper.setBlock(center, FlowBlocks.block(1).get());
+        helper.setBlock(stone, Blocks.STONE);
+        helper.setBlock(grass, Blocks.WHITE_CARPET);
+        var golem = helper.spawnWithNoFreeWill(EntityType.IRON_GOLEM, 2.5F, y0 + 1F, 3.5F);
+        helper.runAfterDelay(2, () -> {
+            var be = entity(helper, center);
+            var abs = helper.absolutePos(center);
+            be.recompute(level);
+            helper.assertTrue(be.output() == 0, "a dry generator makes " + be.output());
+            for (int i = 0; i < 500; i++) helper.assertTrue(!be.dryRoll(level, 0), "exploded at chance 0");
+            helper.assertTrue(level.getBlockEntity(abs) == be, "the generator was lost at chance 0");
+            be.fill(100);
+            helper.assertTrue(level.getBlockState(helper.absolutePos(grass)).is(Blocks.WHITE_CARPET), "carpet gone before the roll: " + level.getBlockState(helper.absolutePos(grass)));
+            float health = golem.getHealth();
+            helper.assertTrue(be.dryRoll(level, 1), "no explosion at chance 1");
+            helper.assertTrue(level.getBlockState(abs).isAir() && level.getBlockEntity(abs) == null, "the generator is still there");
+            helper.assertTrue(level.getBlockState(helper.absolutePos(stone)).is(Blocks.STONE), "the explosion broke the neighbour");
+            helper.assertTrue(level.getBlockState(helper.absolutePos(grass)).is(Blocks.WHITE_CARPET), "the explosion changed the carpet: " + level.getBlockState(helper.absolutePos(grass)));
+            helper.assertTrue(level.getBlockState(helper.absolutePos(center.above())).isAir() && level.getBlockState(helper.absolutePos(center.below())).is(Blocks.STONE), "blocks around changed");
+            helper.assertTrue(level.getEntitiesOfClass(net.minecraft.world.entity.item.ItemEntity.class, new net.minecraft.world.phys.AABB(abs).inflate(4)).isEmpty(), "the generator dropped an item");
+            float damage = health - golem.getHealth();
+            helper.assertTrue(golem.isAlive() && damage >= 0 && damage <= 7, "the damage is not minimal: " + damage);
+
+            // a waterlogged generator never explodes
+            helper.setBlock(center, wet(1));
+            helper.assertTrue(!entity(helper, center).dryRoll(level, 1), "a waterlogged generator exploded");
+            helper.succeed();
         });
     }
 

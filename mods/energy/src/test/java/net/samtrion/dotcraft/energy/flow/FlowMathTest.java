@@ -67,13 +67,13 @@ class FlowMathTest {
     @Test
     void flowingWaterCountsMore() {
         for (int tier = 1; tier <= 5; tier++) {
-            assertEquals(FlowMath.waterShare(10, 0, tier) * 2, FlowMath.waterShare(0, 10, tier), 1e-9, "tier " + tier);
+            assertEquals(FlowMath.waterShare(5, 0, tier) * 2, FlowMath.waterShare(0, 5, tier), 1e-9, "tier " + tier);
         }
     }
 
     /**
-     * The water perk: tier 1 needs a nearly full cube, tiers 2-3 three layers, from tier 4 two layers. A plain 5x5x3 pond (74 sources
-     * around the pod) is practically full for tier 2 but not for tier 1, and a 5x5x2 pond (49) is full only for tier 4 and 5.
+     * The water perk in the 3x3x3 cube (26 blocks around the pod): tier 1 needs 22 sources (a nearly full cube), tiers 2-3 need 16,
+     * from tier 4 11; the old 5x5x5 weights (100, 75, 50 of 124) scaled to 26 blocks.
      */
     @Test
     void leanWaterPerk() {
@@ -82,12 +82,29 @@ class FlowMathTest {
         assertEquals(FlowMath.FULL_WEIGHT, FlowMath.fullWeight(3));
         assertEquals(FlowMath.FULL_WEIGHT_LEAN, FlowMath.fullWeight(4));
         assertEquals(FlowMath.FULL_WEIGHT_LEAN, FlowMath.fullWeight(5));
-        assertTrue(FlowMath.waterShare(74, 0, 1) < 1D);
-        assertEquals(0.99D, FlowMath.waterShare(74, 0, 2), 0.01, "a 5x5x3 pond minus the pod is practically full");
-        assertEquals(1D, FlowMath.waterShare(75, 0, 2), 1e-9);
-        assertTrue(FlowMath.waterShare(49, 0, 3) < 1D);
-        assertEquals(1D, FlowMath.waterShare(50, 0, 4), 1e-9);
-        assertTrue(FlowMath.waterShare(49, 0, 3) < FlowMath.waterShare(49, 0, 4));
+        assertEquals(26, FlowMath.CUBE_BLOCKS);
+        assertTrue(FlowMath.FULL_WEIGHT_TIER_1 <= FlowMath.CUBE_BLOCKS, "the best case must reach the full share");
+        assertTrue(FlowMath.waterShare(21, 0, 1) < 1D);
+        assertEquals(1D, FlowMath.waterShare(22, 0, 1), 1e-9);
+        assertTrue(FlowMath.waterShare(15, 0, 2) < 1D);
+        assertEquals(1D, FlowMath.waterShare(16, 0, 2), 1e-9);
+        assertTrue(FlowMath.waterShare(10, 0, 3) < 1D);
+        assertEquals(1D, FlowMath.waterShare(11, 0, 4), 1e-9);
+        assertTrue(FlowMath.waterShare(10, 0, 3) < FlowMath.waterShare(10, 0, 4));
+    }
+
+    /** The roll of the dry explosion: below the chance it explodes, chance 0 never, chance 1 always, whatever the roll. */
+    @Test
+    void dryExplosionRoll() {
+        assertTrue(FlowMath.dryExplosion(0.0, 0.05));
+        assertTrue(FlowMath.dryExplosion(0.049, 0.05));
+        assertTrue(!FlowMath.dryExplosion(0.05, 0.05));
+        assertTrue(!FlowMath.dryExplosion(0.99, 0.05));
+        for (double roll : new double[] {0, 0.3, 0.9999999}) {
+            assertTrue(!FlowMath.dryExplosion(roll, 0), "chance 0 never explodes");
+            assertTrue(FlowMath.dryExplosion(roll, 1), "chance 1 always explodes");
+        }
+        assertEquals(0.05, FlowMath.DRY_EXPLOSION_CHANCE_DEFAULT);
     }
 
     /** Ocean and river give 1; elsewhere tiers 1-2 keep half, tiers 3-4 three quarters, tier 5 is independent of the biome. */
