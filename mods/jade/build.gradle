@@ -8,4 +8,8 @@ dependencies {
 
     compileOnly libs.jade
     localRuntime libs.jade
+
+    // the provider split test loads the Jade providers and the energy classes they read
+    testImplementation libs.jade
+    testImplementation project(':mods:energy')
 }

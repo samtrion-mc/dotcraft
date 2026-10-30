@@ -33,7 +33,7 @@ public class EnergyJadePlugin implements IWailaPlugin {
     @Override
     public void registerClient(IWailaClientRegistration registration) {
         if (ModList.get().isLoaded(JadeKeys.ENERGY)) {
-            for (var provider : EnergyProviders.all()) registration.registerBlockComponent(provider, provider.blockClass());
+            for (var provider : EnergyProviders.all()) registration.registerBlockComponent(provider.client(), provider.blockClass());
         }
     }
 }
