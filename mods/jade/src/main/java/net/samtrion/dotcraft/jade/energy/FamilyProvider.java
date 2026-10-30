@@ -16,13 +16,14 @@ import snownee.jade.api.ITooltip;
 import snownee.jade.api.config.IPluginConfig;
 
 /**
- * Base of the Jade providers of the generator families: the server half reads the block entity into a tag, the client
- * half turns the tag into lines. Everything the client shows is therefore a value the server computed, so the
+ * Base of the Jade providers of the generator families: this class is the server half and reads the block entity into a
+ * tag; {@link #client()} is the separate client half that turns the tag into lines (Jade rejects a data provider that is
+ * also a component provider). Everything the client shows is therefore a value the server computed, so the
  * lines are right in multiplayer too. The common lines (output and stored energy) are written here.
  *
  * @param <E> the block entity class of the family
  */
-abstract class FamilyProvider<E extends BlockEntity> implements IBlockComponentProvider, IServerDataProvider<BlockAccessor> {
+abstract class FamilyProvider<E extends BlockEntity> implements IServerDataProvider<BlockAccessor> {
     private final Identifier uid;
     private final Class<E> entity;
     private final Class<? extends Block> block;
@@ -67,19 +68,25 @@ abstract class FamilyProvider<E extends BlockEntity> implements IBlockComponentP
         collect(data, level, entity.cast(accessor.getBlockEntity()));
     }
 
-    /**
-     * Adds the lines of the tag the server sent.
-     *
-     * @param tooltip  the tooltip to append to
-     * @param accessor the looked-at block
-     * @param config   the plugin configuration
-     */
-    @Override
-    public final void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
-        var data = accessor.getServerData();
-        if (data.isEmpty() || !data.contains("fe_stored")) return;
-        show(tooltip, data);
-        tooltip.add(Component.translatable(JadeKeys.STORED, number(data.getLongOr("fe_stored", 0)), number(data.getLongOr("fe_capacity", 0))));
+    /** @return the client half, registered on the block; shares the UID so the config toggle covers both halves */
+    final IBlockComponentProvider client() {
+        return new Client();
+    }
+
+    /** The client half: adds the lines of the tag the server sent. */
+    private final class Client implements IBlockComponentProvider {
+        @Override
+        public Identifier getUid() {
+            return uid;
+        }
+
+        @Override
+        public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
+            var data = accessor.getServerData();
+            if (data.isEmpty() || !data.contains("fe_stored")) return;
+            show(tooltip, data);
+            tooltip.add(Component.translatable(JadeKeys.STORED, number(data.getLongOr("fe_stored", 0)), number(data.getLongOr("fe_capacity", 0))));
+        }
     }
 
     /**

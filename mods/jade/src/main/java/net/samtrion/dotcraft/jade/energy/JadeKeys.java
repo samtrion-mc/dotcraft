@@ -73,6 +73,19 @@ public final class JadeKeys {
     /** Reduced efficiency because the tank is full; argument: share. */
     public static final String MELT_EFFICIENCY_FULL = PREFIX + "melt.efficiency_full";
 
+    /** The last event that paid FE; arguments: event id, seconds ago. */
+    public static final String VIBRATION_LAST_EVENT = PREFIX + "vibration.last_event";
+    /** No event has paid FE yet. */
+    public static final String VIBRATION_LAST_EVENT_NONE = PREFIX + "vibration.last_event_none";
+
+    /** The mob on the wheel; arguments: mob name, weight. */
+    public static final String WHEEL_MOB = PREFIX + "wheel.mob";
+    /** No mob on the wheel. */
+    public static final String WHEEL_NO_MOB = PREFIX + "wheel.no_mob";
+    /** The mob tries to move and counts fully. */
+    public static final String WHEEL_ACTIVITY_RUNNING = PREFIX + "wheel.activity.running";
+    /** The mob stands and counts partly; argument: share. */
+    public static final String WHEEL_ACTIVITY_STANDING = PREFIX + "wheel.activity.standing";
     /** The wheel turns. */
     public static final String WHEEL_RUNNING = PREFIX + "wheel.running";
     /** Nothing drives the wheel. */

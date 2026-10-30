@@ -71,14 +71,14 @@
   "info.dotcraftjei.vibration.2": "Best placement: where things happen, next to a mine, a mob farm or an arena. Sneaking players and spectators are not heard, and wool between the event and the generator stops the vibration up to tier 3.",
   "info.dotcraftjei.vibration.3": "Peak (burst power), tiers 1 to 5: %1$s FE/t. On average it makes at most this share of the peak: %2$s.",
   "info.dotcraftjei.vibration.4": "Hearing radius, tiers 1 to 5: %1$s blocks. Quietest vibration frequency it hears: %2$s (lower is fainter).",
-  "info.dotcraftjei.vibration.5": "Boss bonus: game events caused by a boss (ender dragon, wither, warden, elder guardian) are worth %1$s times as much, at every tier.",
+  "info.dotcraftjei.vibration.5": "Boss bonus: game events caused by a boss (by default ender dragon, wither, warden, elder guardian; the list is configurable) are worth %1$s times as much, at every tier.",
   "info.dotcraftjei.vibration.6": "Hard cap: a bucket that holds %1$s ticks of peak and refills slowly, so a looping machine (grinder, dispenser, mob pen) cannot make more than the average above.",
   "info.dotcraftjei.vibration.perk.1": "Hears the loud shocks: blocks, deaths, explosions, lightning.",
   "info.dotcraftjei.vibration.perk.2": "Also hears damage.",
   "info.dotcraftjei.vibration.perk.3": "Also hears landings.",
   "info.dotcraftjei.vibration.perk.4": "Hears through wool.",
   "info.dotcraftjei.vibration.perk.5": "Also hears steps, and has the largest radius.",
-  "info.dotcraftjei.wheel.1": "A mob that runs on the wheel turns it. One mob on the wheel is held in place and keeps running; babies, hurt animals and animals in water do not count, and one wheel holds one animal.",
+  "info.dotcraftjei.wheel.1": "A mob that runs on the wheel turns it. One mob on the wheel is held in place and keeps running; babies, mobs in water, mounted mobs and pets told to sit do not count, and one wheel holds one animal.",
   "info.dotcraftjei.wheel.2": "Best placement: a wheel in a pen next to a battery. The pull of the mob, its weight, comes from its health and its speed; a mob that only stands counts half.",
   "info.dotcraftjei.wheel.3": "Peak with a strong runner, tiers 1 to 5: %1$s FE/t."
 }

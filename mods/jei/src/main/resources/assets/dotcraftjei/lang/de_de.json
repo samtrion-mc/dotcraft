@@ -71,14 +71,14 @@
   "info.dotcraftjei.vibration.2": "Beste Platzierung: wo etwas passiert, neben einem Bergwerk, einer Mobfarm oder einer Arena. Schleichende Spieler und Zuschauer werden nicht gehört, und Wolle zwischen Ereignis und Generator stoppt die Vibration bis Stufe 3.",
   "info.dotcraftjei.vibration.3": "Spitze (Stoßleistung), Stufe 1 bis 5: %1$s FE/t. Im Mittel liefert er höchstens diesen Anteil der Spitze: %2$s.",
   "info.dotcraftjei.vibration.4": "Hörradius, Stufe 1 bis 5: %1$s Blöcke. Leiseste Vibrationsfrequenz, die er hört: %2$s (niedriger ist leiser).",
-  "info.dotcraftjei.vibration.5": "Boss-Bonus: Spielereignisse, die ein Boss auslöst (Enderdrache, Wither, Warden, Ältester Wächter), zählen %1$s-fach, auf jeder Stufe.",
+  "info.dotcraftjei.vibration.5": "Boss-Bonus: Spielereignisse, die ein Boss auslöst (standardmäßig Enderdrache, Wither, Warden, Ältester Wächter; die Liste ist konfigurierbar), zählen %1$s-fach, auf jeder Stufe.",
   "info.dotcraftjei.vibration.6": "Harte Obergrenze: ein Eimer fasst %1$s Ticks Spitzenleistung und füllt sich langsam, daher kann eine Schleifenmaschine (Grinder, Werfer, Mobgehege) nicht mehr als den obigen Mittelwert erzeugen.",
   "info.dotcraftjei.vibration.perk.1": "Hört die lauten Erschütterungen: Blöcke, Tode, Explosionen, Blitze.",
   "info.dotcraftjei.vibration.perk.2": "Hört auch Schaden.",
   "info.dotcraftjei.vibration.perk.3": "Hört auch Landungen.",
   "info.dotcraftjei.vibration.perk.4": "Hört durch Wolle.",
   "info.dotcraftjei.vibration.perk.5": "Hört auch Schritte und hat den größten Radius.",
-  "info.dotcraftjei.wheel.1": "Ein Mob, der auf dem Rad läuft, dreht es. Ein Mob auf dem Rad wird festgehalten und läuft weiter; Babys, verletzte Tiere und Tiere im Wasser zählen nicht, und ein Rad hält ein Tier.",
+  "info.dotcraftjei.wheel.1": "Ein Mob, der auf dem Rad läuft, dreht es. Ein Mob auf dem Rad wird festgehalten und läuft weiter; Babys, Mobs im Wasser, reitende Mobs und sitzende Haustiere zählen nicht, und ein Rad hält ein Tier.",
   "info.dotcraftjei.wheel.2": "Beste Platzierung: ein Rad in einem Gehege neben einer Batterie. Die Zugkraft des Mobs, sein Gewicht, ergibt sich aus Gesundheit und Geschwindigkeit; ein Mob, der nur steht, zählt halb.",
   "info.dotcraftjei.wheel.3": "Spitze mit einem starken Läufer, Stufe 1 bis 5: %1$s FE/t."
 }
