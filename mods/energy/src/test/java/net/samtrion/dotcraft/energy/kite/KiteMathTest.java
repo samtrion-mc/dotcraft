@@ -211,6 +211,18 @@ class KiteMathTest {
         assertEquals(8, KiteMath.signal(7.5, 15));
     }
 
+    /** The mid-range signals follow the share of the peak of a tier 4 and 5 pair, and a pair that makes the full peak reads 15. */
+    @Test
+    void comparatorSignalMidRangeOfThePairs() {
+        for (int tier = 4; tier <= 5; tier++) {
+            double peak = KiteMath.peak(EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak(), tier);
+            assertEquals(4, KiteMath.signal(peak / 4, peak), "tier " + tier);
+            assertEquals(8, KiteMath.signal(peak / 2, peak), "tier " + tier);
+            assertEquals(14, KiteMath.signal(peak * 0.99, peak), "tier " + tier);
+            assertEquals(15, KiteMath.signal(peak, peak), "tier " + tier);
+        }
+    }
+
     /** The openness is the free share of the samples. */
     @Test
     void opennessIsTheFreeShare() {

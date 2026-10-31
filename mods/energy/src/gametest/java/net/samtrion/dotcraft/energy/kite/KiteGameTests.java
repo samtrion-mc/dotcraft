@@ -39,7 +39,7 @@ public final class KiteGameTests {
     /** The names of the tests; every one has a function, an environment and an instance. */
     private static final String[] NAMES = {"kite_blocks", "kite_flight", "kite_above_build_height", "kite_break_and_reel_in", "kite_respawn_and_save",
             "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder", "kite_ignores_obstructions", "kite_two_kites",
-            "kite_lightning", "kite_wire", "kite_short_wire", "kite_too_close", "kite_play", "kite_storm_radius", "kite_bolts", "kite_recipe_wire"};
+            "kite_lightning", "kite_wire", "kite_short_wire", "kite_too_close", "kite_play", "kite_storm_radius", "kite_bolts", "kite_recipe_wire", "kite_credit_sides"};
 
     /** Not instantiable. */
     private KiteGameTests() {}
@@ -100,6 +100,7 @@ public final class KiteGameTests {
             case "kite_storm_radius" -> KiteGameTests::stormRadius;
             case "kite_bolts" -> KiteGameTests::bolts;
             case "kite_recipe_wire" -> KiteGameTests::recipeWire;
+            case "kite_credit_sides" -> KiteGameTests::creditSides;
             default -> KiteGameTests::thunder;
         };
     }
@@ -738,6 +739,32 @@ public final class KiteGameTests {
         bolt.setPos(x, y, z);
         bolt.setVisualOnly(true);
         level.addFreshEntity(bolt);
+    }
+
+    /**
+     * A bolt is never handed to the top face: a drain only on top gets nothing and the whole bolt is lost, while a drain on a side takes
+     * it; a bolt of 0 FE (the config value 0) changes nothing and loses nothing.
+     *
+     * @param helper the game test helper
+     */
+    private static void creditSides(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var topOnly = new BlockPos(1, 1, 1);
+        var sideOnly = new BlockPos(FAR_X, 1, 1);
+        helper.setBlock(topOnly, KiteBlocks.block(4).get());
+        helper.setBlock(sideOnly, KiteBlocks.block(4).get());
+        helper.setBlock(topOnly.above(), EnergyBlocks.POWER_DRAIN.get());
+        helper.setBlock(sideOnly.west(), EnergyBlocks.POWER_DRAIN.get());
+        int bolt = EnergyCommonConfig.kiteLightningEnergy();
+        int capacity = EnergyCommonConfig.KITE_GENERATORS.get(3).capacity();
+        for (var pos : new BlockPos[] {topOnly, sideOnly}) entity(helper, pos).creditLightning(level, capacity);
+        var top = entity(helper, topOnly).creditLightning(level, bolt);
+        helper.assertTrue(top.stored() == 0 && top.pushed() == 0 && top.lost() == bolt, "the top face got a bolt: " + top);
+        var side = entity(helper, sideOnly).creditLightning(level, bolt);
+        helper.assertTrue(side.stored() == 0 && side.pushed() == bolt && side.lost() == 0, "the side drain got no bolt: " + side);
+        var none = entity(helper, sideOnly).creditLightning(level, 0);
+        helper.assertTrue(none.stored() == 0 && none.pushed() == 0 && none.lost() == 0, "a bolt of 0 FE changed something: " + none);
+        helper.succeed();
     }
 
     /**
