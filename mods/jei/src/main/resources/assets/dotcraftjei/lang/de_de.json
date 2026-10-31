@@ -80,5 +80,10 @@
   "info.dotcraftjei.vibration.perk.5": "Hört auch Schritte und hat den größten Radius.",
   "info.dotcraftjei.wheel.1": "Ein Mob, der auf dem Rad läuft, dreht es. Ein Mob auf dem Rad wird festgehalten und läuft weiter; Babys, Mobs im Wasser, reitende Mobs und sitzende Haustiere zählen nicht, Bosse und die Mobs der Config-Liste wheel.blocked_mobs werden nie gefangen, und ein Rad hält ein Tier.",
   "info.dotcraftjei.wheel.2": "Beste Platzierung: ein Rad in einem Gehege neben einer Batterie. Die Zugkraft des Mobs, sein Gewicht, ergibt sich aus Gesundheit und Geschwindigkeit; ein Mob, der nur steht, zählt halb.",
-  "info.dotcraftjei.wheel.3": "Spitze mit einem starken Läufer, Stufe 1 bis 5: %1$s FE/t."
+  "info.dotcraftjei.wheel.3": "Spitze mit einem starken Läufer, Stufe 1 bis 5: %1$s FE/t.",
+  "jei.dotcraftjei.wheel_yield": "Ertrag des Mobrads",
+  "jei.dotcraftjei.wheel_yield.weight": "Gewicht: %1$s",
+  "jei.dotcraftjei.wheel_yield.weight_light": "Gewicht ab Stufe 3: %1$s",
+  "jei.dotcraftjei.wheel_yield.running": "Laufend, Stufe 1-5: %1$s FE/t",
+  "jei.dotcraftjei.wheel_yield.standing": "Stehend, Stufe 1-5: %1$s FE/t"
 }
