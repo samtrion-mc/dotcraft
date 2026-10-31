@@ -9,7 +9,7 @@
   "config.jade.plugin_dotcraftresources.ore_richness": "Ore richness",
   "jade.dotcraftjade.flow.biome": "Biome factor: %1$s",
   "jade.dotcraftjade.flow.blocked": "Flow axis blocked: no output",
-  "jade.dotcraftjade.flow.dry": "Not waterlogged: no output",
+  "jade.dotcraftjade.flow.dry": "Not waterlogged: no output, risk of explosion",
   "jade.dotcraftjade.flow.fauna": "Fauna: %1$s kinds, +%2$s",
   "jade.dotcraftjade.flow.water": "Water: %1$s of full (%2$s source, %3$s flowing blocks)",
   "jade.dotcraftjade.kite.kites": "Kites in the air: %1$s",

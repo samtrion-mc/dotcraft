@@ -63,7 +63,7 @@
   "message.dotcraftenergy.kite.wire": "Wire: %1$s of %2$s m of tether.",
   "tooltip.dotcraftenergy.energy": "%1$s / %2$s FE",
   "tooltip.dotcraftenergy.flow.axis": "Front and back must stay free for the water (a solid block there: 0 FE); gives FE to the other sides",
-  "tooltip.dotcraftenergy.flow.formula": "Needs water: peak x water share x biome x (1 + animals)",
+  "tooltip.dotcraftenergy.flow.formula": "Must be waterlogged (risk of explosion otherwise): peak x water share x biome x (1 + animals)",
   "tooltip.dotcraftenergy.flow.perk_1": "Baseline: needs a nearly full cube of water",
   "tooltip.dotcraftenergy.flow.perk_2": "Wide net: animals count within 6 blocks",
   "tooltip.dotcraftenergy.flow.perk_3": "Adaptation: keeps 75% outside ocean and river",

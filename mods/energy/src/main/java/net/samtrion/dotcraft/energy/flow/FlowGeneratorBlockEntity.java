@@ -13,6 +13,7 @@ import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientGamePacketListener;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -22,17 +23,24 @@ import net.neoforged.neoforge.capabilities.BlockCapabilityCache;
 import net.neoforged.neoforge.capabilities.Capabilities;
 import net.neoforged.neoforge.transfer.energy.EnergyHandler;
 import net.neoforged.neoforge.transfer.energy.EnergyHandlerUtil;
+import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 import net.samtrion.dotcraft.energy.generator.GeneratorEnergy;
 
 /**
  * The block entity of every flow generator. It re-reads the surroundings (see {@link FlowScan}) every
  * {@link #RECOMPUTE_TICKS} ticks, staggered by position so a farm of generators does not scan in the same tick, and once on its
- * first tick, buffers what it makes and pushes FE into the neighbours on the four sides across the flow axis (never front or back, which stay free for the water; a solid block there makes the output 0). Unlike the panels it has no pool: every
+ * first tick, buffers what it makes and pushes FE into the neighbours on the four sides across the flow axis (never front or back, which stay free for the water; a solid block there makes the output 0). It must be waterlogged to run; while it is not, it has a chance to explode on every scan interval (see {@link #dryRoll}). Unlike the panels it has no pool: every
  * generator is on its own, since each needs its own water. Its capability can only be drained.
  */
 public class FlowGeneratorBlockEntity extends BlockEntity {
     /** Ticks between two scans of the surroundings. */
     static final int RECOMPUTE_TICKS = 30;
+
+    /**
+     * Replaces the config chance of the dry explosion when it is not negative; only for the game tests (same package), which set it to 0 so a
+     * dry generator in a test never blows up by chance.
+     */
+    static double dryChanceOverride = -1;
 
     private final GeneratorEnergy energy;
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
@@ -94,11 +102,31 @@ public class FlowGeneratorBlockEntity extends BlockEntity {
     void serverTick(ServerLevel level) {
         // a bucket that fills or drains the pod shows at once, not at the next scan
         if (!scanned || wet != getBlockState().getValue(FlowGeneratorBlock.WATERLOGGED) || Math.floorMod(level.getGameTime() + worldPosition.hashCode(), RECOMPUTE_TICKS) == 0) recompute(level);
+        if (!wet && Math.floorMod(level.getGameTime() + worldPosition.hashCode(), RECOMPUTE_TICKS) == 0
+                && dryRoll(level, dryChanceOverride >= 0 ? dryChanceOverride : EnergyCommonConfig.flowDryExplosionChance())) return;
         carry += output;
         int whole = (int) carry;
         carry -= whole;
         energy.produce(whole); // what does not fit into a full buffer is lost
         push(level);
+    }
+
+    /**
+     * One roll of the dry risk: if the generator is not waterlogged and the level's random is below the chance (see
+     * {@link FlowMath#dryExplosion}), the block is removed (no drop, its FE is lost) and a small explosion goes off at its centre that
+     * damages no block and starts no fire ({@link Level.ExplosionInteraction#NONE}) and only hurts entities within {@link FlowMath#DRY_EXPLOSION_POWER} x 2 blocks.
+     * The server tick rolls once per {@link #RECOMPUTE_TICKS} ticks; it is public for the game tests.
+     *
+     * @param level  the level
+     * @param chance the chance, 0..1
+     * @return {@code true} if the generator exploded (and is gone)
+     */
+    public boolean dryRoll(ServerLevel level, double chance) {
+        if (getBlockState().getValue(FlowGeneratorBlock.WATERLOGGED) || !FlowMath.dryExplosion(level.getRandom().nextDouble(), chance)) return false;
+        var pos = worldPosition;
+        level.removeBlock(pos, false);
+        level.explode(null, pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5, FlowMath.DRY_EXPLOSION_POWER, Level.ExplosionInteraction.NONE);
+        return true;
     }
 
     /**

@@ -2,13 +2,13 @@ package net.samtrion.dotcraft.energy.flow;
 
 /**
  * The pure math of the flow generators, free of any Minecraft types so unit tests can carry the balance. The output is a
- * multiplier of the configured peak: {@code submerged * waterShare * biome * (1 + fauna)}. A tier is {@code 1..5}.
+ * multiplier of the configured peak: {@code waterlogged * waterShare * biome * (1 + fauna)}. A tier is {@code 1..5}.
  *
  * <h2>The tier perks</h2>
  * Every tier adds one perk and keeps those of the tiers below:
  * <ol>
  *   <li>tier 1, baseline: it has no perk and is the most demanding, its water share is full only at {@link #FULL_WEIGHT_TIER_1}
- *       (a nearly full cube of water); animals count within {@link #FAUNA_RADIUS_NEAR} blocks;</li>
+ *       (a nearly full 3x3x3 cube of water); animals count within {@link #FAUNA_RADIUS_NEAR} blocks;</li>
  *   <li>tier 2, wide net: the fauna search reaches {@link #FAUNA_RADIUS_FAR} blocks and the water share is full at {@link #FULL_WEIGHT};</li>
  *   <li>tier 3, adaptation: outside ocean and river biomes it keeps {@link #ADAPTED_BIOME} instead of {@link #OFF_BIOME};</li>
  *   <li>tier 4, lean water: the water share is already full at {@link #FULL_WEIGHT_LEAN}, so a small pond is enough;</li>
@@ -18,6 +18,10 @@ package net.samtrion.dotcraft.energy.flow;
  * {@code 1 + }{@link #FAUNA_MAX} times the peak. Running around the clock, the daily yield of an ocean pod is about three times that
  * of a solar panel of the same tier; this is the anchor the unit tests document.
  *
+ * <h2>Waterlogging</h2>
+ * The generator itself must be waterlogged ({@code submerged}); otherwise the output is 0 and every scan interval there is a chance
+ * (config {@code flow.dry_explosion_chance}, {@link #DRY_EXPLOSION_CHANCE_DEFAULT}) that it explodes, see {@link #dryExplosion}.
+ *
  * <h2>Economy</h2>
  * A flow generator runs around the clock (its duty cycle is 1), so even the weakest realistic placement (half the water share, a
  * biome outside ocean and river) fills the battery of its tier in a fraction of one MC day; see the unit tests.
@@ -25,24 +29,33 @@ package net.samtrion.dotcraft.energy.flow;
 public final class FlowMath {
     /** The highest tier. */
     public static final int MAX_TIER = 5;
-    /** The scan reaches this many blocks in every direction: a 5x5x5 cube. */
-    public static final int SCAN_RADIUS = 2;
-    /** The blocks of the cube without the generator itself. */
-    public static final int CUBE_BLOCKS = 5 * 5 * 5 - 1;
+    /** The scan reaches this many blocks in every direction: a 3x3x3 cube centred on the generator. */
+    public static final int SCAN_RADIUS = 1;
+    /** The edge length of the scanned cube. */
+    public static final int SCAN_EDGE = 2 * SCAN_RADIUS + 1;
+    /** The blocks of the cube without the generator itself (26 for the 3x3x3 cube). */
+    public static final int CUBE_BLOCKS = SCAN_EDGE * SCAN_EDGE * SCAN_EDGE - 1;
     /** What a source block of water counts. */
     public static final int SOURCE_WEIGHT = 1;
     /** What a block of flowing water counts: a current is worth more than a still pool. */
     public static final int FLOWING_WEIGHT = 2;
     /**
-     * The weight at which the water share is full from tier 2 on: three layers of source water (a generator that sits on the sea
-     * floor has two solid layers below it) or half as many blocks of flowing water. More water does not help, so a pool full of
+     * The weight at which the water share is full from tier 2 on: 16 of the 26 blocks as source water (about 60 % of the cube, the
+     * same share the former 5x5x5 scan asked for with 75 of 124) or half as many blocks of flowing water. More water does not help, so a pool full of
      * source blocks gives no more than a modest one.
      */
-    public static final int FULL_WEIGHT = 75;
-    /** The weight at which the water share of tier 1 is full: four layers, a nearly full cube. */
-    public static final int FULL_WEIGHT_TIER_1 = 100;
-    /** The weight at which the water share is full from tier 4 on (the lean water perk): two layers of source water. */
-    public static final int FULL_WEIGHT_LEAN = 50;
+    public static final int FULL_WEIGHT = 16;
+    /** The weight at which the water share of tier 1 is full: 22 of the 26 blocks (about 80 %), a nearly full cube. */
+    public static final int FULL_WEIGHT_TIER_1 = 22;
+    /** The weight at which the water share is full from tier 4 on (the lean water perk): 11 of the 26 blocks (about 40 %). */
+    public static final int FULL_WEIGHT_LEAN = 11;
+    /**
+     * The default chance that a generator that is not waterlogged blows up at one roll (one roll per scan interval of the block entity); the config
+     * value {@code flow.dry_explosion_chance} overrides it.
+     */
+    public static final double DRY_EXPLOSION_CHANCE_DEFAULT = 0.05;
+    /** The power of the explosion of a dry generator: a radius of 2 blocks and no damage to blocks (about 3 hearts right at its side). */
+    public static final float DRY_EXPLOSION_POWER = 1F;
     /** The biome multiplier outside of ocean and river biomes (tiers 1 and 2). */
     public static final float OFF_BIOME = 0.5F;
     /** The biome multiplier outside of ocean and river biomes from tier 3 on. */
@@ -60,6 +73,17 @@ public final class FlowMath {
 
     /** Not instantiable. */
     private FlowMath() {}
+
+    /**
+     * Whether a dry generator blows up at one roll.
+     *
+     * @param roll   a uniform random value in {@code [0, 1)}, taken from the level's random
+     * @param chance the chance per roll; {@code 0} (or less) never, {@code 1} (or more) always
+     * @return {@code true} if the generator explodes
+     */
+    public static boolean dryExplosion(double roll, double chance) {
+        return roll < chance;
+    }
 
     /**
      * The weight at which the water share of a tier is full.

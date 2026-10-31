@@ -1,9 +1,9 @@
 {
   "info.dotcraftjei.drain.1": "Creative-only test block: takes any amount of FE from any side and destroys it, and pulls FE out of every neighbour on all sides. It cannot be crafted, is unbreakable in survival and drops nothing.",
-  "info.dotcraftjei.flow.1": "A turbine pod that only runs while it is waterlogged: place it in water or use a water bucket on it. It is sealed, so it holds water but never spreads it.",
+  "info.dotcraftjei.flow.1": "A turbine pod that only runs while it is waterlogged: place it in water or use a water bucket on it. It is sealed, so it holds water but never spreads it. Without water it makes nothing and has a chance to explode (small blast, no block damage) every 30 ticks.",
   "info.dotcraftjei.flow.2": "Best placement: deep in an ocean or river, in a body of water with a current. Another flow generator next to it does not count as water.",
   "info.dotcraftjei.flow.3": "Peak without animals, tiers 1 to 5: %1$s FE/t. Buffer: %2$s FE.",
-  "info.dotcraftjei.flow.4": "It counts the water in the 5x5x5 cube around it: a source block counts %2$s, flowing water %3$s. The water share is full at a weight of %1$s (tiers 1 to 5); more water does not help.",
+  "info.dotcraftjei.flow.4": "It counts the water in the 3x3x3 cube around it: a source block counts %2$s, flowing water %3$s. The water share is full at a weight of %1$s (tiers 1 to 5); more water does not help.",
   "info.dotcraftjei.flow.5": "The flow axis (front and back of the pod) must stay free for the water: a solid block there makes the output 0. FE leaves through the other four sides only.",
   "info.dotcraftjei.flow.6": "Fauna bonus: every different kind of animal swimming nearby (up to %1$s kinds) adds %2$s, so up to +%3$s on top of the peak. The search radius is %4$s blocks (tier 1: %5$s).",
   "info.dotcraftjei.flow.7": "Biome: outside ocean and river biomes the output is %1$s (from tier 3 on %2$s); tier 5 does not care about the biome.",

@@ -52,7 +52,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
         add(net.samtrion.dotcraft.energy.melt.MeltGeneratorItem.FULL_KEY, "A full tank leaves %s%% of the FE per ice until water is drained");
         net.samtrion.dotcraft.energy.kite.datagen.KiteLanguage.english(this);
         add("itemGroup." + EnergyMod.MODID + ".energy", ".Craft: Energy");
-        add(FlowGeneratorItem.FORMULA_KEY, "Needs water: peak x water share x biome x (1 + animals)");
+        add(FlowGeneratorItem.FORMULA_KEY, "Must be waterlogged (risk of explosion otherwise): peak x water share x biome x (1 + animals)");
         add(FlowGeneratorItem.AXIS_KEY, "Front and back must stay free for the water (a solid block there: 0 FE); gives FE to the other sides");
         add(FlowGeneratorItem.PERK_KEY + 1, "Baseline: needs a nearly full cube of water");
         add(FlowGeneratorItem.PERK_KEY + 2, "Wide net: animals count within 6 blocks");

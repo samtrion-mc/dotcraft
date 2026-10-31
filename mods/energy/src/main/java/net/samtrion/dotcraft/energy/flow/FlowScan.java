@@ -11,7 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 
 /**
- * What a flow generator reads from the world: the water in the 5x5x5 cube around it, the biome and the animals near. It is
+ * What a flow generator reads from the world: the water in the 3x3x3 cube around it, the biome and the animals near. It is
  * the only part of the output that needs a level; {@link FlowMath} turns the {@link Reading} into FE.
  */
 public final class FlowScan {
@@ -60,7 +60,7 @@ public final class FlowScan {
 
     /**
      * Reads the surroundings. Every block of the cube whose fluid is water counts (also a waterlogged block or kelp, but not another flow generator): a source as
-     * a source, the rest as flowing; that is at most 124 look-ups, which is why the block entity does it only every few
+     * a source, the rest as flowing; that is at most 26 look-ups, which is why the block entity does it only every few
      * ticks. The animals count by <em>distinct type</em>: a tank full of cod is one type. Wild and bucketed animals count alike, as
      * long as they are alive and the block at the middle of their body is water (a look-up in the world, not the flag of the
      * entity, which is only updated when the entity ticks).
