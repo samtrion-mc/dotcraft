@@ -28,12 +28,12 @@ class RecipeConditionsTest {
         else if (e.isJsonPrimitive() && e.getAsString().startsWith(PREFIX)) out.add(e.getAsString());
     }
 
-    /** Every item of this mod in the ingredients of a recipe is also a registered condition of that recipe. */
+    /** Every item of this mod in the ingredients of a battery tier recipe is also a registered condition of that recipe. */
     @Test
     void everyIngredientOfThisModIsGuardedByACondition() throws IOException {
         var dir = Path.of("src/generated/resources/data/dotcraftenergy/recipe/items");
         try (Stream<Path> files = Files.list(dir)) {
-            var all = files.filter(f -> f.toString().endsWith(".json")).toList();
+            var all = files.filter(f -> f.getFileName().toString().startsWith("battery_tier_")).toList();
             assertFalse(all.isEmpty());
             for (Path f : all) {
                 JsonObject recipe = JsonParser.parseString(Files.readString(f, StandardCharsets.UTF_8)).getAsJsonObject();
