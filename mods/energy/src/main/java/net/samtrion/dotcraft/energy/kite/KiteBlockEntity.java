@@ -634,6 +634,16 @@ public class KiteBlockEntity extends BlockEntity {
         }
     }
 
+    /**
+     * The game time until which the kite of a slot is safe from lightning.
+     *
+     * @param slot the slot of the kite
+     * @return the game time, 0 if never struck
+     */
+    long strikeCooldownUntil(int slot) {
+        return strikeCooldownUntil[slot];
+    }
+
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
