@@ -69,10 +69,10 @@ class WheelMathTest {
         assertEquals(0, WheelMath.coast(0, 1.5, 5));
     }
 
-    /** The peaks follow the battery ladder and start at 15 FE/t. */
+    /** The peaks follow the battery ladder and start at 30 FE/t. */
     @Test
     void peaksFollowTheBatteryLadder() {
-        int[] peaks = {15, 75, 560, 5_600, 56_000};
+        int[] peaks = {30, 75, 560, 5_600, 56_000};
         for (int tier = 1; tier <= WheelMath.MAX_TIER; tier++) {
             assertEquals(peaks[tier - 1], EnergyCommonConfig.MOB_WHEELS.get(tier - 1).peak(), "tier " + tier);
         }
@@ -84,7 +84,7 @@ class WheelMathTest {
      */
     @Test
     void dailyYieldFillsTheBatteryOfTheTier() {
-        int[] capacities = {EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY.capacity(), EnergyCommonConfig.BATTERY_TIER_2.capacity(),
+        int[] capacities = {EnergyCommonConfig.BATTERY_TIER_1.capacity(), EnergyCommonConfig.BATTERY_TIER_2.capacity(),
                 EnergyCommonConfig.BATTERY_TIER_3.capacity(), EnergyCommonConfig.BATTERY_TIER_4.capacity(), EnergyCommonConfig.BATTERY_TIER_5.capacity()};
         for (int tier = 1; tier <= WheelMath.MAX_TIER; tier++) {
             double peak = EnergyCommonConfig.MOB_WHEELS.get(tier - 1).peak();

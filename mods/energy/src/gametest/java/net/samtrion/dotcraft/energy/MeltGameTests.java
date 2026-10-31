@@ -151,7 +151,8 @@ public final class MeltGameTests {
             helper.assertTrue(be.stored() + be.pending() == MeltIce.ICE.yield(), "FE lost or made up: " + be.stored() + " + " + be.pending());
             helper.assertTrue(be.stored() <= (long) peak * WAIT, "more than the peak in all: " + be.stored());
             helper.assertTrue(be.signal() > 0, "no comparator signal");
-            helper.assertTrue(helper.getBlockState(heated).getValue(MeltBlock.LIT), "the generator does not glow");
+            // the single ice block (1000 FE) is released in about 34 ticks at the tier 1 peak, so the glow is read at the blue ice generator, which still holds heat
+            helper.assertTrue(helper.getBlockState(blue).getValue(MeltBlock.LIT), "the generator does not glow");
             for (Direction side : Direction.values()) {
                 EnergyHandler handler = level.getCapability(Capabilities.Energy.BLOCK, helper.absolutePos(heated), side);
                 helper.assertTrue(handler != null, "no capability on " + side);
@@ -346,7 +347,7 @@ public final class MeltGameTests {
         helper.setBlock(full, MeltBlocks.block(1).get());
         helper.setBlock(full.west(), Blocks.MAGMA_BLOCK);
         helper.setBlock(full.east(), Blocks.BLUE_ICE);
-        helper.setBlock(full.above(), Blocks.ICE);
+        helper.setBlock(full.above(), Blocks.PACKED_ICE); // drains over 300 ticks at peak 30, so the reservoir stays occupied for the whole test
         helper.setBlock(saved, MeltBlocks.block(1).get());
         helper.setBlock(saved.west(), Blocks.MAGMA_BLOCK);
         helper.setBlock(saved.east(), Blocks.PACKED_ICE);
@@ -359,7 +360,7 @@ public final class MeltGameTests {
             helper.assertTrue(fiveBe.water() == 5 * MeltMath.BUCKET_MB, "the tank holds " + fiveBe.water() + " mB for five ice blocks");
             helper.assertTrue(fiveBe.stored() + fiveBe.pending() == 5L * MeltIce.ICE.yield(), "wrong FE for five ice blocks: " + fiveBe.stored() + " + " + fiveBe.pending());
 
-            helper.assertTrue(helper.getBlockState(full.above()).isAir(), "the ice above was not consumed");
+            helper.assertTrue(helper.getBlockState(full.above()).isAir(), "the packed ice above was not consumed");
             helper.assertTrue(helper.getBlockState(full.east()).is(Blocks.BLUE_ICE), "a block melted into a full reservoir");
 
             var source = (MeltBlockEntity) level.getBlockEntity(helper.absolutePos(saved));

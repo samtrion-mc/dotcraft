@@ -11,7 +11,7 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 /** Unit tests for the delta math of the thermoelectric generators and their economy anchor. */
 class ThermoMathTest {
     /** The capacities of the batteries of the tiers 1-5, the ladder the peaks follow. */
-    private static final int[] BATTERY = {20_000, 100_000, 750_000, 7_500_000, 75_000_000};
+    private static final int[] BATTERY = {40_000, 100_000, 750_000, 7_500_000, 75_000_000};
 
     /** Without a hot or without a cold neighbour there is no difference, so nothing is made. */
     @Test
@@ -117,11 +117,11 @@ class ThermoMathTest {
         assertEquals(ThermoMath.MAX_SIGNAL, ThermoMath.signal(1F));
     }
 
-    /** The tier 1 peak is at least 15 FE/t and the peaks follow the battery ladder. */
+    /** The tier 1 peak is at least 30 FE/t and the peaks follow the battery ladder. */
     @Test
     void peaksFollowTheBatteryLadder() {
-        int[] ladder = {15, 75, 560, 5_600, 56_000};
-        assertTrue(EnergyCommonConfig.THERMO_GENERATORS.get(0).peak() >= 15);
+        int[] ladder = {30, 75, 560, 5_600, 56_000};
+        assertTrue(EnergyCommonConfig.THERMO_GENERATORS.get(0).peak() >= 30);
         for (int tier = 1; tier <= ThermoMath.MAX_TIER; tier++) {
             var config = EnergyCommonConfig.THERMO_GENERATORS.get(tier - 1);
             assertEquals(ladder[tier - 1], config.peak(), "peak of tier " + tier);

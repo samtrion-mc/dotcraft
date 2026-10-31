@@ -10,11 +10,11 @@ import java.util.function.IntPredicate;
  * mountain flies on above the top of the world. Every block of the way is checked (see {@link #reach(int, IntPredicate)}), so no roof,
  * however thin, is flown through.
  * <p>
- * <b>Output</b> = base x lengthFactor x openness x weather x wind. The tier of the block fixes only the <i>base</i> (64 / 400 / 2600 /
+ * <b>Output</b> = base x lengthFactor x openness x weather x wind. The tier of the block fixes only the <i>base</i> (128 / 400 / 2600 /
  * 17333 / 128000 FE/t, see the common config); the length of the tether is the yield factor: {@link #lengthFactor(int, double)} =
  * effective length / {@link #REFERENCE_LENGTH} (64, the longest tether), where the effective length is what the kite actually reaches
  * (its altitude, at most the tether of the tier). The best case, {@link #peak(double, int)} = base x tether / 64, is therefore
- * 16 / 150 / 1300 / 12999.75 / 128000 FE/t for tier 1-5 (tether 16 / 24 / 32 / 48 / 64), reached with the tether fully out, a free
+ * 32 / 150 / 1300 / 12999.75 / 128000 FE/t for tier 1-5 (tether 16 / 24 / 32 / 48 / 64), reached with the tether fully out, a free
  * sky, clear weather and a gust at its best; {@code openness} is the free share of the air around the kite and {@link #wind(long)} is the
  * gust: the wind is never steady and swings between {@link #WIND_MIN} and 1 with a mean of {@link #WIND_MEAN}, so even a kite in the
  * open makes only about 60 % of that peak over a day.
@@ -54,7 +54,7 @@ import java.util.function.IntPredicate;
  * <p>
  * <b>Economy.</b> The ladder is deliberately gentle: the best case per MC day (tether fully out, a free sky, the real gust curve and a
  * weather mix of {@link #TYPICAL_CLEAR} / {@link #TYPICAL_RAIN} / {@link #TYPICAL_THUNDER}, see {@link #typicalDailyYield(double, int)})
- * fills the battery of the same tier about 10 / 19 / 24 / 24 / 25 times for tier 1-5 (the maxima 16 / 150 / 1300 / 13000 / 128000 FE/t are chosen so that FE/t scales
+ * fills the battery of the same tier about 10 / 19 / 24 / 24 / 25 times for tier 1-5 (the maxima 32 / 150 / 1300 / 13000 / 128000 FE/t are chosen so that FE/t scales
  * with the battery, which grows faster than the tether). The tier mostly buys perks (weather, obstruction, two kites) and a longer tether.
  */
 public final class KiteMath {

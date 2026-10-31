@@ -107,10 +107,10 @@ class GeneratorMathTest {
         assertEquals(dark / 2, GeneratorMath.lunar(1, 180F, 0, true, GeneratorMath.Weather.CLEAR, 1F, 15), 1e-6);
     }
 
-    /** A panel fills the battery of its tier in well under one MC day, but not in minutes: the daily yield of the default peak is 2..15 times its capacity; no tier peaks below 15 FE/t. */
+    /** A panel fills the battery of its tier in well under one MC day, but not in minutes: the daily yield of the default peak is 2..15 times its capacity; no tier peaks below 30 FE/t. */
     @Test
     void dailyYieldMatchesBattery() {
-        var batteries = new EnergyCommonConfig.Battery[] {EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY, EnergyCommonConfig.BATTERY_TIER_2,
+        var batteries = new EnergyCommonConfig.Battery[] {EnergyCommonConfig.BATTERY_TIER_1, EnergyCommonConfig.BATTERY_TIER_2,
                 EnergyCommonConfig.BATTERY_TIER_3, EnergyCommonConfig.BATTERY_TIER_4, EnergyCommonConfig.BATTERY_TIER_5};
         for (int tier = 1; tier <= 5; tier++) {
             double solar = EnergyCommonConfig.SOLAR_PANELS.get(tier - 1).peak() * dailyShare(true, tier, 0) * 24000;
@@ -123,11 +123,11 @@ class GeneratorMathTest {
         }
     }
 
-    /** No default peak is below 15 FE/t. */
+    /** No default peak is below 30 FE/t. */
     @Test
     void minimumPeak() {
-        for (var g : EnergyCommonConfig.SOLAR_PANELS) assertTrue(g.peak() >= 15);
-        for (var g : EnergyCommonConfig.LUNAR_PANELS) assertTrue(g.peak() >= 15);
+        for (var g : EnergyCommonConfig.SOLAR_PANELS) assertTrue(g.peak() >= 30);
+        for (var g : EnergyCommonConfig.LUNAR_PANELS) assertTrue(g.peak() >= 30);
     }
 
     /** The defaults: five tiers each, buffer and output rate derived from the peak, peaks rising. */

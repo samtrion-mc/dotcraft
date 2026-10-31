@@ -11,7 +11,7 @@ import net.samtrion.dotcraft.energy.kite.KiteMath.Weather;
 /** Unit tests for the math of the kite wind generator and its economy anchor. */
 class KiteMathTest {
     private static final int[] BATTERY_CAPACITY = {
-            EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY.capacity(), EnergyCommonConfig.BATTERY_TIER_2.capacity(),
+            EnergyCommonConfig.BATTERY_TIER_1.capacity(), EnergyCommonConfig.BATTERY_TIER_2.capacity(),
             EnergyCommonConfig.BATTERY_TIER_3.capacity(), EnergyCommonConfig.BATTERY_TIER_4.capacity(), EnergyCommonConfig.BATTERY_TIER_5.capacity()};
 
     /** The tether ladder is 16 / 24 / 32 / 48 / 64 and ends at 64 blocks. */
@@ -31,7 +31,7 @@ class KiteMathTest {
         assertEquals(0.25, KiteMath.lengthFactor(5, 16), 1e-9);
         assertEquals(0, KiteMath.lengthFactor(5, -4));
         double[] best = {0.25, 0.375, 0.5, 0.75, 1};
-        double[] maxFe = {16, 150, 1_300, 12_999.75, 128_000};
+        double[] maxFe = {32, 150, 1_300, 12_999.75, 128_000};
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
             assertEquals(best[tier - 1], KiteMath.lengthFactor(tier, 10_000), 1e-9, "tier " + tier);
             assertEquals(maxFe[tier - 1], KiteMath.peak(EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak(), tier), 1e-9, "tier " + tier);
@@ -225,7 +225,7 @@ class KiteMathTest {
      */
     @Test
     void dailyYieldFillsTheBatteryOfTheTierWellUnderADay() {
-        int[] bases = {64, 400, 2_600, 17_333, 128_000};
+        int[] bases = {128, 400, 2_600, 17_333, 128_000};
         double[] target = {9.8, 19.4, 23.7, 24.3, 24.6};
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
             double base = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();

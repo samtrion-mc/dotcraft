@@ -15,7 +15,7 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 /** Unit tests for the rules of the melt generators: yields per ice, the rate limiter, the reservoir, the tiers and the economy. */
 class MeltMathTest {
     private static final int[] BATTERIES = {
-            EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY.capacity(), EnergyCommonConfig.BATTERY_TIER_2.capacity(), EnergyCommonConfig.BATTERY_TIER_3.capacity(),
+            EnergyCommonConfig.BATTERY_TIER_1.capacity(), EnergyCommonConfig.BATTERY_TIER_2.capacity(), EnergyCommonConfig.BATTERY_TIER_3.capacity(),
             EnergyCommonConfig.BATTERY_TIER_4.capacity(), EnergyCommonConfig.BATTERY_TIER_5.capacity()};
 
     private static int peak(int tier) {
@@ -63,7 +63,7 @@ class MeltMathTest {
     void reservoir() {
         int peak = peak(1);
         long reserve = MeltMath.reserve(peak);
-        assertEquals(15 * 600L, reserve);
+        assertEquals(30 * 600L, reserve);
         assertTrue(MeltMath.mayMelt(0, MeltIce.ICE.yield(), peak));
         assertTrue(MeltMath.mayMelt(0, MeltIce.BLUE_ICE.yield(), peak), "a big block must burn when the reservoir is empty");
         assertFalse(MeltMath.mayMelt(1, MeltIce.BLUE_ICE.yield(), peak), "a big block must not melt on top of a filled reservoir");
@@ -86,10 +86,10 @@ class MeltMathTest {
         assertTrue(MeltMath.tier(5).slots() <= 5, "at most five sides can hold ice, the sixth must hold the heat");
     }
 
-    /** The peaks follow the battery ladder, tier 1 makes at least 15 FE/t. */
+    /** The peaks follow the battery ladder, tier 1 makes at least 30 FE/t. */
     @Test
     void peakLadder() {
-        assertEquals(15, peak(1));
+        assertEquals(30, peak(1));
         assertEquals(75, peak(2));
         assertEquals(560, peak(3));
         assertEquals(5_600, peak(4));
@@ -104,17 +104,17 @@ class MeltMathTest {
             assertTrue(fill * 10 < MeltMath.DAY_TICKS, "tier " + tier + " needs " + fill + " ticks");
             assertTrue(MeltMath.dailyYield(peak(tier)) >= 10L * BATTERIES[tier - 1], "tier " + tier);
         }
-        assertEquals(360_000, MeltMath.dailyYield(15));
+        assertEquals(720_000, MeltMath.dailyYield(30));
     }
 
     /**
-     * The price: the daily yield of tier 1 costs 360 ice, which is 40 packed ice or 4.4 blue ice, whichever is burnt; and the
+     * The price: the daily yield of tier 1 costs 720 ice, which is 80 packed ice or 8.9 blue ice, whichever is burnt; and the
      * peak of every tier can be reached with blue ice, the higher tiers cannot with plain ice (they need the compact fuels).
      */
     @Test
     void costAndSupply() {
-        assertEquals(360, MeltMath.dailyYield(peak(1)) / MeltIce.ICE.yield());
-        assertEquals(40, MeltMath.dailyYield(peak(1)) / MeltIce.PACKED_ICE.yield());
+        assertEquals(720, MeltMath.dailyYield(peak(1)) / MeltIce.ICE.yield());
+        assertEquals(80, MeltMath.dailyYield(peak(1)) / MeltIce.PACKED_ICE.yield());
         for (int tier = 1; tier <= 5; tier++) {
             assertTrue(MeltMath.supply(tier, MeltIce.BLUE_ICE.yield()) >= peak(tier), "tier " + tier + " cannot reach its peak with blue ice");
         }
@@ -137,7 +137,7 @@ class MeltMathTest {
     void sustainedSupplyPerDay() {
         long[] blueIcePerDay = new long[5];
         for (int tier = 1; tier <= 5; tier++) blueIcePerDay[tier - 1] = MeltMath.dailyYield(peak(tier)) / MeltIce.BLUE_ICE.yield();
-        assertEquals(4, blueIcePerDay[0]);
+        assertEquals(8, blueIcePerDay[0]);
         assertTrue(blueIcePerDay[3] > 1_000 && blueIcePerDay[4] > 10_000, "tiers 4 and 5 are burst tiers");
         for (int tier = 1; tier <= 5; tier++) {
             long reservoirTicks = MeltMath.reserve(peak(tier)) / peak(tier);
