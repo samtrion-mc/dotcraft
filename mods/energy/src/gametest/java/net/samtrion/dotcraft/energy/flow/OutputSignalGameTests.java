@@ -20,6 +20,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.data.loading.DatagenModLoader;
 import net.neoforged.neoforge.event.RegisterGameTestsEvent;
 import net.neoforged.neoforge.registries.RegisterEvent;
 import net.samtrion.dotcraft.energy.EnergyMod;
@@ -71,7 +72,8 @@ public final class OutputSignalGameTests {
      */
     @SubscribeEvent
     static void register(RegisterEvent event) {
-        event.register(Registries.BLOCK, registry -> registry.register(PROBE_ID,
+        // the data generators see the game test source set too and would demand a blockstate for the probe
+        if (!DatagenModLoader.isRunningDataGen()) event.register(Registries.BLOCK, registry -> registry.register(PROBE_ID,
                 new Probe(BlockBehaviour.Properties.of().setId(ResourceKey.create(Registries.BLOCK, PROBE_ID)))));
         event.register(Registries.TEST_FUNCTION, registry -> registry.register(ID, TestSupport.ticking(OutputSignalGameTests::test)));
     }
