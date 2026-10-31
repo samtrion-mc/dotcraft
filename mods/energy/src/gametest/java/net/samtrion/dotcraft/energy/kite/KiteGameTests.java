@@ -39,7 +39,8 @@ public final class KiteGameTests {
     /** The names of the tests; every one has a function, an environment and an instance. */
     private static final String[] NAMES = {"kite_blocks", "kite_flight", "kite_above_build_height", "kite_break_and_reel_in", "kite_respawn_and_save",
             "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder", "kite_ignores_obstructions", "kite_two_kites",
-            "kite_lightning", "kite_wire", "kite_short_wire", "kite_too_close", "kite_play", "kite_storm_radius", "kite_bolts", "kite_recipe_wire", "kite_credit_sides"};
+            "kite_lightning", "kite_wire", "kite_short_wire", "kite_too_close", "kite_play", "kite_storm_radius", "kite_bolts", "kite_recipe_wire",
+            "kite_diagonal_roof", "kite_lightning_cooldown_saved", "kite_credit_sides"};
 
     /** Not instantiable. */
     private KiteGameTests() {}
@@ -100,6 +101,8 @@ public final class KiteGameTests {
             case "kite_storm_radius" -> KiteGameTests::stormRadius;
             case "kite_bolts" -> KiteGameTests::bolts;
             case "kite_recipe_wire" -> KiteGameTests::recipeWire;
+            case "kite_diagonal_roof" -> KiteGameTests::diagonalRoof;
+            case "kite_lightning_cooldown_saved" -> KiteGameTests::lightningCooldownSaved;
             case "kite_credit_sides" -> KiteGameTests::creditSides;
             default -> KiteGameTests::thunder;
         };
@@ -339,7 +342,7 @@ public final class KiteGameTests {
     }
 
     /**
-     * A single block thick plate far up stops the kite right below it; no sample may skip it. Tier 1 needs a free cross, so a plate
+     * A single block thick plate far up stops the kite right below it; no sample may skip it. Tier 1 needs a free 3x3, so a plate
      * that only covers a neighbour of the column stops it, while tier 4 flies past that (a shaft of one block is enough).
      *
      * @param helper the game test helper
@@ -359,6 +362,31 @@ public final class KiteGameTests {
         helper.runAfterDelay(200, () -> {
             helper.assertTrue(wideBe.kite().altitude() <= 9.01 && wideBe.kite().altitude() >= 8.5, "wrong ceiling: " + wideBe.kite().altitude());
             helper.assertTrue(slimBe.kite().altitude() > 20, "the slim line is stopped by a plate beside the column: " + slimBe.kite().altitude());
+            helper.succeed();
+        });
+    }
+
+    /**
+     * Tier 1 and 2 need a free 3x3 way up, as the tooltip says: a plate that only covers a diagonal neighbour of the column stops
+     * the kite below it, while tier 3 (a column of one block) flies past it.
+     *
+     * @param helper the game test helper
+     */
+    private static void diagonalRoof(GameTestHelper helper) {
+        var wide = new BlockPos(1, 1, 1);
+        var slim = new BlockPos(FAR_X, 1, 1);
+        place(helper, wide, 1);
+        place(helper, slim, 4);
+        helper.setBlock(wide.offset(1, 10, 1), Blocks.STONE);
+        helper.setBlock(slim.offset(1, 10, 1), Blocks.STONE);
+        var player = player(helper, true);
+        helper.useBlock(wide, player);
+        helper.useBlock(slim, player);
+        var wideBe = entity(helper, wide);
+        var slimBe = entity(helper, slim);
+        helper.runAfterDelay(200, () -> {
+            helper.assertTrue(wideBe.kite().altitude() <= 9.01, "the wide line is not stopped by a diagonal block: " + wideBe.kite().altitude());
+            helper.assertTrue(slimBe.kite().altitude() > 20, "the slim line is stopped by a diagonal block: " + slimBe.kite().altitude());
             helper.succeed();
         });
     }
@@ -530,6 +558,29 @@ public final class KiteGameTests {
         var lost = be.creditLightning(level, bolt);
         helper.assertTrue(lost.stored() == 0 && lost.pushed() == 0 && lost.lost() == bolt, "wrong overflow " + lost);
         helper.assertTrue(!KiteMath.struck(1, KiteMath.Weather.THUNDER, 0, 0), "a tier 1 kite can be struck");
+        helper.succeed();
+    }
+
+    /**
+     * The lightning cooldown of a kite is saved: after a strike, a copy loaded from the saved data still has the cooldown, so
+     * unloading and reloading the chunk does not make the kite strikable again at once.
+     *
+     * @param helper the game test helper
+     */
+    private static void lightningCooldownSaved(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var pos = new BlockPos(1, 1, 1);
+        place(helper, pos, 5);
+        helper.useBlock(pos, player(helper, true));
+        var be = entity(helper, pos);
+        helper.assertTrue(be.strike(level, 0) != null, "no strike");
+        long until = be.strikeCooldownUntil(0);
+        helper.assertTrue(until > level.getGameTime(), "the strike has no cooldown: " + until);
+        var saved = be.saveWithFullMetadata(level.registryAccess());
+        var absolute = helper.absolutePos(pos);
+        var loaded = BlockEntity.loadStatic(absolute, level.getBlockState(absolute), saved, level.registryAccess());
+        helper.assertTrue(loaded instanceof KiteBlockEntity copy && copy.strikeCooldownUntil(0) == until,
+                "the lightning cooldown is not saved: " + (loaded instanceof KiteBlockEntity copy ? copy.strikeCooldownUntil(0) : -1));
         helper.succeed();
     }
 

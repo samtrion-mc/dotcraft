@@ -593,12 +593,16 @@ public class KiteBlockEntity extends BlockEntity {
         return KiteMath.weather(level.isRaining(), level.isThundering(), exposed);
     }
 
-    /** Whether a block is in the way {@code h} blocks above the top of the generator: the cell, and for a wide line its neighbours. */
+    /** Whether a block is in the way {@code h} blocks above the top of the generator: the cell, and for a wide line the 3x3 around it. */
     private boolean blockedAround(Level level, int tier, int h) {
         var cell = worldPosition.above(h);
-        if (blocked(level, cell)) return true;
-        return KiteMath.wide(tier) && (blocked(level, cell.north()) || blocked(level, cell.south()) || blocked(level, cell.east())
-                || blocked(level, cell.west()));
+        if (!KiteMath.wide(tier)) return blocked(level, cell);
+        for (int dx = -1; dx <= 1; dx++) {
+            for (int dz = -1; dz <= 1; dz++) {
+                if (blocked(level, cell.offset(dx, 0, dz))) return true;
+            }
+        }
+        return false;
     }
 
     /** The free share of the air around a cell: the cells at {@link #RADII} in the eight horizontal directions. */
@@ -634,6 +638,16 @@ public class KiteBlockEntity extends BlockEntity {
         }
     }
 
+    /**
+     * The game time until which the kite of a slot is safe from lightning.
+     *
+     * @param slot the slot of the kite
+     * @return the game time, 0 if never struck
+     */
+    long strikeCooldownUntil(int slot) {
+        return strikeCooldownUntil[slot];
+    }
+
     @Override
     protected void saveAdditional(ValueOutput output) {
         super.saveAdditional(output);
@@ -641,6 +655,8 @@ public class KiteBlockEntity extends BlockEntity {
         output.putBoolean("kite", hasKite);
         output.putDouble("carry", carry);
         output.putInt("wire", wire);
+        // absolute game time: it keeps running across a chunk unload or a restart, so the cooldown does not reset
+        for (int slot = 0; slot < strikeCooldownUntil.length; slot++) output.putLong("strike" + slot, strikeCooldownUntil[slot]);
     }
 
     @Override
@@ -650,5 +666,6 @@ public class KiteBlockEntity extends BlockEntity {
         hasKite = input.getBooleanOr("kite", false);
         carry = input.getDoubleOr("carry", 0);
         wire = Math.clamp(input.getIntOr("wire", 0), 0, wireCapacity());
+        for (int slot = 0; slot < strikeCooldownUntil.length; slot++) strikeCooldownUntil[slot] = input.getLongOr("strike" + slot, 0);
     }
 }
