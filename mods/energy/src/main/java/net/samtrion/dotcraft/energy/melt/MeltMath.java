@@ -9,7 +9,7 @@ package net.samtrion.dotcraft.energy.melt;
  * lasts for a long time. No block melts while the reservoir is full, so nothing is melted for nothing (only the reservoir of a
  * generator that is mined is lost).
  * <p>
- * Economy: the peaks follow the battery ladder (30 / 75 / 560 / 5 600 / 56 000 FE/t) so a generator of a tier fills the battery of the
+ * Economy: the peaks follow the battery ladder (20 / 75 / 560 / 5 600 / 56 000 FE/t) so a generator of a tier fills the battery of the
  * same tier in about 1 340 ticks (roughly 5.6% of an MC day) if it is fed. The ice is the price: by default 1 000 FE per ice block,
  * so tier 1 at full output burns 360 ice (40 packed ice) per MC day. Ice can be farmed (water freezes in cold biomes, slowly), but
  * never for free: a melted block is gone (the higher tiers give water, which has to freeze again), and frosted ice, which frost

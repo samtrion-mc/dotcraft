@@ -5,12 +5,12 @@ package net.samtrion.dotcraft.energy.vibration;
  * {@code 1..5}; a frequency is the vibration frequency of a game event, {@code 1..15} (what a sculk sensor calls it).
  * <p>
  * The economy: a game event of frequency {@code f} is worth {@code f / 15} of {@link #EVENT_TICKS} ticks of the peak, so the loudest
- * event gives {@link #EVENT_TICKS} ticks of peak and a faint one a fraction. The peak (30 / 75 / 560 / 5600 / 56000 FE/t by default)
+ * event gives {@link #EVENT_TICKS} ticks of peak and a faint one a fraction. The peak (20 / 75 / 560 / 5600 / 56000 FE/t by default)
  * is the most a generator can make at any moment, its burst power. What is made over time is limited by a {@link VibrationBucket}
  * that refills with {@link #refill} per tick and holds {@link #BURST_TICKS} ticks of peak. The refill is the {@link #duty} of the tier
  * times the peak; the duty grows with the tier (2/9, 1/3, 4/9, 5/9, 2/3), anchored so that the best typical case, a player who mines or
  * fights all day (an event every 10 ticks, bucket-limited), makes about 4 / 6 / 8 / 10 / 12 batteries of the same tier per MC day
- * (see {@link #dailyCeiling}; tier 1 makes 3.6 as its peak of 30 FE/t only allows whole FE per tick). No amount of events, from a player
+ * (see {@link #dailyCeiling}; tier 1 makes 3.6 as its peak of 20 FE/t only allows whole FE per tick). No amount of events, from a player
  * or from a machine that loops an event, makes more than that on average. A light player (an event every 100 ticks) makes a fraction of it.
  * <p>
  * Boss bonus: a game event caused by an entity of the config list {@code vibration.bosses} (the ender dragon, wither, warden and elder guardian by default) is worth {@link #BOSS_FACTOR} times as much,

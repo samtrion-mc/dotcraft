@@ -117,11 +117,11 @@ class ThermoMathTest {
         assertEquals(ThermoMath.MAX_SIGNAL, ThermoMath.signal(1F));
     }
 
-    /** The tier 1 peak is at least 30 FE/t and the peaks follow the battery ladder. */
+    /** The tier 1 peak is at least 20 FE/t and the peaks follow the battery ladder. */
     @Test
     void peaksFollowTheBatteryLadder() {
-        int[] ladder = {30, 75, 560, 5_600, 56_000};
-        assertTrue(EnergyCommonConfig.THERMO_GENERATORS.get(0).peak() >= 30);
+        int[] ladder = {20, 75, 560, 5_600, 56_000};
+        assertTrue(EnergyCommonConfig.THERMO_GENERATORS.get(0).peak() >= 20);
         for (int tier = 1; tier <= ThermoMath.MAX_TIER; tier++) {
             var config = EnergyCommonConfig.THERMO_GENERATORS.get(tier - 1);
             assertEquals(ladder[tier - 1], config.peak(), "peak of tier " + tier);
@@ -146,7 +146,7 @@ class ThermoMathTest {
             assertTrue(ThermoMath.dailyYield(peak, weakest) > BATTERY[tier - 1] * 4.0, "daily yield of tier " + tier + " with the weakest sources");
             assertTrue(ThermoMath.ticksToFill(BATTERY[tier - 1], peak, weakest) <= ThermoMath.TICKS_PER_DAY / 4.0,
                     "tier " + tier + " fills its battery in a quarter day with the weakest sources");
-            assertEquals(1336, ThermoMath.ticksToFill(BATTERY[tier - 1], peak, best), 4, "tier " + tier + " fills its battery in about 1,340 ticks with the best sources");
+            assertEquals(tier == 1 ? 2000 : 1336, ThermoMath.ticksToFill(BATTERY[tier - 1], peak, best), 4, "tier " + tier + " fills its battery in about 1,340 ticks (tier 1: 2,000) with the best sources");
         }
         assertEquals(15 * 24_000.0, ThermoMath.dailyYield(15, 1F), 1e-9);
         assertFalse(Double.isFinite(ThermoMath.ticksToFill(1, 15, 0F)));

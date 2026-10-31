@@ -41,16 +41,16 @@ public final class EnergyCommonConfig {
     /** The registry paths of the lunar panels, tiers 1-5, which are also their config sections. */
     static final List<String> LUNAR_NAMES = tierNames("lunar_panel");
 
-    /** The solar panels: the peak FE/t at noon under a clear sky, at least 30 FE/t; a panel fills the battery of its tier in well under one MC day. */
-    public static final List<Generator> SOLAR_PANELS = generators(SOLAR_NAMES, new int[] {30, 75, 560, 5_600, 56_000});
+    /** The solar panels: the peak FE/t at noon under a clear sky, at least 20 FE/t; a panel fills the battery of its tier in well under one MC day. */
+    public static final List<Generator> SOLAR_PANELS = generators(SOLAR_NAMES, new int[] {20, 75, 560, 5_600, 56_000});
     /** The lunar panels: the peak FE/t at full moon in a clear night. */
-    public static final List<Generator> LUNAR_PANELS = generators(LUNAR_NAMES, new int[] {30, 75, 560, 5_600, 56_000});
+    public static final List<Generator> LUNAR_PANELS = generators(LUNAR_NAMES, new int[] {20, 75, 560, 5_600, 56_000});
 
     /** The registry paths of the flow generators, tiers 1-5, which are also their config sections. */
     static final List<String> FLOW_NAMES = tierNames("flow_generator");
 
-    /** The flow generators: the peak FE/t in the best case without animals (full water share in an ocean or river), at least 30 FE/t; animals add up to 30 % on top, so the real maximum is 1.3 times the peak. */
-    public static final List<Generator> FLOW_GENERATORS = generators(FLOW_NAMES, new int[] {30, 75, 560, 5_600, 56_000});
+    /** The flow generators: the peak FE/t in the best case without animals (full water share in an ocean or river), at least 20 FE/t; animals add up to 30 % on top, so the real maximum is 1.3 times the peak. */
+    public static final List<Generator> FLOW_GENERATORS = generators(FLOW_NAMES, new int[] {20, 75, 560, 5_600, 56_000});
     /** The registry paths of the vibration generators, tiers 1-5, which are also their config sections. */
     static final List<String> VIBRATION_NAMES = tierNames("vibration_generator");
 
@@ -58,24 +58,24 @@ public final class EnergyCommonConfig {
      * The vibration generators: the hard ceiling in FE/t, which a token bucket enforces no matter how many game events there are (see
      * {@code VibrationBucket}); a generator next to a busy player makes 2/9 (tier 1) to 2/3 (tier 5) of it, see {@code VibrationMath}.
      */
-    public static final List<Generator> VIBRATION_GENERATORS = generators(VIBRATION_NAMES, new int[] {30, 75, 560, 5_600, 56_000});
+    public static final List<Generator> VIBRATION_GENERATORS = generators(VIBRATION_NAMES, new int[] {20, 75, 560, 5_600, 56_000});
     /** The registry paths of the thermoelectric generators, tiers 1-5, which are also their config sections. */
     public static final List<String> THERMO_NAMES = tierNames("thermo_generator");
     /**
      * The thermoelectric generators: the peak FE/t at the temperature difference of the tier's ceiling (see ThermoMath in the thermo package). They run day and
      * night, so even the weakest hot and cold source fills the battery of the tier in well under one MC day.
      */
-    public static final List<Generator> THERMO_GENERATORS = generators(THERMO_NAMES, new int[] {30, 75, 560, 5_600, 56_000});
+    public static final List<Generator> THERMO_GENERATORS = generators(THERMO_NAMES, new int[] {20, 75, 560, 5_600, 56_000});
     /** The registry paths of the melt generators, tiers 1-5, which are also their config sections. */
     static final List<String> MELT_NAMES = tierNames("melt_generator");
     /** The melt generators: the most FE per tick the heat of the melted ice is released at (a rate limit, see {@code MeltMath}). */
-    public static final List<Generator> MELT_GENERATORS = generators(MELT_NAMES, new int[] {30, 75, 560, 5_600, 56_000});
+    public static final List<Generator> MELT_GENERATORS = generators(MELT_NAMES, new int[] {20, 75, 560, 5_600, 56_000});
     /** The FE a melted block of ice, packed ice and blue ice gives, section {@code melt}. */
     public static final MeltYield MELT_YIELD = new MeltYield(1_000, 9_000, 81_000);
     /** The registry paths of the mob wheels, tiers 1-5, which are also their config sections. */
     static final List<String> WHEEL_NAMES = tierNames("wheel_generator");
     /** The mob wheels: the peak FE/t with a full cage of running mobs, anchored by a duty cycle of a quarter (see {@code WheelMath}). */
-    public static final List<Generator> MOB_WHEELS = generators(WHEEL_NAMES, new int[] {30, 75, 560, 5_600, 56_000});
+    public static final List<Generator> MOB_WHEELS = generators(WHEEL_NAMES, new int[] {20, 75, 560, 5_600, 56_000});
     /** The registry paths of the kite wind generators, tiers 1-5, which are also their config sections. */
     public static final List<String> KITE_NAMES = tierNames("kite_generator");
     /**
@@ -83,7 +83,7 @@ public final class EnergyCommonConfig {
      * factor of the tether (tether / 64 at the most: 0.25 / 0.375 / 0.5 / 0.75 / 1 for tier 1-5), so the buffer and the push rate default to the
      * real best case, base x factor.
      */
-    public static final List<Generator> KITE_GENERATORS = kiteGenerators(new int[] {128, 400, 2_600, 17_333, 128_000}, new double[] {0.25, 0.375, 0.5, 0.75, 1});
+    public static final List<Generator> KITE_GENERATORS = kiteGenerators(new int[] {80, 400, 2_600, 17_333, 128_000}, new double[] {0.25, 0.375, 0.5, 0.75, 1});
     /** The default FE one lightning bolt on a kite gives (named constant, see {@link #kiteLightningEnergy()}). */
     public static final int KITE_LIGHTNING_ENERGY_DEFAULT = 1_000_000;
     private static final ModConfigSpec.IntValue KITE_LIGHTNING_ENERGY = BUILDER
