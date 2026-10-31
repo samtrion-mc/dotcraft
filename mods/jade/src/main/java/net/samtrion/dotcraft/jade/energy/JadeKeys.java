@@ -15,8 +15,12 @@ public final class JadeKeys {
     /** The mod id the Jade providers of the energy mod are registered under (also the namespace of their config keys). */
     public static final String ENERGY = "dotcraftenergy";
 
-    /** Output now and at most, FE/t; arguments: now, max. */
+    /** Output now, FE/t; argument: now. */
     public static final String OUTPUT = PREFIX + "output";
+    /** Output at most, FE/t, a detail line; argument: max. */
+    public static final String OUTPUT_MAX = PREFIX + "output_max";
+    /** Hint that more lines show while the details key is held; argument: the name of that key. */
+    public static final String DETAILS_HINT = PREFIX + "details_hint";
     /** Peak output, FE/t; argument: peak. */
     public static final String PEAK = PREFIX + "peak";
     /** Stored and capacity, FE; arguments: stored, capacity. */
@@ -36,8 +40,6 @@ public final class JadeKeys {
     public static final String PANEL_NO_SKY = PREFIX + "panel.no_sky";
     /** Group size and pool; arguments: panels, stored, capacity. */
     public static final String PANEL_GROUP = PREFIX + "panel.group";
-    /** An entity stands on the panel. */
-    public static final String PANEL_OCCUPIED = PREFIX + "panel.occupied";
     /** The panel is waterlogged; argument: share of the output that stays. */
     public static final String PANEL_WATERLOGGED = PREFIX + "panel.waterlogged";
 
@@ -125,6 +127,16 @@ public final class JadeKeys {
     }
 
     /**
+     * The key of the status word of a panel.
+     *
+     * @param status one of {@link PanelStatus#ALL}
+     * @return the key
+     */
+    public static String panelStatus(String status) {
+        return PREFIX + "panel.status." + status;
+    }
+
+    /**
      * The key of a reason that limits a flying kite.
      *
      * @param limit the reason
@@ -161,6 +173,7 @@ public final class JadeKeys {
         }
         KITE_STATUSES.forEach(s -> keys.add(kiteStatus(s)));
         KITE_LIMITS.forEach(l -> keys.add(kiteLimit(l)));
+        PanelStatus.ALL.forEach(p -> keys.add(panelStatus(p)));
         FAMILIES.forEach(f -> keys.add(config(f)));
         return keys;
     }
