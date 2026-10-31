@@ -297,9 +297,13 @@ public class WheelBlockEntity extends BlockEntity {
         setChanged();
     }
 
-    /** Lets the held mob go: it is no longer pinned and gets its old persistence back (a mob that died is not touched). */
+    /**
+     * Lets the held mob go: it is no longer pinned and gets its old persistence back (a mob that died is not touched). A wheel that
+     * reloaded and did not find its mob again yet knows it by id only; that mob is looked up in the level, so it is freed as well.
+     */
     private void release() {
         var mob = held;
+        if (mob == null && heldId != null && level instanceof ServerLevel server && server.getEntity(heldId) instanceof Mob saved) mob = saved;
         held = null;
         heldId = null;
         if (mob == null) return;
