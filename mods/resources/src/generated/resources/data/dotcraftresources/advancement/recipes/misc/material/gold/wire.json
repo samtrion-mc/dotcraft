@@ -1,0 +1,56 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "rod",
+      "material": "gold",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "wire",
+      "material": "gold",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "wood"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:material/gold/wire"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    },
+    "has_tools_hammer": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:tools/hammer"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_tools_hammer"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:material/gold/wire"
+    ]
+  }
+}

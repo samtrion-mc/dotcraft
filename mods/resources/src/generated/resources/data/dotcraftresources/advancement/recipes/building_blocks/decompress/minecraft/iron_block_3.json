@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 2
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_compressed/minecraft/iron_block_3": {
+      "conditions": {
+        "items": [
+          {
+            "items": "dotcraftresources:compressed/minecraft/iron_block_3"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:decompress/minecraft/iron_block_3"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_compressed/minecraft/iron_block_3"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:decompress/minecraft/iron_block_3"
+    ]
+  }
+}

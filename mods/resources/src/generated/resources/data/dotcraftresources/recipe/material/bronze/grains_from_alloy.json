@@ -1,0 +1,38 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "bronze",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "copper",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "grains",
+      "material": "tin",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:small_dusts/copper",
+    "#c:small_dusts/copper",
+    "#c:small_dusts/copper",
+    "#c:small_dusts/tin"
+  ],
+  "result": {
+    "count": 4,
+    "id": "dotcraftresources:bronze_grains"
+  }
+}

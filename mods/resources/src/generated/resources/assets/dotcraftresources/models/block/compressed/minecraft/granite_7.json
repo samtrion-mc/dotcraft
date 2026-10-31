@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/granite",
+    "overlay": "dotcraftresources:block/compressed_overlay_7",
+    "side": "minecraft:block/granite",
+    "top": "minecraft:block/granite"
+  }
+}

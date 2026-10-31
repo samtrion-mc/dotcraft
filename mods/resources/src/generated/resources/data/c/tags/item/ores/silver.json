@@ -1,0 +1,13 @@
+{
+  "values": [
+    "dotcraftresources:poor_silver_ore",
+    "dotcraftresources:silver_ore",
+    "dotcraftresources:rich_silver_ore",
+    "dotcraftresources:poor_deepslate_silver_ore",
+    "dotcraftresources:deepslate_silver_ore",
+    "dotcraftresources:rich_deepslate_silver_ore",
+    "dotcraftresources:poor_nether_silver_ore",
+    "dotcraftresources:nether_silver_ore",
+    "dotcraftresources:rich_nether_silver_ore"
+  ]
+}

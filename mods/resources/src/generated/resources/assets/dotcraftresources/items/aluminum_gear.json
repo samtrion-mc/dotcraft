@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:item/material/gear",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -1972502
+      }
+    ]
+  }
+}

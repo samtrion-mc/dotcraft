@@ -1,0 +1,17 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:max_tier",
+      "level": 5
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraftresources:compressed/minecraft/honeycomb_block_6"
+  ],
+  "result": {
+    "count": 9,
+    "id": "dotcraftresources:compressed/minecraft/honeycomb_block_5"
+  }
+}

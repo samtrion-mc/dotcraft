@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "nugget",
+      "material": "lead",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "gear",
+      "material": "lead",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "#c:ingots/lead",
+    "N": "#c:nuggets/lead",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "NIN",
+    "IPI",
+    "NIN"
+  ],
+  "result": {
+    "id": "dotcraftresources:lead_gear"
+  }
+}

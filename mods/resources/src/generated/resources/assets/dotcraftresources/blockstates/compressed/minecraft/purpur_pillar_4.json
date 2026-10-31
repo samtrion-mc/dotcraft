@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "dotcraftresources:block/compressed/minecraft/purpur_pillar_4",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "dotcraftresources:block/compressed/minecraft/purpur_pillar_4"
+    },
+    "axis=z": {
+      "model": "dotcraftresources:block/compressed/minecraft/purpur_pillar_4",
+      "x": 90
+    }
+  }
+}

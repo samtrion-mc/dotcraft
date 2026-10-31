@@ -1,0 +1,16 @@
+{
+  "values": [
+    {
+      "id": "#c:tools/sandpaper/diamond",
+      "required": false
+    },
+    {
+      "id": "#c:tools/sandpaper/iron",
+      "required": false
+    },
+    {
+      "id": "#c:tools/sandpaper/sand",
+      "required": false
+    }
+  ]
+}

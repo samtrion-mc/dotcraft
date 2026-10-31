@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:block/material/ore/nether_normal",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -6301464
+      }
+    ]
+  }
+}

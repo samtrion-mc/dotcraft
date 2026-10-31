@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/birch_log",
+    "overlay": "dotcraftresources:block/compressed_overlay_6",
+    "side": "minecraft:block/birch_log",
+    "top": "minecraft:block/birch_log"
+  }
+}

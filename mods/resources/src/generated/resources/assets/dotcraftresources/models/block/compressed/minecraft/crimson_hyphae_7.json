@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/crimson_stem",
+    "overlay": "dotcraftresources:block/compressed_overlay_7",
+    "side": "minecraft:block/crimson_stem",
+    "top": "minecraft:block/crimson_stem"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "variants": {
+    "axis=x": {
+      "model": "dotcraftresources:block/compressed/minecraft/crimson_hyphae_5",
+      "x": 90,
+      "y": 90
+    },
+    "axis=y": {
+      "model": "dotcraftresources:block/compressed/minecraft/crimson_hyphae_5"
+    },
+    "axis=z": {
+      "model": "dotcraftresources:block/compressed/minecraft/crimson_hyphae_5",
+      "x": 90
+    }
+  }
+}

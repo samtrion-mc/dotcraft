@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/brown_wool",
+    "overlay": "dotcraftresources:block/compressed_overlay_7",
+    "side": "minecraft:block/brown_wool",
+    "top": "minecraft:block/brown_wool"
+  }
+}

@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "nugget",
+      "material": "aluminum",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "gear",
+      "material": "aluminum",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "#c:ingots/aluminum",
+    "N": "#c:nuggets/aluminum",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "NIN",
+    "IPI",
+    "NIN"
+  ],
+  "result": {
+    "id": "dotcraftresources:aluminum_gear"
+  }
+}

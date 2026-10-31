@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/acacia_log",
+    "overlay": "dotcraftresources:block/compressed_overlay_7",
+    "side": "minecraft:block/acacia_log",
+    "top": "minecraft:block/acacia_log"
+  }
+}

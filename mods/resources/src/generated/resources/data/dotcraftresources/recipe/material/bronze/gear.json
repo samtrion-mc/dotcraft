@@ -1,0 +1,35 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "nugget",
+      "material": "bronze",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "gear",
+      "material": "bronze",
+      "switch": "material_form"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "I": "#c:ingots/bronze",
+    "N": "#c:nuggets/bronze",
+    "P": "#minecraft:planks"
+  },
+  "pattern": [
+    "NIN",
+    "IPI",
+    "NIN"
+  ],
+  "result": {
+    "id": "dotcraftresources:bronze_gear"
+  }
+}

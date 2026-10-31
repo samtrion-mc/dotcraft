@@ -1,0 +1,34 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "rod",
+      "material": "copper",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "hammer",
+      "switch": "tool",
+      "tier": "stone"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "H": "#dotcraftresources:hammers/stone",
+    "I": "#c:ingots/copper"
+  },
+  "pattern": [
+    "H",
+    "I",
+    "I"
+  ],
+  "result": {
+    "id": "dotcraftresources:copper_rod"
+  }
+}

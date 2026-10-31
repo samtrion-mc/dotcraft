@@ -1,0 +1,50 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "dotcraftresources:config",
+      "switch": "materials"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "raw_block",
+      "material": "silver",
+      "switch": "material_form"
+    },
+    {
+      "type": "dotcraftresources:config",
+      "form": "block",
+      "material": "silver",
+      "switch": "material_form"
+    }
+  ],
+  "parent": "minecraft:recipes/root",
+  "criteria": {
+    "has_storage_blocks_raw_silver": {
+      "conditions": {
+        "items": [
+          {
+            "items": "#c:storage_blocks/raw_silver"
+          }
+        ]
+      },
+      "trigger": "minecraft:inventory_changed"
+    },
+    "has_the_recipe": {
+      "conditions": {
+        "recipe": "dotcraftresources:material/silver/block_from_raw_block_blasting"
+      },
+      "trigger": "minecraft:recipe_unlocked"
+    }
+  },
+  "requirements": [
+    [
+      "has_the_recipe",
+      "has_storage_blocks_raw_silver"
+    ]
+  ],
+  "rewards": {
+    "recipes": [
+      "dotcraftresources:material/silver/block_from_raw_block_blasting"
+    ]
+  }
+}

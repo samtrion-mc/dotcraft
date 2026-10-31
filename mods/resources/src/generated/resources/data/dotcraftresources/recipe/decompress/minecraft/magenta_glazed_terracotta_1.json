@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraftresources:compressed/minecraft/magenta_glazed_terracotta_1"
+  ],
+  "result": {
+    "count": 9,
+    "id": "minecraft:magenta_glazed_terracotta"
+  }
+}

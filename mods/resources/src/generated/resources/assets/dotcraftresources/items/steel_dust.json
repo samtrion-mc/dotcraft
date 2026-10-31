@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:item/material/dust",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -7696490
+      }
+    ]
+  }
+}
