@@ -9,7 +9,7 @@
   "category": "misc",
   "key": {
     "A": "#c:ingots/lead",
-    "B": "dotcraftenergy:rechargeable_potato_battery",
+    "B": "dotcraftenergy:battery_tier_1",
     "C": "#c:ingots/tin",
     "R": "#c:small_dusts/redstone"
   },

@@ -31,6 +31,7 @@ public final class EnglishUSLanguageProvider extends LanguageProvider {
     protected void addTranslations() {
         add(EnergyItems.POTATO_BATTERY.get(), "Potato Battery");
         add(EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), "Rechargeable Potato Battery");
+        add(EnergyItems.BATTERY_TIER_1.get(), "Battery (Tier 1)");
         add(EnergyItems.BATTERY_TIER_2.get(), "Battery (Tier 2)");
         add(EnergyItems.BATTERY_TIER_3.get(), "Battery (Tier 3)");
         add(EnergyItems.BATTERY_TIER_4.get(), "Battery (Tier 4)");

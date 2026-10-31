@@ -6,14 +6,14 @@
     },
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:rechargeable_potato_battery"
+      "value": "dotcraftenergy:battery_tier_1"
     }
   ],
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
     "A": "#c:glass_panes",
-    "B": "dotcraftenergy:rechargeable_potato_battery",
+    "B": "dotcraftenergy:battery_tier_1",
     "C": "dotcraftenergy:photovoltaic_cell",
     "P": "#c:plates/aluminum",
     "X": "#c:small_dusts/redstone"

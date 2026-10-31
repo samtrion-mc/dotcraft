@@ -6,7 +6,7 @@
     },
     {
       "type": "neoforge:registered",
-      "value": "dotcraftenergy:rechargeable_potato_battery"
+      "value": "dotcraftenergy:battery_tier_1"
     },
     {
       "type": "neoforge:registered",
@@ -16,7 +16,7 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "B": "dotcraftenergy:rechargeable_potato_battery",
+    "B": "dotcraftenergy:battery_tier_1",
     "G": "#c:gears/aluminum",
     "P": "#c:plates/aluminum",
     "S": "#c:wires/iron",
