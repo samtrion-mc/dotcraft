@@ -339,7 +339,7 @@ public final class KiteGameTests {
     }
 
     /**
-     * A single block thick plate far up stops the kite right below it; no sample may skip it. Tier 1 needs a free cross, so a plate
+     * A single block thick plate far up stops the kite right below it; no sample may skip it. Tier 1 needs a free 3x3, so a plate
      * that only covers a neighbour of the column stops it, while tier 4 flies past that (a shaft of one block is enough).
      *
      * @param helper the game test helper
