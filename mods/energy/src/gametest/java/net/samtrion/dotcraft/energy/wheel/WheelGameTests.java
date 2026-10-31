@@ -12,11 +12,13 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
@@ -52,6 +54,7 @@ public final class WheelGameTests {
     private static final Identifier PIN = id("wheel_pin");
     private static final Identifier ENERGY = id("wheel_energy");
     private static final Identifier BLOCKED = id("wheel_blocked");
+    private static final Identifier RELOAD = id("wheel_reload_release");
 
     private WheelGameTests() {}
 
@@ -78,6 +81,7 @@ public final class WheelGameTests {
             registry.register(PIN, TestSupport.ticking(WheelGameTests::pin));
             registry.register(ENERGY, TestSupport.ticking(WheelGameTests::energy));
             registry.register(BLOCKED, TestSupport.ticking(WheelGameTests::blocked));
+            registry.register(RELOAD, TestSupport.ticking(WheelGameTests::reloadRelease));
         });
     }
 
@@ -88,7 +92,7 @@ public final class WheelGameTests {
      */
     @SubscribeEvent
     static void registerTests(RegisterGameTestsEvent event) {
-        for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY, BLOCKED}) {
+        for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY, BLOCKED, RELOAD}) {
             var environment = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf());
             event.registerTest(id, new FunctionGameTestInstance(function(id),
                     new TestData<>(environment, TestSupport.STRUCTURE, 100, 0, true)));
@@ -319,6 +323,35 @@ public final class WheelGameTests {
             helper.assertTrue(wheel.heldMob() == pig, "the pig beside the blocked mob is not captured");
             area.finish(warden, pig);
         }, warden, pig);
+    }
+
+    /**
+     * A wheel that reloaded knows its mob only by id until its next scan; breaking it in that window must still give the pig its old
+     * persistence back, or the pig never despawns again.
+     *
+     * @param helper the game test helper
+     */
+    private static void reloadRelease(GameTestHelper helper) {
+        var area = Area.create(helper, 7);
+        var wheel = area.wheel(1, 4, 4);
+        var level = area.level();
+        var pig = area.spawn(EntityType.PIG, 2.5F, 2.5F);
+        area.after(20, () -> {
+            settled(helper, pig);
+            WheelBlockEntity.clearPersistence(pig);
+            area.place(pig, 4.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == pig && pig.isPersistenceRequired(), "the pig is not held");
+            var saved = wheel.saveWithFullMetadata(level.registryAccess());
+            helper.setBlock(area.relative(4, FLOOR + 1, 4), Blocks.AIR);
+            helper.assertTrue(!pig.isPersistenceRequired(), "breaking the wheel keeps the flag");
+            pig.setPersistenceRequired();
+            var reloaded = area.wheel(1, 4, 4);
+            reloaded.loadCustomOnly(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), saved));
+            helper.setBlock(area.relative(4, FLOOR + 1, 4), Blocks.AIR);
+            helper.assertTrue(!pig.isPersistenceRequired(), "a wheel broken before it found its mob again leaves the pig persistent");
+            area.finish(pig);
+        }, pig);
     }
 
     /**
