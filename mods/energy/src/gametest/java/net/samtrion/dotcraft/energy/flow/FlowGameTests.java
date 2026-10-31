@@ -12,6 +12,7 @@ import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.FluidTags;
+import net.minecraft.util.ProblemReporter;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.animal.Bucketable;
@@ -26,6 +27,7 @@ import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.LiquidBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.level.storage.TagValueInput;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -58,6 +60,7 @@ public final class FlowGameTests {
     private static final Identifier FACING = id("flow_facing");
     private static final Identifier AXIS = id("flow_axis");
     private static final Identifier DRY = id("flow_dry");
+    private static final Identifier SAVE = id("flow_save");
 
     private FlowGameTests() {}
 
@@ -90,6 +93,7 @@ public final class FlowGameTests {
             registry.register(FACING, TestSupport.ticking(FlowGameTests::facing));
             registry.register(AXIS, TestSupport.ticking(FlowGameTests::axis));
             registry.register(DRY, TestSupport.ticking(FlowGameTests::dry));
+            registry.register(SAVE, TestSupport.ticking(FlowGameTests::save));
         });
     }
 
@@ -111,6 +115,7 @@ public final class FlowGameTests {
         register(event, FACING, 20);
         register(event, AXIS, 80);
         register(event, DRY, 60);
+        register(event, SAVE, 10);
         // a dry generator in another test must never blow up by chance; the dry test rolls with an explicit chance
         FlowGeneratorBlockEntity.dryChanceOverride = 0;
     }
@@ -567,5 +572,28 @@ public final class FlowGameTests {
                 });
             });
         });
+    }
+
+    /**
+     * Save and load keep the FE buffer and the output of a generator.
+     *
+     * @param helper the game test helper
+     */
+    private static void save(GameTestHelper helper) {
+        var level = helper.getLevel();
+        int y0 = 160;
+        var from = new BlockPos(1, y0, 1);
+        var to = new BlockPos(3, y0, 1);
+        helper.setBlock(from, wet(2));
+        helper.setBlock(to, wet(2));
+        var source = entity(helper, from);
+        var target = entity(helper, to);
+        source.recompute(level);
+        helper.assertTrue(source.fill(100) == 100, "the buffer did not take 100 FE");
+        var tag = source.saveCustomOnly(level.registryAccess());
+        target.loadCustomOnly(TagValueInput.create(ProblemReporter.DISCARDING, level.registryAccess(), tag));
+        helper.assertTrue(target.energy().getAmountAsLong() == 100, "save and load changed the FE: " + target.energy().getAmountAsLong());
+        helper.assertTrue(target.output() == source.output(), "save and load changed the output: " + target.output() + " instead of " + source.output());
+        helper.succeed();
     }
 }

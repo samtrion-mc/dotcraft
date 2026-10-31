@@ -12,7 +12,9 @@ import net.minecraft.gametest.framework.TestData;
 import net.minecraft.gametest.framework.TestEnvironmentDefinition;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.material.Fluids;
 import net.minecraft.world.level.storage.TagValueInput;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -55,6 +57,9 @@ public final class MeltGameTests {
     private static final Identifier MELT_TANK = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "melt_tank");
     private static final ResourceKey<Consumer<GameTestHelper>> MELT_TANK_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, MELT_TANK);
 
+    private static final Identifier MELT_UNLIT = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "melt_unlit");
+    private static final ResourceKey<Consumer<GameTestHelper>> MELT_UNLIT_FUNCTION = ResourceKey.create(Registries.TEST_FUNCTION, MELT_UNLIT);
+
     /** The height the generators stand at, clear of the floor of the structure. */
     private static final int Y = 2;
     /** Ticks to wait: the first pulse of any tier comes within 20 ticks. */
@@ -92,6 +97,7 @@ public final class MeltGameTests {
             registry.register(MELT_LIMITS, TestSupport.ticking(clean(MeltGameTests::limits)));
             registry.register(MELT_RECOVERY, TestSupport.ticking(clean(MeltGameTests::recovery)));
             registry.register(MELT_TANK, TestSupport.ticking(clean(MeltGameTests::tank)));
+            registry.register(MELT_UNLIT, TestSupport.ticking(clean(MeltGameTests::unlit)));
         });
     }
 
@@ -114,6 +120,8 @@ public final class MeltGameTests {
         event.registerTest(MELT_RECOVERY, new FunctionGameTestInstance(MELT_RECOVERY_FUNCTION, new TestData<>(recovery, TestSupport.STRUCTURE, 70, 0, true)));
         var tank = event.registerEnvironment(MELT_TANK, new TestEnvironmentDefinition.AllOf());
         event.registerTest(MELT_TANK, new FunctionGameTestInstance(MELT_TANK_FUNCTION, new TestData<>(tank, TestSupport.STRUCTURE, 100, 0, true)));
+        var unlit = event.registerEnvironment(MELT_UNLIT, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(MELT_UNLIT, new FunctionGameTestInstance(MELT_UNLIT_FUNCTION, new TestData<>(unlit, TestSupport.STRUCTURE, 5, 0, true)));
     }
 
     /**
@@ -372,5 +380,24 @@ public final class MeltGameTests {
                     "save and load changed the FE: " + target.pending() + "/" + target.stored() + " instead of " + source.pending() + "/" + source.stored());
             helper.succeed();
         });
+    }
+
+    /**
+     * Heat sources with a {@code lit} property only heat while lit: an unlit campfire, soul campfire never count, a lit one does, and frosted ice is not a heat source.
+     *
+     * @param helper the game test helper
+     */
+    private static void unlit(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var at = new BlockPos(5, Y, 5);
+        for (var block : new Block[] {Blocks.CAMPFIRE, Blocks.SOUL_CAMPFIRE}) {
+            helper.setBlock(at.east(), block.defaultBlockState().setValue(BlockStateProperties.LIT, false));
+            helper.assertTrue(!MeltBlockEntity.isHeated(level, helper.absolutePos(at)), "an unlit " + block + " heats");
+            helper.setBlock(at.east(), block.defaultBlockState().setValue(BlockStateProperties.LIT, true));
+            helper.assertTrue(MeltBlockEntity.isHeated(level, helper.absolutePos(at)), "a lit " + block + " does not heat");
+        }
+        helper.setBlock(at.east(), Blocks.FROSTED_ICE);
+        helper.assertTrue(!MeltBlockEntity.isHeated(level, helper.absolutePos(at)), "frosted ice heats");
+        helper.succeed();
     }
 }
