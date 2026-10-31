@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:vibration_generator_tier_5"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_5"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:vibration_generator_tier_4"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:battery_tier_5",
+    "G": "#c:gears/iridium",
+    "P": "#c:plates/iridium",
+    "Q": "#c:gems/quartz",
+    "X": "dotcraftenergy:vibration_generator_tier_4"
+  },
+  "pattern": [
+    "PQP",
+    "GXG",
+    "PBP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:vibration_generator_tier_5"
+  }
+}
