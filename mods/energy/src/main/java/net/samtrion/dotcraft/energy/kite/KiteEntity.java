@@ -14,13 +14,14 @@ import net.minecraft.world.level.storage.ValueInput;
 import net.minecraft.world.level.storage.ValueOutput;
 
 /**
- * The kite on its tether: it hangs straight above its generator block (same x and z, so it always lives in the chunk of the block
- * and is ticked and unloaded with it) and moves only up and down, towards the target altitude the block entity gives it. Its height
+ * The kite on its tether: it hangs above its generator block and moves only up and down, towards the target altitude the block entity
+ * gives it. The tier 1-3 kite has the same x and z as the block, so it lives in the chunk of the block and is ticked and unloaded with
+ * it; the tier 4 and 5 kites wander and can sit in a neighbouring chunk (see below), which may load or tick differently. Its height
  * is <b>not</b> limited by the build height: an entity can be anywhere above the world (only below the bottom of the world it is
  * removed), it is tracked by the players around and it keeps ticking, which the game tests verify.
  * <p>
- * The tier 4 and 5 kites additionally wander horizontally inside +-4 blocks of that axis (see {@link KiteMath#offset}); tier 1-3 hang
- * on the axis. In a thunderstorm the offset is clamped to a radius of 6 blocks. Both are deterministic in the game time and the slot.
+ * The tier 4 and 5 kites additionally wander horizontally inside +-4 blocks of that axis (see {@link KiteMath#offset}), so near a chunk
+ * border they can leave the chunk of the block; tier 1-3 hang on the axis. In a thunderstorm the offset is clamped to a radius of 6 blocks. Both are deterministic in the game time and the slot.
  * <p>
  * It is the block entity that owns the kite: the entity type is not saved ({@code noSave}), so there is never a stray kite after a
  * restart or a chunk reload; the block entity remembers that it has a kite and spawns a new one (which climbs again from the block)

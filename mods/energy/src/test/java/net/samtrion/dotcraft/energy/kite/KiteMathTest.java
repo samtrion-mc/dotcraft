@@ -314,6 +314,29 @@ class KiteMathTest {
         assertTrue(Math.hypot(step.x() - next.x(), step.z() - next.z()) < 0.1, "the drift is not smooth");
     }
 
+    /**
+     * Only the single kite of tier 1-3 is guaranteed to stay in the chunk of its block (offset 0); the pair of tier 4 and 5 swings out
+     * by more than 3 blocks in x and z, so a winch near a chunk border can have a kite in the neighbouring chunk.
+     */
+    @Test
+    void onlyTier123KitesAreGuaranteedInTheChunkOfTheBlock() {
+        double reachX = 0;
+        double reachZ = 0;
+        for (long t = 0; t < 40_000; t += 7) {
+            for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
+                for (int slot = 0; slot < 2; slot++) {
+                    var o = KiteMath.offset(tier, slot, t, false);
+                    if (tier <= 3) assertEquals(new KiteMath.Offset(0, 0), o, "tier " + tier + " hangs on the axis");
+                    else {
+                        reachX = Math.max(reachX, Math.abs(o.x()));
+                        reachZ = Math.max(reachZ, Math.abs(o.z()));
+                    }
+                }
+            }
+        }
+        assertTrue(reachX > 3 && reachZ > 3, "tier 4/5 leave a 3 block margin: " + reachX + ", " + reachZ);
+    }
+
     /** In a thunderstorm the horizontal offset is clamped to a radius of 6; the play lies inside it and is not touched. */
     @Test
     void thunderClampsTheOffsetToTheRadius() {

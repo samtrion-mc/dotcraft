@@ -42,7 +42,7 @@ import java.util.function.IntPredicate;
  * altitude)} (see {@link #flightTarget(int, int, int)}); without wire no kite is launched and the output is 0.
  * <p>
  * <b>Play.</b> The single kite of tier 1-3 hangs straight above its block, as before (a single kite has nothing to keep away from, and
- * the simple layout keeps it in the chunk of its block). The two kites of tier 4 and 5 each get a horizontal play of +-{@link #SPREAD}
+ * the simple layout keeps it in the chunk of its block; the wandering pair of tier 4 and 5 can leave it). The two kites of tier 4 and 5 each get a horizontal play of +-{@link #SPREAD}
  * blocks around the vertical axis of the block, slot specific and slowly wandering (see {@link #offset(int, int, long, boolean)}), and
  * stay at least {@link #MIN_KITE_GAP} blocks apart. In a thunderstorm the kite is guided tightly: its horizontal offset is clamped to a
  * radius of {@link #THUNDER_RADIUS} blocks around the axis (the play of +-4 lies inside that anyway, the clamp is the guarantee), and a
