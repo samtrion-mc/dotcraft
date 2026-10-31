@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/magenta_concrete_powder",
+    "overlay": "dotcraftresources:block/compressed_overlay_5",
+    "side": "minecraft:block/magenta_concrete_powder",
+    "top": "minecraft:block/magenta_concrete_powder"
+  }
+}

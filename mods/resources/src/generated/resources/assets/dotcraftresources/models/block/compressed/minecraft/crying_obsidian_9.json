@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/crying_obsidian",
+    "overlay": "dotcraftresources:block/compressed_overlay_9",
+    "side": "minecraft:block/crying_obsidian",
+    "top": "minecraft:block/crying_obsidian"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/cobblestone",
+    "overlay": "dotcraftresources:block/compressed_overlay_8",
+    "side": "minecraft:block/cobblestone",
+    "top": "minecraft:block/cobblestone"
+  }
+}

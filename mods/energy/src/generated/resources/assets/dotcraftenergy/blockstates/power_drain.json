@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "dotcraftenergy:block/power_drain"
+    }
+  }
+}

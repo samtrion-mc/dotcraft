@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:block/compressed/minecraft/grass_block_5",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -7226023
+      }
+    ]
+  }
+}

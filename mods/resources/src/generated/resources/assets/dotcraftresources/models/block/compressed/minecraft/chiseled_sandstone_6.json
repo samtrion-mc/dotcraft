@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/sandstone_top",
+    "overlay": "dotcraftresources:block/compressed_overlay_6",
+    "side": "minecraft:block/chiseled_sandstone",
+    "top": "minecraft:block/sandstone_top"
+  }
+}

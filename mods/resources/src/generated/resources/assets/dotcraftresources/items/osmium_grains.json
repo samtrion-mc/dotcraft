@@ -1,0 +1,12 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "dotcraftresources:item/material/grains",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -8676156
+      }
+    ]
+  }
+}

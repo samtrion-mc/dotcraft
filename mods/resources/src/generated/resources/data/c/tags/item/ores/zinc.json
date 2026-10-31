@@ -1,0 +1,10 @@
+{
+  "values": [
+    "dotcraftresources:poor_zinc_ore",
+    "dotcraftresources:zinc_ore",
+    "dotcraftresources:rich_zinc_ore",
+    "dotcraftresources:poor_deepslate_zinc_ore",
+    "dotcraftresources:deepslate_zinc_ore",
+    "dotcraftresources:rich_deepslate_zinc_ore"
+  ]
+}

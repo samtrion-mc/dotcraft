@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/moss_block",
+    "overlay": "dotcraftresources:block/compressed_overlay_7",
+    "side": "minecraft:block/moss_block",
+    "top": "minecraft:block/moss_block"
+  }
+}

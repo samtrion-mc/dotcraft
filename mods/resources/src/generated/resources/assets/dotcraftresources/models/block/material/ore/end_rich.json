@@ -1,0 +1,7 @@
+{
+  "parent": "dotcraftresources:block/material/ore",
+  "textures": {
+    "host": "minecraft:block/end_stone",
+    "overlay": "dotcraftresources:block/material/ore_overlay_rich"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/warped_wart_block",
+    "overlay": "dotcraftresources:block/compressed_overlay_5",
+    "side": "minecraft:block/warped_wart_block",
+    "top": "minecraft:block/warped_wart_block"
+  }
+}

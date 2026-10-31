@@ -1,0 +1,11 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "category": "building",
+  "ingredients": [
+    "dotcraftresources:compressed/minecraft/green_concrete_powder_1"
+  ],
+  "result": {
+    "count": 9,
+    "id": "minecraft:green_concrete_powder"
+  }
+}

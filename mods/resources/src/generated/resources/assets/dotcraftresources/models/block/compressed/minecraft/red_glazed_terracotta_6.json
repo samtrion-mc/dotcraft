@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/red_glazed_terracotta",
+    "overlay": "dotcraftresources:block/compressed_overlay_6",
+    "side": "minecraft:block/red_glazed_terracotta",
+    "top": "minecraft:block/red_glazed_terracotta"
+  }
+}

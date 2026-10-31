@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/andesite",
+    "overlay": "dotcraftresources:block/compressed_overlay_6",
+    "side": "minecraft:block/andesite",
+    "top": "minecraft:block/andesite"
+  }
+}

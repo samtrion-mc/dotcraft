@@ -1,0 +1,9 @@
+{
+  "parent": "dotcraftresources:block/compressed",
+  "textures": {
+    "bottom": "minecraft:block/quartz_block_top",
+    "overlay": "dotcraftresources:block/compressed_overlay_5",
+    "side": "minecraft:block/quartz_block_side",
+    "top": "minecraft:block/quartz_block_top"
+  }
+}
