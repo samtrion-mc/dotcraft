@@ -39,7 +39,7 @@ public final class KiteGameTests {
     /** The names of the tests; every one has a function, an environment and an instance. */
     private static final String[] NAMES = {"kite_blocks", "kite_flight", "kite_above_build_height", "kite_break_and_reel_in", "kite_respawn_and_save",
             "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder", "kite_ignores_obstructions", "kite_two_kites",
-            "kite_lightning", "kite_wire", "kite_short_wire", "kite_too_close", "kite_play", "kite_storm_radius", "kite_bolts", "kite_recipe_wire"};
+            "kite_lightning", "kite_wire", "kite_short_wire", "kite_too_close", "kite_play", "kite_storm_radius", "kite_bolts", "kite_recipe_wire", "kite_diagonal_roof"};
 
     /** Not instantiable. */
     private KiteGameTests() {}
@@ -100,6 +100,7 @@ public final class KiteGameTests {
             case "kite_storm_radius" -> KiteGameTests::stormRadius;
             case "kite_bolts" -> KiteGameTests::bolts;
             case "kite_recipe_wire" -> KiteGameTests::recipeWire;
+            case "kite_diagonal_roof" -> KiteGameTests::diagonalRoof;
             default -> KiteGameTests::thunder;
         };
     }
@@ -358,6 +359,31 @@ public final class KiteGameTests {
         helper.runAfterDelay(200, () -> {
             helper.assertTrue(wideBe.kite().altitude() <= 9.01 && wideBe.kite().altitude() >= 8.5, "wrong ceiling: " + wideBe.kite().altitude());
             helper.assertTrue(slimBe.kite().altitude() > 20, "the slim line is stopped by a plate beside the column: " + slimBe.kite().altitude());
+            helper.succeed();
+        });
+    }
+
+    /**
+     * Tier 1 and 2 need a free 3x3 way up, as the tooltip says: a plate that only covers a diagonal neighbour of the column stops
+     * the kite below it, while tier 3 (a column of one block) flies past it.
+     *
+     * @param helper the game test helper
+     */
+    private static void diagonalRoof(GameTestHelper helper) {
+        var wide = new BlockPos(1, 1, 1);
+        var slim = new BlockPos(FAR_X, 1, 1);
+        place(helper, wide, 1);
+        place(helper, slim, 4);
+        helper.setBlock(wide.offset(1, 10, 1), Blocks.STONE);
+        helper.setBlock(slim.offset(1, 10, 1), Blocks.STONE);
+        var player = player(helper, true);
+        helper.useBlock(wide, player);
+        helper.useBlock(slim, player);
+        var wideBe = entity(helper, wide);
+        var slimBe = entity(helper, slim);
+        helper.runAfterDelay(200, () -> {
+            helper.assertTrue(wideBe.kite().altitude() <= 9.01, "the wide line is not stopped by a diagonal block: " + wideBe.kite().altitude());
+            helper.assertTrue(slimBe.kite().altitude() > 20, "the slim line is stopped by a diagonal block: " + slimBe.kite().altitude());
             helper.succeed();
         });
     }
