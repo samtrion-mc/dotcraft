@@ -10,7 +10,7 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
 
 /** Unit tests for the weights, the perks and the economy anchor of the vibration generators. */
 class VibrationMathTest {
-    private static final EnergyCommonConfig.Battery[] BATTERIES = {EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY, EnergyCommonConfig.BATTERY_TIER_2,
+    private static final EnergyCommonConfig.Battery[] BATTERIES = {EnergyCommonConfig.BATTERY_TIER_1, EnergyCommonConfig.BATTERY_TIER_2,
             EnergyCommonConfig.BATTERY_TIER_3, EnergyCommonConfig.BATTERY_TIER_4, EnergyCommonConfig.BATTERY_TIER_5};
 
     /** A louder event is worth more, linearly; the loudest is {@link VibrationMath#EVENT_TICKS} ticks of peak; frequencies outside 1..15 are worth nothing. */
@@ -114,14 +114,14 @@ class VibrationMathTest {
     }
 
     /**
-     * The economy anchor: the peaks follow the battery ladder 15 / 75 / 560 / 5600 / 56000 FE/t as the burst power, none below 15. The
+     * The economy anchor: the peaks follow the battery ladder 20 / 75 / 560 / 5600 / 56000 FE/t as the burst power, none below 20. The
      * best typical case (a block broken every 10 ticks, which the bucket limits, or any loop that fires every tick, which it caps) makes
      * 3.6 / 6 / 8 / 10 / 12 batteries of the tier's own battery per MC day, pinned per tier within 0.5 of 4 / 6 / 8 / 10 / 12 and rising
      * smoothly. Light play (an event every 100 ticks) makes a good deal less, and damage dealt every 8 ticks sits at or below the ceiling.
      */
     @Test
     void dailyYieldMatchesBattery() {
-        double[] targets = {4, 6, 8, 10, 12};
+        double[] targets = {2.4, 6, 8, 10, 12};
         double previous = 0;
         for (int tier = 1; tier <= 5; tier++) {
             int peak = EnergyCommonConfig.VIBRATION_GENERATORS.get(tier - 1).peak();
@@ -138,13 +138,13 @@ class VibrationMathTest {
             assertEquals(targets[tier - 1], mining, 0.5, "mining, tier " + tier);
             assertEquals(ceiling, mining, 0.3, "mining, tier " + tier);
             assertTrue(fighting > 1 && fighting <= ceiling + 0.3, "fighting, tier " + tier + ": " + fighting);
-            assertTrue(light > 1 && light < ceiling / 2, "light play, tier " + tier + ": " + light);
+            assertTrue(light > (tier == 1 ? 0.5 : 1) && light < ceiling / 2, "light play, tier " + tier + ": " + light);
             assertEquals(ceiling, machine, 0.3, "machine, tier " + tier);
             assertTrue(machine * capacity <= VibrationMath.maxYield(tier, peak, VibrationMath.DAY_TICKS), "machine, tier " + tier);
             assertTrue(capacity / peak >= VibrationMath.DAY_TICKS / 25.0, "tier " + tier);
-            assertTrue(peak >= 15);
+            assertTrue(peak >= 20);
         }
-        assertEquals(15, EnergyCommonConfig.VIBRATION_GENERATORS.get(0).peak());
+        assertEquals(20, EnergyCommonConfig.VIBRATION_GENERATORS.get(0).peak());
         assertEquals(75, EnergyCommonConfig.VIBRATION_GENERATORS.get(1).peak());
         assertEquals(560, EnergyCommonConfig.VIBRATION_GENERATORS.get(2).peak());
         assertEquals(5_600, EnergyCommonConfig.VIBRATION_GENERATORS.get(3).peak());

@@ -125,7 +125,7 @@ public final class VibrationGameTests {
             helper.setBlock(rel.east(1), Blocks.WHITE_WOOL);
             helper.assertTrue(emit(helper, gen, destroy, gen.east(3), none) == 0, "wool did not stop the vibration of tier 1");
             helper.setBlock(rel.east(1), Blocks.AIR);
-            // 5 x 120 FE wanted, the bucket holds 300 (20 ticks of 15 FE/t)
+            // 5 x 160 FE wanted, the bucket holds 400 (20 ticks of 20 FE/t)
             long made = 0;
             for (int i = 0; i < 5; i++) made += emit(helper, gen, destroy, gen.east(2), none);
             helper.assertTrue(made == VibrationMath.burst(EnergyCommonConfig.VIBRATION_GENERATORS.get(0).peak()), "the burst was " + made);

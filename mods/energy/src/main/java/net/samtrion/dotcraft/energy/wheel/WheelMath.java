@@ -10,7 +10,7 @@ package net.samtrion.dotcraft.energy.wheel;
  * one mob can never make more than the peak, and a running zombie, horse or any mob of weight {@value #FULL_WEIGHT} or more makes
  * all of it, a pig two thirds.
  * <p>
- * Economy: the peak follows the battery ladder (15 / 75 / 560 / 5600 / 56000 FE/t). A wheel only makes FE while a mob really runs,
+ * Economy: the peak follows the battery ladder (20 / 75 / 560 / 5600 / 56000 FE/t). A wheel only makes FE while a mob really runs,
  * which it does for a part of the day only: {@link #REFERENCE_DUTY} (a quarter) is the duty cycle the peaks are anchored by, and
  * at that duty every tier fills the battery of its tier in about 5350 ticks, a fifth of an MC day (see {@link #fillTicks}).
  * <p>
