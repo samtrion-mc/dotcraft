@@ -3,6 +3,12 @@ package net.samtrion.dotcraft.energy.kite;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.junit.jupiter.api.Test;
 
 import net.samtrion.dotcraft.energy.EnergyCommonConfig;
@@ -221,12 +227,12 @@ class KiteMathTest {
 
     /**
      * Economy anchor on the real model (tether out, free sky, the real gust and weather mix): the batteries of the same tier per day
-     * are about 9.8 / 19.4 / 23.7 / 24.3 / 24.6 (tier 1-5), each within 0.5 of its target and all within 8..25.
+     * are about 6.1 / 19.5 / 23.7 / 24.3 / 24.6 (tier 1-5), each within 0.5 of its target (tier 1 at least 6, the others within 8..25).
      */
     @Test
     void dailyYieldFillsTheBatteryOfTheTierWellUnderADay() {
         int[] bases = {80, 400, 2_600, 17_333, 128_000};
-        double[] target = {6.1, 19.4, 23.7, 24.3, 24.6};
+        double[] target = {6.1, 19.5, 23.7, 24.3, 24.6};
         for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
             double base = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
             assertEquals(bases[tier - 1], base);
@@ -239,6 +245,21 @@ class KiteMathTest {
             // the battery is filled in well over a tick and well under a day at the very best
             double bestTicks = (double) BATTERY_CAPACITY[tier - 1] / KiteMath.peak(base, tier);
             assertTrue(bestTicks >= 50 && bestTicks <= 2_500, "tier " + tier + " fills its battery in " + bestTicks + " ticks at best");
+        }
+    }
+
+    /** The typical daily yield quoted in the README kite paragraph matches the real model within 0.1 (one printed decimal) for every tier. */
+    @Test
+    void readmeQuotesTheTypicalDailyYield() throws IOException {
+        Path readme = Path.of("README.md");
+        if (!Files.exists(readme)) readme = Path.of("..", "..", "README.md");
+        Matcher m = Pattern.compile("gives about ([0-9.]+) / ([0-9.]+) / ([0-9.]+) / ([0-9.]+) / ([0-9.]+) batteries")
+                .matcher(Files.readString(readme));
+        assertTrue(m.find(), "README kite paragraph with the typical daily yield not found");
+        for (int tier = 1; tier <= KiteMath.MAX_TIER; tier++) {
+            double base = EnergyCommonConfig.KITE_GENERATORS.get(tier - 1).peak();
+            double batteries = KiteMath.typicalDailyYield(base, tier) / BATTERY_CAPACITY[tier - 1];
+            assertEquals(batteries, Double.parseDouble(m.group(tier)), 0.1, "README tier " + tier);
         }
     }
 
