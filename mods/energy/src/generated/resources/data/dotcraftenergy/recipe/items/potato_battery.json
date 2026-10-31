@@ -1,0 +1,19 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:potato_battery"
+    }
+  ],
+  "type": "minecraft:crafting_shapeless",
+  "category": "misc",
+  "ingredients": [
+    "#c:crops/potato",
+    "#c:small_dusts/redstone",
+    "#c:nuggets/copper",
+    "#c:nuggets/zinc"
+  ],
+  "result": {
+    "id": "dotcraftenergy:potato_battery"
+  }
+}

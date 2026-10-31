@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:melt_generator_tier_4"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_4"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:melt_generator_tier_3"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:battery_tier_4",
+    "G": "#c:gears/platinum",
+    "P": "#c:plates/platinum",
+    "R": "#c:rods/blaze",
+    "X": "dotcraftenergy:melt_generator_tier_3"
+  },
+  "pattern": [
+    "PRP",
+    "GBG",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:melt_generator_tier_4"
+  }
+}

@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:thermo_generator_tier_5"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_5"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:thermo_generator_tier_4"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "B": "dotcraftenergy:battery_tier_5",
+    "G": "#c:gears/osmium",
+    "P": "#c:plates/osmium",
+    "Q": "#c:gems/quartz",
+    "X": "dotcraftenergy:thermo_generator_tier_4"
+  },
+  "pattern": [
+    "PQP",
+    "GBG",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:thermo_generator_tier_5"
+  }
+}
