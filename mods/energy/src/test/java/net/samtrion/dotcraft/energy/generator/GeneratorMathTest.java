@@ -142,4 +142,23 @@ class GeneratorMathTest {
             }
         }
     }
+
+    /** Over a simulated day one panel sends a packet only for a start, a stop or a step of {@link GeneratorMath#SYNC_STEP}, not at every read. */
+    @Test
+    void outputSyncIsQuantised() {
+        int reads = 0;
+        int syncs = 0;
+        double sent = 0;
+        for (int t = 0; t < 24000; t += 20) {
+            double now = 15 * GeneratorMath.solar(1, sunAngle(t), true, GeneratorMath.Weather.CLEAR, 1F);
+            reads++;
+            if (now != sent && GeneratorMath.needsSync(sent, now)) {
+                sent = now;
+                syncs++;
+            }
+        }
+        assertTrue(syncs > 0 && syncs <= 2 * 15 / GeneratorMath.SYNC_STEP + 2, "syncs " + syncs);
+        assertTrue(syncs < reads / 10, "syncs " + syncs + " of " + reads + " reads");
+        assertTrue(GeneratorMath.needsSync(0, 0.01) && GeneratorMath.needsSync(5, 0));
+    }
 }

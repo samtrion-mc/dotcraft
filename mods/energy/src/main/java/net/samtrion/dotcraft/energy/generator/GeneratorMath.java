@@ -53,6 +53,21 @@ public final class GeneratorMath {
         return clamp(factor * (1F + TRACKING[tier - 1]));
     }
 
+    /** The smallest change of the output, in FE/t, that is worth a packet to the clients. */
+    public static final double SYNC_STEP = 0.5;
+
+    /**
+     * Whether a changed output must be sent to the clients: a start or a stop always, otherwise only a change of at least
+     * {@link #SYNC_STEP}, so a panel that follows the sun does not send a packet at every read.
+     *
+     * @param sent the output the clients know
+     * @param now  the new output
+     * @return {@code true} if the clients must be told
+     */
+    public static boolean needsSync(double sent, double now) {
+        return (sent == 0) != (now == 0) || Math.abs(now - sent) >= SYNC_STEP;
+    }
+
     /** The share of the output that stays when a panel is waterlogged. */
     public static final float WATERLOGGED_FACTOR = 0.2F;
 
