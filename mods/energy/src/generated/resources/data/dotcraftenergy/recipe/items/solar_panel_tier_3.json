@@ -1,0 +1,33 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:solar_panel_tier_3"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_3"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:solar_panel_tier_2"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "#c:glass_panes",
+    "B": "dotcraftenergy:battery_tier_3",
+    "C": "dotcraftenergy:photovoltaic_cell",
+    "P": "#c:plates/steel",
+    "X": "dotcraftenergy:solar_panel_tier_2"
+  },
+  "pattern": [
+    "CAC",
+    "PBP",
+    "PXP"
+  ],
+  "result": {
+    "id": "dotcraftenergy:solar_panel_tier_3"
+  }
+}

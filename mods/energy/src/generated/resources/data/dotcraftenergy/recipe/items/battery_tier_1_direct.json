@@ -1,0 +1,26 @@
+{
+  "neoforge:conditions": [
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_1"
+    }
+  ],
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "C": "#c:ingots/copper",
+    "R": "#c:dusts/redstone",
+    "Z": "#c:ingots/zinc"
+  },
+  "pattern": [
+    "CZC",
+    "ZRZ",
+    "CZC"
+  ],
+  "result": {
+    "components": {
+      "dotcraftenergy:energy": 0
+    },
+    "id": "dotcraftenergy:battery_tier_1"
+  }
+}
