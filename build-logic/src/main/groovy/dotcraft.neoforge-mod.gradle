@@ -48,6 +48,10 @@ neoForge {
             type = 'gameTestServer'
             systemProperty 'neoforge.enabledGameTestNamespaces', modId
         }
+        // the modules run in parallel; a shared game directory makes them fight over the world's session.lock
+        configureEach {
+            if (name == 'gameTestServer') gameDirectory = rootProject.file("run/gametest-${modId}")
+        }
     }
 }
 
