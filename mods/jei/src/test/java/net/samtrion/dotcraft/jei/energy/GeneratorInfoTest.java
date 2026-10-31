@@ -84,6 +84,7 @@ class GeneratorInfoTest {
         for (String locale : LOCALES) assertEquals(first.keySet(), lang(locale).keySet(), locale);
         var expected = new TreeSet<String>();
         expected.add(GeneratorInfo.PERK_HEADER);
+        expected.addAll(WheelYield.KEYS.keySet());
         for (Family family : Family.values()) {
             for (int line = 1; line <= family.lines(); line++) expected.add(family.lineKey(line));
             if (family.hasPerks()) for (int tier = 1; tier <= GeneratorInfo.MAX_TIER; tier++) expected.add(family.perkKey(tier));

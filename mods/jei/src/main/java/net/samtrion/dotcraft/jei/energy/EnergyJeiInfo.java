@@ -7,6 +7,8 @@ import java.util.function.IntFunction;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import mezz.jei.api.registration.IRecipeCatalystRegistration;
+import mezz.jei.api.registration.IRecipeCategoryRegistration;
 import mezz.jei.api.registration.IRecipeRegistration;
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
@@ -54,6 +56,33 @@ final class EnergyJeiInfo {
         WheelBlocks.blocks().forEach(b -> page(registration, Family.WHEEL, b.get().tier(), b.get()));
         KiteBlocks.blocks().forEach(b -> page(registration, Family.KITE, b.get().tier(), b.get()));
         page(registration, Family.DRAIN, 0, EnergyBlocks.POWER_DRAIN_ITEM.get());
+    }
+
+    /**
+     * Registers the mob wheel yield category.
+     *
+     * @param registration the JEI category registration
+     */
+    static void registerWheelCategory(IRecipeCategoryRegistration registration) {
+        registration.addRecipeCategories(new WheelYieldCategory(registration.getJeiHelpers().getGuiHelper()));
+    }
+
+    /**
+     * Makes every registered wheel a catalyst of the yield category.
+     *
+     * @param registration the JEI catalyst registration
+     */
+    static void registerWheelCatalysts(IRecipeCatalystRegistration registration) {
+        WheelYieldCategory.wheels().forEach(w -> registration.addCraftingStation(WheelYieldCategory.TYPE, w));
+    }
+
+    /**
+     * Adds the yield entries, one per eligible mob type.
+     *
+     * @param registration the JEI recipe registration
+     */
+    static void registerWheelYield(IRecipeRegistration registration) {
+        registration.addRecipes(WheelYieldCategory.TYPE, WheelYieldCategory.entries());
     }
 
     private static void page(IRecipeRegistration registration, Family family, int tier, ItemLike item) {
