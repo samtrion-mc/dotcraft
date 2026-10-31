@@ -142,4 +142,27 @@ class GeneratorMathTest {
             }
         }
     }
+
+    /** Pins the documented numbers exactly: peak ladder, batteries, kite bases, rain shares, tracking, new moon floors and biome factors. */
+    @Test
+    void documentedNumbers() {
+        int[] ladder = {20, 75, 560, 5_600, 56_000};
+        int[] kite = {80, 400, 2_600, 17_333, 128_000};
+        float[] rain = {0.2F, 0.4F, 0.6F, 0.8F, 1F};
+        float[] floor = {0.1F, 0.2F, 0.3F, 0.4F, 0.5F};
+        float[] tracking = {0F, 0F, 0.15F, 0.3F, 0.45F};
+        for (int i = 0; i < 5; i++) {
+            int tier = i + 1;
+            assertEquals(ladder[i], EnergyCommonConfig.SOLAR_PANELS.get(i).peak(), "solar " + tier);
+            assertEquals(ladder[i], EnergyCommonConfig.LUNAR_PANELS.get(i).peak(), "lunar " + tier);
+            assertEquals(kite[i], EnergyCommonConfig.KITE_GENERATORS.get(i).peak(), "kite " + tier);
+            assertEquals(rain[i], GeneratorMath.weather(tier, GeneratorMath.Weather.RAIN), 1e-6F, "rain " + tier);
+            assertEquals(floor[i], (float) GeneratorMath.lunar(tier, 180F, 4, true, GeneratorMath.Weather.CLEAR, 1F, 0), 1e-6F, "floor " + tier);
+            assertEquals(Math.min(1F, 0.5F * (1F + tracking[i])), GeneratorMath.tracked(0.5F, tier), 1e-6F, "tracking " + tier);
+        }
+        assertEquals(40_000, EnergyCommonConfig.BATTERY_TIER_1.capacity());
+        assertEquals(20_000, EnergyCommonConfig.RECHARGEABLE_POTATO_BATTERY.capacity());
+        assertEquals(1.15F, GeneratorMath.BIOME_BOOST);
+        assertEquals(0.85F, GeneratorMath.BIOME_MALUS);
+    }
 }
