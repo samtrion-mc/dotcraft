@@ -651,6 +651,8 @@ public class KiteBlockEntity extends BlockEntity {
         output.putBoolean("kite", hasKite);
         output.putDouble("carry", carry);
         output.putInt("wire", wire);
+        // absolute game time: it keeps running across a chunk unload or a restart, so the cooldown does not reset
+        for (int slot = 0; slot < strikeCooldownUntil.length; slot++) output.putLong("strike" + slot, strikeCooldownUntil[slot]);
     }
 
     @Override
@@ -660,5 +662,6 @@ public class KiteBlockEntity extends BlockEntity {
         hasKite = input.getBooleanOr("kite", false);
         carry = input.getDoubleOr("carry", 0);
         wire = Math.clamp(input.getIntOr("wire", 0), 0, wireCapacity());
+        for (int slot = 0; slot < strikeCooldownUntil.length; slot++) strikeCooldownUntil[slot] = input.getLongOr("strike" + slot, 0);
     }
 }
