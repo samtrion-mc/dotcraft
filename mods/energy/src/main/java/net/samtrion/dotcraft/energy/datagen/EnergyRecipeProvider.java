@@ -72,6 +72,7 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
             // no tag holds the poisonous potato alone ("c:foods/food_poisoning" has other items too), so its id it is
             battery("rechargeable_potato_battery", EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), Items.POISONOUS_POTATO);
             tier("battery_tier_1", EnergyItems.BATTERY_TIER_1.get(), EnergyItems.RECHARGEABLE_POTATO_BATTERY.get(), "copper", "zinc");
+            tier1Direct();
             tier("battery_tier_2", EnergyItems.BATTERY_TIER_2.get(), EnergyItems.BATTERY_TIER_1.get(), "tin", "lead");
             tier("battery_tier_3", EnergyItems.BATTERY_TIER_3.get(), EnergyItems.BATTERY_TIER_2.get(), "nickel", "zinc");
             tier("battery_tier_4", EnergyItems.BATTERY_TIER_4.get(), EnergyItems.BATTERY_TIER_3.get(), "silver", "zinc");
@@ -180,6 +181,22 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
                     .pattern("BRB").pattern("CRA").pattern("CRA"), getHasName(lower), has(lower));
         }
 
+        /**
+         * The second recipe of the tier 1 battery, {@code battery_tier_1_direct}: no rechargeable potato battery, so a player without
+         * potatoes can still make it, but it costs clearly more (counted in nugget units, 1 nugget or redstone grain = 1, 1 ingot or
+         * redstone dust = 9). The potato path ({@code battery_tier_1}) is two rechargeable potato batteries (each a poisonous potato,
+         * a grain and a copper and a zinc nugget), three grains, two copper and two zinc ingots: 20 copper + 20 zinc + 5 grains = 45
+         * units and two poisonous potatoes. This one is four copper and four zinc ingots around one redstone dust: 36 + 36 + 9 = 81
+         * units, 1.8 times as much (and 1.8 times the metal). Same conditions, same uncharged result; unlocked by the copper ingot.
+         */
+        private void tier1Direct() {
+            save("battery_tier_1", "battery_tier_1_direct", shaped(RecipeCategory.MISC, empty(EnergyItems.BATTERY_TIER_1.get()))
+                    .define('C', tag("copper", "ingot"))
+                    .define('Z', tag("zinc", "ingot"))
+                    .define('R', Tags.Items.DUSTS_REDSTONE)
+                    .pattern("CZC").pattern("ZRZ").pattern("CZC"), hasName(tag("copper", "ingot")), has(tag("copper", "ingot")));
+        }
+
         /** The battery of a tagged potato. */
         private void battery(String path, Item battery, TagKey<Item> potato) {
             battery(path, battery, shapeless(RecipeCategory.MISC, battery).requires(potato), hasName(potato), has(potato));
@@ -200,9 +217,14 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
 
         /** Saves a battery recipe in the folder {@code items}, dropped when the battery is switched off in the startup config. */
         private void save(String path, RecipeBuilder recipe, String unlockName, Criterion<?> unlock) {
+            save(path, path, recipe, unlockName, unlock);
+        }
+
+        /** Saves a recipe of the item {@code item} under the recipe id {@code recipe} (an alternate recipe has an own id). */
+        private void save(String item, String recipeId, RecipeBuilder recipe, String unlockName, Criterion<?> unlock) {
             recipe.unlockedBy(unlockName, unlock)
-                    .save(output.withConditions(new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(EnergyMod.MODID, path)))),
-                            ResourceKey.<Recipe<?>>create(Registries.RECIPE, Identifier.fromNamespaceAndPath(EnergyMod.MODID, "items/" + path)));
+                    .save(output.withConditions(new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(EnergyMod.MODID, item)))),
+                            ResourceKey.<Recipe<?>>create(Registries.RECIPE, Identifier.fromNamespaceAndPath(EnergyMod.MODID, "items/" + recipeId)));
         }
 
         /** The name of the unlock criterion of a tag. */
