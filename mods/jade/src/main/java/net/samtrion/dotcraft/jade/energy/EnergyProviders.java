@@ -77,12 +77,18 @@ final class EnergyProviders {
         }
 
         @Override
-        void show(ITooltip tooltip, CompoundTag data) {
-            showOutput(tooltip, data);
-            if (!data.getBooleanOr("sky", false)) {
+        void show(ITooltip tooltip, CompoundTag data, boolean details) {
+            showOutput(tooltip, data, details);
+            boolean solar = data.getBooleanOr("solar", true);
+            boolean sky = data.getBooleanOr("sky", false);
+            var status = PanelStatus.of(data.getBooleanOr("occupied", false), sky, data.getBooleanOr("water", false), data.getStringOr("weather", "CLEAR"),
+                    data.getFloatOr("height", 0), solar);
+            if (status != null) tooltip.add(Component.translatable(JadeKeys.panelStatus(status)).withStyle(ChatFormatting.YELLOW));
+            if (!details) return;
+            if (!sky) {
                 tooltip.add(Component.translatable(JadeKeys.PANEL_NO_SKY));
             } else {
-                tooltip.add(Component.translatable(data.getBooleanOr("solar", true) ? JadeKeys.PANEL_SUN : JadeKeys.PANEL_MOON, percent(data.getFloatOr("height", 0))));
+                tooltip.add(Component.translatable(solar ? JadeKeys.PANEL_SUN : JadeKeys.PANEL_MOON, percent(data.getFloatOr("height", 0))));
                 var share = percent(data.getFloatOr("weather_share", 1));
                 switch (GeneratorMath.Weather.valueOf(data.getStringOr("weather", "CLEAR"))) {
                     case CLEAR -> tooltip.add(Component.translatable(JadeKeys.PANEL_WEATHER_CLEAR));
@@ -94,7 +100,6 @@ final class EnergyProviders {
             if (group > 1) {
                 tooltip.add(Component.translatable(JadeKeys.PANEL_GROUP, group, number(data.getLongOr("fe_stored", 0)), number(data.getLongOr("fe_capacity", 0))));
             }
-            if (data.getBooleanOr("occupied", false)) tooltip.add(Component.translatable(JadeKeys.PANEL_OCCUPIED).withStyle(ChatFormatting.RED));
             if (data.getBooleanOr("water", false)) tooltip.add(Component.translatable(JadeKeys.PANEL_WATERLOGGED, percent(GeneratorMath.WATERLOGGED_FACTOR)));
         }
     }
@@ -124,10 +129,11 @@ final class EnergyProviders {
         }
 
         @Override
-        void show(ITooltip tooltip, CompoundTag data) {
-            showOutput(tooltip, data);
+        void show(ITooltip tooltip, CompoundTag data, boolean details) {
+            showOutput(tooltip, data, details);
             if (!data.getBooleanOr("wet", false)) tooltip.add(Component.translatable(JadeKeys.FLOW_DRY).withStyle(ChatFormatting.RED));
             if (data.getBooleanOr("blocked", false)) tooltip.add(Component.translatable(JadeKeys.FLOW_BLOCKED).withStyle(ChatFormatting.RED));
+            if (!details) return;
             tooltip.add(Component.translatable(JadeKeys.FLOW_WATER, percent(data.getDoubleOr("share", 0)), data.getIntOr("sources", 0), data.getIntOr("flowing", 0)));
             tooltip.add(Component.translatable(JadeKeys.FLOW_BIOME, percent(data.getFloatOr("biome", 1))));
             tooltip.add(Component.translatable(JadeKeys.FLOW_FAUNA, data.getIntOr("fauna", 0), percent(data.getFloatOr("bonus", 0))));
@@ -159,9 +165,10 @@ final class EnergyProviders {
         }
 
         @Override
-        void show(ITooltip tooltip, CompoundTag data) {
-            tooltip.add(Component.translatable(JadeKeys.VIBRATION_PEAK, number(data.getIntOr("peak", 0)), number(data.getDoubleOr("average", 0))));
+        void show(ITooltip tooltip, CompoundTag data, boolean details) {
             tooltip.add(Component.translatable(JadeKeys.VIBRATION_BUCKET, number(data.getLongOr("tokens", 0)), number(data.getLongOr("burst", 0))));
+            if (!details) return;
+            tooltip.add(Component.translatable(JadeKeys.VIBRATION_PEAK, number(data.getIntOr("peak", 0)), number(data.getDoubleOr("average", 0))));
             tooltip.add(Component.translatable(JadeKeys.VIBRATION_HEARING, data.getIntOr("radius", 0), data.getIntOr("frequency", 0)));
             var last = data.getStringOr("last_event", "");
             if (last.isEmpty()) tooltip.add(Component.translatable(JadeKeys.VIBRATION_LAST_EVENT_NONE));
@@ -188,12 +195,13 @@ final class EnergyProviders {
         }
 
         @Override
-        void show(ITooltip tooltip, CompoundTag data) {
-            showOutput(tooltip, data);
+        void show(ITooltip tooltip, CompoundTag data, boolean details) {
+            showOutput(tooltip, data, details);
             if (data.getIntOr("heat", 0) == 0 || data.getIntOr("cold", 0) == 0) {
-                tooltip.add(Component.translatable(JadeKeys.THERMO_NONE));
+                tooltip.add(Component.translatable(JadeKeys.THERMO_NONE).withStyle(ChatFormatting.YELLOW));
                 return;
             }
+            if (!details) return;
             tooltip.add(Component.translatable(JadeKeys.THERMO_LEVELS, data.getIntOr("heat", 0), data.getIntOr("cold", 0), data.getIntOr("delta", 0),
                     data.getIntOr("ceiling", 0), percent(data.getFloatOr("share", 0))));
         }
@@ -219,16 +227,16 @@ final class EnergyProviders {
         }
 
         @Override
-        void show(ITooltip tooltip, CompoundTag data) {
-            tooltip.add(Component.translatable(JadeKeys.PEAK, number(data.getIntOr("peak", 0))));
+        void show(ITooltip tooltip, CompoundTag data, boolean details) {
             tooltip.add(Component.translatable(JadeKeys.MELT_RESERVOIR, number(data.getLongOr("reservoir", 0)), number(data.getLongOr("reservoir_max", 0))));
-            if (!data.getBooleanOr("has_tank", false)) return;
+            boolean tank = data.getBooleanOr("has_tank", false);
+            boolean full = tank && data.getBooleanOr("full", false);
+            if (full) tooltip.add(Component.translatable(JadeKeys.MELT_EFFICIENCY_FULL, percent(MeltMath.FULL_TANK_EFFICIENCY)).withStyle(ChatFormatting.RED));
+            if (!details) return;
+            tooltip.add(Component.translatable(JadeKeys.PEAK, number(data.getIntOr("peak", 0))));
+            if (!tank) return;
             tooltip.add(Component.translatable(JadeKeys.MELT_TANK, number(data.getIntOr("water", 0)), number(MeltMath.TANK_CAPACITY_MB)));
-            if (data.getBooleanOr("full", false)) {
-                tooltip.add(Component.translatable(JadeKeys.MELT_EFFICIENCY_FULL, percent(MeltMath.FULL_TANK_EFFICIENCY)).withStyle(ChatFormatting.RED));
-            } else {
-                tooltip.add(Component.translatable(JadeKeys.MELT_EFFICIENCY, percent(1)));
-            }
+            if (!full) tooltip.add(Component.translatable(JadeKeys.MELT_EFFICIENCY, percent(1)));
         }
     }
 
@@ -252,14 +260,15 @@ final class EnergyProviders {
         }
 
         @Override
-        void show(ITooltip tooltip, CompoundTag data) {
-            showOutput(tooltip, data);
-            tooltip.add(Component.translatable(data.getDoubleOr("now", 0) > 0 ? JadeKeys.WHEEL_RUNNING : JadeKeys.WHEEL_IDLE));
+        void show(ITooltip tooltip, CompoundTag data, boolean details) {
+            showOutput(tooltip, data, details);
             var mob = data.getStringOr("mob", "");
             if (mob.isEmpty()) {
-                tooltip.add(Component.translatable(JadeKeys.WHEEL_NO_MOB));
+                tooltip.add(Component.translatable(JadeKeys.WHEEL_NO_MOB).withStyle(ChatFormatting.YELLOW));
                 return;
             }
+            if (!details) return;
+            tooltip.add(Component.translatable(data.getDoubleOr("now", 0) > 0 ? JadeKeys.WHEEL_RUNNING : JadeKeys.WHEEL_IDLE));
             tooltip.add(Component.translatable(JadeKeys.WHEEL_MOB, Component.translatable(mob), number(Math.round(data.getDoubleOr("weight", 0) * 100) / 100.0)));
             tooltip.add(data.getBooleanOr("trying", false) ? Component.translatable(JadeKeys.WHEEL_ACTIVITY_RUNNING)
                     : Component.translatable(JadeKeys.WHEEL_ACTIVITY_STANDING, percent(WheelMath.STANDING_FACTOR)));
@@ -291,7 +300,7 @@ final class EnergyProviders {
         }
 
         @Override
-        void show(ITooltip tooltip, CompoundTag data) {
+        void show(ITooltip tooltip, CompoundTag data, boolean details) {
             var status = data.getStringOr("status", "no_kite");
             int minDistance = data.getIntOr("min_distance", KiteMath.MIN_DISTANCE);
             double offender = data.getDoubleOr("offender", -1);
@@ -303,13 +312,14 @@ final class EnergyProviders {
                 var line = Component.translatable(JadeKeys.kiteStatus(status));
                 tooltip.add(status.equals("no_wire") || status.equals("weather_reeled") || status.equals("no_sky") ? line.withStyle(ChatFormatting.YELLOW) : line);
             }
-            showOutput(tooltip, data);
+            showOutput(tooltip, data, details);
+            var limit = data.getStringOr("limit", "none");
+            if (status.equals("flying") && JadeKeys.KITE_LIMITS.contains(limit)) tooltip.add(Component.translatable(JadeKeys.KITE_LIMIT, Component.translatable(JadeKeys.kiteLimit(limit))).withStyle(ChatFormatting.YELLOW));
+            if (!details) return;
             tooltip.add(Component.translatable(JadeKeys.KITE_WIRE, data.getIntOr("wire", 0), data.getIntOr("wire_capacity", 0)));
             if (!status.equals("flying")) return;
             tooltip.add(Component.translatable(JadeKeys.KITE_LENGTH, number(Math.round(data.getDoubleOr("length", 0) * 10) / 10.0), percent(data.getDoubleOr("factor", 0))));
             tooltip.add(Component.translatable(JadeKeys.KITE_KITES, data.getIntOr("kites", 0)));
-            var limit = data.getStringOr("limit", "none");
-            if (JadeKeys.KITE_LIMITS.contains(limit)) tooltip.add(Component.translatable(JadeKeys.KITE_LIMIT, Component.translatable(JadeKeys.kiteLimit(limit))));
         }
     }
 }

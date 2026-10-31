@@ -2,6 +2,7 @@ package net.samtrion.dotcraft.jade.energy;
 
 import java.util.Locale;
 
+import net.minecraft.ChatFormatting;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
@@ -84,8 +85,10 @@ abstract class FamilyProvider<E extends BlockEntity> implements IServerDataProvi
         public void appendTooltip(ITooltip tooltip, BlockAccessor accessor, IPluginConfig config) {
             var data = accessor.getServerData();
             if (data.isEmpty() || !data.contains("fe_stored")) return;
-            show(tooltip, data);
+            boolean details = accessor.showDetails();
+            show(tooltip, data, details);
             tooltip.add(Component.translatable(JadeKeys.STORED, number(data.getLongOr("fe_stored", 0)), number(data.getLongOr("fe_capacity", 0))));
+            if (!details) tooltip.add(Component.translatable(JadeKeys.DETAILS_HINT, Component.translatable("key.jade.show_details")).withStyle(ChatFormatting.DARK_GRAY));
         }
     }
 
@@ -99,12 +102,15 @@ abstract class FamilyProvider<E extends BlockEntity> implements IServerDataProvi
     abstract void collect(CompoundTag data, ServerLevel level, E be);
 
     /**
-     * Adds the lines of the family; the stored energy is added after them.
+     * Adds the lines of the family; the stored energy and, without the details, the hint are added after them. Only
+     * what matters at a glance (output now, the one reason that limits the block) is added always; every other
+     * line is added only when {@code details} is set.
      *
      * @param tooltip the tooltip
      * @param data    the tag {@link #collect} wrote
+     * @param details whether Jade's details key is held ({@link BlockAccessor#showDetails()})
      */
-    abstract void show(ITooltip tooltip, CompoundTag data);
+    abstract void show(ITooltip tooltip, CompoundTag data, boolean details);
 
     /**
      * Writes the stored energy and the capacity of a buffer.
@@ -130,13 +136,15 @@ abstract class FamilyProvider<E extends BlockEntity> implements IServerDataProvi
     }
 
     /**
-     * Adds the output line from {@link #putOutput}.
+     * Adds the output line from {@link #putOutput}: the output now always, the peak only with the details.
      *
      * @param tooltip the tooltip
      * @param data    the tag
+     * @param details whether the details are shown
      */
-    static void showOutput(ITooltip tooltip, CompoundTag data) {
-        tooltip.add(Component.translatable(JadeKeys.OUTPUT, number(data.getDoubleOr("now", 0)), number(data.getDoubleOr("max", 0))));
+    static void showOutput(ITooltip tooltip, CompoundTag data, boolean details) {
+        tooltip.add(Component.translatable(JadeKeys.OUTPUT, number(data.getDoubleOr("now", 0))));
+        if (details) tooltip.add(Component.translatable(JadeKeys.OUTPUT_MAX, number(data.getDoubleOr("max", 0))));
     }
 
     /**
