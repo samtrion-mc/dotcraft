@@ -116,11 +116,12 @@ class VibrationMathTest {
     /**
      * The economy anchor: the peaks follow the battery ladder 20 / 75 / 560 / 5600 / 56000 FE/t as the burst power, none below 20. The
      * best typical case (a block broken every 10 ticks, which the bucket limits, or any loop that fires every tick, which it caps) makes
-     * 3.6 / 6 / 8 / 10 / 12 batteries of the tier's own battery per MC day, pinned per tier within 0.5 of 4 / 6 / 8 / 10 / 12 and rising
-     * smoothly. Light play (an event every 100 ticks) makes a good deal less, and damage dealt every 8 ticks sits at or below the ceiling.
+     * 2.4 / 6 / 8 / 10 / 12 batteries of the tier's own battery per MC day, pinned per tier within 0.5 of those and rising
+     * smoothly. Tier 1 is pinned exactly: 4 FE/t refill, 96 000 FE per day, 2.4 of the 40 000 FE battery (the figure of the README). Light play (an event every 100 ticks) makes a good deal less, and damage dealt every 8 ticks sits at or below the ceiling.
      */
     @Test
     void dailyYieldMatchesBattery() {
+        assertEquals(96000, VibrationMath.dailyCeiling(1, 20));
         double[] targets = {2.4, 6, 8, 10, 12};
         double previous = 0;
         for (int tier = 1; tier <= 5; tier++) {

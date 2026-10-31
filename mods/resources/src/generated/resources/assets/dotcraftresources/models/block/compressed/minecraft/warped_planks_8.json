@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/warped_planks",
-    "overlay": "dotcraftresources:block/compressed_overlay_8",
-    "side": "minecraft:block/warped_planks",
-    "top": "minecraft:block/warped_planks"
-  }
-}

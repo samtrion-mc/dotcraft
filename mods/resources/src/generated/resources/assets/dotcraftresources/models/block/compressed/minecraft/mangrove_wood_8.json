@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/mangrove_log",
-    "overlay": "dotcraftresources:block/compressed_overlay_8",
-    "side": "minecraft:block/mangrove_log",
-    "top": "minecraft:block/mangrove_log"
-  }
-}

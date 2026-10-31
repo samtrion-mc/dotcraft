@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/pale_oak_log",
-    "overlay": "dotcraftresources:block/compressed_overlay_1",
-    "side": "minecraft:block/pale_oak_log",
-    "top": "minecraft:block/pale_oak_log"
-  }
-}

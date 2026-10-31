@@ -1,7 +1,0 @@
-{
-  "parent": "dotcraftresources:block/material/ore",
-  "textures": {
-    "host": "minecraft:block/deepslate",
-    "overlay": "dotcraftresources:block/material/ore_overlay"
-  }
-}

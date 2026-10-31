@@ -9,8 +9,8 @@ package net.samtrion.dotcraft.energy.vibration;
  * is the most a generator can make at any moment, its burst power. What is made over time is limited by a {@link VibrationBucket}
  * that refills with {@link #refill} per tick and holds {@link #BURST_TICKS} ticks of peak. The refill is the {@link #duty} of the tier
  * times the peak; the duty grows with the tier (2/9, 1/3, 4/9, 5/9, 2/3), anchored so that the best typical case, a player who mines or
- * fights all day (an event every 10 ticks, bucket-limited), makes about 4 / 6 / 8 / 10 / 12 batteries of the same tier per MC day
- * (see {@link #dailyCeiling}; tier 1 makes 3.6 as its peak of 20 FE/t only allows whole FE per tick). No amount of events, from a player
+ * fights all day (an event every 10 ticks, bucket-limited), makes about 2.4 / 6 / 8 / 10 / 12 batteries of the same tier per MC day
+ * (see {@link #dailyCeiling}; tier 1 makes 2.4: its refill of 4 FE/t is 96 000 FE per day, 2.4 of the 40 000 FE battery). No amount of events, from a player
  * or from a machine that loops an event, makes more than that on average. A light player (an event every 100 ticks) makes a fraction of it.
  * <p>
  * Boss bonus: a game event caused by an entity of the config list {@code vibration.bosses} (the ender dragon, wither, warden and elder guardian by default) is worth {@link #BOSS_FACTOR} times as much,
@@ -36,7 +36,7 @@ public final class VibrationMath {
     /** Ticks of one MC day. */
     public static final int DAY_TICKS = 24000;
 
-    /** Per tier: the share of the peak the bucket refills per tick, the duty the daily yield of 4 / 6 / 8 / 10 / 12 batteries is anchored to. */
+    /** Per tier: the share of the peak the bucket refills per tick, the duty the daily yield of 2.4 / 6 / 8 / 10 / 12 batteries is anchored to. */
     private static final double[] DUTY = {2.0 / 9, 1.0 / 3, 4.0 / 9, 5.0 / 9, 2.0 / 3};
     /** Per tier: the radius in blocks in which the generator hears game events (perk: the range grows). A game event reaches 16 blocks at most, so no tier hears further. */
     private static final int[] RADIUS = {5, 7, 9, 12, 16};

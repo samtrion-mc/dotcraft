@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/pink_concrete_powder",
-    "overlay": "dotcraftresources:block/compressed_overlay_4",
-    "side": "minecraft:block/pink_concrete_powder",
-    "top": "minecraft:block/pink_concrete_powder"
-  }
-}

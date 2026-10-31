@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/orange_concrete_powder",
-    "overlay": "dotcraftresources:block/compressed_overlay_6",
-    "side": "minecraft:block/orange_concrete_powder",
-    "top": "minecraft:block/orange_concrete_powder"
-  }
-}

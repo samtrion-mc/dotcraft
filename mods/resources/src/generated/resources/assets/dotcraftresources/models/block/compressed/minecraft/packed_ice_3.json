@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/packed_ice",
-    "overlay": "dotcraftresources:block/compressed_overlay_3",
-    "side": "minecraft:block/packed_ice",
-    "top": "minecraft:block/packed_ice"
-  }
-}

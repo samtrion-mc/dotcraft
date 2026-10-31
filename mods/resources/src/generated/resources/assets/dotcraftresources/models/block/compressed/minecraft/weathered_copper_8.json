@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/weathered_copper",
-    "overlay": "dotcraftresources:block/compressed_overlay_8",
-    "side": "minecraft:block/weathered_copper",
-    "top": "minecraft:block/weathered_copper"
-  }
-}

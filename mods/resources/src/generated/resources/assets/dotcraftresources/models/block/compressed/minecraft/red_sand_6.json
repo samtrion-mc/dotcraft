@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/red_sand",
-    "overlay": "dotcraftresources:block/compressed_overlay_6",
-    "side": "minecraft:block/red_sand",
-    "top": "minecraft:block/red_sand"
-  }
-}
