@@ -39,7 +39,9 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
  * health and base movement speed alone, see {@link WheelMath#weight},</li>
  * <li>its feet are on the plate (the footprint of the tread of the model, at the height of the collision shape),</li>
  * <li>it is alive and no baby, stands on the ground (not in water), rides nothing, is no tamed animal that is told to sit and is not
- * leashed to anything but a fence knot, and</li>
+ * leashed to anything but a fence knot,</li>
+ * <li>its type is not in the config list {@code wheel.blocked_mobs} ({@link EnergyCommonConfig#WHEEL_BLOCKED_MOBS}: the bosses by default;
+ * a held mob that is added to the list is released at the next scan), and</li>
  * <li>no other wheel holds it, see {@link WheelClaims}.</li>
  * </ul>
  * A captured mob <b>cannot leave</b>: right after every tick of the mob the wheel cancels its horizontal movement, puts it back on its
@@ -180,10 +182,15 @@ public class WheelBlockEntity extends BlockEntity {
      *
      * @param mob the mob
      * @return {@code true} if it is alive, grown up, on the ground, out of water, free to move and not led by a
-     *         leash (a fence knot is fine: a leash to the fence next to the wheel keeps a mob on it)
+     *         leash (a fence knot is fine: a leash to the fence next to the wheel keeps a mob on it) and not of a type in {@code wheel.blocked_mobs}
      */
     static boolean eligible(Mob mob) {
-        return mob.isAlive() && !mob.isBaby() && !mob.isInLiquid() && !mob.isPassenger() && mob.onGround() && free(mob);
+        return !blocked(mob) && mob.isAlive() && !mob.isBaby() && !mob.isInLiquid() && !mob.isPassenger() && mob.onGround() && free(mob);
+    }
+
+    /** Whether the type of the mob is in the config list {@code wheel.blocked_mobs}, which no wheel captures or keeps. */
+    static boolean blocked(Mob mob) {
+        return EnergyCommonConfig.WHEEL_BLOCKED_MOBS.filter().matches(mob.getType());
     }
 
     /** The rules that also keep a held mob: not led away by a leash, not told to sit. */
@@ -192,9 +199,9 @@ public class WheelBlockEntity extends BlockEntity {
                 && !(mob instanceof TamableAnimal pet && pet.isOrderedToSit());
     }
 
-    /** Whether the wheel still keeps its mob: alive, here, free and not lifted or pushed off. */
+    /** Whether the wheel still keeps its mob: not blocked (the list may have changed), alive, here, free and not lifted or pushed off. */
     private boolean keeps(ServerLevel level, Mob mob) {
-        return mob.isAlive() && !mob.isRemoved() && mob.level() == level && !mob.isPassenger() && !mob.isInLiquid() && free(mob)
+        return !blocked(mob) && mob.isAlive() && !mob.isRemoved() && mob.level() == level && !mob.isPassenger() && !mob.isInLiquid() && free(mob)
                 && Math.abs(mob.getX() - (worldPosition.getX() + 0.5)) <= ESCAPE_DISTANCE && Math.abs(mob.getZ() - (worldPosition.getZ() + 0.5)) <= ESCAPE_DISTANCE
                 && Math.abs(mob.getY() - (worldPosition.getY() + WheelPlate.TOP)) <= 1;
     }

@@ -78,7 +78,7 @@
   "info.dotcraftrei.vibration.perk.3": "Hört auch Landungen.",
   "info.dotcraftrei.vibration.perk.4": "Hört durch Wolle.",
   "info.dotcraftrei.vibration.perk.5": "Hört auch Schritte und hat den größten Radius.",
-  "info.dotcraftrei.wheel.1": "Ein Mob, der auf dem Rad läuft, dreht es. Ein Mob auf dem Rad wird festgehalten und läuft weiter; Babys, Mobs im Wasser, reitende Mobs und sitzende Haustiere zählen nicht, und ein Rad hält ein Tier.",
+  "info.dotcraftrei.wheel.1": "Ein Mob, der auf dem Rad läuft, dreht es. Ein Mob auf dem Rad wird festgehalten und läuft weiter; Babys, Mobs im Wasser, reitende Mobs und sitzende Haustiere zählen nicht, Bosse und die Mobs der Config-Liste wheel.blocked_mobs werden nie gefangen, und ein Rad hält ein Tier.",
   "info.dotcraftrei.wheel.2": "Beste Platzierung: ein Rad in einem Gehege neben einer Batterie. Die Zugkraft des Mobs, sein Gewicht, ergibt sich aus Gesundheit und Geschwindigkeit; ein Mob, der nur steht, zählt halb.",
   "info.dotcraftrei.wheel.3": "Spitze mit einem starken Läufer, Stufe 1 bis 5: %1$s FE/t."
 }

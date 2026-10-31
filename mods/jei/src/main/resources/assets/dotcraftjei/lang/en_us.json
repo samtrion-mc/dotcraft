@@ -78,7 +78,7 @@
   "info.dotcraftjei.vibration.perk.3": "Also hears landings.",
   "info.dotcraftjei.vibration.perk.4": "Hears through wool.",
   "info.dotcraftjei.vibration.perk.5": "Also hears steps, and has the largest radius.",
-  "info.dotcraftjei.wheel.1": "A mob that runs on the wheel turns it. One mob on the wheel is held in place and keeps running; babies, mobs in water, mounted mobs and pets told to sit do not count, and one wheel holds one animal.",
+  "info.dotcraftjei.wheel.1": "A mob that runs on the wheel turns it. One mob on the wheel is held in place and keeps running; babies, mobs in water, mounted mobs and pets told to sit do not count, bosses and the mobs in the config list wheel.blocked_mobs are never captured, and one wheel holds one animal.",
   "info.dotcraftjei.wheel.2": "Best placement: a wheel in a pen next to a battery. The pull of the mob, its weight, comes from its health and its speed; a mob that only stands counts half.",
   "info.dotcraftjei.wheel.3": "Peak with a strong runner, tiers 1 to 5: %1$s FE/t."
 }

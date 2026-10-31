@@ -62,4 +62,14 @@ class VibrationTagsTest {
         }
         assertFalse(bosses.matches(net.minecraft.resources.Identifier.withDefaultNamespace("zombie"), t -> false));
     }
+
+    /** The mob wheel blocks the same four bosses by default, through the same filter, and no plain mob. */
+    @Test
+    void wheelBlocksTheBosses() {
+        var blocked = net.samtrion.dotcraft.energy.EnergyCommonConfig.WHEEL_BLOCKED_MOBS.filter();
+        for (String id : new String[] {"ender_dragon", "wither", "warden", "elder_guardian"}) {
+            assertTrue(blocked.matches(net.minecraft.resources.Identifier.withDefaultNamespace(id), t -> false), id);
+        }
+        assertFalse(blocked.matches(net.minecraft.resources.Identifier.withDefaultNamespace("pig"), t -> false));
+    }
 }
