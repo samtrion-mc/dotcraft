@@ -93,25 +93,25 @@ public final class EnergyGameTests {
     static void registerTests(RegisterGameTestsEvent event) {
         var environment = event.registerEnvironment(MOD_LOADED, new TestEnvironmentDefinition.AllOf());
         event.registerTest(MOD_LOADED, new FunctionGameTestInstance(MOD_LOADED_FUNCTION,
-                new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new TestData<>(environment, TestSupport.STRUCTURE, 20, 0, true)));
         var batteriesEnvironment = event.registerEnvironment(BATTERIES, new TestEnvironmentDefinition.AllOf());
         event.registerTest(BATTERIES, new FunctionGameTestInstance(BATTERIES_FUNCTION,
-                new TestData<>(batteriesEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new TestData<>(batteriesEnvironment, TestSupport.STRUCTURE, 20, 0, true)));
         var drainEnvironment = event.registerEnvironment(POWER_DRAIN, new TestEnvironmentDefinition.AllOf());
         event.registerTest(POWER_DRAIN, new FunctionGameTestInstance(POWER_DRAIN_FUNCTION,
-                new TestData<>(drainEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new TestData<>(drainEnvironment, TestSupport.STRUCTURE, 20, 0, true)));
         var flatEnvironment = event.registerEnvironment(FLAT, new TestEnvironmentDefinition.AllOf());
         event.registerTest(FLAT, new FunctionGameTestInstance(FLAT_FUNCTION,
-                new TestData<>(flatEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new TestData<>(flatEnvironment, TestSupport.STRUCTURE, 20, 0, true)));
         var dayNightEnvironment = event.registerEnvironment(DAY_NIGHT, new TestEnvironmentDefinition.AllOf());
         event.registerTest(DAY_NIGHT, new FunctionGameTestInstance(DAY_NIGHT_FUNCTION,
-                new TestData<>(dayNightEnvironment, Identifier.withDefaultNamespace("empty"), 80, 0, true)));
+                new TestData<>(dayNightEnvironment, TestSupport.STRUCTURE, 80, 0, true)));
         var groupEnvironment = event.registerEnvironment(GROUP, new TestEnvironmentDefinition.AllOf());
         event.registerTest(GROUP, new FunctionGameTestInstance(GROUP_FUNCTION,
-                new TestData<>(groupEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new TestData<>(groupEnvironment, TestSupport.STRUCTURE, 20, 0, true)));
         var panelsEnvironment = event.registerEnvironment(PANELS, new TestEnvironmentDefinition.AllOf());
         event.registerTest(PANELS, new FunctionGameTestInstance(PANELS_FUNCTION,
-                new TestData<>(panelsEnvironment, Identifier.withDefaultNamespace("empty"), 60, 0, true)));
+                new TestData<>(panelsEnvironment, TestSupport.STRUCTURE, 60, 0, true)));
     }
 
     /**

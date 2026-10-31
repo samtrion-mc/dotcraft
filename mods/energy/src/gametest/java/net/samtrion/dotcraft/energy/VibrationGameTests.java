@@ -76,16 +76,16 @@ public final class VibrationGameTests {
     static void registerTests(RegisterGameTestsEvent event) {
         var listenEnvironment = event.registerEnvironment(LISTEN, new TestEnvironmentDefinition.AllOf());
         event.registerTest(LISTEN, new FunctionGameTestInstance(LISTEN_FUNCTION,
-                new TestData<>(listenEnvironment, Identifier.withDefaultNamespace("empty"), 140, 0, true)));
+                new TestData<>(listenEnvironment, TestSupport.STRUCTURE, 140, 0, true)));
         var pushEnvironment = event.registerEnvironment(PUSH, new TestEnvironmentDefinition.AllOf());
         event.registerTest(PUSH, new FunctionGameTestInstance(PUSH_FUNCTION,
-                new TestData<>(pushEnvironment, Identifier.withDefaultNamespace("empty"), 40, 0, true)));
+                new TestData<>(pushEnvironment, TestSupport.STRUCTURE, 40, 0, true)));
         var bossEnvironment = event.registerEnvironment(BOSS, new TestEnvironmentDefinition.AllOf());
         event.registerTest(BOSS, new FunctionGameTestInstance(BOSS_FUNCTION,
-                new TestData<>(bossEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new TestData<>(bossEnvironment, TestSupport.STRUCTURE, 20, 0, true)));
         var blocksEnvironment = event.registerEnvironment(BLOCKS, new TestEnvironmentDefinition.AllOf());
         event.registerTest(BLOCKS, new FunctionGameTestInstance(BLOCKS_FUNCTION,
-                new TestData<>(blocksEnvironment, Identifier.withDefaultNamespace("empty"), 20, 0, true)));
+                new TestData<>(blocksEnvironment, TestSupport.STRUCTURE, 20, 0, true)));
     }
 
     private static long stored(GameTestHelper helper, BlockPos generator) {
@@ -221,6 +221,10 @@ public final class VibrationGameTests {
         helper.assertTrue(ids.matches(EntityType.ZOMBIE) && !ids.matches(EntityType.WITHER), "an id entry does not resolve");
         helper.assertTrue(EnergyCommonConfig.VIBRATION_BOSSES.filter().matches(EntityType.WARDEN) && !EnergyCommonConfig.VIBRATION_BOSSES.filter().matches(EntityType.ZOMBIE),
                 "the default boss list is wrong");
+        // the wither and the warden attack each other for as long as they live and every blow is a game event for the generators near them
+        zombie.discard();
+        wither.discard();
+        warden.discard();
         helper.succeed();
     }
 

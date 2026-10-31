@@ -91,7 +91,7 @@ public final class WheelGameTests {
         for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY, BLOCKED}) {
             var environment = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf());
             event.registerTest(id, new FunctionGameTestInstance(function(id),
-                    new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 100, 0, true)));
+                    new TestData<>(environment, TestSupport.STRUCTURE, 100, 0, true)));
         }
     }
 

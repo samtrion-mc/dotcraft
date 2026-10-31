@@ -93,7 +93,7 @@ public final class ThermoGameTests {
         for (var test : List.of(OUTPUT, ENERGY, NO_POOL, TAGS, AXES)) {
             var environment = event.registerEnvironment(test, new TestEnvironmentDefinition.AllOf());
             event.registerTest(test, new FunctionGameTestInstance(function(test),
-                    new TestData<>(environment, Identifier.withDefaultNamespace("empty"), 80, 0, true)));
+                    new TestData<>(environment, TestSupport.STRUCTURE, 80, 0, true)));
         }
     }
 
