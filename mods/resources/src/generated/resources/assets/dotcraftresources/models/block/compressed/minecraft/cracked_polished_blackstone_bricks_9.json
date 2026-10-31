@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/cracked_polished_blackstone_bricks",
-    "overlay": "dotcraftresources:block/compressed_overlay_9",
-    "side": "minecraft:block/cracked_polished_blackstone_bricks",
-    "top": "minecraft:block/cracked_polished_blackstone_bricks"
-  }
-}

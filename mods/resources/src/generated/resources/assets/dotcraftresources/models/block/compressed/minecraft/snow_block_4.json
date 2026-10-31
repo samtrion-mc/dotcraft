@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/snow",
-    "overlay": "dotcraftresources:block/compressed_overlay_4",
-    "side": "minecraft:block/snow",
-    "top": "minecraft:block/snow"
-  }
-}

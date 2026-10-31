@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/deepslate_tiles",
-    "overlay": "dotcraftresources:block/compressed_overlay_8",
-    "side": "minecraft:block/deepslate_tiles",
-    "top": "minecraft:block/deepslate_tiles"
-  }
-}

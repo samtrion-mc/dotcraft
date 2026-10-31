@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/jungle_log",
-    "overlay": "dotcraftresources:block/compressed_overlay_5",
-    "side": "minecraft:block/jungle_log",
-    "top": "minecraft:block/jungle_log"
-  }
-}

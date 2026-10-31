@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/raw_iron_block",
-    "overlay": "dotcraftresources:block/compressed_overlay_7",
-    "side": "minecraft:block/raw_iron_block",
-    "top": "minecraft:block/raw_iron_block"
-  }
-}

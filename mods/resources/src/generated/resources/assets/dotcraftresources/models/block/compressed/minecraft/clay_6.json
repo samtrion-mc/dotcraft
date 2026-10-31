@@ -1,9 +1,0 @@
-{
-  "parent": "dotcraftresources:block/compressed",
-  "textures": {
-    "bottom": "minecraft:block/clay",
-    "overlay": "dotcraftresources:block/compressed_overlay_6",
-    "side": "minecraft:block/clay",
-    "top": "minecraft:block/clay"
-  }
-}
