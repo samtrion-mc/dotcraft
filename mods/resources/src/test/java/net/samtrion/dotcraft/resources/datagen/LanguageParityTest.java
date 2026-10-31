@@ -49,7 +49,7 @@ class LanguageParityTest {
             var result = new java.util.TreeMap<String, java.util.List<String>>();
             JsonParser.parseReader(new InputStreamReader(in, StandardCharsets.UTF_8)).getAsJsonObject().entrySet().forEach(e -> {
                 var found = new java.util.ArrayList<String>();
-                var m = java.util.regex.Pattern.compile("%(?:\d+\$)?[a-z]").matcher(e.getValue().getAsString());
+                var m = java.util.regex.Pattern.compile("%(?:\\d+\\$)?[a-z]").matcher(e.getValue().getAsString());
                 while (m.find()) found.add(m.group());
                 java.util.Collections.sort(found);
                 result.put(e.getKey(), found);
