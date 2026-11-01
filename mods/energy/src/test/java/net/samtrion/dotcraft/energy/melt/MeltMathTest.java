@@ -107,6 +107,16 @@ class MeltMathTest {
         assertEquals(480_000, MeltMath.dailyYield(20));
     }
 
+    /** Pins the fill times the class Javadoc states: tier 1 needs 2 000 ticks (8.3% of a day), tiers 2 to 5 about 1 340. */
+    @Test
+    void fillTimesMatchTheDocumentation() {
+        assertEquals(2_000, MeltMath.fillTicks(BATTERIES[0], peak(1)));
+        for (int tier = 2; tier <= 5; tier++) {
+            long fill = MeltMath.fillTicks(BATTERIES[tier - 1], peak(tier));
+            assertTrue(fill >= 1_334 && fill <= 1_340, "tier " + tier + " needs " + fill + " ticks");
+        }
+    }
+
     /**
      * The price: the daily yield of tier 1 costs 480 ice, which is 53 packed ice or 5.9 blue ice, whichever is burnt; and the
      * peak of every tier can be reached with blue ice, the higher tiers cannot with plain ice (they need the compact fuels).
