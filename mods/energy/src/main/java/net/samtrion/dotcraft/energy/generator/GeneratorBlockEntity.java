@@ -132,7 +132,7 @@ public class GeneratorBlockEntity extends BlockEntity {
 
     /**
      * Hands the FE of a removed block on: the groups its neighbours would be in without it get an equal part each, spread over their
-     * blocks; what does not fit is lost.
+     * blocks; what does not fit its group, and the remainder of the division, goes to the other groups; only what fits nowhere is lost.
      */
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState state) {
@@ -148,9 +148,14 @@ public class GeneratorBlockEntity extends BlockEntity {
         }
         if (groups.isEmpty()) return;
         int share = stored / groups.size();
+        int lost = stored - share * groups.size();
         for (var group : groups) {
             int left = share;
             for (var member : group) left -= member.fill(left);
+            lost += left;
+        }
+        for (var group : groups) {
+            for (var member : group) lost -= member.fill(lost);
         }
     }
 

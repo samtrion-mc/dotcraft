@@ -52,6 +52,9 @@ public final class EnergyGameTests {
     private static final ResourceKey<Consumer<GameTestHelper>> POWER_DRAIN_FUNCTION =
             ResourceKey.create(Registries.TEST_FUNCTION, POWER_DRAIN);
 
+    private static final Identifier BRIDGE = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "bridge");
+    private static final ResourceKey<Consumer<GameTestHelper>> BRIDGE_FUNCTION =
+            ResourceKey.create(Registries.TEST_FUNCTION, BRIDGE);
     private static final Identifier GROUP = Identifier.fromNamespaceAndPath(EnergyMod.MODID, "group");
     private static final ResourceKey<Consumer<GameTestHelper>> GROUP_FUNCTION =
             ResourceKey.create(Registries.TEST_FUNCTION, GROUP);
@@ -80,6 +83,7 @@ public final class EnergyGameTests {
             registry.register(FLAT, TestSupport.ticking(EnergyGameTests::flatPanel));
             registry.register(DAY_NIGHT, TestSupport.ticking(EnergyGameTests::dayNight));
             registry.register(GROUP, TestSupport.ticking(EnergyGameTests::group));
+            registry.register(BRIDGE, TestSupport.ticking(EnergyGameTests::bridge));
             registry.register(POWER_DRAIN, TestSupport.ticking(EnergyGameTests::powerDrain));
         });
     }
@@ -109,6 +113,9 @@ public final class EnergyGameTests {
         var groupEnvironment = event.registerEnvironment(GROUP, new TestEnvironmentDefinition.AllOf());
         event.registerTest(GROUP, new FunctionGameTestInstance(GROUP_FUNCTION,
                 new TestData<>(groupEnvironment, TestSupport.STRUCTURE, 20, 0, true)));
+        var bridgeEnvironment = event.registerEnvironment(BRIDGE, new TestEnvironmentDefinition.AllOf());
+        event.registerTest(BRIDGE, new FunctionGameTestInstance(BRIDGE_FUNCTION,
+                new TestData<>(bridgeEnvironment, TestSupport.STRUCTURE, 20, 0, true)));
         var panelsEnvironment = event.registerEnvironment(PANELS, new TestEnvironmentDefinition.AllOf());
         event.registerTest(PANELS, new FunctionGameTestInstance(PANELS_FUNCTION,
                 new TestData<>(panelsEnvironment, TestSupport.STRUCTURE, 60, 0, true)));
@@ -324,6 +331,31 @@ public final class EnergyGameTests {
         helper.setBlock(new BlockPos(2, 5, 0), net.minecraft.world.level.block.Blocks.AIR);
         helper.assertTrue(!level.getBlockState(middle).getValue(GeneratorBlock.EAST), "the middle panel still shows the removed neighbour");
         helper.assertTrue(fromFirst.getAmountAsLong() >= before - 1, "the FE of the removed panel was lost: " + fromFirst.getAmountAsLong() + " < " + before);
+        helper.succeed();
+    }
+
+    /**
+     * A removed bridge panel loses no FE while another group has room: with a full group on its west and an empty one on its east all
+     * of its FE goes east, and an odd amount over two groups with room is kept whole, the remainder of the division included.
+     *
+     * @param helper the game test helper
+     */
+    private static void bridge(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var solar = EnergyBlocks.SOLAR.block(1).get();
+        int capacity = EnergyCommonConfig.SOLAR_PANELS.get(0).capacity();
+        for (int x = 0; x <= 3; x++) helper.setBlock(new BlockPos(x, 5, 0), solar);
+        for (int x = 0; x <= 3; x++) helper.setBlock(new BlockPos(x, 5, 4), solar);
+        for (int x = 0; x <= 1; x++) ((GeneratorBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(x, 5, 0)))).fill(capacity);
+        ((GeneratorBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(2, 5, 0)))).fill(1_000);
+        ((GeneratorBlockEntity) level.getBlockEntity(helper.absolutePos(new BlockPos(2, 5, 4)))).fill(1_001);
+        helper.setBlock(new BlockPos(2, 5, 0), net.minecraft.world.level.block.Blocks.AIR);
+        helper.setBlock(new BlockPos(2, 5, 4), net.minecraft.world.level.block.Blocks.AIR);
+        EnergyHandler east = level.getCapability(Capabilities.Energy.BLOCK, helper.absolutePos(new BlockPos(3, 5, 0)), Direction.EAST);
+        helper.assertTrue(east != null && east.getAmountAsLong() == 1_000, "the FE that did not fit the full group was lost: " + east.getAmountAsLong());
+        EnergyHandler odd = level.getCapability(Capabilities.Energy.BLOCK, helper.absolutePos(new BlockPos(0, 5, 4)), Direction.WEST);
+        EnergyHandler oddEast = level.getCapability(Capabilities.Energy.BLOCK, helper.absolutePos(new BlockPos(3, 5, 4)), Direction.EAST);
+        helper.assertTrue(odd.getAmountAsLong() + oddEast.getAmountAsLong() == 1_001, "the remainder was lost: " + odd.getAmountAsLong() + " + " + oddEast.getAmountAsLong());
         helper.succeed();
     }
 
