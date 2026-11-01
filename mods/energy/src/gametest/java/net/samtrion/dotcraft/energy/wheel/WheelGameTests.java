@@ -52,6 +52,7 @@ public final class WheelGameTests {
     private static final Identifier PIN = id("wheel_pin");
     private static final Identifier ENERGY = id("wheel_energy");
     private static final Identifier BLOCKED = id("wheel_blocked");
+    private static final Identifier RELOAD = id("wheel_reload");
 
     private WheelGameTests() {}
 
@@ -78,6 +79,7 @@ public final class WheelGameTests {
             registry.register(PIN, TestSupport.ticking(WheelGameTests::pin));
             registry.register(ENERGY, TestSupport.ticking(WheelGameTests::energy));
             registry.register(BLOCKED, TestSupport.ticking(WheelGameTests::blocked));
+            registry.register(RELOAD, TestSupport.ticking(WheelGameTests::reload));
         });
     }
 
@@ -88,7 +90,7 @@ public final class WheelGameTests {
      */
     @SubscribeEvent
     static void registerTests(RegisterGameTestsEvent event) {
-        for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY, BLOCKED}) {
+        for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY, BLOCKED, RELOAD}) {
             var environment = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf());
             event.registerTest(id, new FunctionGameTestInstance(function(id),
                     new TestData<>(environment, TestSupport.STRUCTURE, 100, 0, true)));
@@ -393,6 +395,38 @@ public final class WheelGameTests {
                 helper.assertTrue(!pig.isPersistenceRequired(), "the pig keeps the persistence flag of the wheel");
                 area.finish(pig);
             }, pig);
+        }, pig);
+    }
+
+    /**
+     * A wheel that is saved and loaded again (the mob was saved with the persistence flag the wheel set) still gives back the old
+     * state of a mob that could despawn: the mob is not persistent once the reloaded wheel is broken.
+     *
+     * @param helper the game test helper
+     */
+    private static void reload(GameTestHelper helper) {
+        var area = Area.create(helper, 8);
+        var old = area.wheel(1, 4, 4);
+        var level = area.level();
+        var pig = area.spawn(EntityType.PIG, 2.5F, 2.5F);
+        area.after(20, () -> {
+            settled(helper, pig);
+            WheelBlockEntity.clearPersistence(pig);
+            area.place(pig, 4.5, 4.5);
+            old.scan(level);
+            helper.assertTrue(old.heldMob() == pig, "the pig is not captured");
+            var tag = old.saveWithFullMetadata(level.registryAccess());
+            var pos = old.getBlockPos();
+            var reloaded = (WheelBlockEntity) WheelBlockEntity.loadStatic(pos, level.getBlockState(pos), tag, level.registryAccess());
+            helper.assertTrue(reloaded != null, "the wheel cannot be loaded");
+            level.setBlockEntity(reloaded);
+            // the mob was saved with the flag of the wheel, the old wheel gave it back when it was replaced
+            pig.setPersistenceRequired();
+            reloaded.scan(level);
+            helper.assertTrue(reloaded.heldMob() == pig, "the reloaded wheel does not pick the pig up again");
+            helper.setBlock(area.relative(4, FLOOR + 1, 4), Blocks.AIR);
+            helper.assertTrue(!pig.isPersistenceRequired(), "the pig stays persistent after a reload of the wheel");
+            area.finish(pig);
         }, pig);
     }
 

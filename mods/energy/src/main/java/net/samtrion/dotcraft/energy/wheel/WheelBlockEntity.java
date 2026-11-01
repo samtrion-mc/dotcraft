@@ -288,10 +288,11 @@ public class WheelBlockEntity extends BlockEntity {
             }
         }
         if (best == null) return;
+        // a mob picked up again after a reload already carries the flag of the wheel, the saved old state stays
+        if (!best.getUUID().equals(heldId)) wasPersistent = best.isPersistenceRequired();
         held = best;
         heldId = best.getUUID();
         pin = best.position();
-        wasPersistent = best.isPersistenceRequired();
         best.setPersistenceRequired();
         WheelPins.pin(best, this);
         setChanged();
