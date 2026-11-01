@@ -221,6 +221,8 @@ public class GeneratorBlockEntity extends BlockEntity {
     protected void loadAdditional(ValueInput input) {
         super.loadAdditional(input);
         energy.deserialize(input);
+        var config = block().kind().configs().get(block().tier() - 1);
+        energy.configure(config.capacity(), config.maxOutput()); // a tag of a bigger tier or a lowered config must not leave more FE than the block holds
         output = input.getDoubleOr("output", 0);
         carry = input.getDoubleOr("carry", 0);
     }

@@ -93,6 +93,72 @@ class GeneratorMathTest {
         }
     }
 
+    /** The tracking perk widens the plateau tier by tier: each tier gives strictly more of a low sun, the plateau is capped at 1. */
+    @Test
+    void trackingStrictlyGrowsAndCaps() {
+        float[] expected = {0F, 0F, 0.15F, 0.3F, 0.45F};
+        for (int tier = 1; tier <= 5; tier++) {
+            assertEquals(0.5F * (1F + expected[tier - 1]), GeneratorMath.tracked(0.5F, tier), 1e-6, "tier " + tier);
+            assertEquals(1F, GeneratorMath.tracked(1F, tier), 1e-6, "cap tier " + tier);
+            assertEquals(0F, GeneratorMath.tracked(0F, tier), 1e-6, "zero tier " + tier);
+        }
+        for (int tier = 3; tier <= 5; tier++) {
+            assertTrue(GeneratorMath.tracked(0.5F, tier) > GeneratorMath.tracked(0.5F, tier - 1), "tier " + tier);
+        }
+    }
+
+    /** Thunder halves the rain share of every tier, tier 5 keeps full output in rain and half in a storm. */
+    @Test
+    void thunderAtTier5() {
+        assertEquals(1F, GeneratorMath.weather(5, GeneratorMath.Weather.RAIN), 1e-6);
+        assertEquals(0.5F, GeneratorMath.weather(5, GeneratorMath.Weather.THUNDER), 1e-6);
+        assertEquals(0.1F, GeneratorMath.weather(1, GeneratorMath.Weather.THUNDER), 1e-6);
+    }
+
+    /** The biome boost and malus scale solar and lunar output alike. */
+    @Test
+    void biomeFactor() {
+        double plain = GeneratorMath.solar(3, 0F, true, GeneratorMath.Weather.CLEAR, 1F);
+        assertEquals(plain * GeneratorMath.BIOME_BOOST, GeneratorMath.solar(3, 0F, true, GeneratorMath.Weather.CLEAR, GeneratorMath.BIOME_BOOST), 1e-6);
+        assertEquals(plain * GeneratorMath.BIOME_MALUS, GeneratorMath.solar(3, 0F, true, GeneratorMath.Weather.CLEAR, GeneratorMath.BIOME_MALUS), 1e-6);
+        double moon = GeneratorMath.lunar(3, 180F, 0, true, GeneratorMath.Weather.CLEAR, 1F, 0);
+        assertEquals(moon * GeneratorMath.BIOME_BOOST, GeneratorMath.lunar(3, 180F, 0, true, GeneratorMath.Weather.CLEAR, GeneratorMath.BIOME_BOOST, 0), 1e-6);
+        assertEquals(moon * GeneratorMath.BIOME_MALUS, GeneratorMath.lunar(3, 180F, 0, true, GeneratorMath.Weather.CLEAR, GeneratorMath.BIOME_MALUS, 0), 1e-6);
+    }
+
+    /** Phases 1, 3, 5 and 7 mirror each other around the new moon and sit between full and new moon at every tier. */
+    @Test
+    void oddMoonPhases() {
+        var clear = GeneratorMath.Weather.CLEAR;
+        float[] floors = {0.1F, 0.2F, 0.3F, 0.4F, 0.5F};
+        for (int tier = 1; tier <= 5; tier++) {
+            double three = GeneratorMath.lunar(tier, 180F, 3, true, clear, 1F, 0);
+            double one = GeneratorMath.lunar(tier, 180F, 1, true, clear, 1F, 0);
+            assertEquals(1F - 0.25F * (1F - floors[tier - 1]), one, 1e-6, "phase 1 tier " + tier);
+            assertEquals(1F - 0.75F * (1F - floors[tier - 1]), three, 1e-6, "phase 3 tier " + tier);
+            assertEquals(one, GeneratorMath.lunar(tier, 180F, 7, true, clear, 1F, 0), 1e-6, "phase 7 tier " + tier);
+            assertEquals(three, GeneratorMath.lunar(tier, 180F, 5, true, clear, 1F, 0), 1e-6, "phase 5 tier " + tier);
+            assertEquals(floors[tier - 1], GeneratorMath.lunar(tier, 180F, 4, true, clear, 1F, 0), 1e-6, "new moon tier " + tier);
+        }
+    }
+
+    /** A block light outside 0..15 counts as the nearest end of the scale. */
+    @Test
+    void lightPollutionClamps() {
+        var clear = GeneratorMath.Weather.CLEAR;
+        assertEquals(GeneratorMath.lunar(1, 180F, 0, true, clear, 1F, 0), GeneratorMath.lunar(1, 180F, 0, true, clear, 1F, -7), 1e-9);
+        assertEquals(GeneratorMath.lunar(1, 180F, 0, true, clear, 1F, 15), GeneratorMath.lunar(1, 180F, 0, true, clear, 1F, 40), 1e-9);
+        assertTrue(GeneratorMath.lunar(1, 180F, 0, true, clear, 1F, 7) > GeneratorMath.lunar(1, 180F, 0, true, clear, 1F, 8));
+    }
+
+    /** Lunar panels make nothing by day and in the rain at a new moon still keep the floor times the weather share. */
+    @Test
+    void lunarDayAndWeather() {
+        assertEquals(0, GeneratorMath.lunar(5, 0F, 0, true, GeneratorMath.Weather.CLEAR, 1F, 0));
+        assertEquals(0.1F * 0.2F, GeneratorMath.lunar(1, 180F, 4, true, GeneratorMath.Weather.RAIN, 1F, 0), 1e-6);
+        assertEquals(0.1F * 0.2F * 0.5F, GeneratorMath.lunar(1, 180F, 4, true, GeneratorMath.Weather.THUNDER, 1F, 0), 1e-6);
+    }
+
     /** A waterlogged panel keeps 20 % of its output. */
     @Test
     void waterloggedLoses80Percent() {
