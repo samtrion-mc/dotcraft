@@ -48,9 +48,11 @@ neoForge {
             type = 'gameTestServer'
             systemProperty 'neoforge.enabledGameTestNamespaces', modId
         }
-        // the modules run in parallel; a shared game directory makes them fight over the world's session.lock
+        // the modules run in parallel; a shared game directory makes them fight over the world's session.lock and over
+        // config/fml.toml (a half written file fails the other run with "Invalid bare key")
         configureEach {
             if (name == 'gameTestServer') gameDirectory = rootProject.file("run/gametest-${modId}")
+            if (name == 'clientData' || name == 'serverData') gameDirectory = rootProject.file("run/${name}-${modId}")
         }
     }
 }
