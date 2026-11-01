@@ -34,7 +34,7 @@ import net.samtrion.dotcraft.energy.generator.GeneratorEnergy;
  */
 public class FlowGeneratorBlockEntity extends BlockEntity {
     /** Ticks between two scans of the surroundings. */
-    static final int RECOMPUTE_TICKS = 30;
+    static final int RECOMPUTE_TICKS = 20;
 
     /**
      * Replaces the config chance of the dry explosion when it is not negative; only for the game tests (same package), which set it to 0 so a
