@@ -56,6 +56,7 @@ public final class WheelGameTests {
     private static final Identifier BLOCKED = id("wheel_blocked");
     private static final Identifier RELOAD = id("wheel_reload");
     private static final Identifier RELOAD_RELEASE = id("wheel_reload_release");
+    private static final Identifier KEEPS = id("wheel_keeps");
 
     private WheelGameTests() {}
 
@@ -84,6 +85,7 @@ public final class WheelGameTests {
             registry.register(BLOCKED, TestSupport.ticking(WheelGameTests::blocked));
             registry.register(RELOAD, TestSupport.ticking(WheelGameTests::reload));
             registry.register(RELOAD_RELEASE, TestSupport.ticking(WheelGameTests::reloadRelease));
+            registry.register(KEEPS, TestSupport.ticking(WheelGameTests::keeps));
         });
     }
 
@@ -94,7 +96,7 @@ public final class WheelGameTests {
      */
     @SubscribeEvent
     static void registerTests(RegisterGameTestsEvent event) {
-        for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY, BLOCKED, RELOAD, RELOAD_RELEASE}) {
+        for (var id : new Identifier[] {RUN, WEIGHTS, PIN, CLAIMS, SLOT, ENERGY, BLOCKED, RELOAD, RELOAD_RELEASE, KEEPS}) {
             var environment = event.registerEnvironment(id, new TestEnvironmentDefinition.AllOf());
             event.registerTest(id, new FunctionGameTestInstance(function(id),
                     new TestData<>(environment, TestSupport.STRUCTURE, 100, 0, true)));
@@ -542,5 +544,42 @@ public final class WheelGameTests {
                 area.finish(pigA, pigB);
             }, pigA, pigB);
         }, pigA, pigB);
+    }
+
+    /**
+     * A wheel lets a mob go that a push moved more than 1.5 blocks away, that was lifted more than a block, or that is told to sit; the
+     * mob is captured again when it stands on the plate (not the one that sits).
+     *
+     * @param helper the game test helper
+     */
+    private static void keeps(GameTestHelper helper) {
+        var area = Area.create(helper, 8);
+        var wheel = area.wheel(1, 4, 4);
+        var level = area.level();
+        var pig = area.spawn(EntityType.PIG, 2.5F, 2.5F);
+        var wolf = area.spawn(EntityType.WOLF, 8.5F, 2.5F);
+        area.after(20, () -> {
+            settled(helper, pig, wolf);
+            area.place(pig, 4.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == pig, "the pig is not captured");
+            pig.setPos(pig.getX() + 2, pig.getY(), pig.getZ());
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == null, "a pig pushed 2 blocks away is still held");
+            area.place(pig, 4.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == pig, "the pig is not captured again");
+            pig.setPos(pig.getX(), pig.getY() + 1.5, pig.getZ());
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == null, "a pig lifted 1.5 blocks is still held");
+            area.ground(pig, 1.5, 1.5);
+            area.place(wolf, 4.5, 4.5);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == wolf, "the wolf is not captured");
+            wolf.setOrderedToSit(true);
+            wheel.scan(level);
+            helper.assertTrue(wheel.heldMob() == null, "a wolf that is told to sit is still held or captured again");
+            area.finish(pig, wolf);
+        }, pig, wolf);
     }
 }
