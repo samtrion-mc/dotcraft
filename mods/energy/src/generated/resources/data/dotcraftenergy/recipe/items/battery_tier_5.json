@@ -3,6 +3,10 @@
     {
       "type": "neoforge:registered",
       "value": "dotcraftenergy:battery_tier_5"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_4"
     }
   ],
   "type": "minecraft:crafting_shaped",

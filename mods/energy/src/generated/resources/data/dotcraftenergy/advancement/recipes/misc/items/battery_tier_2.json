@@ -3,6 +3,10 @@
     {
       "type": "neoforge:registered",
       "value": "dotcraftenergy:battery_tier_2"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:battery_tier_1"
     }
   ],
   "parent": "minecraft:recipes/root",

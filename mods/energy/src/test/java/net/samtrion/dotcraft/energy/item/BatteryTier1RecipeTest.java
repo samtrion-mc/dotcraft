@@ -43,12 +43,12 @@ class BatteryTier1RecipeTest {
         return total;
     }
 
-    /** Both recipes exist, share the startup switch and the result; B has no potato battery and costs at least 1.5 times A. */
+    /** Both recipes exist, share the startup switch (A adds its potato battery) and the result; B has no potato battery and costs at least 1.5 times A. */
     @Test
     void directRecipeIsMoreExpensive() {
         var a = recipe("battery_tier_1");
         var b = recipe("battery_tier_1_direct");
-        assertEquals(a.get("neoforge:conditions"), b.get("neoforge:conditions"));
+        for (var c : b.getAsJsonArray("neoforge:conditions")) assertTrue(a.getAsJsonArray("neoforge:conditions").contains(c)); // A also needs its potato battery
         assertEquals(a.get("result"), b.get("result"));
         assertFalse(b.getAsJsonObject("key").toString().contains("potato"));
         int potatoBattery = 0; // grain + copper nugget + zinc nugget (the poisonous potato is no metal and not counted)

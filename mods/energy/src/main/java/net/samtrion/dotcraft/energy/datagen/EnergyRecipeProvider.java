@@ -178,7 +178,7 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
                     .define('R', tag("redstone", "grains"))
                     .define('C', tag(cathode, "ingot"))
                     .define('A', tag(anode, "ingot"))
-                    .pattern("BRB").pattern("CRA").pattern("CRA"), getHasName(lower), has(lower));
+                    .pattern("BRB").pattern("CRA").pattern("CRA"), getHasName(lower), has(lower), lower);
         }
 
         /**
@@ -216,14 +216,20 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
         }
 
         /** Saves a battery recipe in the folder {@code items}, dropped when the battery is switched off in the startup config. */
-        private void save(String path, RecipeBuilder recipe, String unlockName, Criterion<?> unlock) {
-            save(path, path, recipe, unlockName, unlock);
+        private void save(String path, RecipeBuilder recipe, String unlockName, Criterion<?> unlock, Item... required) {
+            save(path, path, recipe, unlockName, unlock, required);
         }
 
-        /** Saves a recipe of the item {@code item} under the recipe id {@code recipe} (an alternate recipe has an own id). */
-        private void save(String item, String recipeId, RecipeBuilder recipe, String unlockName, Criterion<?> unlock) {
+        /**
+         * Saves a recipe of the item {@code item} under the recipe id {@code recipe} (an alternate recipe has an own id). It is also
+         * dropped when one of the {@code required} items (ingredients of this mod) is switched off, else it would reference a missing item.
+         */
+        private void save(String item, String recipeId, RecipeBuilder recipe, String unlockName, Criterion<?> unlock, Item... required) {
+            var conditions = new java.util.ArrayList<net.neoforged.neoforge.common.conditions.ICondition>();
+            conditions.add(new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(EnergyMod.MODID, item))));
+            for (Item r : required) conditions.add(registered(r));
             recipe.unlockedBy(unlockName, unlock)
-                    .save(output.withConditions(new RegisteredCondition<>(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(EnergyMod.MODID, item)))),
+                    .save(output.withConditions(conditions.toArray(new net.neoforged.neoforge.common.conditions.ICondition[0])),
                             ResourceKey.<Recipe<?>>create(Registries.RECIPE, Identifier.fromNamespaceAndPath(EnergyMod.MODID, "items/" + recipeId)));
         }
 
