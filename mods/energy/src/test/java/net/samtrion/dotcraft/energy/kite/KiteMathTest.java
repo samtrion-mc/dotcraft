@@ -221,7 +221,7 @@ class KiteMathTest {
 
     /**
      * Economy anchor on the real model (tether out, free sky, the real gust and weather mix): the batteries of the same tier per day
-     * are about 9.8 / 19.4 / 23.7 / 24.3 / 24.6 (tier 1-5), each within 0.5 of its target and all within 8..25.
+     * are about 6.1 / 19.4 / 23.7 / 24.3 / 24.6 (tier 1-5), each within 0.5 of its target and all within 8..25.
      */
     @Test
     void dailyYieldFillsTheBatteryOfTheTierWellUnderADay() {
@@ -240,6 +240,13 @@ class KiteMathTest {
             double bestTicks = (double) BATTERY_CAPACITY[tier - 1] / KiteMath.peak(base, tier);
             assertTrue(bestTicks >= 50 && bestTicks <= 2_500, "tier " + tier + " fills its battery in " + bestTicks + " ticks at best");
         }
+    }
+
+    /** Pins the tier 1 number the docs quote: 20 FE/t x 0.6 mean wind x 0.9 weather x 24000 ticks is about 6.1 batteries of 40 000 FE per day. */
+    @Test
+    void tierOneDailyYieldIsAboutSixPointOneBatteries() {
+        double base = EnergyCommonConfig.KITE_GENERATORS.get(0).peak();
+        assertEquals(6.1, KiteMath.typicalDailyYield(base, 1) / BATTERY_CAPACITY[0], 0.1);
     }
 
     /** Only the kites that stay up in a thunderstorm (tier 4 and 5) are struck, only in a thunderstorm, after the cooldown and on a low roll. */

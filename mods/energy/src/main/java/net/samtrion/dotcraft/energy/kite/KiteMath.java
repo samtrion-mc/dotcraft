@@ -54,7 +54,7 @@ import java.util.function.IntPredicate;
  * <p>
  * <b>Economy.</b> The ladder is deliberately gentle: the best case per MC day (tether fully out, a free sky, the real gust curve and a
  * weather mix of {@link #TYPICAL_CLEAR} / {@link #TYPICAL_RAIN} / {@link #TYPICAL_THUNDER}, see {@link #typicalDailyYield(double, int)})
- * fills the battery of the same tier about 10 / 19 / 24 / 24 / 25 times for tier 1-5 (the maxima 20 / 150 / 1300 / 13000 / 128000 FE/t are chosen so that FE/t scales
+ * fills the battery of the same tier about 6 / 19 / 24 / 24 / 25 times for tier 1-5 (the maxima 20 / 150 / 1300 / 13000 / 128000 FE/t are chosen so that FE/t scales
  * with the battery, which grows faster than the tether). The tier mostly buys perks (weather, obstruction, two kites) and a longer tether.
  */
 public final class KiteMath {
