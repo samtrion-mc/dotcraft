@@ -44,6 +44,8 @@ public class FlowGeneratorBlockEntity extends BlockEntity {
 
     private final GeneratorEnergy energy;
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
+    /** Set by every change of the buffer; saved at most once per {@link #RECOMPUTE_TICKS} ticks, see {@link #serverTick}. */
+    private boolean dirty;
     private boolean scanned;
     private boolean wet;
     private double output;
@@ -59,7 +61,7 @@ public class FlowGeneratorBlockEntity extends BlockEntity {
     public FlowGeneratorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         var config = FlowBlocks.CONFIGS.get(tier(state) - 1);
-        energy = new GeneratorEnergy(config.capacity(), config.maxOutput(), this::setChanged);
+        energy = new GeneratorEnergy(config.capacity(), config.maxOutput(), () -> dirty = true);
     }
 
     private static int tier(BlockState state) {
@@ -109,6 +111,10 @@ public class FlowGeneratorBlockEntity extends BlockEntity {
         carry -= whole;
         energy.produce(whole); // what does not fit into a full buffer is lost
         push(level);
+        if (dirty && level.getGameTime() % RECOMPUTE_TICKS == 0) {
+            dirty = false;
+            level.blockEntityChanged(worldPosition); // saves the chunk without a comparator update, which recompute sends on a change of the output
+        }
     }
 
     /**

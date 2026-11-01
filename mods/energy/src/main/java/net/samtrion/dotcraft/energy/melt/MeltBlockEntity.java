@@ -40,8 +40,15 @@ import net.samtrion.dotcraft.energy.EnergyCommonConfig;
  * take is lost. A neighbour in a chunk that is not loaded is never touched, so a generator never loads chunks.
  */
 public class MeltBlockEntity extends BlockEntity {
+    /** Ticks between two saves of a changed generator. */
+    private static final int SAVE_TICKS = 20;
+
+    /** Set by every change of the buffer or the tank; saved at most once per {@link #SAVE_TICKS} ticks, see {@link #serverTick}. */
+    private boolean dirty;
+    /** The comparator signal the neighbours were told last. */
+    private int notified;
     private final MeltEnergy energy;
-    private final MeltTank tank = new MeltTank(this::setChanged);
+    private final MeltTank tank = new MeltTank(() -> dirty = true);
     private final Map<Direction, BlockCapabilityCache<EnergyHandler, @Nullable Direction>> neighbours = new EnumMap<>(Direction.class);
     private long pending;
 
@@ -55,7 +62,7 @@ public class MeltBlockEntity extends BlockEntity {
     public MeltBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
         var config = config(state);
-        energy = new MeltEnergy(config.capacity(), config.maxOutput(), this::setChanged);
+        energy = new MeltEnergy(config.capacity(), config.maxOutput(), () -> dirty = true);
     }
 
     private static EnergyCommonConfig.Generator config(BlockState state) {
@@ -147,11 +154,20 @@ public class MeltBlockEntity extends BlockEntity {
         if (released > 0) {
             pending -= released;
             energy.produce(released);
-            setChanged();
+            dirty = true;
         }
         boolean lit = pending > 0;
         if (lit != state.getValue(MeltBlock.LIT)) level.setBlock(worldPosition, state.setValue(MeltBlock.LIT, lit), 2);
         push(level);
+        int signal = signal();
+        if (signal != notified) {
+            notified = signal;
+            level.updateNeighbourForOutputSignal(worldPosition, state.getBlock()); // only a changed signal, not every change of the FE
+        }
+        if (dirty && level.getGameTime() % SAVE_TICKS == 0) {
+            dirty = false;
+            level.blockEntityChanged(worldPosition); // saves the chunk without a comparator update
+        }
     }
 
     /**
@@ -181,7 +197,7 @@ public class MeltBlockEntity extends BlockEntity {
             pending += yield;
             melted++;
         }
-        if (melted > 0) setChanged();
+        if (melted > 0) dirty = true;
     }
 
     /**
