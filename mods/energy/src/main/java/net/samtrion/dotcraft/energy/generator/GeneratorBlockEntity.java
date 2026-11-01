@@ -48,6 +48,7 @@ public class GeneratorBlockEntity extends BlockEntity {
     private List<GeneratorBlockEntity> members = List.of();
     private int membersVersion = -1;
     private double output;
+    private double sentOutput;
     private double carry;
 
     /**
@@ -186,8 +187,12 @@ public class GeneratorBlockEntity extends BlockEntity {
         double now = isOccupied() ? 0
                 : block.kind().output(level, worldPosition, block.tier()) * GeneratorMath.waterlogged(getBlockState().getValue(GeneratorBlock.WATERLOGGED));
         if (now != output) {
+            boolean sync = GeneratorMath.needsSync(sentOutput, now);
             output = now;
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+            if (sync) {
+                sentOutput = now;
+                level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), 2);
+            }
             setChanged();
         }
     }
@@ -224,6 +229,7 @@ public class GeneratorBlockEntity extends BlockEntity {
         var config = block().kind().configs().get(block().tier() - 1);
         energy.configure(config.capacity(), config.maxOutput()); // a tag of a bigger tier or a lowered config must not leave more FE than the block holds
         output = input.getDoubleOr("output", 0);
+        sentOutput = output;
         carry = input.getDoubleOr("carry", 0);
     }
 
