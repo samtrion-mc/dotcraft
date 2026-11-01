@@ -7,6 +7,10 @@
     {
       "type": "neoforge:registered",
       "value": "dotcraftenergy:battery_tier_1"
+    },
+    {
+      "type": "neoforge:registered",
+      "value": "dotcraftenergy:photovoltaic_cell"
     }
   ],
   "type": "minecraft:crafting_shaped",

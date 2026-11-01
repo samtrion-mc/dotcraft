@@ -118,9 +118,10 @@ public final class EnergyRecipeProvider extends RecipeProvider.Runner {
                 if (previous == null) builder.define('X', tag("redstone", "grains"));
                 else builder.define('X', previous);
                 builder.pattern("PXP");
+                var cell = EnergyItems.PHOTOVOLTAIC_CELL.get(); // an ingredient of this mod: the recipe is dropped when the cell is switched off
                 var conditions = previous == null
-                        ? new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery)}
-                        : new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery), registered(previous)};
+                        ? new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery), registered(cell)}
+                        : new net.neoforged.neoforge.common.conditions.ICondition[] {registered(item), registered(battery), registered(cell), registered(previous)};
                 builder.unlockedBy(getHasName(battery), has(battery)).save(output.withConditions(conditions),
                         ResourceKey.<Recipe<?>>create(Registries.RECIPE, Identifier.fromNamespaceAndPath(EnergyMod.MODID, "items/" + block.getId().getPath())));
                 previous = item;

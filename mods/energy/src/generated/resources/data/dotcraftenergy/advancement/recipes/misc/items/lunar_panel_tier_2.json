@@ -10,6 +10,10 @@
     },
     {
       "type": "neoforge:registered",
+      "value": "dotcraftenergy:photovoltaic_cell"
+    },
+    {
+      "type": "neoforge:registered",
       "value": "dotcraftenergy:lunar_panel_tier_1"
     }
   ],
