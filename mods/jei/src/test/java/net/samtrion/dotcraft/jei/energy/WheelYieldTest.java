@@ -70,4 +70,17 @@ class WheelYieldTest {
             }
         }
     }
+
+    /** FE/t formatting ignores the default locale: a German default must not turn the separators around. */
+    @Test
+    void feFormattingIgnoresTheDefaultLocale() {
+        var old = java.util.Locale.getDefault();
+        try {
+            java.util.Locale.setDefault(java.util.Locale.GERMANY);
+            assertEquals("1,235", WheelYield.fe(1234.6));
+            assertEquals("12.5", WheelYield.fe(12.5));
+        } finally {
+            java.util.Locale.setDefault(old);
+        }
+    }
 }
