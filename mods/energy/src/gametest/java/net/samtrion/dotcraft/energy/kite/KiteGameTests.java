@@ -40,7 +40,7 @@ public final class KiteGameTests {
     private static final String[] NAMES = {"kite_blocks", "kite_flight", "kite_above_build_height", "kite_break_and_reel_in", "kite_respawn_and_save",
             "kite_free_space", "kite_thin_roof", "kite_comparator_and_status", "kite_thunder", "kite_ignores_obstructions", "kite_two_kites",
             "kite_lightning", "kite_wire", "kite_short_wire", "kite_too_close", "kite_play", "kite_storm_radius", "kite_bolts", "kite_recipe_wire",
-            "kite_lightning_cooldown_saved"};
+            "kite_lightning_cooldown_saved", "kite_diagonal_roof", "kite_credit_sides"};
 
     /** Not instantiable. */
     private KiteGameTests() {}
@@ -102,6 +102,8 @@ public final class KiteGameTests {
             case "kite_bolts" -> KiteGameTests::bolts;
             case "kite_recipe_wire" -> KiteGameTests::recipeWire;
             case "kite_lightning_cooldown_saved" -> KiteGameTests::lightningCooldownSaved;
+            case "kite_diagonal_roof" -> KiteGameTests::diagonalRoof;
+            case "kite_credit_sides" -> KiteGameTests::creditSides;
             default -> KiteGameTests::thunder;
         };
     }
@@ -340,7 +342,7 @@ public final class KiteGameTests {
     }
 
     /**
-     * A single block thick plate far up stops the kite right below it; no sample may skip it. Tier 1 needs a free cross, so a plate
+     * A single block thick plate far up stops the kite right below it; no sample may skip it. Tier 1 needs a free 3x3, so a plate
      * that only covers a neighbour of the column stops it, while tier 4 flies past that (a shaft of one block is enough).
      *
      * @param helper the game test helper
@@ -360,6 +362,31 @@ public final class KiteGameTests {
         helper.runAfterDelay(200, () -> {
             helper.assertTrue(wideBe.kite().altitude() <= 9.01 && wideBe.kite().altitude() >= 8.5, "wrong ceiling: " + wideBe.kite().altitude());
             helper.assertTrue(slimBe.kite().altitude() > 20, "the slim line is stopped by a plate beside the column: " + slimBe.kite().altitude());
+            helper.succeed();
+        });
+    }
+
+    /**
+     * Tier 1 and 2 need a free 3x3 way up, as the tooltip says: a plate that only covers a diagonal neighbour of the column stops
+     * the kite below it, while tier 3 (a column of one block) flies past it.
+     *
+     * @param helper the game test helper
+     */
+    private static void diagonalRoof(GameTestHelper helper) {
+        var wide = new BlockPos(1, 1, 1);
+        var slim = new BlockPos(FAR_X, 1, 1);
+        place(helper, wide, 1);
+        place(helper, slim, 4);
+        helper.setBlock(wide.offset(1, 10, 1), Blocks.STONE);
+        helper.setBlock(slim.offset(1, 10, 1), Blocks.STONE);
+        var player = player(helper, true);
+        helper.useBlock(wide, player);
+        helper.useBlock(slim, player);
+        var wideBe = entity(helper, wide);
+        var slimBe = entity(helper, slim);
+        helper.runAfterDelay(200, () -> {
+            helper.assertTrue(wideBe.kite().altitude() <= 9.01, "the wide line is not stopped by a diagonal block: " + wideBe.kite().altitude());
+            helper.assertTrue(slimBe.kite().altitude() > 20, "the slim line is stopped by a diagonal block: " + slimBe.kite().altitude());
             helper.succeed();
         });
     }
@@ -763,6 +790,32 @@ public final class KiteGameTests {
         bolt.setPos(x, y, z);
         bolt.setVisualOnly(true);
         level.addFreshEntity(bolt);
+    }
+
+    /**
+     * A bolt is never handed to the top face: a drain only on top gets nothing and the whole bolt is lost, while a drain on a side takes
+     * it; a bolt of 0 FE (the config value 0) changes nothing and loses nothing.
+     *
+     * @param helper the game test helper
+     */
+    private static void creditSides(GameTestHelper helper) {
+        var level = helper.getLevel();
+        var topOnly = new BlockPos(1, 1, 1);
+        var sideOnly = new BlockPos(FAR_X, 1, 1);
+        helper.setBlock(topOnly, KiteBlocks.block(4).get());
+        helper.setBlock(sideOnly, KiteBlocks.block(4).get());
+        helper.setBlock(topOnly.above(), EnergyBlocks.POWER_DRAIN.get());
+        helper.setBlock(sideOnly.west(), EnergyBlocks.POWER_DRAIN.get());
+        int bolt = EnergyCommonConfig.kiteLightningEnergy();
+        int capacity = EnergyCommonConfig.KITE_GENERATORS.get(3).capacity();
+        for (var pos : new BlockPos[] {topOnly, sideOnly}) entity(helper, pos).creditLightning(level, capacity);
+        var top = entity(helper, topOnly).creditLightning(level, bolt);
+        helper.assertTrue(top.stored() == 0 && top.pushed() == 0 && top.lost() == bolt, "the top face got a bolt: " + top);
+        var side = entity(helper, sideOnly).creditLightning(level, bolt);
+        helper.assertTrue(side.stored() == 0 && side.pushed() == bolt && side.lost() == 0, "the side drain got no bolt: " + side);
+        var none = entity(helper, sideOnly).creditLightning(level, 0);
+        helper.assertTrue(none.stored() == 0 && none.pushed() == 0 && none.lost() == 0, "a bolt of 0 FE changed something: " + none);
+        helper.succeed();
     }
 
     /**

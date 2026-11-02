@@ -21,7 +21,7 @@ import java.util.function.IntPredicate;
  * <p>
  * <b>Perks per tier</b> (one qualitative step per tier besides the longer tether; the factors are fixed, not configurable):
  * <ul>
- * <li>tier 1: the plain kite. It needs a free cross of three blocks on the way up, rain halves the output and a thunderstorm tears the
+ * <li>tier 1: the plain kite. It needs a free 3x3 way up, rain halves the output and a thunderstorm tears the
  * tether, so the kite is reeled in (output 0);</li>
  * <li>tier 2: a waxed line, rain costs only a quarter;</li>
  * <li>tier 3: a rain-proof sail (rain costs nothing) and a kite that ignores obstructions (see {@link #ignoresObstructions(int)}):
@@ -186,7 +186,7 @@ public final class KiteMath {
     }
 
     /**
-     * Whether the way up needs a free cross of five cells (the column and its four neighbours); tiers 3 and up need no more than the
+     * Whether the way up needs a free 3x3 (the column and its eight neighbours); tiers 3 and up need no more than the
      * column (tier 3 not even that, see {@link #ignoresObstructions(int)}).
      *
      * @param tier the tier, 1..5
